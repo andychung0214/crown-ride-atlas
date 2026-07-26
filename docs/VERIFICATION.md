@@ -61,4 +61,11 @@
 - GitHub Pages 所需的最小 `contents`、`pages` 與 `id-token` 權限。
 - 官方 Pages artifact 與 deployment actions。
 
-正式 workflow run、部署 commit、公開網址及 HTTP 資源檢查結果，僅在 GitHub 實際部署成功後補入。
+2026-07-26 首次 GitHub Pages 部署驗證：
+
+- 部署 commit：`f08e3b7784a7415904ab59927d4e8655023c4508`
+- GitHub Actions：[run 30187015443](https://github.com/andychung0214/crown-ride-atlas/actions/runs/30187015443)，狀態 `completed`、結論 `success`。
+- 完成時間：2026-07-26 11:58:59（Asia/Taipei）。
+- 公開網址：[https://andychung0214.github.io/crown-ride-atlas/](https://andychung0214.github.io/crown-ride-atlas/)
+- HTTP 實測：首頁、`css/base.css`、`js/app.js`、`assets/icons/favicon.svg` 均回應 `200`，首頁包含「狂輪誌」識別文字。
+- Chrome 實測：首頁導向 `#/home` 並正確顯示標題；直接開啟 `#/route/new-taipei-yangjin-3p` 顯示「陽金三峰｜狂輪誌」、路線標題與「下載 GPX」，主控台無錯誤。

@@ -4,7 +4,7 @@
 
 狂輪誌是一座桌機優先、支援行動觸控的台灣公路車路線百科與騎乘圖鑑。首版收錄全台 22 個地區、72 條路線、8 項經典挑戰與 6 組路線美學，提供搜尋、篩選、路線詳情、互動地圖、GPX 下載，以及不需後端的本機編輯功能。
 
-預定網址（首次部署成功後啟用）：[https://andychung0214.github.io/crown-ride-atlas/](https://andychung0214.github.io/crown-ride-atlas/)
+線上版本：[https://andychung0214.github.io/crown-ride-atlas/](https://andychung0214.github.io/crown-ride-atlas/)
 
 ## 特色
 
