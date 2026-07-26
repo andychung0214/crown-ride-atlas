@@ -33,12 +33,32 @@
     return true;
   }
 
+  function matchesCoordinateSequence(first, second) {
+    if (!Array.isArray(first) || !Array.isArray(second) || first.length !== second.length) return false;
+    if (first === second) return true;
+    return first.every((point, index) => {
+      const candidate = second[index];
+      return point && candidate
+        && point.lat === candidate.lat
+        && point.lng === candidate.lng
+        && point.ele === candidate.ele;
+    });
+  }
+
+  function routeOnlyProfileTrack(route, staleTrack) {
+    const routePoints = routeCoordinates(route);
+    if (!routePoints.length || matchesCoordinateSequence(routePoints, routeCoordinates(staleTrack))) return null;
+    const routeOnly = Object.assign({}, route);
+    delete routeOnly.track;
+    return routeOnly;
+  }
+
   function profileTrackFor(route, explicitTrack) {
     const embeddedTrack = route && route.track;
     for (const candidate of [explicitTrack, embeddedTrack]) {
       if (candidate && isCompatibleProfileTrack(route, candidate)) return candidate;
     }
-    if (embeddedTrack) return null;
+    if (embeddedTrack) return routeOnlyProfileTrack(route, embeddedTrack);
     return route;
   }
 

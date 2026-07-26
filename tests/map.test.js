@@ -279,6 +279,56 @@ test("legacy route.track 的 routeId 與路線不符時不使用陳舊軌跡", (
   assert.equal(element.children[0].textContent, "未提供海拔資料");
 });
 
+test("陳舊嵌入軌跡與自有座標不同時安全回退至路線座標", () => {
+  const documentRef = fakeDocument();
+  const element = fakeNode("div", documentRef);
+  const route = {
+    id: "route-a",
+    name: "A 路線",
+    coordinates: [{ lat: 25, lng: 121, ele: 10, distanceKm: 0, gradePct: 0 }, { lat: 25.01, lng: 121, ele: 20, distanceKm: 1, gradePct: 5 }],
+    track: {
+      routeId: "route-b",
+      coordinates: [{ lat: 25.1, lng: 121.1, ele: 900 }, { lat: 25.11, lng: 121.1, ele: 950 }]
+    }
+  };
+
+  MapView.mountElevation(element, route);
+  const [svg, tooltip] = element.children;
+  svg.handlers.focus({});
+
+  assert.match(tooltip.textContent, /10 m/);
+});
+
+test("陳舊嵌入軌跡與路線座標語意相同時不會洩漏跨路線海拔", () => {
+  const documentRef = fakeDocument();
+  const element = fakeNode("div", documentRef);
+  const staleCoordinates = [{ lat: 25, lng: 121, ele: 900 }, { lat: 25.01, lng: 121, ele: 950 }];
+
+  MapView.mountElevation(element, {
+    id: "route-a",
+    name: "A 路線",
+    coordinates: staleCoordinates.map(point => Object.assign({}, point)),
+    track: { routeId: "route-b", coordinates: staleCoordinates }
+  });
+
+  assert.equal(element.children[0].textContent, "未提供海拔資料");
+});
+
+test("陳舊嵌入軌跡與路線共用座標陣列時不會洩漏跨路線海拔", () => {
+  const documentRef = fakeDocument();
+  const element = fakeNode("div", documentRef);
+  const staleCoordinates = [{ lat: 25, lng: 121, ele: 900 }, { lat: 25.01, lng: 121, ele: 950 }];
+
+  MapView.mountElevation(element, {
+    id: "route-a",
+    name: "A 路線",
+    coordinates: staleCoordinates,
+    track: { routeId: "route-b", coordinates: staleCoordinates }
+  });
+
+  assert.equal(element.children[0].textContent, "未提供海拔資料");
+});
+
 test("不相容的顯式軌跡只會回退至路線自己的座標", () => {
   const documentRef = fakeDocument();
   const element = fakeNode("div", documentRef);
@@ -310,6 +360,25 @@ test("相同 routeId 的顯式軌跡仍優先供海拔圖使用", () => {
   MapView.mountElevation(element, route, {
     routeId: "route-a",
     coordinates: [{ lat: 25, lng: 121, ele: 100, distanceKm: 0, gradePct: 0 }, { lat: 25.01, lng: 121, ele: 120, distanceKm: 1, gradePct: 5 }]
+  });
+  const [svg, tooltip] = element.children;
+  svg.handlers.focus({});
+
+  assert.match(tooltip.textContent, /100 m/);
+});
+
+test("相同 routeId 的嵌入軌跡仍優先供海拔圖使用", () => {
+  const documentRef = fakeDocument();
+  const element = fakeNode("div", documentRef);
+
+  MapView.mountElevation(element, {
+    id: "route-a",
+    name: "A 路線",
+    coordinates: [{ lat: 25, lng: 121, ele: 10, distanceKm: 0, gradePct: 0 }, { lat: 25.01, lng: 121, ele: 20, distanceKm: 1, gradePct: 5 }],
+    track: {
+      routeId: "route-a",
+      coordinates: [{ lat: 25, lng: 121, ele: 100, distanceKm: 0, gradePct: 0 }, { lat: 25.01, lng: 121, ele: 120, distanceKm: 1, gradePct: 5 }]
+    }
   });
   const [svg, tooltip] = element.children;
   svg.handlers.focus({});
