@@ -5,6 +5,8 @@ Thumbs.db
 node_modules/
 coverage/
 *.log
+tools/route-data/cache/
+tools/route-data/.staging/
 .env
 .env.*
 !.env.example

@@ -4,7 +4,10 @@
   "private": true,
   "description": "CROWN RIDE ATLAS／狂輪誌：台灣公路車路線百科與騎乘圖鑑",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "tracks:generate": "node scripts/generate-tracks.mjs",
+    "tracks:validate": "node scripts/validate-tracks.mjs --published",
+    "verify": "node --check js/app.js && npm test && npm run tracks:validate"
   },
   "license": "MIT"
 }

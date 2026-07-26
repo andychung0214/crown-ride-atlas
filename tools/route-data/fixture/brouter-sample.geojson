@@ -1,0 +1,19 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "creator": "BRouter fixture"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [121.541, 25.021, 12],
+          [121.5415, 25.0215, 20],
+          [121.542, 25.022, 31]
+        ]
+      }
+    }
+  ]
+}
