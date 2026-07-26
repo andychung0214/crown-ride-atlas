@@ -55,6 +55,14 @@
       .filter(entry => Boolean(entry.route));
   }
 
+  function selectFeaturedRoute(routes) {
+    const source = Array.isArray(routes) ? routes : [];
+    return source.find(route => route.id === "new-taipei-yangjin-3p")
+      || source.find(route => route.featured)
+      || source[0]
+      || null;
+  }
+
   function pageTitle(routeInfo, routes) {
     const page = routeInfo && routeInfo.page;
     if (page === "home") return "狂輪誌";
@@ -279,7 +287,24 @@
   }
 
   function homePage(documentRef, state) {
-    const featured = state.allRoutes.find(route => route.id === "new-taipei-yangjin-3p") || state.allRoutes[0];
+    const featured = selectFeaturedRoute(state.allRoutes);
+    if (!featured) {
+      return node(documentRef, "div", { className: "home-page" }, [
+        node(documentRef, "section", { className: "page-intro" }, [
+          node(documentRef, "p", { className: "eyebrow", text: "LOCAL ROUTE ARCHIVE" }),
+          node(documentRef, "h1", { text: "路線目錄目前是空的。" }),
+          node(documentRef, "p", {
+            className: "page-intro__description",
+            text: "你可以從備份還原內容，或重設本機資料取回內建的台灣路線。"
+          })
+        ]),
+        node(documentRef, "section", { className: "empty-state paper-panel" }, [
+          node(documentRef, "h2", { text: "從我的路線重新開始" }),
+          node(documentRef, "p", { text: "前往本機工作桌匯入備份、建立路線或重設資料。" }),
+          node(documentRef, "a", { className: "button button--accent", href: "#/editor", text: "開啟我的路線" })
+        ])
+      ]);
+    }
     const hero = node(documentRef, "section", { className: "home-hero" }, [
       node(documentRef, "div", { className: "home-hero__copy" }, [
         node(documentRef, "p", { className: "eyebrow", text: "FEATURED ROUTE · TAIWAN" }),
@@ -722,6 +747,7 @@
     difficultyLabel,
     elevationSummary,
     routeArtEntries,
+    selectFeaturedRoute,
     pageTitle,
     mount
   };

@@ -44,3 +44,11 @@ test("缺少海拔資料時回傳可理解的說明", () => {
     label: "未提供海拔資料"
   });
 });
+
+test("空路線目錄不會產生不存在的首頁精選", () => {
+  assert.equal(Render.selectFeaturedRoute([]), null);
+  assert.deepEqual(
+    Render.selectFeaturedRoute([{ id: "r1", featured: false }]),
+    { id: "r1", featured: false }
+  );
+});
