@@ -318,7 +318,7 @@
 
 .route-facts {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   border-bottom: 1px solid var(--color-rule);
 }
 
@@ -526,8 +526,8 @@
     grid-template-columns: repeat(3, 1fr);
   }
 
-  .route-facts .route-stat:nth-child(3) {
-    border-right: 0;
+.route-facts .route-stat:nth-child(3) {
+    border-right: 1px solid var(--color-rule);
   }
 
   .route-facts .route-stat:nth-child(n + 4) {
@@ -621,8 +621,8 @@
   }
 
   .route-facts .route-stat,
-  .route-facts .route-stat:nth-child(3) {
-    border-right: 1px solid var(--color-rule);
+  .route-facts .route-stat:nth-child(3n) {
+    border-right: 0;
     border-top: 1px solid var(--color-rule);
   }
 

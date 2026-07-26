@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>海拔剖面瀏覽器驗證</title>
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/layout.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <script src="../../js/core/geo.js"></script>
+    <script src="../../js/core/track-analysis.js"></script>
+    <script src="../../js/ui/map.js"></script>
+  </head>
+  <body>
+    <main class="content-section">
+      <p class="eyebrow">LOCAL FIXTURE · NOT PRODUCTION DATA</p>
+      <h1>測試路線海拔剖面</h1>
+      <div id="map" class="route-map paper-panel"></div>
+      <section class="elevation-chart paper-panel">
+        <div class="elevation-chart__header"><strong>海拔剖面</strong><span>本機固定資料</span></div>
+        <div id="elevation"></div>
+      </section>
+    </main>
+    <script>
+      const fixtureRoute = {
+        id: "fixture-elevation-route",
+        name: "本機測試山線",
+        coordinates: [
+          { lat: 25.0800, lng: 121.5500, ele: 20, distanceKm: 0, gradePct: 0 },
+          { lat: 25.0850, lng: 121.5560, ele: 55, distanceKm: 1.0, gradePct: 3.5 },
+          { lat: 25.0920, lng: 121.5620, ele: 130, distanceKm: 2.0, gradePct: 7.5 },
+          { lat: 25.0980, lng: 121.5700, ele: 260, distanceKm: 3.0, gradePct: 10.5 },
+          { lat: 25.1020, lng: 121.5780, ele: 430, distanceKm: 4.0, gradePct: 13.2 },
+          { lat: 25.1050, lng: 121.5840, ele: 320, distanceKm: 5.0, gradePct: -5.2 }
+        ],
+        waypoints: [{ name: "本機途經點", lat: 25.0980, lng: 121.5700, role: "via" }]
+      };
+      CrownRideAtlas.MapView.mount(document.getElementById("map"), fixtureRoute);
+      CrownRideAtlas.MapView.mountElevation(document.getElementById("elevation"), fixtureRoute);
+    </script>
+  </body>
+</html>

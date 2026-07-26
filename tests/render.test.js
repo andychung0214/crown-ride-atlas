@@ -155,6 +155,32 @@ test("軌跡就緒時顯示地圖與可下載 GPX", () => {
   assert.ok(nodes.some(node => node.dataset.elevation === "r1"));
 });
 
+test("真實軌跡就緒時顯示詳細海拔、來源提醒與主要爬坡", () => {
+  const state = routeState("ready");
+  state.trackState.track = {
+    routeId: "r1",
+    source: { router: "BRouter", profile: "fastbike", elevation: "SRTM", generatedAt: "2026-07-26T00:00:00.000Z" },
+    summary: {
+      elevationLossM: 328,
+      minimumElevationM: 12,
+      maximumElevationM: 940,
+      maximumSustainedGradePct: 11.4
+    },
+    climbs: [{ startDistanceKm: 4.2, endDistanceKm: 8.8, distanceKm: 4.6, gainM: 370, averageGradePct: 8, maximumGradePct: 12 }],
+    coordinates: [{ lat: 25, lng: 121, ele: 12, distanceKm: 0 }, { lat: 25.01, lng: 121.01, ele: 940, distanceKm: 12 }]
+  };
+
+  const page = Render.routeDetailPage(fakeDocument(), state, {});
+  const texts = descendants(page).map(node => node.textContent).filter(Boolean).join(" ");
+
+  assert.match(texts, /最低海拔 M/);
+  assert.match(texts, /總下降 M/);
+  assert.match(texts, /最大持續坡度/);
+  assert.match(texts, /SRTM 地形模型/);
+  assert.match(texts, /主要爬坡/);
+  assert.match(texts, /4\.2–8\.8 km/);
+});
+
 for (const coordinates of [[], [{ lat: 25, lng: 121, ele: 10 }]]) {
   test(`不足兩個座標點的 ready 軌跡會改為可重試錯誤（${coordinates.length} 點）`, () => {
     let retried = null;

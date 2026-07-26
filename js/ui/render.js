@@ -48,6 +48,20 @@
     };
   }
 
+  function profileDetails(track, elevation) {
+    const summary = track && track.summary ? track.summary : {};
+    const number = (value, fallback) => Number.isFinite(value) ? value : fallback;
+    const maximum = number(summary.maximumElevationM, elevation.maximum);
+    return {
+      minimumElevationM: number(summary.minimumElevationM, elevation.available ? Math.min(...track.coordinates.map(point => point.ele).filter(Number.isFinite)) : null),
+      maximumElevationM: maximum,
+      elevationLossM: number(summary.elevationLossM, null),
+      maximumSustainedGradePct: number(summary.maximumSustainedGradePct, null),
+      climbs: Array.isArray(track && track.climbs) ? track.climbs : [],
+      source: track && track.source ? track.source : null
+    };
+  }
+
   function hasUsableCoordinates(coordinates) {
     return Array.isArray(coordinates)
       && coordinates.length >= 2
@@ -529,6 +543,7 @@
     if (!route) return notFoundPage(documentRef, "找不到這條路線", "它可能已從本機資料中移除。");
     const favorite = state.favorites.has(route.id);
     const elevation = elevationSummary(route.coordinates);
+    const profile = trackReady ? profileDetails(route.track, elevation) : null;
     const trackLoading = currentTrackState.status === "loading";
     const trackError = currentTrackState.status === "error"
       || (currentTrackState.status === "ready" && !trackReady);
@@ -590,7 +605,10 @@
         stat(documentRef, route.elevationGainM.toLocaleString("zh-Hant"), "總爬升 M"),
         stat(documentRef, formatDuration(route.durationMinutes), "預估時間"),
         stat(documentRef, `${route.difficulty} / 5`, difficultyLabel(route.difficulty)),
-        stat(documentRef, elevation.available ? elevation.maximum.toLocaleString("zh-Hant") : "—", "最高海拔 M")
+        stat(documentRef, profile && Number.isFinite(profile.minimumElevationM) ? Math.round(profile.minimumElevationM).toLocaleString("zh-Hant") : "—", "最低海拔 M"),
+        stat(documentRef, profile && Number.isFinite(profile.maximumElevationM) ? Math.round(profile.maximumElevationM).toLocaleString("zh-Hant") : elevation.available ? elevation.maximum.toLocaleString("zh-Hant") : "—", "最高海拔 M"),
+        stat(documentRef, profile && Number.isFinite(profile.elevationLossM) ? Math.round(profile.elevationLossM).toLocaleString("zh-Hant") : "—", "總下降 M"),
+        stat(documentRef, profile && Number.isFinite(profile.maximumSustainedGradePct) ? `${profile.maximumSustainedGradePct.toFixed(1)}%` : "—", "最大持續坡度")
       ]),
       node(documentRef, "section", { className: "route-map-section content-section" }, [
         sectionHeading(documentRef, "ROUTE MAP", "道路的線條", "地圖與 GPX 使用同一份座標資料，互動地圖不可用時會顯示離線輪廓。"),
@@ -623,11 +641,27 @@
         node(documentRef, "div", { className: "elevation-chart paper-panel" }, [
           node(documentRef, "div", { className: "elevation-chart__header" }, [
             node(documentRef, "strong", { text: "海拔剖面" }),
-            node(documentRef, "span", { text: elevation.label })
+            node(documentRef, "span", { text: profile && Number.isFinite(profile.maximumElevationM) ? `最高 ${Math.round(profile.maximumElevationM).toLocaleString("zh-Hant")} m` : elevation.label })
           ]),
           trackReady
             ? node(documentRef, "div", { data: { elevation: route.id } })
-            : node(documentRef, "p", { className: "elevation-chart__empty", text: "軌跡資料載入後會顯示海拔剖面。" })
+            : node(documentRef, "p", { className: "elevation-chart__empty", text: "軌跡資料載入後會顯示海拔剖面。" }),
+          trackReady
+            ? node(documentRef, "p", {
+              className: "elevation-chart__source",
+              text: "海拔取自 SRTM 地形模型，適合路線規劃，並非測量級資料。道路與管制可能變動，請以現場標示為準。"
+            })
+            : null,
+          trackReady && profile && profile.climbs.length
+            ? node(documentRef, "section", { className: "climb-list", label: "主要爬坡" }, [
+              node(documentRef, "h3", { text: "主要爬坡" }),
+              node(documentRef, "ol", {}, profile.climbs.map((climb, index) => node(documentRef, "li", {}, [
+                node(documentRef, "strong", { text: `爬坡 ${String(index + 1).padStart(2, "0")}` }),
+                node(documentRef, "span", { text: `${climb.startDistanceKm.toFixed(1)}–${climb.endDistanceKm.toFixed(1)} km · ${climb.distanceKm.toFixed(1)} km · 爬升 ${Math.round(climb.gainM)} m` }),
+                node(documentRef, "small", { text: `平均 ${climb.averageGradePct.toFixed(1)}% · 最大 ${climb.maximumGradePct.toFixed(1)}%` })
+              ])))
+            ])
+            : null
         ])
       ]),
       node(documentRef, "section", { className: "route-story content-section" }, [
@@ -800,6 +834,7 @@
     formatDuration,
     difficultyLabel,
     elevationSummary,
+    profileDetails,
     routeArtEntries,
     selectFeaturedRoute,
     pageTitle,

@@ -25,3 +25,13 @@ test("減少動態效果設定會停用平滑捲動與長動畫", () => {
   assert.match(tokens, /--motion-fast:\s*0ms/);
   assert.match(tokens, /--motion-medium:\s*0ms/);
 });
+
+test("海拔提示與坡度色帶提供可觸控且可辨識的編輯式標記", () => {
+  const css = fs.readFileSync(path.join(__dirname, "..", "css", "components.css"), "utf8");
+
+  assert.match(css, /\.elevation-chart__interaction\s*\{/);
+  assert.match(css, /min-height:\s*2\.75rem/);
+  assert.match(css, /\.elevation-chart__segment--descent/);
+  assert.match(css, /\.elevation-chart__segment--moderate/);
+  assert.match(css, /\.elevation-chart__tooltip/);
+});

@@ -519,6 +519,18 @@
   fill: #c83e36;
 }
 
+.route-map__point--waypoint {
+  fill: var(--color-paper-raised);
+  stroke: var(--color-ink);
+  stroke-width: 2;
+}
+
+.route-map__direction {
+  fill: var(--color-ink);
+  stroke: var(--color-paper-raised);
+  stroke-width: 1.5;
+}
+
 .route-map__fallback-note {
   position: absolute;
   right: var(--space-3);
@@ -541,18 +553,90 @@
 
 .elevation-chart__svg {
   width: 100%;
-  height: 9rem;
+  height: auto;
+  min-height: 11rem;
+  overflow: visible;
 }
 
 .elevation-chart__area {
   fill: rgba(var(--accent-rgb), 0.15);
 }
 
-.elevation-chart__line {
+.elevation-chart__grid {
+  stroke: var(--color-rule);
+  stroke-width: 1;
+}
+
+.elevation-chart__tick {
+  stroke: var(--color-ink-soft);
+  stroke-width: 1;
+}
+
+.elevation-chart__axis-label {
+  fill: var(--color-ink-soft);
+  font: 650 0.62rem/1 var(--font-data);
+  letter-spacing: 0.02em;
+}
+
+.elevation-chart__segment {
   fill: none;
-  stroke: var(--color-accent);
   stroke-width: 4;
-  stroke-linejoin: round;
+  stroke-linecap: square;
+}
+
+.elevation-chart__segment--descent { stroke: #1a5f8a; }
+.elevation-chart__segment--moderate { stroke: #6b7567; }
+.elevation-chart__segment--hard { stroke: #19864a; }
+.elevation-chart__segment--steep { stroke: #d9a516; }
+.elevation-chart__segment--severe { stroke: #d87d28; }
+.elevation-chart__segment--extreme { stroke: #a9322d; }
+
+.elevation-chart__crosshair {
+  stroke: var(--color-ink);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.elevation-chart__cursor {
+  fill: var(--color-paper-raised);
+  stroke: var(--color-ink);
+  stroke-width: 2;
+}
+
+.elevation-chart__interaction {
+  cursor: crosshair;
+  outline: none;
+}
+
+.elevation-chart__interaction:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 0.2rem;
+}
+
+.elevation-chart__tooltip {
+  min-height: 2.75rem;
+  margin-top: var(--space-2);
+  padding: 0.7rem 0.75rem;
+  border-left: 0.2rem solid var(--color-accent);
+  color: var(--color-ink-soft);
+  background: var(--color-paper);
+  font: 700 0.74rem/1.3 var(--font-data);
+}
+
+.elevation-chart__tooltip.is-visible {
+  color: var(--color-ink);
+}
+
+.elevation-chart__legend,
+.elevation-chart__source {
+  margin: var(--space-3) 0 0;
+  color: var(--color-ink-soft);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.elevation-chart__legend {
+  font-family: var(--font-data);
 }
 
 .elevation-chart__empty {
@@ -562,6 +646,42 @@
   margin: 0;
   color: var(--color-ink-soft);
   font-size: 0.88rem;
+}
+
+.climb-list {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-rule);
+  margin-top: var(--space-4);
+}
+
+.climb-list h3 {
+  margin: 0 0 var(--space-3);
+  font-size: 1.15rem;
+}
+
+.climb-list ol {
+  display: grid;
+  gap: var(--space-2);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.climb-list li {
+  display: grid;
+  gap: 0.2rem;
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--color-rule);
+  font: 650 0.72rem/1.4 var(--font-data);
+}
+
+.climb-list li:first-child {
+  border-top: 0;
+}
+
+.climb-list small {
+  color: var(--color-ink-soft);
+  font: inherit;
 }
 
 .note-card {
