@@ -15,7 +15,7 @@ test("首版包含 8 條經典挑戰與 6 組路線美學", () => {
   assert.equal(Data.routeArt.length, 6);
 });
 
-test("每條路線符合可渲染與 GPX 輸出的資料契約", () => {
+test("每條內建路線以相同識別碼的 trackRef 參照軌跡", () => {
   for (const route of Data.routes) {
     assert.match(route.id, /^[a-z0-9-]+$/);
     assert.match(route.slug, /^[a-z0-9-]+$/);
@@ -32,13 +32,8 @@ test("每條路線符合可渲染與 GPX 輸出的資料契約", () => {
     assert.ok(Array.isArray(route.tags) && route.tags.length > 0);
     assert.ok(Array.isArray(route.cautions) && route.cautions.length > 0);
     assert.ok(Array.isArray(route.supplies) && route.supplies.length > 0);
-    assert.ok(route.coordinates.length >= 3);
-
-    for (const point of route.coordinates) {
-      assert.ok(Number.isFinite(point.lat) && point.lat >= -90 && point.lat <= 90);
-      assert.ok(Number.isFinite(point.lng) && point.lng >= -180 && point.lng <= 180);
-      assert.ok(Number.isFinite(point.ele));
-    }
+    assert.equal(route.trackRef, route.id);
+    assert.equal(Object.hasOwn(route, "coordinates"), false);
   }
 });
 

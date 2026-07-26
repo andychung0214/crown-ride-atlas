@@ -291,18 +291,6 @@
     "assets/images/high-pass.webp"
   ];
 
-  function buildCoordinates(base, routeIndex, difficulty, elevationGainM) {
-    return Array.from({ length: 8 }, function (_unused, pointIndex) {
-      const phase = (routeIndex + 1) * (pointIndex + 1);
-      const progress = pointIndex / 7;
-      return {
-        lat: Number((base[0] + pointIndex * 0.006 + Math.sin(phase) * 0.0035).toFixed(6)),
-        lng: Number((base[1] + pointIndex * 0.008 + Math.cos(phase * 0.7) * 0.0045).toFixed(6)),
-        ele: Math.max(3, Math.round(12 + Math.sin(progress * Math.PI) * elevationGainM * 0.28 + progress * difficulty * 18))
-      };
-    });
-  }
-
   function cautionsFor(category) {
     const shared = "道路與天候可能變動，出發前請再次確認";
     if (category === "海岸") return ["留意側風與曝曬", shared];
@@ -348,7 +336,7 @@
         tags: tags.concat(category),
         cautions: cautionsFor(category),
         supplies: suppliesFor(distanceKm, difficulty),
-        coordinates: buildCoordinates(region.base, globalIndex, difficulty, elevationGainM),
+        trackRef: id,
         featured: [
           "new-taipei-yangjin-3p",
           "nantou-wuling-west",
@@ -413,14 +401,6 @@
   ];
 
   artShapes.forEach(function (art, index) {
-    const coordinates = art.shape.map(function (point, pointIndex) {
-      return {
-        lat: Number((art.base[0] + point[1] * 0.035).toFixed(6)),
-        lng: Number((art.base[1] + point[0] * 0.045).toFixed(6)),
-        ele: Math.round(20 + Math.sin(pointIndex / art.shape.length * Math.PI) * 80)
-      };
-    });
-
     routes.push({
       id: art.id,
       slug: art.id,
@@ -439,7 +419,7 @@
       tags: ["GPS Art", "路線美學", "城市探索"],
       cautions: ["圖案轉折較多，路口請減速確認", "道路與天候可能變動，出發前請再次確認"],
       supplies: ["水與簡易補給", "前後車燈", "可記錄軌跡的裝置"],
-      coordinates,
+      trackRef: art.id,
       featured: index === 0,
       createdAt: "2026-07-26T00:00:00.000Z",
       updatedAt: "2026-07-26T00:00:00.000Z"

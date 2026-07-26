@@ -13,8 +13,10 @@
     });
   }
 })(typeof window !== "undefined" ? window : globalThis, function () {
-  const STORAGE_KEY = "crownRideAtlas.v1";
-  const VERSION = 1;
+  const STORAGE_KEY = "crownRideAtlas.v2";
+  const LEGACY_STORAGE_KEY = "crownRideAtlas.v1";
+  const VERSION = 2;
+  const LEGACY_VERSION = 1;
 
   function clone(value) {
     if (typeof structuredClone === "function") return structuredClone(value);
@@ -43,6 +45,15 @@
     );
   }
 
+  function hasValidCoordinates(route) {
+    return Boolean(
+      route &&
+      Array.isArray(route.coordinates) &&
+      route.coordinates.length >= 2 &&
+      route.coordinates.every(isCoordinate)
+    );
+  }
+
   function isText(value) {
     return typeof value === "string" && Boolean(value.trim());
   }
@@ -51,7 +62,7 @@
     return Array.isArray(value) && value.length > 0 && value.every(isText);
   }
 
-  function isValidRoute(route) {
+  function hasValidMetadata(route) {
     return Boolean(
       route &&
       isText(route.id) &&
@@ -75,33 +86,102 @@
       route.durationMinutes > 0 &&
       isTextList(route.tags) &&
       isTextList(route.cautions) &&
-      isTextList(route.supplies) &&
-      Array.isArray(route.coordinates) &&
-      route.coordinates.length >= 2 &&
-      route.coordinates.every(isCoordinate)
+      isTextList(route.supplies)
     );
   }
 
+  function isValidBuiltInRoute(route) {
+    return Boolean(
+      hasValidMetadata(route) &&
+      route.trackRef === route.id &&
+      route.trackSource !== "local" &&
+      (!Object.hasOwn(route, "coordinates") || hasValidCoordinates(route))
+    );
+  }
+
+  function isValidLocalRoute(route) {
+    return Boolean(
+      hasValidMetadata(route) &&
+      route.trackSource === "local" &&
+      !isText(route.trackRef) &&
+      hasValidCoordinates(route)
+    );
+  }
+
+  function isValidRoute(route) {
+    return route && route.trackSource === "local"
+      ? isValidLocalRoute(route)
+      : isValidBuiltInRoute(route);
+  }
+
+  function isValidLegacyRoute(route) {
+    return hasValidMetadata(route) && hasValidCoordinates(route);
+  }
+
   function isValidOverride(route) {
-    return Boolean(route && typeof route.id === "string" && route.id.trim());
+    return Boolean(route && isText(route.id));
+  }
+
+  function migrateLegacyAddition(route) {
+    if (!isValidLegacyRoute(route)) return null;
+    const migrated = Object.assign({}, clone(route), { trackSource: "local" });
+    delete migrated.trackRef;
+    return migrated;
+  }
+
+  function normalizeOverride(route, sourceVersion, builtInById) {
+    if (!isValidOverride(route)) return null;
+    const base = builtInById.get(route.id);
+    if (!base) return null;
+
+    if (sourceVersion === LEGACY_VERSION) {
+      if (Object.hasOwn(route, "coordinates")) {
+        if (!hasValidCoordinates(route)) return null;
+        const migrated = Object.assign({}, clone(base), clone(route), { trackSource: "local" });
+        delete migrated.trackRef;
+        return isValidLocalRoute(migrated) ? migrated : null;
+      }
+
+      const mergedLegacyMetadata = Object.assign({}, clone(base), clone(route));
+      return isValidBuiltInRoute(mergedLegacyMetadata) ? clone(route) : null;
+    }
+
+    const normalized = clone(route);
+    const merged = Object.assign({}, clone(base), normalized);
+    if (merged.trackSource === "local") {
+      delete merged.trackRef;
+      delete normalized.trackRef;
+    }
+    return isValidRoute(merged) ? normalized : null;
+  }
+
+  function validEntries(value, builtInById) {
+    const sourceVersion = value.version;
+    const additions = Array.isArray(value.additions) ? value.additions : [];
+    const overrides = Array.isArray(value.overrides) ? value.overrides : [];
+    const validAdditions = additions
+      .map(route => sourceVersion === LEGACY_VERSION ? migrateLegacyAddition(route) : (isValidLocalRoute(route) ? clone(route) : null))
+      .filter(Boolean);
+    const validOverrides = overrides
+      .map(route => normalizeOverride(route, sourceVersion, builtInById))
+      .filter(Boolean);
+
+    return {
+      additions: validAdditions,
+      overrides: validOverrides,
+      invalid: additions.length - validAdditions.length + overrides.length - validOverrides.length
+    };
   }
 
   function normalizeState(value, builtInById) {
-    if (!value || value.version !== VERSION) return emptyState();
-    const builtInMap = builtInById || new Map();
-    const overrides = Array.isArray(value.overrides) ? value.overrides : [];
+    if (!value || (value.version !== VERSION && value.version !== LEGACY_VERSION)) return emptyState();
+    const entries = validEntries(value, builtInById || new Map());
     return {
       version: VERSION,
-      additions: Array.isArray(value.additions) ? value.additions.filter(isValidRoute).map(clone) : [],
-      overrides: overrides
-        .filter(isValidOverride)
-        .filter(route => {
-          const base = builtInMap.get(route.id);
-          return Boolean(base && isValidRoute(Object.assign({}, base, route)));
-        })
-        .map(clone),
+      additions: entries.additions,
+      overrides: entries.overrides,
       deleted: Array.isArray(value.deleted)
-        ? [...new Set(value.deleted.filter(id => typeof id === "string" && id.trim()))]
+        ? [...new Set(value.deleted.filter(isText))]
         : []
     };
   }
@@ -113,19 +193,38 @@
     } catch (_error) {
       throw new Error("無法解析備份格式。");
     }
-    if (!value || value.version !== VERSION) {
+    if (!value || (value.version !== VERSION && value.version !== LEGACY_VERSION)) {
       throw new Error("不支援此備份版本。");
     }
     return value;
   }
 
-  function readState(storage, builtInById) {
+  function readStoredJson(storage, key) {
     try {
-      const raw = storage && storage.getItem(STORAGE_KEY);
-      return raw ? normalizeState(JSON.parse(raw), builtInById) : emptyState();
+      const raw = storage && storage.getItem(key);
+      return raw ? JSON.parse(raw) : null;
     } catch (_error) {
-      return emptyState();
+      return null;
     }
+  }
+
+  function readState(storage, builtInById) {
+    const current = readStoredJson(storage, STORAGE_KEY);
+    if (current && current.version === VERSION) {
+      return normalizeState(current, builtInById);
+    }
+
+    const legacy = readStoredJson(storage, LEGACY_STORAGE_KEY);
+    if (!legacy || legacy.version !== LEGACY_VERSION) return emptyState();
+    const migrated = normalizeState(legacy, builtInById);
+    try {
+      if (storage && typeof storage.setItem === "function") {
+        storage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+      }
+    } catch (_error) {
+      // 保留已轉換的記憶體狀態；後續寫入仍會明確回報儲存空間錯誤。
+    }
+    return migrated;
   }
 
   function create(storage, builtInRoutes) {
@@ -152,7 +251,11 @@
       const overrides = new Map(state.overrides.map(route => [route.id, route]));
       const baseRoutes = builtIn
         .filter(route => !deleted.has(route.id))
-        .map(route => Object.assign({}, clone(route), clone(overrides.get(route.id) || {})));
+        .map(route => {
+          const result = Object.assign({}, clone(route), clone(overrides.get(route.id) || {}));
+          if (result.trackSource === "local") delete result.trackRef;
+          return result;
+        });
       const additions = state.additions
         .filter(route => !deleted.has(route.id) && !builtInIds.has(route.id))
         .map(clone);
@@ -163,10 +266,10 @@
       if (!route || typeof route.name !== "string" || !route.name.trim()) {
         throw new Error("路線名稱不得為空白。");
       }
-      if (!Array.isArray(route.coordinates) || route.coordinates.length < 2 || !route.coordinates.every(isCoordinate)) {
+      if (route.trackSource === "local" && !hasValidCoordinates(route)) {
         throw new Error("路線至少需要兩個有效座標。");
       }
-      if (!isValidRoute(route)) {
+      if (!isValidRoute(route) || (!builtInIds.has(route.id) && !isValidLocalRoute(route))) {
         throw new Error("路線資料不完整或格式不正確。");
       }
 
@@ -197,6 +300,7 @@
       try {
         if (storage && typeof storage.removeItem === "function") {
           storage.removeItem(STORAGE_KEY);
+          storage.removeItem(LEGACY_STORAGE_KEY);
         }
       } catch (_error) {
         throw new Error("目前無法重設本機資料。");
@@ -216,48 +320,34 @@
 
     function previewImport(jsonText) {
       const backup = parseBackup(jsonText);
-      const additions = Array.isArray(backup.additions) ? backup.additions : [];
-      const overrides = Array.isArray(backup.overrides) ? backup.overrides : [];
-      const validAdditions = additions.filter(isValidRoute);
-      const validOverrides = overrides
-        .filter(isValidOverride)
-        .filter(route => {
-          const base = builtInById.get(route.id);
-          return Boolean(base && isValidRoute(Object.assign({}, base, route)));
-        });
-      const invalid = additions.length - validAdditions.length + overrides.length - validOverrides.length;
+      const entries = validEntries(backup, builtInById);
       const currentIds = new Set(list().map(route => route.id));
-      const conflicts = validAdditions.concat(validOverrides).filter(route => currentIds.has(route.id)).length;
+      const conflicts = entries.additions
+        .concat(entries.overrides)
+        .filter(route => currentIds.has(route.id))
+        .length;
 
       return {
-        valid: validAdditions.length + validOverrides.length,
-        invalid,
-        conflicts
+        valid: entries.additions.length + entries.overrides.length,
+        invalid: entries.invalid,
+        conflicts,
+        sourceVersion: backup.version
       };
     }
 
     function importJson(jsonText) {
       const backup = parseBackup(jsonText);
-      const additions = Array.isArray(backup.additions) ? backup.additions : [];
-      const overrides = Array.isArray(backup.overrides) ? backup.overrides : [];
-      const validAdditions = additions.filter(isValidRoute);
-      const validOverrides = overrides
-        .filter(isValidOverride)
-        .filter(route => {
-          const base = builtInById.get(route.id);
-          return Boolean(base && isValidRoute(Object.assign({}, base, route)));
-        });
-      const next = normalizeState({
+      const entries = validEntries(backup, builtInById);
+      persist({
         version: VERSION,
-        additions: validAdditions,
-        overrides: validOverrides,
+        additions: entries.additions,
+        overrides: entries.overrides,
         deleted: Array.isArray(backup.deleted) ? backup.deleted : []
-      }, builtInById);
-      persist(next);
+      });
 
       return {
-        imported: validAdditions.length + validOverrides.length,
-        skipped: additions.length - validAdditions.length + overrides.length - validOverrides.length
+        imported: entries.additions.length + entries.overrides.length,
+        skipped: entries.invalid
       };
     }
 
@@ -274,7 +364,10 @@
 
   return {
     STORAGE_KEY,
+    LEGACY_STORAGE_KEY,
     VERSION,
+    isValidBuiltInRoute,
+    isValidLocalRoute,
     isValidRoute,
     create
   };

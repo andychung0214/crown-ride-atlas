@@ -34,7 +34,8 @@
     if (!Number.isInteger(difficulty) || difficulty < 1 || difficulty > 5) {
       throw new Error("難度必須介於 1 到 5。");
     }
-    if (!Array.isArray(coordinates) || coordinates.length < 2) {
+    const hasLocalCoordinates = Array.isArray(coordinates) && coordinates.length >= 2;
+    if (!hasLocalCoordinates && !cleanText(base.trackRef)) {
       throw new Error("路線至少需要兩個有效座標。");
     }
 
@@ -48,7 +49,7 @@
       .map(cleanText)
       .filter(Boolean);
 
-    return Object.assign({}, base, {
+    const route = Object.assign({}, base, {
       id,
       slug: base.slug || id,
       name,
@@ -70,15 +71,34 @@
       supplies: Array.isArray(base.supplies) && base.supplies.length
         ? base.supplies
         : ["水與簡易補給", "前後車燈", "基本維修工具"],
-      coordinates: coordinates.map(point => ({
-        lat: Number(point.lat),
-        lng: Number(point.lng),
-        ele: Number(point.ele) || 0
-      })),
       featured: Boolean(base.featured),
       createdAt,
       updatedAt: new Date(timestamp).toISOString()
     });
+
+    if (hasLocalCoordinates) {
+      route.trackSource = "local";
+      route.coordinates = coordinates.map(point => ({
+        lat: Number(point.lat),
+        lng: Number(point.lng),
+        ele: Number(point.ele) || 0
+      }));
+      delete route.trackRef;
+    } else {
+      route.trackRef = base.trackRef;
+      delete route.trackSource;
+      delete route.coordinates;
+    }
+
+    return route;
+  }
+
+  function buildImportPrompt(preview) {
+    const summary = `備份包含 ${preview.valid} 筆有效資料、${preview.invalid} 筆無效資料與 ${preview.conflicts} 筆衝突。`;
+    const migration = preview.sourceVersion === 1
+      ? "這是 v1 舊版備份，匯入後會升級為 v2。"
+      : "";
+    return `${migration}${summary}確定匯入？`;
   }
 
   function node(documentRef, tag, options, children) {
@@ -193,9 +213,9 @@
 
     function openForm(route) {
       const base = route || null;
-      let workingCoordinates = base
+      let workingCoordinates = base && base.trackSource === "local" && Array.isArray(base.coordinates)
         ? base.coordinates.map(point => ({ ...point }))
-        : [{ lat: 25.033, lng: 121.5654, ele: 10 }, { lat: 25.043, lng: 121.5854, ele: 30 }];
+        : [];
       let workingThumbnail = base ? base.thumbnail : "";
       const form = node(documentRef, "form", { className: "route-editor-form" });
       const heading = node(documentRef, "div", { className: "editor-dialog__header" }, [
@@ -289,7 +309,9 @@
       });
       const fileStatus = node(documentRef, "p", {
         className: "editor-file-status",
-        text: `目前有 ${workingCoordinates.length} 個座標點。`
+        text: workingCoordinates.length
+          ? `目前有 ${workingCoordinates.length} 個座標點。`
+          : (base && base.trackRef ? "目前使用內建軌跡；若未上傳 GPX，將只儲存文字修改。" : "請上傳至少包含兩個座標點的 GPX。")
       });
 
       imageInput.addEventListener("change", async () => {
@@ -409,9 +431,7 @@
       try {
         const text = await readTextFile(importInput.files[0], browserWindow, 5 * 1024 * 1024, "備份");
         const preview = store.previewImport(text);
-        const confirmed = confirmAction(
-          `備份包含 ${preview.valid} 筆有效資料、${preview.invalid} 筆無效資料與 ${preview.conflicts} 筆衝突。確定匯入？`
-        );
+        const confirmed = confirmAction(buildImportPrompt(preview));
         if (!confirmed) return;
         const result = store.importJson(text);
         announce(`已匯入 ${result.imported} 筆，略過 ${result.skipped} 筆。`);
@@ -477,6 +497,7 @@
 
   return {
     buildRoute,
+    buildImportPrompt,
     mount
   };
 });
