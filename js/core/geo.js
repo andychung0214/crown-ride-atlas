@@ -41,9 +41,10 @@
     const latitudeB = toRadians(b.lat);
     const sinLatitude = Math.sin(latitudeDelta / 2);
     const sinLongitude = Math.sin(longitudeDelta / 2);
-    const haversine =
+    const haversine = Math.max(0, Math.min(1,
       sinLatitude * sinLatitude +
-      Math.cos(latitudeA) * Math.cos(latitudeB) * sinLongitude * sinLongitude;
+      Math.cos(latitudeA) * Math.cos(latitudeB) * sinLongitude * sinLongitude
+    ));
     const arc = 2 * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine));
 
     return EARTH_RADIUS_KM * arc;

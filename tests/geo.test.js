@@ -16,6 +16,16 @@ test("台北至新竹的球面距離落在合理範圍", () => {
   assert.ok(distance > 64 && distance < 68);
 });
 
+test("近對跖座標的球面距離保持有限值", () => {
+  const distance = Geo.haversineKm(
+    { lat: 89.29000061377066, lng: -111.57397866871231 },
+    { lat: -89.29000061375321, lng: 68.42602133124025 }
+  );
+
+  assert.ok(Number.isFinite(distance));
+  assert.ok(distance > 20000 && distance < 20020);
+});
+
 test("總距離忽略無效資料並累加有效線段", () => {
   const points = [
     { lat: 25, lng: 121 },
