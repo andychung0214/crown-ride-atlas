@@ -1,0 +1,10 @@
+{
+  "name": "crown-ride-atlas",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CROWN RIDE ATLAS／狂輪誌：台灣公路車路線百科與騎乘圖鑑",
+  "scripts": {
+    "test": "node --test"
+  },
+  "license": "MIT"
+}

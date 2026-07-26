@@ -1,0 +1,111 @@
+.site-shell {
+  min-height: 100vh;
+}
+
+.site-header {
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  display: flex;
+  min-height: var(--header-height);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: var(--space-3) clamp(1rem, 4vw, 4rem);
+  border-bottom: 1px solid var(--color-rule);
+  background: color-mix(in srgb, var(--color-paper) 92%, transparent);
+  backdrop-filter: blur(1rem);
+}
+
+.brand {
+  display: inline-grid;
+  text-decoration: none;
+}
+
+.brand__zh {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+}
+
+.brand__en {
+  margin-top: -0.08rem;
+  font: 700 0.58rem/1.2 var(--font-data);
+  letter-spacing: 0.17em;
+}
+
+.boot-status {
+  margin: 0;
+  color: var(--color-ink-soft);
+  font: 600 0.72rem/1.4 var(--font-data);
+  letter-spacing: 0.08em;
+}
+
+.boot-panel {
+  position: relative;
+  display: grid;
+  min-height: calc(100vh - var(--header-height));
+  align-content: end;
+  padding: clamp(2rem, 6vw, 6rem);
+  isolation: isolate;
+}
+
+.boot-panel::before,
+.boot-panel::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 16%, transparent);
+  border-radius: 46% 54% 39% 61% / 55% 42% 58% 45%;
+  pointer-events: none;
+}
+
+.boot-panel::before {
+  top: 10%;
+  right: 8%;
+  width: min(48vw, 42rem);
+  aspect-ratio: 1.35;
+  transform: rotate(-8deg);
+}
+
+.boot-panel::after {
+  top: 16%;
+  right: 12%;
+  width: min(40vw, 35rem);
+  aspect-ratio: 1.35;
+  border-color: var(--color-accent);
+  transform: rotate(6deg);
+}
+
+.boot-panel h1 {
+  max-width: 13ch;
+  margin: var(--space-4) 0 0;
+}
+
+@media (max-width: 40rem) {
+  .site-header {
+    min-height: 4.5rem;
+  }
+
+  .boot-status {
+    display: none;
+  }
+
+  .boot-panel {
+    min-height: calc(100vh - 4.5rem);
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .boot-panel::before {
+    top: 12%;
+    right: -24%;
+    width: 90vw;
+  }
+
+  .boot-panel::after {
+    top: 17%;
+    right: -15%;
+    width: 72vw;
+  }
+}
