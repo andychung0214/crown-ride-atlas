@@ -120,3 +120,25 @@ test("海拔圖無有效高度時顯示說明文字", () => {
   assert.equal(element.children.length, 1);
   assert.equal(element.children[0].textContent, "未提供海拔資料");
 });
+
+test("直接開啟檔案時不啟動 Leaflet 並使用 SVG", () => {
+  const documentRef = fakeDocument();
+  documentRef.defaultView.location.protocol = "file:";
+  let leafletCalls = 0;
+  documentRef.defaultView.L = {
+    map() {
+      leafletCalls += 1;
+      return {};
+    }
+  };
+  const element = fakeNode("div", documentRef);
+
+  MapView.mount(element, {
+    id: "r1",
+    name: "離線測試",
+    coordinates: [{ lat: 25, lng: 121 }, { lat: 25.1, lng: 121.1 }]
+  });
+
+  assert.equal(leafletCalls, 0);
+  assert.equal(element.dataset.mapMode, "svg");
+});

@@ -61,7 +61,7 @@ python -m http.server 4173
 npm test
 ```
 
-測試不依賴大型框架，使用 Node.js 內建 `node:test`。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)。
+測試不依賴大型框架，使用 Node.js 內建 `node:test`。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，首版實際結果與工具限制記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
 
 ## 靜態網站託管
 
