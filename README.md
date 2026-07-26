@@ -4,6 +4,8 @@
 
 狂輪誌是一座桌機優先、支援行動觸控的台灣公路車路線百科與騎乘圖鑑。首版收錄全台 22 個地區、72 條路線、8 項經典挑戰與 6 組路線美學，提供搜尋、篩選、路線詳情、互動地圖、GPX 下載，以及不需後端的本機編輯功能。
 
+預定網址（首次部署成功後啟用）：[https://andychung0214.github.io/crown-ride-atlas/](https://andychung0214.github.io/crown-ride-atlas/)
+
 ## 特色
 
 - 黃衫、衝刺綠、登山圓點與年輕白衫四套主題，可即時切換並記住選擇。
@@ -66,6 +68,8 @@ npm test
 ## 靜態網站託管
 
 可直接部署整個專案到 GitHub Pages、Cloudflare Pages、Netlify、Synology Web Station 或任意靜態檔案服務。網站使用 Hash 路由，不需要伺服器 rewrite 規則。Leaflet 與 OpenStreetMap 圖磚需要網路；失敗時仍保留 SVG 路線圖與文字資料。
+
+本版本庫的 `main` 每次推送後會執行 `.github/workflows/pages.yml`：先以 Node.js 22 執行完整測試，通過後再部署 GitHub Pages。也可從 GitHub Actions 頁面手動執行相同流程。
 
 ## 已知限制
 

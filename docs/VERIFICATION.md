@@ -51,3 +51,14 @@
 7. 全部路線被本機標記刪除時首頁會失敗。
 
 最終審查未發現剩餘 Critical 或 Important 程式碼缺陷。上述未完成項目維持明確標記，不作未經驗證的功能宣稱。
+
+## GitHub Pages 部署
+
+部署工作流程已加入版本庫，具備：
+
+- `main` 推送與手動執行觸發。
+- Node.js 22 完整測試閘門。
+- GitHub Pages 所需的最小 `contents`、`pages` 與 `id-token` 權限。
+- 官方 Pages artifact 與 deployment actions。
+
+正式 workflow run、部署 commit、公開網址及 HTTP 資源檢查結果，僅在 GitHub 實際部署成功後補入。
