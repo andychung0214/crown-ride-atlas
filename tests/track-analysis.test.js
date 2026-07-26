@@ -189,3 +189,24 @@ test("無效座標會排除且非有限海拔正規化為零", () => {
   assert.equal(result.summary.maximumElevationM, 0);
   assert.deepEqual(TrackAnalysis.analyzeCoordinates([]).climbs, []);
 });
+
+test("本機 GPX 水合後提供同一份完整海拔摘要與主要爬坡，且不修改凍結輸入", () => {
+  const localTrack = Object.freeze({
+    routeId: "local-1",
+    coordinates: Object.freeze([
+      Object.freeze({ lat: 25, lng: 121, ele: 100 }),
+      Object.freeze({ lat: 25.0045, lng: 121, ele: 140 }),
+      Object.freeze({ lat: 25.009, lng: 121, ele: 110 })
+    ])
+  });
+
+  const hydrated = TrackAnalysis.hydrateTrack(localTrack);
+
+  assert.notEqual(hydrated, localTrack);
+  assert.equal(hydrated.coordinates[0].distanceKm, 0);
+  assert.ok(hydrated.summary.elevationLossM > 20);
+  assert.ok(hydrated.summary.maximumSustainedGradePct > 5);
+  assert.equal(hydrated.climbs.length, 1);
+  assert.equal(Object.hasOwn(localTrack.coordinates[0], "smoothedEle"), false);
+  assert.equal(TrackAnalysis.hydrateTrack(localTrack), hydrated);
+});

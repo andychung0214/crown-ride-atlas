@@ -41,4 +41,6 @@ test("路線摘要在四欄與平板三欄版面都收齊每列邊界", () => {
 
   assert.match(css, /\.route-facts \.route-stat:nth-child\(4n\)/);
   assert.match(css, /\.route-facts \.route-stat:nth-child\(3n\)/);
+  assert.match(css, /\.route-facts \.route-stat:nth-child\(n \+ 5\)[\s\S]*?border-top:\s*1px solid var\(--color-rule\)/);
+  assert.match(css, /@media \(max-width: 56rem\)[\s\S]*?\.route-facts \.route-stat:nth-child\(4n\)[\s\S]*?border-right:\s*1px solid var\(--color-rule\)/);
 });

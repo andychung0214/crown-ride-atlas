@@ -336,6 +336,10 @@
   border-right: 0;
 }
 
+.route-facts .route-stat:nth-child(n + 5) {
+  border-top: 1px solid var(--color-rule);
+}
+
 .route-map-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(15rem, 20rem);
@@ -532,6 +536,10 @@
 
   .route-facts .route-stat:nth-child(3n) {
     border-right: 0;
+  }
+
+  .route-facts .route-stat:nth-child(4n) {
+    border-right: 1px solid var(--color-rule);
   }
 
   .route-facts .route-stat:nth-child(n + 4) {

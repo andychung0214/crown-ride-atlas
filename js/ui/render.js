@@ -1,7 +1,10 @@
 "use strict";
 
 (function (root, factory) {
-  const api = factory();
+  const TrackAnalysis = typeof module === "object" && module.exports
+    ? require("../core/track-analysis.js")
+    : root.CrownRideAtlas.TrackAnalysis;
+  const api = factory(TrackAnalysis);
 
   if (typeof module === "object" && module.exports) {
     module.exports = api;
@@ -12,7 +15,7 @@
       Render: api
     });
   }
-})(typeof window !== "undefined" ? window : globalThis, function () {
+})(typeof window !== "undefined" ? window : globalThis, function (TrackAnalysis) {
   const difficultyNames = ["", "入門", "輕鬆", "進階", "困難", "極限"];
   const themeLabels = {
     yellow: "黃衫",
@@ -49,16 +52,19 @@
   }
 
   function profileDetails(track, elevation) {
-    const summary = track && track.summary ? track.summary : {};
+    const hydratedTrack = TrackAnalysis && typeof TrackAnalysis.hydrateTrack === "function"
+      ? TrackAnalysis.hydrateTrack(track)
+      : track;
+    const summary = hydratedTrack && hydratedTrack.summary ? hydratedTrack.summary : {};
     const number = (value, fallback) => Number.isFinite(value) ? value : fallback;
     const maximum = number(summary.maximumElevationM, elevation.maximum);
     return {
-      minimumElevationM: number(summary.minimumElevationM, elevation.available ? Math.min(...track.coordinates.map(point => point.ele).filter(Number.isFinite)) : null),
+      minimumElevationM: number(summary.minimumElevationM, elevation.available && hydratedTrack && Array.isArray(hydratedTrack.coordinates) ? Math.min(...hydratedTrack.coordinates.map(point => point.ele).filter(Number.isFinite)) : null),
       maximumElevationM: maximum,
       elevationLossM: number(summary.elevationLossM, null),
       maximumSustainedGradePct: number(summary.maximumSustainedGradePct, null),
-      climbs: Array.isArray(track && track.climbs) ? track.climbs : [],
-      source: track && track.source ? track.source : null
+      climbs: Array.isArray(hydratedTrack && hydratedTrack.climbs) ? hydratedTrack.climbs : [],
+      source: hydratedTrack && hydratedTrack.source ? hydratedTrack.source : null
     };
   }
 
@@ -67,7 +73,10 @@
     if (!source) return "本機 GPX 上傳資料；海拔與坡度依匯入軌跡分析。";
     const parts = [];
     if (source.router || source.profile) parts.push([source.router, source.profile].filter(Boolean).join(" · "));
-    if (source.elevation) parts.push(`海拔：${source.elevation}`);
+    if (source.elevation) {
+      parts.push(`海拔：${source.elevation}`);
+      if (String(source.elevation).toUpperCase() === "SRTM") parts.push("SRTM 適合路線規劃，非測量級資料");
+    }
     if (typeof source.generatedAt === "string" && source.generatedAt) parts.push(`產生：${source.generatedAt.slice(0, 10)}`);
     if (source.reviewStatus === "approved") parts.push(`人工審核完成${source.reviewedAt ? `：${source.reviewedAt.slice(0, 10)}` : ""}`);
     else if (source.reviewStatus) parts.push(`審核狀態：${source.reviewStatus}`);

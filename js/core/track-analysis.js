@@ -20,6 +20,7 @@
   const MIN_CLIMB_DISTANCE_M = 500;
   const MIN_CLIMB_GAIN_M = 30;
   const CLIMB_DESCENT_TOLERANCE_M = 10;
+  const hydratedTracks = new WeakMap();
 
   function minimumOption(preferredValue, legacyValue, minimum) {
     const value = Number.isFinite(preferredValue) ? preferredValue : legacyValue;
@@ -258,9 +259,58 @@
     };
   }
 
+  function hasCompleteAnalysis(track) {
+    const summary = track && track.summary;
+    return summary
+      && Number.isFinite(summary.elevationLossM)
+      && Number.isFinite(summary.maximumSustainedGradePct)
+      && Array.isArray(track.climbs);
+  }
+
+  function hasCoordinatePresentation(track) {
+    const coordinates = track && track.coordinates;
+    return Array.isArray(coordinates)
+      && coordinates.every(point => Number.isFinite(point.distanceKm)
+        && Number.isFinite(point.gradePct));
+  }
+
+  function isAnalyzableTrack(track) {
+    return track && typeof track === "object"
+      && Array.isArray(track.coordinates)
+      && track.coordinates.length >= 2
+      && track.coordinates.every(point => Geo.isCoordinate(point) && Number.isFinite(point.ele));
+  }
+
+  function hydrateTrack(track) {
+    if (!track || typeof track !== "object") return track;
+    const cached = hydratedTracks.get(track);
+    if (cached) return cached;
+    if (!isAnalyzableTrack(track)) {
+      hydratedTracks.set(track, track);
+      return track;
+    }
+    const analyzer = this && typeof this.analyzeCoordinates === "function"
+      ? this.analyzeCoordinates
+      : analyzeCoordinates;
+    const hasSummary = hasCompleteAnalysis(track);
+    const keepsCoordinates = hasCoordinatePresentation(track);
+    const analysis = hasSummary ? null : analyzer(track.coordinates);
+    const hydrated = Object.assign({}, track, {
+      coordinates: keepsCoordinates || !analysis
+        ? track.coordinates.map(point => Object.assign({}, point))
+        : analysis.coordinates,
+      summary: hasSummary ? Object.assign({}, track.summary) : analysis.summary,
+      climbs: hasSummary ? track.climbs.slice() : analysis.climbs
+    });
+    hydratedTracks.set(track, hydrated);
+    hydratedTracks.set(hydrated, hydrated);
+    return hydrated;
+  }
+
   return {
     analyzeCoordinates,
     detectClimbs,
-    gradeBand
+    gradeBand,
+    hydrateTrack
   };
 });

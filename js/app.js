@@ -195,7 +195,10 @@
         if (!hasUsableCoordinates(track && track.coordinates)) {
           throw new Error("路線軌跡至少需要兩個有效座標。");
         }
-        state.trackState = { routeId: requestedRouteId, status: "ready", track, error: null };
+        const hydratedTrack = app.TrackAnalysis && typeof app.TrackAnalysis.hydrateTrack === "function"
+          ? app.TrackAnalysis.hydrateTrack(track)
+          : track;
+        state.trackState = { routeId: requestedRouteId, status: "ready", track: hydratedTrack, error: null };
         render();
       }).catch(error => {
         const selected = state.selectedRoute;
@@ -223,7 +226,9 @@
           state.trackState = {
             routeId: route.id,
             status: "ready",
-            track: { routeId: route.id, coordinates: route.coordinates },
+            track: app.TrackAnalysis && typeof app.TrackAnalysis.hydrateTrack === "function"
+              ? app.TrackAnalysis.hydrateTrack({ routeId: route.id, coordinates: route.coordinates })
+              : { routeId: route.id, coordinates: route.coordinates },
             error: null
           };
         }

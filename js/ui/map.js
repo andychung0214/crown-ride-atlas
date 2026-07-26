@@ -26,15 +26,10 @@
   }
 
   function profileCoordinates(track) {
-    const source = routeCoordinates(track);
-    const canAnalyze = TrackAnalysis && typeof TrackAnalysis.analyzeCoordinates === "function"
-      && source.length >= 2
-      && source.every(Geo.isCoordinate)
-      && source.every(point => Number.isFinite(point.ele))
-      && source.some(point => !Number.isFinite(point.gradePct));
-    if (canAnalyze) return TrackAnalysis.analyzeCoordinates(source).coordinates.map(point => Object.assign({}, point, {
-      displayEle: Number.isFinite(point.smoothedEle) ? point.smoothedEle : point.ele
-    }));
+    const hydrated = TrackAnalysis && typeof TrackAnalysis.hydrateTrack === "function"
+      ? TrackAnalysis.hydrateTrack(track)
+      : track;
+    const source = routeCoordinates(hydrated);
     let distanceKm = 0;
     let previous = null;
     return source.reduce((points, sourcePoint) => {
@@ -317,7 +312,11 @@
 
   function formatProfileReadout(point) {
     const grade = Number(point && point.gradePct);
-    return `${Number(point.distanceKm || 0).toFixed(1)} km · ${Math.round(Number(point.displayEle) || Number(point.ele) || 0)} m · ${Number.isFinite(grade) ? grade.toFixed(1) : "0.0"}%`;
+    const distanceKm = Number.isFinite(point && point.distanceKm) ? point.distanceKm : 0;
+    const elevation = Number.isFinite(point && point.displayEle)
+      ? point.displayEle
+      : Number.isFinite(point && point.ele) ? point.ele : 0;
+    return `${distanceKm.toFixed(1)} km · ${Math.round(elevation)} m · ${Number.isFinite(grade) ? grade.toFixed(1) : "0.0"}%`;
   }
 
   function profileDistanceForClientX(model, clientX, rect) {
@@ -353,7 +352,10 @@
   }
 
   function mountElevation(element, route, track) {
-    const activeTrack = track || route;
+    const sourceTrack = track || route;
+    const activeTrack = TrackAnalysis && typeof TrackAnalysis.hydrateTrack === "function"
+      ? TrackAnalysis.hydrateTrack(sourceTrack)
+      : sourceTrack;
     const documentRef = element.ownerDocument;
     const model = buildElevationModel(activeTrack, PROFILE_WIDTH, PROFILE_HEIGHT, PROFILE_PADDING);
     if (!model.points.length) {

@@ -200,6 +200,26 @@ test("路線資料來源只呈現實際提供的 BRouter、SRTM 與審核欄位"
   assert.match(Render.profileSourceText({ source: null }), /本機 GPX/);
 });
 
+test("本機 GPX 詳情會使用水合後的下降、持續坡度與爬坡資料", () => {
+  const details = Render.profileDetails({
+    coordinates: [
+      { lat: 25, lng: 121, ele: 100 },
+      { lat: 25.0045, lng: 121, ele: 140 },
+      { lat: 25.009, lng: 121, ele: 110 }
+    ]
+  }, { available: true, maximum: 140 });
+
+  assert.ok(details.elevationLossM > 20);
+  assert.ok(details.maximumSustainedGradePct > 5);
+  assert.equal(details.climbs.length, 1);
+});
+
+test("只有 SRTM 海拔來源會顯示規劃用途與非測量級限制", () => {
+  assert.match(Render.profileSourceText({ source: { elevation: "SRTM" } }), /適合路線規劃，非測量級資料/);
+  assert.doesNotMatch(Render.profileSourceText({ source: null }), /非測量級資料/);
+  assert.doesNotMatch(Render.profileSourceText({ source: { elevation: "GPS" } }), /非測量級資料/);
+});
+
 for (const coordinates of [[], [{ lat: 25, lng: 121, ele: 10 }]]) {
   test(`不足兩個座標點的 ready 軌跡會改為可重試錯誤（${coordinates.length} 點）`, () => {
     let retried = null;

@@ -291,6 +291,42 @@ test("海拔圖以 pointer、觸控與左右鍵同步里程戳記", () => {
   assert.equal(svg.attributes.tabindex, "0");
 });
 
+test("本機 GPX 的海拔圖在重複 pointer 互動期間只分析一次，並保留平滑後零海拔", () => {
+  const TrackAnalysis = require("../js/core/track-analysis.js");
+  const originalAnalyze = TrackAnalysis.analyzeCoordinates;
+  let analysisCount = 0;
+  TrackAnalysis.analyzeCoordinates = points => {
+    analysisCount += 1;
+    return {
+      coordinates: points.map((point, index) => Object.assign({}, point, {
+        distanceKm: index,
+        gradePct: index ? 4 : 0,
+        smoothedEle: index ? 10 : 0
+      })),
+      summary: { minimumElevationM: 0, maximumElevationM: 10, elevationLossM: 0, maximumSustainedGradePct: 4 },
+      climbs: []
+    };
+  };
+  try {
+    const documentRef = fakeDocument();
+    const element = fakeNode("div", documentRef);
+    MapView.mountElevation(element, {
+      id: "local-1",
+      name: "本機 GPX",
+      coordinates: [{ lat: 25, lng: 121, ele: 99 }, { lat: 25.01, lng: 121, ele: 10 }]
+    });
+    const [svg, tooltip] = element.children;
+    svg.handlers.pointermove({ clientX: 0 });
+    svg.handlers.pointermove({ clientX: 400 });
+    svg.handlers.pointermove({ clientX: 800 });
+
+    assert.equal(analysisCount, 1);
+    assert.match(tooltip.textContent, /0 m/);
+  } finally {
+    TrackAnalysis.analyzeCoordinates = originalAnalyze;
+  }
+});
+
 test("海拔圖將 pointer 與觸控 X 座標限制在繪圖區左右邊界", () => {
   const model = MapView.buildElevationModel({
     coordinates: [{ lat: 25, lng: 121, ele: 10, distanceKm: 0, gradePct: 0 }, { lat: 25.01, lng: 121.01, ele: 20, distanceKm: 10, gradePct: 1 }]
