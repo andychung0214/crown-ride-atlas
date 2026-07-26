@@ -35,3 +35,10 @@ test("海拔提示與坡度色帶提供可觸控且可辨識的編輯式標記",
   assert.match(css, /\.elevation-chart__segment--moderate/);
   assert.match(css, /\.elevation-chart__tooltip/);
 });
+
+test("路線摘要在四欄與平板三欄版面都收齊每列邊界", () => {
+  const css = fs.readFileSync(path.join(__dirname, "..", "css", "layout.css"), "utf8");
+
+  assert.match(css, /\.route-facts \.route-stat:nth-child\(4n\)/);
+  assert.match(css, /\.route-facts \.route-stat:nth-child\(3n\)/);
+});

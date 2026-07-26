@@ -519,6 +519,10 @@
   fill: #c83e36;
 }
 
+.route-map__point--start-finish {
+  fill: #1a5f8a;
+}
+
 .route-map__point--waypoint {
   fill: var(--color-paper-raised);
   stroke: var(--color-ink);
@@ -529,6 +533,20 @@
   fill: var(--color-ink);
   stroke: var(--color-paper-raised);
   stroke-width: 1.5;
+}
+
+.route-map__leaflet-direction {
+  width: 1rem;
+  height: 1rem;
+  color: var(--color-ink);
+  font-size: 0.9rem;
+  line-height: 1rem;
+  text-align: center;
+}
+
+.route-map__leaflet-direction span {
+  display: block;
+  text-shadow: 0 0 2px var(--color-paper-raised);
 }
 
 .route-map__fallback-note {

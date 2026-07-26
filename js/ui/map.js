@@ -27,6 +27,14 @@
 
   function profileCoordinates(track) {
     const source = routeCoordinates(track);
+    const canAnalyze = TrackAnalysis && typeof TrackAnalysis.analyzeCoordinates === "function"
+      && source.length >= 2
+      && source.every(Geo.isCoordinate)
+      && source.every(point => Number.isFinite(point.ele))
+      && source.some(point => !Number.isFinite(point.gradePct));
+    if (canAnalyze) return TrackAnalysis.analyzeCoordinates(source).coordinates.map(point => Object.assign({}, point, {
+      displayEle: Number.isFinite(point.smoothedEle) ? point.smoothedEle : point.ele
+    }));
     let distanceKm = 0;
     let previous = null;
     return source.reduce((points, sourcePoint) => {
@@ -35,7 +43,10 @@
       if (previous && hasCoordinates && Geo.isCoordinate(previous)) distanceKm += Geo.haversineKm(previous, sourcePoint);
       else if (points.length && !Number.isFinite(sourcePoint.distanceKm)) distanceKm += 1;
       const pointDistance = Number.isFinite(sourcePoint.distanceKm) ? sourcePoint.distanceKm : distanceKm;
-      points.push(Object.assign({}, sourcePoint, { distanceKm: pointDistance }));
+      points.push(Object.assign({}, sourcePoint, {
+        distanceKm: pointDistance,
+        displayEle: Number.isFinite(sourcePoint.smoothedEle) ? sourcePoint.smoothedEle : sourcePoint.ele
+      }));
       previous = hasCoordinates ? sourcePoint : null;
       return points;
     }, []);
@@ -60,7 +71,7 @@
     const safePadding = normalizePadding(padding, safeWidth, safeHeight);
     const coordinates = profileCoordinates(track);
     if (!coordinates.length) return { points: [], width: safeWidth, height: safeHeight, padding: safePadding };
-    const elevations = coordinates.map(point => point.ele);
+    const elevations = coordinates.map(point => point.displayEle);
     const minimumElevationM = Math.min(...elevations);
     const maximumElevationM = Math.max(...elevations);
     const maximumDistanceKm = Math.max(0, ...coordinates.map(point => point.distanceKm));
@@ -81,7 +92,7 @@
           : safePadding.left + point.distanceKm / maximumDistanceKm * drawingWidth),
         y: round(elevationSpan === 0
           ? safePadding.top + drawingHeight / 2
-          : safePadding.top + (maximumElevationM - point.ele) / elevationSpan * drawingHeight)
+          : safePadding.top + (maximumElevationM - point.displayEle) / elevationSpan * drawingHeight)
       }))
     };
   }
@@ -104,7 +115,7 @@
     if (grade <= 3) return "moderate";
     if (grade <= 6) return "hard";
     if (grade <= 9) return "steep";
-    if (grade <= 12) return "severe";
+    if (grade < 12) return "severe";
     return "extreme";
   }
 
@@ -132,32 +143,55 @@
     ));
   }
 
+  function bearingDegrees(start, finish) {
+    if (!Geo.isCoordinate(start) || !Geo.isCoordinate(finish)) return 0;
+    const toRadians = value => value * Math.PI / 180;
+    const latitudeA = toRadians(start.lat);
+    const latitudeB = toRadians(finish.lat);
+    const longitudeDelta = toRadians(finish.lng - start.lng);
+    const y = Math.sin(longitudeDelta) * Math.cos(latitudeB);
+    const x = Math.cos(latitudeA) * Math.sin(latitudeB)
+      - Math.sin(latitudeA) * Math.cos(latitudeB) * Math.cos(longitudeDelta);
+    return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+  }
+
   function selectDirectionMarkers(coordinates, intervalKm) {
-    const points = (Array.isArray(coordinates) ? coordinates : []).filter(Geo.isCoordinate);
-    if (points.length < 2) return points;
+    const points = (Array.isArray(coordinates) ? coordinates : [])
+      .map((point, index) => ({ point, index }))
+      .filter(entry => Geo.isCoordinate(entry.point));
+    if (points.length < 2) return points.map(entry => entry.point);
     const interval = Math.max(0.1, Number(intervalKm) || 2);
-    const markers = [points[0]];
-    let markerDistance = Number(points[0].distanceKm) || 0;
-    points.slice(1, -1).forEach(point => {
-      const distanceKm = Number(point.distanceKm);
+    const markerWithHeading = (entry, position) => Object.assign({}, entry.point, {
+      headingDeg: bearingDegrees(points[Math.max(0, position - 1)].point, points[Math.min(points.length - 1, position + 1)].point)
+    });
+    const markers = [points[0].point];
+    let markerDistance = Number(points[0].point.distanceKm) || 0;
+    points.slice(1, -1).forEach((entry, offset) => {
+      const distanceKm = Number(entry.point.distanceKm);
       if (Number.isFinite(distanceKm) && distanceKm - markerDistance >= interval) {
-        markers.push(point);
+        markers.push(markerWithHeading(entry, offset + 1));
         markerDistance = distanceKm;
       }
     });
-    markers.push(points[points.length - 1]);
+    markers.push(points[points.length - 1].point);
     return markers;
   }
 
   function buildRouteMarkers(route) {
     const coordinates = routeCoordinates(route).filter(Geo.isCoordinate);
     if (!coordinates.length) return [];
-    const markers = [
-      Object.assign({ kind: "start", label: "起點" }, coordinates[0]),
-      Object.assign({ kind: "finish", label: "終點" }, coordinates[coordinates.length - 1])
-    ];
-    (Array.isArray(route && route.waypoints) ? route.waypoints : []).forEach(waypoint => {
-      if (!Geo.isCoordinate(waypoint)) return;
+    const waypoints = (Array.isArray(route && route.waypoints) ? route.waypoints : []).filter(Geo.isCoordinate);
+    const startWaypoint = waypoints.find(waypoint => waypoint.role === "start");
+    const finishWaypoint = waypoints.find(waypoint => waypoint.role === "finish");
+    const isLoop = Geo.haversineKm(coordinates[0], coordinates[coordinates.length - 1]) < 0.02;
+    const markers = isLoop
+      ? [Object.assign({ kind: "start-finish", label: `${startWaypoint && startWaypoint.name || "起點"}／${finishWaypoint && finishWaypoint.name || "終點"}` }, coordinates[0])]
+      : [
+        Object.assign({ kind: "start", label: startWaypoint && startWaypoint.name || "起點" }, coordinates[0]),
+        Object.assign({ kind: "finish", label: finishWaypoint && finishWaypoint.name || "終點" }, coordinates[coordinates.length - 1])
+      ];
+    waypoints.forEach(waypoint => {
+      if (waypoint.role === "start" || waypoint.role === "finish") return;
       markers.push({ kind: "waypoint", label: waypoint.name || "途經點", lat: waypoint.lat, lng: waypoint.lng });
     });
     return markers;
@@ -207,7 +241,7 @@
     selectDirectionMarkers(coordinates, 2).slice(1, -1).forEach(marker => {
       const point = projectMapPoint(markerCoordinates, marker, width, height, padding);
       svg.append(svgElement(svg.ownerDocument, "path", {
-        class: "route-map__direction", d: `M ${round(point.x - 5)} ${round(point.y - 5)} L ${round(point.x + 6)} ${round(point.y)} L ${round(point.x - 5)} ${round(point.y + 5)} Z`
+        class: "route-map__direction", d: `M ${round(point.x)} ${round(point.y - 6)} L ${round(point.x + 5)} ${round(point.y + 5)} L ${round(point.x - 5)} ${round(point.y + 5)} Z`, transform: `rotate(${round(marker.headingDeg || 0)} ${round(point.x)} ${round(point.y)})`
       }));
     });
   }
@@ -234,13 +268,18 @@
 
   function addLeafletMarkers(leaflet, map, route) {
     if (typeof leaflet.circleMarker !== "function") return;
-    const styles = { start: { color: "#19864a" }, finish: { color: "#c83e36" }, waypoint: { color: "#24271f" } };
+    const styles = { start: { color: "#19864a" }, finish: { color: "#c83e36" }, "start-finish": { color: "#1a5f8a" }, waypoint: { color: "#24271f" } };
     buildRouteMarkers(route).forEach(marker => {
       const layer = leaflet.circleMarker([marker.lat, marker.lng], Object.assign({ radius: marker.kind === "waypoint" ? 5 : 8, weight: 2, fillOpacity: 1 }, styles[marker.kind])).addTo(map);
       if (typeof layer.bindTooltip === "function") layer.bindTooltip(marker.label, { direction: "top" });
     });
     selectDirectionMarkers(routeCoordinates(route), 2).slice(1, -1).forEach(marker => {
-      leaflet.circleMarker([marker.lat, marker.lng], { className: "route-map__direction", radius: 4, weight: 1, color: "#24271f", fillOpacity: 0.9 }).addTo(map);
+      if (typeof leaflet.divIcon === "function" && typeof leaflet.marker === "function") {
+        const icon = leaflet.divIcon({ className: "route-map__leaflet-direction", html: `<span style="transform:rotate(${round(marker.headingDeg || 0)}deg)">▲</span>` });
+        leaflet.marker([marker.lat, marker.lng], { icon, interactive: false }).addTo(map);
+      } else {
+        leaflet.circleMarker([marker.lat, marker.lng], { className: "route-map__direction", radius: 4, weight: 1, color: "#24271f", fillOpacity: 0.9 }).addTo(map);
+      }
     });
   }
 
@@ -249,7 +288,8 @@
     const points = routeCoordinates(route).map(point => [point.lat, point.lng]);
     const map = leaflet.map(element, { scrollWheelZoom: false, zoomControl: true });
     const tiles = leaflet.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap contributors" });
-    const line = leaflet.polyline(points, { color: browserWindow.getComputedStyle(element).getPropertyValue("--color-accent").trim() || "#F5D547", weight: 5, opacity: 0.95 }).addTo(map);
+    leaflet.polyline(points, { color: "#f7f3e9", weight: 11, opacity: 0.94, lineCap: "round", lineJoin: "round" }).addTo(map);
+    const line = leaflet.polyline(points, { color: browserWindow.getComputedStyle(element).getPropertyValue("--color-accent").trim() || "#F5D547", weight: 5, opacity: 0.95, lineCap: "round", lineJoin: "round" }).addTo(map);
     map.fitBounds(line.getBounds(), { padding: [24, 24] });
     addLeafletMarkers(leaflet, map, route);
     element.dataset.mapMode = "leaflet";
@@ -277,7 +317,16 @@
 
   function formatProfileReadout(point) {
     const grade = Number(point && point.gradePct);
-    return `${Number(point.distanceKm || 0).toFixed(1)} km · ${Math.round(Number(point.ele) || 0)} m · ${Number.isFinite(grade) ? grade.toFixed(1) : "0.0"}%`;
+    return `${Number(point.distanceKm || 0).toFixed(1)} km · ${Math.round(Number(point.displayEle) || Number(point.ele) || 0)} m · ${Number.isFinite(grade) ? grade.toFixed(1) : "0.0"}%`;
+  }
+
+  function profileDistanceForClientX(model, clientX, rect) {
+    const width = Number(rect && rect.width) || model.width;
+    const offset = Number(clientX) - (Number(rect && rect.left) || 0);
+    const svgX = Math.max(0, Math.min(model.width, offset / width * model.width));
+    const plotWidth = model.width - model.padding.left - model.padding.right;
+    const clampedX = Math.max(model.padding.left, Math.min(model.width - model.padding.right, svgX));
+    return plotWidth > 0 ? (clampedX - model.padding.left) / plotWidth * model.maximumDistanceKm : 0;
   }
 
   function appendProfileTicks(svg, model) {
@@ -342,12 +391,12 @@
       const rect = typeof svg.getBoundingClientRect === "function" ? svg.getBoundingClientRect() : { left: 0, width: PROFILE_WIDTH };
       const touch = event.touches && event.touches[0];
       const clientX = touch ? touch.clientX : event.clientX;
-      const ratio = Math.max(0, Math.min(1, ((Number.isFinite(clientX) ? clientX : 0) - rect.left) / (rect.width || PROFILE_WIDTH)));
-      return findNearestProfilePoint(activeTrack, model.maximumDistanceKm * ratio);
+      return findNearestProfilePoint(activeTrack, profileDistanceForClientX(model, Number.isFinite(clientX) ? clientX : 0, rect));
     };
     if (typeof svg.addEventListener === "function") {
       svg.addEventListener("pointermove", event => setActivePoint(pointForEvent(event)));
       svg.addEventListener("touchstart", event => setActivePoint(pointForEvent(event)), { passive: true });
+      svg.addEventListener("focus", () => setActivePoint(model.points[activeIndex]));
       svg.addEventListener("keydown", event => {
         if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
         event.preventDefault();
@@ -361,5 +410,5 @@
     element.replaceChildren(svg, tooltip, legend);
   }
 
-  return { buildSvgPath, buildElevationPath, buildElevationModel, buildProfileSegments, findNearestProfilePoint, selectDirectionMarkers, buildRouteMarkers, mount, mountElevation };
+  return { buildSvgPath, buildElevationPath, buildElevationModel, buildProfileSegments, findNearestProfilePoint, selectDirectionMarkers, buildRouteMarkers, profileDistanceForClientX, mount, mountElevation };
 });

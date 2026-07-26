@@ -176,9 +176,28 @@ test("真實軌跡就緒時顯示詳細海拔、來源提醒與主要爬坡", ()
   assert.match(texts, /最低海拔 M/);
   assert.match(texts, /總下降 M/);
   assert.match(texts, /最大持續坡度/);
-  assert.match(texts, /SRTM 地形模型/);
+  assert.match(texts, /海拔：SRTM/);
   assert.match(texts, /主要爬坡/);
   assert.match(texts, /4\.2–8\.8 km/);
+});
+
+test("路線資料來源只呈現實際提供的 BRouter、SRTM 與審核欄位", () => {
+  const details = Render.profileDetails({
+    coordinates: [{ ele: 10 }],
+    source: {
+      router: "BRouter",
+      profile: "fastbike",
+      elevation: "SRTM",
+      generatedAt: "2026-07-26T00:00:00.000Z",
+      reviewedAt: "2026-07-27T00:00:00.000Z",
+      reviewStatus: "approved"
+    }
+  }, { available: true, maximum: 10 });
+
+  assert.match(Render.profileSourceText(details), /BRouter · fastbike/);
+  assert.match(Render.profileSourceText(details), /SRTM/);
+  assert.match(Render.profileSourceText(details), /人工審核完成/);
+  assert.match(Render.profileSourceText({ source: null }), /本機 GPX/);
 });
 
 for (const coordinates of [[], [{ lat: 25, lng: 121, ele: 10 }]]) {

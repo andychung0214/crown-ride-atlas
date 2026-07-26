@@ -62,6 +62,18 @@
     };
   }
 
+  function profileSourceText(details) {
+    const source = details && details.source;
+    if (!source) return "本機 GPX 上傳資料；海拔與坡度依匯入軌跡分析。";
+    const parts = [];
+    if (source.router || source.profile) parts.push([source.router, source.profile].filter(Boolean).join(" · "));
+    if (source.elevation) parts.push(`海拔：${source.elevation}`);
+    if (typeof source.generatedAt === "string" && source.generatedAt) parts.push(`產生：${source.generatedAt.slice(0, 10)}`);
+    if (source.reviewStatus === "approved") parts.push(`人工審核完成${source.reviewedAt ? `：${source.reviewedAt.slice(0, 10)}` : ""}`);
+    else if (source.reviewStatus) parts.push(`審核狀態：${source.reviewStatus}`);
+    return parts.length ? parts.join("；") : "路線來源未提供完整中繼資料。";
+  }
+
   function hasUsableCoordinates(coordinates) {
     return Array.isArray(coordinates)
       && coordinates.length >= 2
@@ -649,7 +661,7 @@
           trackReady
             ? node(documentRef, "p", {
               className: "elevation-chart__source",
-              text: "海拔取自 SRTM 地形模型，適合路線規劃，並非測量級資料。道路與管制可能變動，請以現場標示為準。"
+              text: `${profileSourceText(profile)} 道路與管制可能變動，請以現場標示為準。`
             })
             : null,
           trackReady && profile && profile.climbs.length
@@ -835,6 +847,7 @@
     difficultyLabel,
     elevationSummary,
     profileDetails,
+    profileSourceText,
     routeArtEntries,
     selectFeaturedRoute,
     pageTitle,
