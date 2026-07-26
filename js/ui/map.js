@@ -25,6 +25,23 @@
     return Array.isArray(route && route.coordinates) ? route.coordinates : [];
   }
 
+  function isCompatibleProfileTrack(route, candidate) {
+    if (!candidate) return false;
+    const candidateId = candidate.routeId;
+    if (route && route.id && candidateId && route.id !== candidateId) return false;
+    if (route && route.trackRef && candidateId && route.trackRef !== candidateId) return false;
+    return true;
+  }
+
+  function profileTrackFor(route, explicitTrack) {
+    const embeddedTrack = route && route.track;
+    for (const candidate of [explicitTrack, embeddedTrack]) {
+      if (candidate && isCompatibleProfileTrack(route, candidate)) return candidate;
+    }
+    if (embeddedTrack) return null;
+    return route;
+  }
+
   function profileCoordinates(track) {
     const hydrated = TrackAnalysis && typeof TrackAnalysis.hydrateTrack === "function"
       ? TrackAnalysis.hydrateTrack(track)
@@ -352,7 +369,7 @@
   }
 
   function mountElevation(element, route, track) {
-    const sourceTrack = track || (route && route.track) || route;
+    const sourceTrack = profileTrackFor(route, track);
     const activeTrack = TrackAnalysis && typeof TrackAnalysis.hydrateTrack === "function"
       ? TrackAnalysis.hydrateTrack(sourceTrack)
       : sourceTrack;

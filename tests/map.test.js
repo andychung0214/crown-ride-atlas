@@ -263,6 +263,97 @@ test("海拔圖無有效高度時顯示說明文字", () => {
   assert.equal(element.children[0].textContent, "未提供海拔資料");
 });
 
+test("legacy route.track 的 routeId 與路線不符時不使用陳舊軌跡", () => {
+  const documentRef = fakeDocument();
+  const element = fakeNode("div", documentRef);
+
+  MapView.mountElevation(element, {
+    id: "route-a",
+    name: "A 路線",
+    track: {
+      routeId: "route-b",
+      coordinates: [{ lat: 25, lng: 121, ele: 900 }, { lat: 25.01, lng: 121, ele: 950 }]
+    }
+  });
+
+  assert.equal(element.children[0].textContent, "未提供海拔資料");
+});
+
+test("不相容的顯式軌跡只會回退至路線自己的座標", () => {
+  const documentRef = fakeDocument();
+  const element = fakeNode("div", documentRef);
+  const route = {
+    id: "route-a",
+    name: "A 路線",
+    coordinates: [{ lat: 25, lng: 121, ele: 10, distanceKm: 0, gradePct: 0 }, { lat: 25.01, lng: 121, ele: 20, distanceKm: 1, gradePct: 5 }]
+  };
+
+  MapView.mountElevation(element, route, {
+    routeId: "route-b",
+    coordinates: [{ lat: 25, lng: 121, ele: 900 }, { lat: 25.01, lng: 121, ele: 950 }]
+  });
+  const [svg, tooltip] = element.children;
+  svg.handlers.focus({});
+
+  assert.match(tooltip.textContent, /10 m/);
+});
+
+test("相同 routeId 的顯式軌跡仍優先供海拔圖使用", () => {
+  const documentRef = fakeDocument();
+  const element = fakeNode("div", documentRef);
+  const route = {
+    id: "route-a",
+    name: "A 路線",
+    coordinates: [{ lat: 25, lng: 121, ele: 10, distanceKm: 0, gradePct: 0 }, { lat: 25.01, lng: 121, ele: 20, distanceKm: 1, gradePct: 5 }]
+  };
+
+  MapView.mountElevation(element, route, {
+    routeId: "route-a",
+    coordinates: [{ lat: 25, lng: 121, ele: 100, distanceKm: 0, gradePct: 0 }, { lat: 25.01, lng: 121, ele: 120, distanceKm: 1, gradePct: 5 }]
+  });
+  const [svg, tooltip] = element.children;
+  svg.handlers.focus({});
+
+  assert.match(tooltip.textContent, /100 m/);
+});
+
+test("顯式軌跡也必須符合 route trackRef", () => {
+  const documentRef = fakeDocument();
+  const element = fakeNode("div", documentRef);
+  const route = {
+    id: "route-a",
+    trackRef: "track-a",
+    name: "A 路線",
+    coordinates: [{ lat: 25, lng: 121, ele: 10, distanceKm: 0, gradePct: 0 }, { lat: 25.01, lng: 121, ele: 20, distanceKm: 1, gradePct: 5 }]
+  };
+
+  MapView.mountElevation(element, route, {
+    routeId: "route-a",
+    coordinates: [{ lat: 25, lng: 121, ele: 900 }, { lat: 25.01, lng: 121, ele: 950 }]
+  });
+  const [svg, tooltip] = element.children;
+  svg.handlers.focus({});
+
+  assert.match(tooltip.textContent, /10 m/);
+});
+
+test("沒有 routeId 的 legacy 軌跡仍可供相容路線呈現", () => {
+  const documentRef = fakeDocument();
+  const element = fakeNode("div", documentRef);
+
+  MapView.mountElevation(element, {
+    id: "route-a",
+    name: "A 路線",
+    track: {
+      coordinates: [{ lat: 25, lng: 121, ele: 100, distanceKm: 0, gradePct: 0 }, { lat: 25.01, lng: 121, ele: 120, distanceKm: 1, gradePct: 5 }]
+    }
+  });
+  const [svg, tooltip] = element.children;
+  svg.handlers.focus({});
+
+  assert.match(tooltip.textContent, /100 m/);
+});
+
 test("海拔圖以 pointer、觸控與左右鍵同步里程戳記", () => {
   const documentRef = fakeDocument();
   const element = fakeNode("div", documentRef);
