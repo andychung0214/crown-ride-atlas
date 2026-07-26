@@ -25,3 +25,22 @@ test("頁面標題依路由與內容產生", () => {
   );
   assert.equal(Render.pageTitle({ page: "not-found", params: {} }), "找不到頁面｜狂輪誌");
 });
+
+test("路線美學會略過已從本機移除的參考路線", () => {
+  const entries = Render.routeArtEntries(
+    [{ id: "art-1", routeId: "r1" }, { id: "art-2", routeId: "missing" }],
+    [{ id: "r1", name: "保留路線" }]
+  );
+
+  assert.deepEqual(entries, [
+    { art: { id: "art-1", routeId: "r1" }, route: { id: "r1", name: "保留路線" } }
+  ]);
+});
+
+test("缺少海拔資料時回傳可理解的說明", () => {
+  assert.deepEqual(Render.elevationSummary([{ lat: 25, lng: 121 }, { lat: 25.1, lng: 121.1 }]), {
+    available: false,
+    maximum: null,
+    label: "未提供海拔資料"
+  });
+});

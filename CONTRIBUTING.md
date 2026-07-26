@@ -39,4 +39,3 @@
 ```
 
 常用類型為 `feat`、`fix`、`docs`、`test`、`refactor`、`style` 與 `chore`。
-

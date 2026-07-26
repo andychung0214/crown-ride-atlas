@@ -82,4 +82,3 @@ npm test
 ## 授權
 
 程式碼採 [MIT License](LICENSE)。內建文字、展示軌跡與原創影像僅作專案示範；外部地圖資料依 OpenStreetMap 貢獻者授權與標示規範使用。
-

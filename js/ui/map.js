@@ -122,27 +122,40 @@
     return { destroy() {} };
   }
 
-  function mountLeaflet(element, route, leaflet) {
+  function mountLeaflet(element, route, leaflet, browserWindow) {
     element.replaceChildren();
     const points = route.coordinates.map(point => [point.lat, point.lng]);
     const map = leaflet.map(element, {
       scrollWheelZoom: false,
       zoomControl: true
     });
-    leaflet.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    const tiles = leaflet.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution: "&copy; OpenStreetMap contributors"
-    }).addTo(map);
+    });
     const line = leaflet.polyline(points, {
-      color: getComputedStyle(element).getPropertyValue("--color-accent").trim() || "#F5D547",
+      color: browserWindow.getComputedStyle(element).getPropertyValue("--color-accent").trim() || "#F5D547",
       weight: 5,
       opacity: 0.95
     }).addTo(map);
     map.fitBounds(line.getBounds(), { padding: [24, 24] });
     element.dataset.mapMode = "leaflet";
+    let active = true;
+    const handleTileError = () => {
+      if (!active) return;
+      active = false;
+      if (typeof tiles.off === "function") tiles.off("tileerror", handleTileError);
+      map.remove();
+      mountSvg(element, route);
+    };
+    if (typeof tiles.on === "function") tiles.on("tileerror", handleTileError);
+    tiles.addTo(map);
 
     return {
       destroy() {
+        if (!active) return;
+        active = false;
+        if (typeof tiles.off === "function") tiles.off("tileerror", handleTileError);
         map.remove();
       }
     };
@@ -159,7 +172,7 @@
       browserWindow.location.protocol !== "file:"
     ) {
       try {
-        return mountLeaflet(element, route, browserWindow.L);
+        return mountLeaflet(element, route, browserWindow.L, browserWindow);
       } catch (_error) {
         return mountSvg(element, route);
       }
@@ -170,16 +183,23 @@
 
   function mountElevation(element, route) {
     const documentRef = element.ownerDocument;
+    const pathData = buildElevationPath(route.coordinates, 900, 180, 18);
+    if (!pathData) {
+      const note = documentRef.createElement("p");
+      note.className = "elevation-chart__empty";
+      note.textContent = "未提供海拔資料";
+      element.replaceChildren(note);
+      return;
+    }
     const svg = svgElement(documentRef, "svg", {
       class: "elevation-chart__svg",
       viewBox: "0 0 900 180",
       role: "img",
       "aria-label": `${route.name}海拔剖面`
     });
-    const pathData = buildElevationPath(route.coordinates, 900, 180, 18);
     const area = svgElement(documentRef, "path", {
       class: "elevation-chart__area",
-      d: pathData ? `${pathData} L 882 172 L 18 172 Z` : ""
+      d: `${pathData} L 882 172 L 18 172 Z`
     });
     const line = svgElement(documentRef, "path", {
       class: "elevation-chart__line",
@@ -196,4 +216,3 @@
     mountElevation
   };
 });
-

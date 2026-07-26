@@ -92,8 +92,8 @@
 
 .theme-button {
   display: grid;
-  width: 2rem;
-  height: 2rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
   place-items: center;
   padding: 0;
   border: 0;
@@ -304,6 +304,7 @@
 }
 
 .route-card {
+  position: relative;
   overflow: hidden;
   box-shadow: none;
   transition:
@@ -351,6 +352,12 @@
 
 .route-card__title a {
   text-decoration: none;
+}
+
+.route-card__title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
 }
 
 .route-card__summary {
@@ -546,6 +553,15 @@
   stroke: var(--color-accent);
   stroke-width: 4;
   stroke-linejoin: round;
+}
+
+.elevation-chart__empty {
+  display: grid;
+  min-height: 9rem;
+  place-items: center;
+  margin: 0;
+  color: var(--color-ink-soft);
+  font-size: 0.88rem;
 }
 
 .note-card {

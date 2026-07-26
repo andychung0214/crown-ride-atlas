@@ -35,6 +35,7 @@
       point &&
       Number.isFinite(point.lat) &&
       Number.isFinite(point.lng) &&
+      Number.isFinite(point.ele) &&
       point.lat >= -90 &&
       point.lat <= 90 &&
       point.lng >= -180 &&
@@ -42,13 +43,39 @@
     );
   }
 
+  function isText(value) {
+    return typeof value === "string" && Boolean(value.trim());
+  }
+
+  function isTextList(value) {
+    return Array.isArray(value) && value.length > 0 && value.every(isText);
+  }
+
   function isValidRoute(route) {
     return Boolean(
       route &&
-      typeof route.id === "string" &&
-      route.id.trim() &&
-      typeof route.name === "string" &&
-      route.name.trim() &&
+      isText(route.id) &&
+      isText(route.slug) &&
+      isText(route.name) &&
+      isText(route.regionId) &&
+      isText(route.regionName) &&
+      isText(route.area) &&
+      isText(route.category) &&
+      isText(route.summary) &&
+      isText(route.story) &&
+      isText(route.thumbnail) &&
+      Number.isFinite(route.distanceKm) &&
+      route.distanceKm > 0 &&
+      Number.isFinite(route.elevationGainM) &&
+      route.elevationGainM >= 0 &&
+      Number.isInteger(route.difficulty) &&
+      route.difficulty >= 1 &&
+      route.difficulty <= 5 &&
+      Number.isFinite(route.durationMinutes) &&
+      route.durationMinutes > 0 &&
+      isTextList(route.tags) &&
+      isTextList(route.cautions) &&
+      isTextList(route.supplies) &&
       Array.isArray(route.coordinates) &&
       route.coordinates.length >= 2 &&
       route.coordinates.every(isCoordinate)
@@ -59,12 +86,20 @@
     return Boolean(route && typeof route.id === "string" && route.id.trim());
   }
 
-  function normalizeState(value) {
+  function normalizeState(value, builtInById) {
     if (!value || value.version !== VERSION) return emptyState();
+    const builtInMap = builtInById || new Map();
+    const overrides = Array.isArray(value.overrides) ? value.overrides : [];
     return {
       version: VERSION,
       additions: Array.isArray(value.additions) ? value.additions.filter(isValidRoute).map(clone) : [],
-      overrides: Array.isArray(value.overrides) ? value.overrides.filter(isValidOverride).map(clone) : [],
+      overrides: overrides
+        .filter(isValidOverride)
+        .filter(route => {
+          const base = builtInMap.get(route.id);
+          return Boolean(base && isValidRoute(Object.assign({}, base, route)));
+        })
+        .map(clone),
       deleted: Array.isArray(value.deleted)
         ? [...new Set(value.deleted.filter(id => typeof id === "string" && id.trim()))]
         : []
@@ -84,10 +119,10 @@
     return value;
   }
 
-  function readState(storage) {
+  function readState(storage, builtInById) {
     try {
       const raw = storage && storage.getItem(STORAGE_KEY);
-      return raw ? normalizeState(JSON.parse(raw)) : emptyState();
+      return raw ? normalizeState(JSON.parse(raw), builtInById) : emptyState();
     } catch (_error) {
       return emptyState();
     }
@@ -96,10 +131,11 @@
   function create(storage, builtInRoutes) {
     const builtIn = clone(Array.isArray(builtInRoutes) ? builtInRoutes : []);
     const builtInIds = new Set(builtIn.map(route => route.id));
-    let state = readState(storage);
+    const builtInById = new Map(builtIn.map(route => [route.id, route]));
+    let state = readState(storage, builtInById);
 
     function persist(nextState) {
-      const normalized = normalizeState(nextState);
+      const normalized = normalizeState(nextState, builtInById);
       try {
         if (!storage || typeof storage.setItem !== "function") {
           throw new Error("storage unavailable");
@@ -129,6 +165,9 @@
       }
       if (!Array.isArray(route.coordinates) || route.coordinates.length < 2 || !route.coordinates.every(isCoordinate)) {
         throw new Error("路線至少需要兩個有效座標。");
+      }
+      if (!isValidRoute(route)) {
+        throw new Error("路線資料不完整或格式不正確。");
       }
 
       const saved = clone(route);
@@ -180,7 +219,12 @@
       const additions = Array.isArray(backup.additions) ? backup.additions : [];
       const overrides = Array.isArray(backup.overrides) ? backup.overrides : [];
       const validAdditions = additions.filter(isValidRoute);
-      const validOverrides = overrides.filter(isValidOverride);
+      const validOverrides = overrides
+        .filter(isValidOverride)
+        .filter(route => {
+          const base = builtInById.get(route.id);
+          return Boolean(base && isValidRoute(Object.assign({}, base, route)));
+        });
       const invalid = additions.length - validAdditions.length + overrides.length - validOverrides.length;
       const currentIds = new Set(list().map(route => route.id));
       const conflicts = validAdditions.concat(validOverrides).filter(route => currentIds.has(route.id)).length;
@@ -197,13 +241,18 @@
       const additions = Array.isArray(backup.additions) ? backup.additions : [];
       const overrides = Array.isArray(backup.overrides) ? backup.overrides : [];
       const validAdditions = additions.filter(isValidRoute);
-      const validOverrides = overrides.filter(isValidOverride);
+      const validOverrides = overrides
+        .filter(isValidOverride)
+        .filter(route => {
+          const base = builtInById.get(route.id);
+          return Boolean(base && isValidRoute(Object.assign({}, base, route)));
+        });
       const next = normalizeState({
         version: VERSION,
         additions: validAdditions,
         overrides: validOverrides,
         deleted: Array.isArray(backup.deleted) ? backup.deleted : []
-      });
+      }, builtInById);
       persist(next);
 
       return {

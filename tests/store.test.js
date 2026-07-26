@@ -25,6 +25,18 @@ const builtInRoute = {
   name: "原名稱",
   regionId: "taipei",
   regionName: "台北市",
+  area: "北部",
+  category: "山岳",
+  summary: "路線摘要",
+  story: "路線故事",
+  thumbnail: "assets/images/mountain-dawn.webp",
+  distanceKm: 30,
+  elevationGainM: 600,
+  difficulty: 3,
+  durationMinutes: 90,
+  tags: ["晨騎"],
+  cautions: ["留意路況"],
+  supplies: ["水"],
   coordinates: [{ lat: 25, lng: 121, ele: 10 }, { lat: 25.1, lng: 121.1, ele: 20 }]
 };
 
@@ -34,6 +46,18 @@ const localRoute = {
   name: "我的路線",
   regionId: "taipei",
   regionName: "台北市",
+  area: "北部",
+  category: "丘陵",
+  summary: "自訂摘要",
+  story: "自訂故事",
+  thumbnail: "assets/images/city-morning.webp",
+  distanceKm: 20,
+  elevationGainM: 300,
+  difficulty: 2,
+  durationMinutes: 60,
+  tags: ["自訂"],
+  cautions: ["留意路況"],
+  supplies: ["水"],
   coordinates: [{ lat: 25, lng: 121, ele: 10 }, { lat: 25.2, lng: 121.2, ele: 20 }]
 };
 
@@ -116,6 +140,20 @@ test("匯入會略過無效路線並回報數量", () => {
 
   assert.deepEqual(store.importJson(backup), { imported: 1, skipped: 1 });
   assert.deepEqual(store.list().map(route => route.id), ["r1", "local-1"]);
+});
+
+test("匯入會拒絕破壞完整資料契約的新增與覆寫", () => {
+  const store = Store.create(memoryStorage(), [builtInRoute]);
+  const backup = JSON.stringify({
+    version: 1,
+    additions: [{ ...localRoute, id: "broken", tags: null }],
+    overrides: [{ id: "r1", coordinates: "broken" }],
+    deleted: []
+  });
+
+  assert.deepEqual(store.previewImport(backup), { valid: 0, invalid: 2, conflicts: 0 });
+  assert.deepEqual(store.importJson(backup), { imported: 0, skipped: 2 });
+  assert.deepEqual(store.list(), [builtInRoute]);
 });
 
 test("拒絕未知版本或無法解析的備份", () => {

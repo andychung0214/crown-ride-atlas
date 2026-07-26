@@ -33,6 +33,28 @@
     return difficultyNames[Number(value)] || "未分級";
   }
 
+  function elevationSummary(coordinates) {
+    const elevations = (Array.isArray(coordinates) ? coordinates : [])
+      .map(point => Number(point && point.ele))
+      .filter(Number.isFinite);
+    if (elevations.length === 0) {
+      return { available: false, maximum: null, label: "未提供海拔資料" };
+    }
+    const maximum = Math.max(...elevations);
+    return {
+      available: true,
+      maximum,
+      label: `最高 ${maximum.toLocaleString("zh-Hant")} m`
+    };
+  }
+
+  function routeArtEntries(routeArt, routes) {
+    const routeById = new Map((Array.isArray(routes) ? routes : []).map(route => [route.id, route]));
+    return (Array.isArray(routeArt) ? routeArt : [])
+      .map(art => ({ art, route: routeById.get(art.routeId) }))
+      .filter(entry => Boolean(entry.route));
+  }
+
   function pageTitle(routeInfo, routes) {
     const page = routeInfo && routeInfo.page;
     if (page === "home") return "狂輪誌";
@@ -217,10 +239,8 @@
     const favorite = state.favorites.has(route.id);
     const article = node(documentRef, "article", { className: "route-card paper-panel" });
     article.append(
-      node(documentRef, "a", {
+      node(documentRef, "div", {
         className: "route-card__media",
-        href: `#/route/${encodeURIComponent(route.id)}`,
-        label: `檢視${route.name}`
       }, imageFigure(documentRef, route, "route-card__figure")),
       node(documentRef, "div", { className: "route-card__body" }, [
         node(documentRef, "div", { className: "route-card__meta" }, [
@@ -458,7 +478,7 @@
     const route = state.selectedRoute;
     if (!route) return notFoundPage(documentRef, "找不到這條路線", "它可能已從本機資料中移除。");
     const favorite = state.favorites.has(route.id);
-    const maxElevation = Math.max(...route.coordinates.map(point => point.ele));
+    const elevation = elevationSummary(route.coordinates);
 
     return node(documentRef, "article", { className: "route-detail" }, [
       node(documentRef, "header", { className: "route-detail__hero" }, [
@@ -496,7 +516,7 @@
         stat(documentRef, route.elevationGainM.toLocaleString("zh-Hant"), "總爬升 M"),
         stat(documentRef, formatDuration(route.durationMinutes), "預估時間"),
         stat(documentRef, `${route.difficulty} / 5`, difficultyLabel(route.difficulty)),
-        stat(documentRef, `${maxElevation.toLocaleString("zh-Hant")}`, "最高海拔 M")
+        stat(documentRef, elevation.available ? elevation.maximum.toLocaleString("zh-Hant") : "—", "最高海拔 M")
       ]),
       node(documentRef, "section", { className: "route-map-section content-section" }, [
         sectionHeading(documentRef, "ROUTE MAP", "道路的線條", "地圖與 GPX 使用同一份座標資料，互動地圖不可用時會顯示離線輪廓。"),
@@ -526,7 +546,7 @@
         node(documentRef, "div", { className: "elevation-chart paper-panel" }, [
           node(documentRef, "div", { className: "elevation-chart__header" }, [
             node(documentRef, "strong", { text: "海拔剖面" }),
-            node(documentRef, "span", { text: `最高 ${maxElevation.toLocaleString("zh-Hant")} m` })
+            node(documentRef, "span", { text: elevation.label })
           ]),
           node(documentRef, "div", { data: { elevation: route.id } })
         ])
@@ -588,8 +608,7 @@
   }
 
   function routeArtPage(documentRef, state) {
-    const cards = state.routeArt.map(art => {
-      const route = state.allRoutes.find(item => item.id === art.routeId);
+    const cards = routeArtEntries(state.routeArt, state.allRoutes).map(({ art, route }) => {
       return node(documentRef, "article", { className: "art-card paper-panel" }, [
         node(documentRef, "div", {
           className: "art-card__map",
@@ -612,7 +631,12 @@
           text: "環小台灣、大象、王冠與飛鳥；轉彎不只是轉彎，也是線條的一部分。"
         })
       ]),
-      node(documentRef, "section", { className: "content-section art-grid" }, cards)
+      cards.length
+        ? node(documentRef, "section", { className: "content-section art-grid" }, cards)
+        : node(documentRef, "section", { className: "empty-state paper-panel" }, [
+          node(documentRef, "h2", { text: "尚無可顯示的圖案路線" }),
+          node(documentRef, "p", { text: "參考路線可能已從本機資料中移除，可至我的路線重設資料。" })
+        ])
     ]);
   }
 
@@ -696,6 +720,8 @@
   return {
     formatDuration,
     difficultyLabel,
+    elevationSummary,
+    routeArtEntries,
     pageTitle,
     mount
   };

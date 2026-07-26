@@ -14,7 +14,6 @@ test("只接受 JPEG、PNG 與 WebP 且限制 10MB", () => {
     /10MB/
   );
 });
-
 test("等比例縮小圖片且不放大原圖", () => {
   assert.deepEqual(ImageTools.calculateDimensions(3200, 1800, 1600), {
     width: 1600,
@@ -30,4 +29,3 @@ test("拒絕無效圖片尺寸", () => {
   assert.throws(() => ImageTools.calculateDimensions(0, 100, 1600), /尺寸/);
   assert.throws(() => ImageTools.calculateDimensions(100, Number.NaN, 1600), /尺寸/);
 });
-
