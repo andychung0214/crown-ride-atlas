@@ -118,6 +118,32 @@ test("高於安全下限的爬坡選項仍可提高辨識門檻", () => {
   assert.deepEqual(result.climbs, []);
 });
 
+test("舊爬坡選項名稱仍可提高辨識門檻", () => {
+  const result = TrackAnalysis.analyzeCoordinates([
+    { lat: 25, lng: 121, ele: 100 },
+    { lat: 25.0045, lng: 121, ele: 130 }
+  ], {
+    minClimbDistanceM: 600,
+    minClimbGainM: 40
+  });
+
+  assert.deepEqual(result.climbs, []);
+});
+
+test("新爬坡選項名稱會優先於舊名稱", () => {
+  const result = TrackAnalysis.analyzeCoordinates([
+    { lat: 25, lng: 121, ele: 100 },
+    { lat: 25.0045, lng: 121, ele: 130 }
+  ], {
+    minClimbDistanceM: 600,
+    minClimbGainM: 40,
+    climbMinDistanceM: 500,
+    climbMinGainM: 30
+  });
+
+  assert.equal(result.climbs.length, 1);
+});
+
 test("摘要使用既定海拔欄位並回報下降與最大持續坡度", () => {
   const result = TrackAnalysis.analyzeCoordinates([
     { lat: 25, lng: 121, ele: 100 },

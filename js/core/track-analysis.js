@@ -21,6 +21,11 @@
   const MIN_CLIMB_GAIN_M = 30;
   const CLIMB_DESCENT_TOLERANCE_M = 10;
 
+  function minimumOption(preferredValue, legacyValue, minimum) {
+    const value = Number.isFinite(preferredValue) ? preferredValue : legacyValue;
+    return Number.isFinite(value) ? Math.max(minimum, value) : minimum;
+  }
+
   function normalizePoint(point) {
     if (!Geo || !Geo.isCoordinate(point)) return null;
     return {
@@ -193,9 +198,7 @@
     const settings = Object.assign({
       gradeWindowM: GRADE_WINDOW_M,
       smoothingWindowM: GRADE_WINDOW_M,
-      noiseThresholdM: 2,
-      climbMinDistanceM: MIN_CLIMB_DISTANCE_M,
-      climbMinGainM: MIN_CLIMB_GAIN_M
+      noiseThresholdM: 2
     }, options || {});
     const gradeWindowM = Number.isFinite(settings.gradeWindowM)
       ? Math.max(GRADE_WINDOW_M, settings.gradeWindowM)
@@ -206,12 +209,16 @@
     const noiseThresholdM = Number.isFinite(settings.noiseThresholdM) && settings.noiseThresholdM >= 0
       ? settings.noiseThresholdM
       : 2;
-    const minClimbDistanceM = Number.isFinite(settings.climbMinDistanceM)
-      ? Math.max(MIN_CLIMB_DISTANCE_M, settings.climbMinDistanceM)
-      : MIN_CLIMB_DISTANCE_M;
-    const minClimbGainM = Number.isFinite(settings.climbMinGainM)
-      ? Math.max(MIN_CLIMB_GAIN_M, settings.climbMinGainM)
-      : MIN_CLIMB_GAIN_M;
+    const minClimbDistanceM = minimumOption(
+      settings.climbMinDistanceM,
+      settings.minClimbDistanceM,
+      MIN_CLIMB_DISTANCE_M
+    );
+    const minClimbGainM = minimumOption(
+      settings.climbMinGainM,
+      settings.minClimbGainM,
+      MIN_CLIMB_GAIN_M
+    );
     const coordinates = [];
 
     for (const source of Array.isArray(points) ? points : []) {
