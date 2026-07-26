@@ -352,7 +352,7 @@
   }
 
   function mountElevation(element, route, track) {
-    const sourceTrack = track || route;
+    const sourceTrack = track || (route && route.track) || route;
     const activeTrack = TrackAnalysis && typeof TrackAnalysis.hydrateTrack === "function"
       ? TrackAnalysis.hydrateTrack(sourceTrack)
       : sourceTrack;

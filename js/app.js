@@ -125,7 +125,7 @@
       rootElement.querySelectorAll("[data-elevation]").forEach(element => {
         const route = hydratedRoute(state.allRoutes.find(item => item.id === element.dataset.elevation));
         if (route && Array.isArray(route.coordinates) && route.coordinates.length > 1) {
-          app.MapView.mountElevation(element, route);
+          app.MapView.mountElevation(element, route, route.track);
         }
       });
       const editorRoot = rootElement.querySelector("[data-editor-root]");
