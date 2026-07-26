@@ -7,6 +7,7 @@ const os = require("node:os");
 const path = require("node:path");
 const { pathToFileURL } = require("node:url");
 const vm = require("node:vm");
+const Geo = require("../js/core/geo.js");
 
 const generatorPath = path.join(__dirname, "..", "scripts", "generate-tracks.mjs");
 const validatorPath = path.join(__dirname, "..", "scripts", "validate-tracks.mjs");
@@ -49,18 +50,20 @@ test("建構軌跡時會產生分析摘要與爬坡陣列", async () => {
   assert.ok(Array.isArray(track.climbs));
 });
 
-test("重採樣會以內插點限制相鄰點距離並保留端點", async () => {
+test("重採樣會將相鄰點距離限制在 30 至 80 公尺並保留端點", async () => {
   const { resampleTrack } = await loadGenerator();
   const points = resampleTrack([
     { lat: 25, lng: 121, ele: 10 },
     { lat: 25.0018, lng: 121, ele: 30 }
-  ], 110);
+  ]);
 
-  assert.equal(points.length, 3);
   assert.deepEqual(points[0], { lat: 25, lng: 121, ele: 10 });
-  assert.deepEqual(points[2], { lat: 25.0018, lng: 121, ele: 30 });
-  assert.ok(points[1].ele > 19);
-  assert.ok(points[1].ele < 21);
+  assert.deepEqual(points.at(-1), { lat: 25.0018, lng: 121, ele: 30 });
+  points.slice(1).forEach((point, index) => {
+    const distanceM = Geo.haversineKm(points[index], point) * 1000;
+    assert.ok(distanceM >= 30, `相鄰距離 ${distanceM}m 小於 30m`);
+    assert.ok(distanceM <= 80, `相鄰距離 ${distanceM}m 大於 80m`);
+  });
 });
 
 test("序列化 bundle 可由 TrackRegistry 登錄對應 route ID", async () => {
@@ -301,7 +304,7 @@ test("CLI 以注入 fetch 產生 staging，後續執行只讀取快取", async t
     JSON.parse(await fs.readFile(
       path.join(temporaryRoot, "tools", "route-data", "cache", "taipei-fengguizui.geojson"),
       "utf8"
-    )).type,
+    )).response.type,
     "FeatureCollection"
   );
   const stagingSource = await fs.readFile(
@@ -346,10 +349,468 @@ test("validator 載入 registry bundle 並拒絕不完整或無效資料", async
         }
       })
     ]]), { manifest, requireComplete: true }),
-    /海拔/
+    /軌跡資料|海拔/
   );
   assert.throws(
     () => validateBundleSources(new Map(), { manifest, requireComplete: true }),
     /缺少/
   );
+});
+
+test("正式 bundle 第二檔提交失敗時會復原整批原始內容", async t => {
+  const { publishBundles } = await loadGenerator();
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "crown-publish-"));
+  t.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
+  const publishedDirectory = path.join(temporaryRoot, "published");
+  await fs.mkdir(publishedDirectory, { recursive: true });
+  await fs.writeFile(path.join(publishedDirectory, "taipei.js"), "taipei-original", "utf8");
+  await fs.writeFile(path.join(publishedDirectory, "new-taipei.js"), "new-taipei-original", "utf8");
+  let preparedRenames = 0;
+  const fsImpl = {
+    ...fs,
+    async rename(source, target) {
+      if (source.includes(".prepared.")) {
+        preparedRenames += 1;
+        if (preparedRenames === 2) {
+          const error = new Error("simulated second-file I/O failure");
+          error.code = "EIO";
+          throw error;
+        }
+      }
+      return fs.rename(source, target);
+    }
+  };
+
+  await assert.rejects(
+    publishBundles(
+      new Map([
+        ["taipei", "taipei-replacement"],
+        ["new-taipei", "new-taipei-replacement"]
+      ]),
+      {
+        publishedDirectory,
+        fsImpl,
+        validateBatch() {}
+      }
+    ),
+    /second-file/
+  );
+
+  assert.equal(
+    await fs.readFile(path.join(publishedDirectory, "taipei.js"), "utf8"),
+    "taipei-original"
+  );
+  assert.equal(
+    await fs.readFile(path.join(publishedDirectory, "new-taipei.js"), "utf8"),
+    "new-taipei-original"
+  );
+});
+
+test("不安全 route ID 不得逃逸 cache 與 seed 目錄", async t => {
+  const { runCli } = await loadGenerator();
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "crown-route-path-"));
+  t.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
+  const routeDataDirectory = path.join(temporaryRoot, "tools", "route-data");
+  await fs.mkdir(routeDataDirectory, { recursive: true });
+  await fs.writeFile(
+    path.join(routeDataDirectory, "escaped.json"),
+    JSON.stringify({ waypoints: [[121.541, 25.021], [121.542, 25.022]] }),
+    "utf8"
+  );
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+
+  await assert.rejects(
+    runCli(["--route", "../escaped", "--staging"], {
+      projectRoot: temporaryRoot,
+      routes: [{ id: "../escaped", trackRef: "../escaped", regionId: "taipei" }],
+      manifest: {
+        "../escaped": {
+          bundleId: "taipei",
+          src: "js/data/tracks/taipei.js"
+        }
+      },
+      fetchImpl: async () => ({
+        ok: true,
+        status: 200,
+        async json() {
+          return fixture;
+        }
+      })
+    }),
+    /安全.*route ID|route ID.*安全/
+  );
+  await assert.rejects(
+    fs.access(path.join(routeDataDirectory, "escaped.geojson")),
+    /ENOENT/
+  );
+});
+
+test("不安全 bundle ID 不得逃逸 staging 目錄", async t => {
+  const { runCli } = await loadGenerator();
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "crown-bundle-path-"));
+  t.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
+  const cacheDirectory = path.join(temporaryRoot, "tools", "route-data", "cache");
+  await fs.mkdir(cacheDirectory, { recursive: true });
+  await fs.copyFile(
+    fixturePath,
+    path.join(cacheDirectory, "taipei-fengguizui.geojson")
+  );
+
+  await assert.rejects(
+    runCli(["--route", "taipei-fengguizui", "--staging"], {
+      projectRoot: temporaryRoot,
+      routes: [{
+        id: "taipei-fengguizui",
+        trackRef: "taipei-fengguizui",
+        regionId: "taipei"
+      }],
+      manifest: {
+        "taipei-fengguizui": {
+          bundleId: "../escaped",
+          src: "js/data/tracks/taipei.js"
+        }
+      }
+    }),
+    /安全.*bundle ID|bundle ID.*安全/
+  );
+  await assert.rejects(
+    fs.access(path.join(temporaryRoot, "tools", "route-data", "escaped.js")),
+    /ENOENT/
+  );
+});
+
+test("validator 拒絕逃逸正式 tracks 根目錄的 manifest src", async t => {
+  const { buildTrack, serializeBundle } = await loadGenerator();
+  const { runCli: runValidatorCli } = await loadValidator();
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "crown-src-path-"));
+  t.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
+  const projectRoot = path.join(temporaryRoot, "project");
+  await fs.mkdir(projectRoot, { recursive: true });
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  await fs.writeFile(
+    path.join(temporaryRoot, "escaped.js"),
+    serializeBundle("taipei", {
+      "taipei-fengguizui": buildTrack(fixture)
+    }),
+    "utf8"
+  );
+
+  await assert.rejects(
+    runValidatorCli(["--published"], {
+      projectRoot,
+      manifest: {
+        "taipei-fengguizui": {
+          bundleId: "taipei",
+          src: "../escaped.js"
+        }
+      }
+    }),
+    /安全.*src|src.*安全/
+  );
+});
+
+test("直線密集點會整理為 30 至 80 公尺取樣", async () => {
+  const { resampleTrack } = await loadGenerator();
+  const densePoints = Array.from({ length: 21 }, (_, index) => ({
+    lat: 25 + index * 0.000045,
+    lng: 121,
+    ele: 100
+  }));
+  const sampled = resampleTrack(densePoints);
+
+  assert.ok(sampled.length < densePoints.length);
+  sampled.slice(1).forEach((point, index) => {
+    const distanceM = Geo.haversineKm(sampled[index], point) * 1000;
+    assert.ok(distanceM >= 30, `相鄰距離 ${distanceM}m 小於 30m`);
+    assert.ok(distanceM <= 80, `相鄰距離 ${distanceM}m 大於 80m`);
+  });
+});
+
+test("重採樣會保留道路轉彎點", async () => {
+  const { resampleTrack } = await loadGenerator();
+  const corner = { lat: 25.00045, lng: 121, ele: 100 };
+  const denseTurn = [
+    ...Array.from({ length: 6 }, (_, index) => ({
+      lat: 25 + index * 0.00009,
+      lng: 121,
+      ele: 100
+    })),
+    ...Array.from({ length: 5 }, (_, index) => ({
+      lat: corner.lat,
+      lng: 121 + (index + 1) * 0.0001,
+      ele: 100
+    }))
+  ];
+  const sampled = resampleTrack(denseTurn);
+
+  assert.ok(sampled.length < denseTurn.length);
+  assert.ok(sampled.some(point => point.lat === corner.lat && point.lng === corner.lng));
+});
+
+test("重採樣會保留明顯坡度變化點", async () => {
+  const { resampleTrack } = await loadGenerator();
+  const gradeChange = { lat: 25.00045, lng: 121, ele: 100 };
+  const denseSlope = Array.from({ length: 11 }, (_, index) => ({
+    lat: 25 + index * 0.00009,
+    lng: 121,
+    ele: index <= 5 ? 100 : 100 + (index - 5) * 5
+  }));
+  const sampled = resampleTrack(denseSlope);
+
+  assert.ok(sampled.length < denseSlope.length);
+  assert.ok(sampled.some(point => (
+    point.lat === gradeChange.lat
+    && point.lng === gradeChange.lng
+    && point.ele === gradeChange.ele
+  )));
+});
+
+test("validator 拒絕與座標重新分析結果矛盾的摘要", async () => {
+  const { buildTrack, serializeBundle } = await loadGenerator();
+  const { validateBundleSources } = await loadValidator();
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  const track = buildTrack(fixture);
+  track.summary.distanceKm += 5;
+  const manifest = {
+    "taipei-fengguizui": {
+      bundleId: "taipei",
+      src: "js/data/tracks/taipei.js"
+    }
+  };
+
+  assert.throws(
+    () => validateBundleSources(
+      new Map([[
+        "taipei",
+        serializeBundle("taipei", { "taipei-fengguizui": track })
+      ]]),
+      { manifest, requireComplete: true }
+    ),
+    /摘要.*不一致/
+  );
+});
+
+test("validator 拒絕欄位矛盾與索引越界的爬坡", async () => {
+  const { buildTrack, serializeBundle } = await loadGenerator();
+  const { validateBundleSources } = await loadValidator();
+  const climbingPayload = {
+    type: "Feature",
+    geometry: {
+      type: "LineString",
+      coordinates: [[121, 25, 100], [121, 25.0045, 130]]
+    }
+  };
+  const track = buildTrack(climbingPayload);
+  const manifest = {
+    "taipei-fengguizui": {
+      bundleId: "taipei",
+      src: "js/data/tracks/taipei.js"
+    }
+  };
+  assert.equal(track.climbs.length, 1);
+
+  const wrongGain = JSON.parse(JSON.stringify(track));
+  wrongGain.climbs[0].gainM += 10;
+  assert.throws(
+    () => validateBundleSources(
+      new Map([[
+        "taipei",
+        serializeBundle("taipei", { "taipei-fengguizui": wrongGain })
+      ]]),
+      { manifest, requireComplete: true }
+    ),
+    /爬坡.*不一致/
+  );
+
+  const invalidIndex = JSON.parse(JSON.stringify(track));
+  invalidIndex.climbs[0].endIndex = invalidIndex.coordinates.length;
+  assert.throws(
+    () => validateBundleSources(
+      new Map([[
+        "taipei",
+        serializeBundle("taipei", { "taipei-fengguizui": invalidIndex })
+      ]]),
+      { manifest, requireComplete: true }
+    ),
+    /爬坡.*索引/
+  );
+});
+
+test("validator 使用正式 TrackRegistry 契約拒絕空 bundle", async () => {
+  const { serializeBundle } = await loadGenerator();
+  const { validateBundleSources } = await loadValidator();
+  const manifest = {
+    "taipei-fengguizui": {
+      bundleId: "taipei",
+      src: "js/data/tracks/taipei.js"
+    }
+  };
+
+  assert.throws(
+    () => validateBundleSources(
+      new Map([["taipei", serializeBundle("taipei", {})]]),
+      { manifest, requireComplete: true }
+    ),
+    /軌跡資料/
+  );
+});
+
+test("人工 seed 變更時不會誤用舊 BRouter 快取", async t => {
+  const { runCli } = await loadGenerator();
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "crown-cache-fingerprint-"));
+  t.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
+  const seedDirectory = path.join(temporaryRoot, "tools", "route-data", "seeds");
+  await fs.mkdir(seedDirectory, { recursive: true });
+  const seedPath = path.join(seedDirectory, "taipei-fengguizui.json");
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  const routes = [{
+    id: "taipei-fengguizui",
+    trackRef: "taipei-fengguizui",
+    regionId: "taipei"
+  }];
+  const manifest = {
+    "taipei-fengguizui": {
+      bundleId: "taipei",
+      src: "js/data/tracks/taipei.js"
+    }
+  };
+  let fetchCount = 0;
+  const options = {
+    projectRoot: temporaryRoot,
+    routes,
+    manifest,
+    sleep: async () => {},
+    now: () => 0,
+    fetchImpl: async () => {
+      fetchCount += 1;
+      return {
+        ok: true,
+        status: 200,
+        async json() {
+          return fixture;
+        }
+      };
+    }
+  };
+  await fs.writeFile(
+    seedPath,
+    JSON.stringify({ waypoints: [[121.541, 25.021], [121.542, 25.022]] }),
+    "utf8"
+  );
+  await runCli(["--route", "taipei-fengguizui", "--staging"], options);
+  const firstCache = JSON.parse(await fs.readFile(
+    path.join(temporaryRoot, "tools", "route-data", "cache", "taipei-fengguizui.geojson"),
+    "utf8"
+  ));
+
+  await fs.writeFile(
+    seedPath,
+    JSON.stringify({ waypoints: [[121.541, 25.021], [121.543, 25.023]] }),
+    "utf8"
+  );
+  await runCli(["--route", "taipei-fengguizui", "--staging"], options);
+  const secondCache = JSON.parse(await fs.readFile(
+    path.join(temporaryRoot, "tools", "route-data", "cache", "taipei-fengguizui.geojson"),
+    "utf8"
+  ));
+
+  assert.equal(fetchCount, 2);
+  assert.notEqual(firstCache.fingerprint, secondCache.fingerprint);
+});
+
+test("無效 seed 在發出請求前失敗且不重試", async () => {
+  const { createBrouterClient } = await loadGenerator();
+  let fetchCount = 0;
+  let sleepCount = 0;
+  const client = createBrouterClient({
+    fetchImpl: async () => {
+      fetchCount += 1;
+    },
+    sleep: async () => {
+      sleepCount += 1;
+    },
+    now: () => 0
+  });
+
+  await assert.rejects(
+    client.request({ waypoints: [] }),
+    /seed/
+  );
+  assert.equal(fetchCount, 0);
+  assert.equal(sleepCount, 0);
+});
+
+test("成功 HTTP 回應的程式錯誤不會重試", async () => {
+  const { createBrouterClient } = await loadGenerator();
+  let attempts = 0;
+  const client = createBrouterClient({
+    fetchImpl: async () => {
+      attempts += 1;
+      return {
+        ok: true,
+        status: 200,
+        async json() {
+          throw new TypeError("programmer bug");
+        }
+      };
+    },
+    sleep: async () => {},
+    now: () => 0
+  });
+
+  await assert.rejects(
+    client.request({ waypoints: [[121.5, 25], [121.51, 25.01]] }),
+    /programmer bug/
+  );
+  assert.equal(attempts, 1);
+});
+
+test("fetch 邊界拋出的非網路程式錯誤不會重試", async () => {
+  const { createBrouterClient } = await loadGenerator();
+  let attempts = 0;
+  const client = createBrouterClient({
+    fetchImpl: async () => {
+      attempts += 1;
+      throw new Error("programmer bug");
+    },
+    sleep: async () => {},
+    now: () => 0
+  });
+
+  await assert.rejects(
+    client.request({ waypoints: [[121.5, 25], [121.51, 25.01]] }),
+    /programmer bug/
+  );
+  assert.equal(attempts, 1);
+});
+
+test("明確網路暫時錯誤仍會重試", async () => {
+  const { createBrouterClient } = await loadGenerator();
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  let attempts = 0;
+  const client = createBrouterClient({
+    fetchImpl: async () => {
+      attempts += 1;
+      if (attempts === 1) {
+        const error = new TypeError("fetch failed");
+        error.cause = { code: "ECONNRESET" };
+        throw error;
+      }
+      return {
+        ok: true,
+        status: 200,
+        async json() {
+          return fixture;
+        }
+      };
+    },
+    sleep: async () => {},
+    now: () => 0
+  });
+
+  assert.equal(
+    (await client.request({ waypoints: [[121.5, 25], [121.51, 25.01]] })).type,
+    "FeatureCollection"
+  );
+  assert.equal(attempts, 2);
 });

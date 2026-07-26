@@ -1,4 +1,5 @@
 import { createRequire } from "node:module";
+import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,11 +10,17 @@ const { analyzeCoordinates } = require("../js/core/track-analysis.js");
 const Data = require("../js/data/routes.js");
 const defaultManifest = require("../js/data/track-manifest.js");
 
-const DEFAULT_RESAMPLE_INTERVAL_M = 100;
+const DEFAULT_RESAMPLE_INTERVAL_M = 50;
+const MIN_RESAMPLE_INTERVAL_M = 30;
+const MAX_RESAMPLE_INTERVAL_M = 80;
+const TURN_ANCHOR_DEGREES = 15;
+const GRADE_CHANGE_ANCHOR_PCT = 3;
 const MAX_ADJACENT_DISTANCE_KM = 5;
 const REQUEST_INTERVAL_MS = 1500;
 const MAX_RETRIES = 3;
 const BROUTER_URL = "https://brouter.de/brouter";
+const BROUTER_PROFILE = "fastbike";
+const BROUTER_FORMAT = "geojson";
 const TAIWAN_BOUNDS = [
   { minimumLat: 21.8, maximumLat: 25.7, minimumLng: 120, maximumLng: 122.2 },
   { minimumLat: 23.1, maximumLat: 23.8, minimumLng: 119.2, maximumLng: 119.8 },
@@ -21,7 +28,50 @@ const TAIWAN_BOUNDS = [
   { minimumLat: 25.8, maximumLat: 26.4, minimumLng: 119.8, maximumLng: 120.6 }
 ];
 const TEMPORARY_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504]);
+const TEMPORARY_NETWORK_CODES = new Set([
+  "EAI_AGAIN",
+  "ECONNREFUSED",
+  "ECONNRESET",
+  "ENETDOWN",
+  "ENETUNREACH",
+  "ETIMEDOUT",
+  "UND_ERR_CONNECT_TIMEOUT",
+  "UND_ERR_SOCKET"
+]);
 const DEFAULT_PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const SAFE_IDENTIFIER = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+export function assertSafeIdentifier(value, label) {
+  if (typeof value !== "string" || !SAFE_IDENTIFIER.test(value)) {
+    throw new Error(`不安全的 ${label}：${String(value)}`);
+  }
+  return value;
+}
+
+function isContainedPath(rootDirectory, targetPath) {
+  const relative = path.relative(path.resolve(rootDirectory), path.resolve(targetPath));
+  return relative !== ""
+    && relative !== ".."
+    && !relative.startsWith(`..${path.sep}`)
+    && !path.isAbsolute(relative);
+}
+
+export function resolveManifestSource(projectRoot, source) {
+  if (typeof source !== "string" || path.isAbsolute(source) || source.includes("\\")
+    || !/^[a-z0-9][a-z0-9./-]*\.js$/.test(source)) {
+    throw new Error(`不安全的 manifest src：${String(source)}`);
+  }
+  const segments = source.split("/");
+  if (segments.some(segment => !segment || segment === "." || segment === "..")) {
+    throw new Error(`不安全的 manifest src：${source}`);
+  }
+  const tracksRoot = path.resolve(projectRoot, "js", "data", "tracks");
+  const resolvedSource = path.resolve(projectRoot, ...segments);
+  if (!isContainedPath(tracksRoot, resolvedSource)) {
+    throw new Error(`不安全的 manifest src：${source}`);
+  }
+  return resolvedSource;
+}
 
 function lineStringFeature(payload) {
   if (payload && payload.type === "FeatureCollection") {
@@ -66,22 +116,91 @@ export function parseBrouterFeature(payload) {
 
 export function resampleTrack(points, intervalM = DEFAULT_RESAMPLE_INTERVAL_M) {
   if (!Array.isArray(points) || points.length < 2) return Array.isArray(points) ? points.slice() : [];
-  const resampled = [Object.assign({}, points[0])];
-
+  const preferredIntervalM = Number.isFinite(intervalM)
+    ? Math.max(MIN_RESAMPLE_INTERVAL_M, Math.min(MAX_RESAMPLE_INTERVAL_M, intervalM))
+    : DEFAULT_RESAMPLE_INTERVAL_M;
+  const cumulativeM = [0];
   for (let index = 1; index < points.length; index += 1) {
-    const start = points[index - 1];
-    const end = points[index];
-    const segmentM = Geo.haversineKm(start, end) * 1000;
-    const segments = Math.max(1, Math.ceil(segmentM / intervalM));
+    cumulativeM.push(
+      cumulativeM[index - 1] + Geo.haversineKm(points[index - 1], points[index]) * 1000
+    );
+  }
 
-    for (let step = 1; step <= segments; step += 1) {
-      const ratio = step / segments;
-      resampled.push({
-        lat: start.lat + (end.lat - start.lat) * ratio,
-        lng: start.lng + (end.lng - start.lng) * ratio,
-        ele: start.ele + (end.ele - start.ele) * ratio
-      });
+  function turnDegrees(index) {
+    const previous = points[index - 1];
+    const current = points[index];
+    const next = points[index + 1];
+    const latitudeScale = Math.cos(current.lat * Math.PI / 180);
+    const incoming = {
+      x: (current.lng - previous.lng) * latitudeScale,
+      y: current.lat - previous.lat
+    };
+    const outgoing = {
+      x: (next.lng - current.lng) * latitudeScale,
+      y: next.lat - current.lat
+    };
+    const incomingLength = Math.hypot(incoming.x, incoming.y);
+    const outgoingLength = Math.hypot(outgoing.x, outgoing.y);
+    if (incomingLength === 0 || outgoingLength === 0) return 0;
+    const cosine = Math.max(-1, Math.min(1,
+      (incoming.x * outgoing.x + incoming.y * outgoing.y)
+      / (incomingLength * outgoingLength)
+    ));
+    return Math.acos(cosine) * 180 / Math.PI;
+  }
+
+  function gradeChangePct(index) {
+    const incomingM = cumulativeM[index] - cumulativeM[index - 1];
+    const outgoingM = cumulativeM[index + 1] - cumulativeM[index];
+    if (incomingM === 0 || outgoingM === 0) return 0;
+    const incomingGrade = (points[index].ele - points[index - 1].ele) / incomingM * 100;
+    const outgoingGrade = (points[index + 1].ele - points[index].ele) / outgoingM * 100;
+    return Math.abs(outgoingGrade - incomingGrade);
+  }
+
+  const anchorIndices = [0];
+  for (let index = 1; index < points.length - 1; index += 1) {
+    if (turnDegrees(index) >= TURN_ANCHOR_DEGREES
+      || gradeChangePct(index) >= GRADE_CHANGE_ANCHOR_PCT) {
+      anchorIndices.push(index);
     }
+  }
+  anchorIndices.push(points.length - 1);
+
+  function interpolate(targetM, startIndex, endIndex) {
+    let upperIndex = startIndex + 1;
+    while (upperIndex < endIndex && cumulativeM[upperIndex] < targetM) {
+      upperIndex += 1;
+    }
+    const lowerIndex = upperIndex - 1;
+    const spanM = cumulativeM[upperIndex] - cumulativeM[lowerIndex];
+    const ratio = spanM > 0 ? (targetM - cumulativeM[lowerIndex]) / spanM : 0;
+    return {
+      lat: points[lowerIndex].lat + (points[upperIndex].lat - points[lowerIndex].lat) * ratio,
+      lng: points[lowerIndex].lng + (points[upperIndex].lng - points[lowerIndex].lng) * ratio,
+      ele: points[lowerIndex].ele + (points[upperIndex].ele - points[lowerIndex].ele) * ratio
+    };
+  }
+
+  const resampled = [Object.assign({}, points[0])];
+  for (let anchor = 1; anchor < anchorIndices.length; anchor += 1) {
+    const startIndex = anchorIndices[anchor - 1];
+    const endIndex = anchorIndices[anchor];
+    const sectionDistanceM = cumulativeM[endIndex] - cumulativeM[startIndex];
+    let sectionCount = Math.max(1, Math.round(sectionDistanceM / preferredIntervalM));
+    while (sectionDistanceM / sectionCount > MAX_RESAMPLE_INTERVAL_M) sectionCount += 1;
+    while (sectionCount > 1 && sectionDistanceM / sectionCount < MIN_RESAMPLE_INTERVAL_M) {
+      sectionCount -= 1;
+    }
+
+    for (let step = 1; step < sectionCount; step += 1) {
+      resampled.push(interpolate(
+        cumulativeM[startIndex] + sectionDistanceM * step / sectionCount,
+        startIndex,
+        endIndex
+      ));
+    }
+    resampled.push(Object.assign({}, points[endIndex]));
   }
 
   return resampled;
@@ -94,6 +213,8 @@ export function buildTrack(payload, options = {}) {
 }
 
 export function serializeBundle(bundleId, tracks) {
+  assertSafeIdentifier(bundleId, "bundle ID");
+  Object.keys(tracks || {}).forEach(routeId => assertSafeIdentifier(routeId, "route ID"));
   return [
     "\"use strict\";",
     "",
@@ -106,6 +227,7 @@ export function serializeBundle(bundleId, tracks) {
 
 export function selectRoutes(selector, routes = Data.routes) {
   if (selector && selector.routeId) {
+    assertSafeIdentifier(selector.routeId, "route ID");
     const route = routes.find(candidate => candidate.id === selector.routeId);
     if (!route) throw new Error(`未知 route ID：${selector.routeId}`);
     return [route];
@@ -142,11 +264,19 @@ function brouterUrl(seed, endpoint) {
   const lonlats = seedWaypoints(seed).map(point => point.join(",")).join("|");
   const parameters = new URLSearchParams({
     lonlats,
-    profile: "fastbike",
+    profile: BROUTER_PROFILE,
     alternativeidx: "0",
-    format: "geojson"
+    format: BROUTER_FORMAT
   });
   return `${endpoint}?${parameters}`;
+}
+
+function cacheFingerprint(seed) {
+  return createHash("sha256").update(JSON.stringify({
+    profile: BROUTER_PROFILE,
+    format: BROUTER_FORMAT,
+    waypoints: seedWaypoints(seed)
+  })).digest("hex");
 }
 
 function responseError(response, body) {
@@ -154,6 +284,11 @@ function responseError(response, body) {
   error.status = response.status;
   error.temporary = TEMPORARY_STATUS_CODES.has(response.status);
   return error;
+}
+
+function isTemporaryNetworkError(error) {
+  const code = error && (error.code || (error.cause && error.cause.code));
+  return TEMPORARY_NETWORK_CODES.has(code);
 }
 
 export function createBrouterClient(options = {}) {
@@ -172,31 +307,39 @@ export function createBrouterClient(options = {}) {
     lastRequestStartedAt = now();
   }
 
-  async function perform(seed) {
+  async function perform(requestUrl) {
     let lastError;
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt += 1) {
       await throttle();
+      let response;
       try {
-        const response = await fetchImpl(brouterUrl(seed, endpoint), {
+        response = await fetchImpl(requestUrl, {
           headers: {
             Accept: "application/geo+json, application/json",
             "User-Agent": "CrownRideAtlas-TrackGenerator/1.0"
           }
         });
-        if (response.ok) return response.json();
-        const error = responseError(response, await response.text());
-        if (!error.temporary) throw error;
-        lastError = error;
       } catch (error) {
+        if (!isTemporaryNetworkError(error)) throw error;
         lastError = error;
-        if (error && error.temporary === false) throw error;
+        continue;
       }
+      if (response.ok) return response.json();
+      const error = responseError(response, await response.text());
+      if (!error.temporary) throw error;
+      lastError = error;
     }
     throw lastError;
   }
 
   function request(seed) {
-    const result = queue.then(() => perform(seed));
+    let requestUrl;
+    try {
+      requestUrl = brouterUrl(seed, endpoint);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+    const result = queue.then(() => perform(requestUrl));
     queue = result.catch(() => undefined);
     return result;
   }
@@ -218,15 +361,76 @@ async function atomicWrite(filePath, contents) {
 
 export async function publishBundles(bundleSources, options = {}) {
   const publishedDirectory = options.publishedDirectory;
+  const fsImpl = options.fsImpl || fs;
   if (!publishedDirectory) throw new TypeError("缺少正式 bundle 目錄。");
   if (typeof options.validateBatch !== "function") {
     throw new TypeError("正式發佈必須提供整批驗證器。");
   }
 
+  const entries = [...bundleSources].map(([bundleId, source], index) => {
+    assertSafeIdentifier(bundleId, "bundle ID");
+    const targetPath = path.join(publishedDirectory, `${bundleId}.js`);
+    const nonce = `${process.pid}.${Date.now()}.${index}`;
+    return {
+      source,
+      targetPath,
+      preparedPath: `${targetPath}.prepared.${nonce}`,
+      backupPath: `${targetPath}.backup.${nonce}`,
+      hadOriginal: false,
+      installed: false
+    };
+  });
+
   await options.validateBatch(bundleSources);
-  for (const [bundleId, source] of bundleSources) {
-    await atomicWrite(path.join(publishedDirectory, `${bundleId}.js`), source);
+  await fsImpl.mkdir(publishedDirectory, { recursive: true });
+  try {
+    for (const entry of entries) {
+      await fsImpl.writeFile(entry.preparedPath, entry.source, "utf8");
+    }
+  } catch (error) {
+    await Promise.all(entries.map(entry => fsImpl.rm(entry.preparedPath, { force: true })));
+    throw error;
   }
+
+  let failure = null;
+  try {
+    for (const entry of entries) {
+      try {
+        await fsImpl.rename(entry.targetPath, entry.backupPath);
+        entry.hadOriginal = true;
+      } catch (error) {
+        if (error.code !== "ENOENT") throw error;
+      }
+      await fsImpl.rename(entry.preparedPath, entry.targetPath);
+      entry.installed = true;
+    }
+  } catch (error) {
+    failure = error;
+  }
+
+  if (failure) {
+    const rollbackErrors = [];
+    for (const entry of entries.slice().reverse()) {
+      try {
+        if (entry.installed) await fsImpl.rm(entry.targetPath, { force: true });
+        if (entry.hadOriginal) await fsImpl.rename(entry.backupPath, entry.targetPath);
+      } catch (error) {
+        rollbackErrors.push(error);
+      }
+    }
+    await Promise.all(entries.flatMap(entry => [
+      fsImpl.rm(entry.preparedPath, { force: true }),
+      fsImpl.rm(entry.backupPath, { force: true })
+    ]));
+    if (rollbackErrors.length) {
+      throw new AggregateError(
+        [failure, ...rollbackErrors],
+        `正式 bundle 批次提交及復原失敗：${failure.message}`
+      );
+    }
+    throw failure;
+  }
+  await Promise.all(entries.map(entry => fsImpl.rm(entry.backupPath, { force: true })));
 }
 
 function parseArguments(argv) {
@@ -299,22 +503,32 @@ export async function runCli(argv, options = {}) {
 
   for (const route of selectedRoutes) {
     const routeId = route.trackRef || route.id;
+    assertSafeIdentifier(routeId, "route ID");
     const manifestEntry = manifest[routeId];
     if (!manifestEntry) throw new Error(`manifest 缺少 route ID：${routeId}`);
+    assertSafeIdentifier(manifestEntry.bundleId, "bundle ID");
     const cachePath = path.join(cacheDirectory, `${routeId}.geojson`);
-    const cachedPayload = await readJsonIfExists(cachePath);
-    let payload = cachedPayload;
+    const seedPath = path.join(seedDirectory, `${routeId}.json`);
+    const seed = await readJsonIfExists(seedPath);
+    if (!seed) throw new Error(`缺少人工 seed：${routeId}`);
+    const fingerprint = cacheFingerprint(seed);
+    const cacheEntry = await readJsonIfExists(cachePath);
+    const cacheHit = cacheEntry
+      && cacheEntry.fingerprint === fingerprint
+      && cacheEntry.response;
+    let payload = cacheHit ? cacheEntry.response : null;
 
-    if (!payload) {
-      const seedPath = path.join(seedDirectory, `${routeId}.json`);
-      const seed = await readJsonIfExists(seedPath);
-      if (!seed) throw new Error(`缺少人工 seed：${routeId}`);
+    if (!cacheHit) {
       payload = await client.request(seed);
     }
 
     const track = buildTrack(payload);
-    if (!cachedPayload) {
-      await atomicWrite(cachePath, `${JSON.stringify(payload, null, 2)}\n`);
+    if (!cacheHit) {
+      await atomicWrite(cachePath, `${JSON.stringify({
+        version: 1,
+        fingerprint,
+        response: payload
+      }, null, 2)}\n`);
     }
     if (!generatedByBundle.has(manifestEntry.bundleId)) {
       generatedByBundle.set(manifestEntry.bundleId, {});

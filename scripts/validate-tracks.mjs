@@ -3,18 +3,33 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
-import { parseBrouterFeature } from "./generate-tracks.mjs";
+import {
+  assertSafeIdentifier,
+  parseBrouterFeature,
+  resolveManifestSource
+} from "./generate-tracks.mjs";
 
 const require = createRequire(import.meta.url);
 const defaultManifest = require("../js/data/track-manifest.js");
+const { analyzeCoordinates } = require("../js/core/track-analysis.js");
 const DEFAULT_PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const COMPARISON_TOLERANCE = 1e-6;
+
+function freshTrackRegistry() {
+  const registryPath = require.resolve("../js/core/track-registry.js");
+  delete require.cache[registryPath];
+  return require(registryPath);
+}
 
 export function parseBundleSource(expectedBundleId, source) {
+  assertSafeIdentifier(expectedBundleId, "bundle ID");
   const registrations = [];
+  const registry = freshTrackRegistry();
   const context = {
     CrownRideAtlas: {
       TrackRegistry: {
         register(bundleId, tracks) {
+          registry.register(bundleId, tracks);
           registrations.push({ bundleId, tracks });
         }
       }
@@ -33,6 +48,14 @@ export function parseBundleSource(expectedBundleId, source) {
     throw new TypeError(`bundle ${expectedBundleId} 軌跡資料格式無效。`);
   }
   return registration.tracks;
+}
+
+function approximatelyEqual(actual, expected) {
+  const tolerance = Math.max(
+    COMPARISON_TOLERANCE,
+    Math.abs(expected) * COMPARISON_TOLERANCE
+  );
+  return Number.isFinite(actual) && Math.abs(actual - expected) <= tolerance;
 }
 
 function validateTrack(routeId, track) {
@@ -61,6 +84,46 @@ function validateTrack(routeId, track) {
   if (!Array.isArray(track.climbs)) {
     throw new TypeError(`${routeId} 爬坡資料格式無效。`);
   }
+  const recomputed = analyzeCoordinates(
+    track.coordinates.map(point => ({ lat: point.lat, lng: point.lng, ele: point.ele }))
+  );
+  summaryFields.forEach(field => {
+    if (!approximatelyEqual(summary[field], recomputed.summary[field])) {
+      throw new Error(`${routeId} 摘要欄位不一致：${field}`);
+    }
+  });
+  if (track.climbs.length !== recomputed.climbs.length) {
+    throw new Error(`${routeId} 爬坡數量不一致。`);
+  }
+  const climbFields = [
+    "startDistanceKm",
+    "endDistanceKm",
+    "distanceKm",
+    "gainM",
+    "averageGradePct",
+    "maximumGradePct"
+  ];
+  track.climbs.forEach((climb, index) => {
+    if (!climb || !Number.isInteger(climb.startIndex) || !Number.isInteger(climb.endIndex)
+      || climb.startIndex < 0 || climb.endIndex <= climb.startIndex
+      || climb.endIndex >= track.coordinates.length) {
+      throw new Error(`${routeId} 爬坡索引超出有效範圍。`);
+    }
+    if (!climbFields.every(field => Number.isFinite(climb[field]))
+      || climb.startDistanceKm < 0
+      || climb.endDistanceKm < climb.startDistanceKm
+      || climb.endDistanceKm > summary.distanceKm + COMPARISON_TOLERANCE
+      || climb.distanceKm < 0
+      || climb.gainM < 0
+      || climb.maximumGradePct < 0) {
+      throw new Error(`${routeId} 爬坡欄位超出有效範圍。`);
+    }
+    const expected = recomputed.climbs[index];
+    if (climb.startIndex !== expected.startIndex || climb.endIndex !== expected.endIndex
+      || !climbFields.every(field => approximatelyEqual(climb[field], expected[field]))) {
+      throw new Error(`${routeId} 爬坡欄位不一致。`);
+    }
+  });
 }
 
 export function validateBundleSources(bundleSources, options = {}) {
@@ -95,11 +158,12 @@ async function readBundleSources(mode, projectRoot, manifest) {
   const sources = new Map();
   const bundlePaths = new Map();
   for (const entry of Object.values(manifest)) {
+    assertSafeIdentifier(entry.bundleId, "bundle ID");
     if (!bundlePaths.has(entry.bundleId)) {
       bundlePaths.set(
         entry.bundleId,
         mode === "published"
-          ? path.join(projectRoot, ...entry.src.split("/"))
+          ? resolveManifestSource(projectRoot, entry.src)
           : path.join(projectRoot, "tools", "route-data", ".staging", `${entry.bundleId}.js`)
       );
     }
