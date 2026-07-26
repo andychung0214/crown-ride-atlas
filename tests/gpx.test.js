@@ -55,3 +55,27 @@ test("建立安全檔名與標準 GPX MIME", () => {
     mimeType: "application/gpx+xml;charset=utf-8"
   });
 });
+
+test("內建路線尚未載入軌跡時拒絕建立 GPX", () => {
+  assert.throws(
+    () => Gpx.createDownload({ id: "r1", name: "內建路線", trackRef: "r1" }),
+    /尚未載入/
+  );
+});
+
+test("內建路線下載使用已載入軌跡的完整座標與海拔", () => {
+  const track = {
+    routeId: "r1",
+    coordinates: [
+      { lat: 25, lng: 121, ele: 18 },
+      { lat: 25.001, lng: 121.002, ele: 73 },
+      { lat: 25.002, lng: 121.003, ele: 141 }
+    ]
+  };
+
+  const download = Gpx.createDownload({ id: "r1", name: "真實道路", trackRef: "r1" }, track);
+
+  assert.match(download.text, /lat="25\.001" lon="121\.002"><ele>73<\/ele>/);
+  assert.match(download.text, /lat="25\.002" lon="121\.003"><ele>141<\/ele>/);
+  assert.equal((download.text.match(/<trkpt /g) || []).length, 3);
+});

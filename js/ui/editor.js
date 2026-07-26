@@ -101,6 +101,22 @@
     return `${migration}${summary}確定匯入？`;
   }
 
+  async function resolveWorkingCoordinates(route, trackLoader) {
+    const safeRoute = route || {};
+    if (safeRoute.trackSource === "local" && Array.isArray(safeRoute.coordinates)) {
+      return safeRoute.coordinates.map(point => ({ ...point }));
+    }
+    if (!safeRoute.trackRef) return [];
+    if (!trackLoader || typeof trackLoader.load !== "function") {
+      throw new Error("內建路線軌跡載入器無法使用。");
+    }
+    const track = await trackLoader.load(safeRoute.trackRef);
+    if (!track || !Array.isArray(track.coordinates) || track.coordinates.length < 2) {
+      throw new Error("內建路線軌跡資料無效。");
+    }
+    return track.coordinates.map(point => ({ ...point }));
+  }
+
   function node(documentRef, tag, options, children) {
     const element = documentRef.createElement(tag);
     const settings = options || {};
@@ -169,6 +185,7 @@
     const imageTools = settings.imageTools;
     const gpx = settings.gpx;
     const geo = settings.geo;
+    const trackLoader = settings.trackLoader;
     const announce = settings.announce || function () {};
     const onChanged = settings.onChanged || function () {};
 
@@ -211,11 +228,20 @@
       ]);
     }
 
-    function openForm(route) {
+    async function openForm(route) {
       const base = route || null;
       let workingCoordinates = base && base.trackSource === "local" && Array.isArray(base.coordinates)
         ? base.coordinates.map(point => ({ ...point }))
         : [];
+      let builtInCoordinates = [];
+      if (base && base.trackRef) {
+        try {
+          builtInCoordinates = await resolveWorkingCoordinates(base, trackLoader);
+        } catch (error) {
+          announce(error.message || "內建路線軌跡暫時無法載入。");
+          return;
+        }
+      }
       let workingThumbnail = base ? base.thumbnail : "";
       const form = node(documentRef, "form", { className: "route-editor-form" });
       const heading = node(documentRef, "div", { className: "editor-dialog__header" }, [
@@ -311,7 +337,9 @@
         className: "editor-file-status",
         text: workingCoordinates.length
           ? `目前有 ${workingCoordinates.length} 個座標點。`
-          : (base && base.trackRef ? "目前使用內建軌跡；若未上傳 GPX，將只儲存文字修改。" : "請上傳至少包含兩個座標點的 GPX。")
+          : (base && base.trackRef
+            ? `已載入 ${builtInCoordinates.length} 個內建軌跡點；若未上傳 GPX，將只儲存文字修改。`
+            : "請上傳至少包含兩個座標點的 GPX。")
       });
 
       imageInput.addEventListener("change", async () => {
@@ -498,6 +526,7 @@
   return {
     buildRoute,
     buildImportPrompt,
+    resolveWorkingCoordinates,
     mount
   };
 });

@@ -115,10 +115,18 @@
     return `${normalized || "route"}.gpx`;
   }
 
-  function createDownload(route) {
+  function createDownload(route, track) {
+    const safeRoute = route || {};
+    const loadedCoordinates = track && Array.isArray(track.coordinates) ? track.coordinates : null;
+    if (safeRoute.trackRef && (!loadedCoordinates || loadedCoordinates.length < 2)) {
+      throw new Error("內建路線軌跡尚未載入，暫時無法下載 GPX。");
+    }
+    const routeForDownload = loadedCoordinates
+      ? Object.assign({}, safeRoute, { coordinates: loadedCoordinates })
+      : safeRoute;
     return {
-      filename: safeFilename(route && route.name),
-      text: serialize(route),
+      filename: safeFilename(safeRoute.name),
+      text: serialize(routeForDownload),
       mimeType: MIME_TYPE
     };
   }

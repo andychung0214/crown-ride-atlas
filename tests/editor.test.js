@@ -147,3 +147,26 @@ test("v1 備份匯入確認文字提示會升級為 v2", () => {
   assert.match(prompt, /升級為 v2/);
   assert.match(prompt, /2 筆有效資料、1 筆無效資料與 1 筆衝突/);
 });
+
+test("編輯內建路線前會取得已載入的軌跡，本機路線則沿用現有座標", async () => {
+  const track = {
+    routeId: "built-in",
+    coordinates: [{ lat: 25, lng: 121, ele: 10 }, { lat: 25.01, lng: 121.01, ele: 30 }]
+  };
+  const builtIn = await Editor.resolveWorkingCoordinates({ id: "built-in", trackRef: "built-in" }, {
+    load: async routeId => {
+      assert.equal(routeId, "built-in");
+      return track;
+    }
+  });
+  const local = await Editor.resolveWorkingCoordinates({
+    id: "local",
+    trackSource: "local",
+    coordinates
+  }, {
+    load: async () => { throw new Error("本機路線不應載入 bundle"); }
+  });
+
+  assert.deepEqual(builtIn, track.coordinates);
+  assert.deepEqual(local, coordinates);
+});

@@ -94,6 +94,7 @@
     if (settings.pressed != null) element.setAttribute("aria-pressed", String(settings.pressed));
     if (settings.controls) element.setAttribute("aria-controls", settings.controls);
     if (settings.expanded != null) element.setAttribute("aria-expanded", String(settings.expanded));
+    if (settings.disabled) element.disabled = true;
     if (settings.hidden) element.hidden = true;
     Object.entries(settings.data || {}).forEach(([key, value]) => {
       element.dataset[key] = String(value);
@@ -500,10 +501,44 @@
   }
 
   function routeDetailPage(documentRef, state, actions) {
-    const route = state.selectedRoute;
+    const sourceRoute = state.selectedRoute;
+    const currentTrackState = state.trackState && state.trackState.routeId === (sourceRoute && sourceRoute.id)
+      ? state.trackState
+      : { status: "idle", track: null, error: null };
+    const trackReady = currentTrackState.status === "ready"
+      && currentTrackState.track
+      && Array.isArray(currentTrackState.track.coordinates);
+    const route = trackReady
+      ? Object.assign({}, sourceRoute, {
+        coordinates: currentTrackState.track.coordinates,
+        track: currentTrackState.track
+      })
+      : sourceRoute;
     if (!route) return notFoundPage(documentRef, "找不到這條路線", "它可能已從本機資料中移除。");
     const favorite = state.favorites.has(route.id);
     const elevation = elevationSummary(route.coordinates);
+    const trackLoading = currentTrackState.status === "loading";
+    const trackError = currentTrackState.status === "error";
+    const trackMessage = trackLoading
+      ? "正在載入路線資料，地圖與 GPX 下載暫時停用。"
+      : trackError
+        ? "路線資料暫時無法載入，請重試。"
+        : trackReady
+          ? "路線資料已載入，可檢視地圖與下載 GPX。"
+          : "路線資料尚未準備完成。";
+    const trackStatus = node(documentRef, "p", {
+      className: `route-track-status route-track-status--${currentTrackState.status}`,
+      text: trackMessage,
+      attributes: { role: "status", "aria-live": "polite", "aria-atomic": "true" }
+    });
+    const retry = trackError
+      ? node(documentRef, "button", {
+        className: "button button--quiet",
+        type: "button",
+        text: "重新載入路線資料",
+        on: { click: () => actions.retryTrack && actions.retryTrack(route.id) }
+      })
+      : null;
 
     return node(documentRef, "article", { className: "route-detail" }, [
       node(documentRef, "header", { className: "route-detail__hero" }, [
@@ -518,7 +553,8 @@
               className: "button button--accent",
               type: "button",
               text: "下載 GPX",
-              on: { click: () => actions.downloadGpx(route) }
+              disabled: !trackReady,
+              on: { click: () => actions.downloadGpx && actions.downloadGpx(route, currentTrackState.track) }
             }),
             node(documentRef, "button", {
               className: "button button--quiet",
@@ -545,11 +581,13 @@
       ]),
       node(documentRef, "section", { className: "route-map-section content-section" }, [
         sectionHeading(documentRef, "ROUTE MAP", "道路的線條", "地圖與 GPX 使用同一份座標資料，互動地圖不可用時會顯示離線輪廓。"),
+        trackStatus,
+        retry,
         node(documentRef, "div", { className: "route-map-layout" }, [
           node(documentRef, "div", {
             className: "route-map paper-panel",
             data: { routeMap: route.id },
-            attributes: { "aria-busy": "true" }
+            attributes: { "aria-busy": String(trackLoading) }
           }),
           node(documentRef, "aside", { className: "ride-profile paper-panel" }, [
             node(documentRef, "p", { className: "eyebrow", text: "RIDE PROFILE" }),
@@ -564,7 +602,8 @@
               className: "button button--accent button--wide",
               type: "button",
               text: "下載 GPX 路線",
-              on: { click: () => actions.downloadGpx(route) }
+              disabled: !trackReady,
+              on: { click: () => actions.downloadGpx && actions.downloadGpx(route, currentTrackState.track) }
             })
           ])
         ]),
@@ -573,7 +612,9 @@
             node(documentRef, "strong", { text: "海拔剖面" }),
             node(documentRef, "span", { text: elevation.label })
           ]),
-          node(documentRef, "div", { data: { elevation: route.id } })
+          trackReady
+            ? node(documentRef, "div", { data: { elevation: route.id } })
+            : node(documentRef, "p", { className: "elevation-chart__empty", text: "軌跡資料載入後會顯示海拔剖面。" })
         ])
       ]),
       node(documentRef, "section", { className: "route-story content-section" }, [
@@ -749,6 +790,7 @@
     routeArtEntries,
     selectFeaturedRoute,
     pageTitle,
+    routeDetailPage,
     mount
   };
 });

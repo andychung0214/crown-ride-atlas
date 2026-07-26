@@ -14,7 +14,10 @@
       "ImageTools",
       "MapView",
       "Editor",
-      "Render"
+      "Render",
+      "TrackRegistry",
+      "TrackManifest",
+      "TrackLoader"
     ];
     const missing = required.filter(name => !app[name]);
     const rootElement = root.document.getElementById("app");
@@ -41,12 +44,25 @@
       allRoutes: [],
       visibleRoutes: [],
       selectedRoute: null,
+      trackState: {
+        routeId: null,
+        status: "idle",
+        track: null,
+        error: null
+      },
       regions: app.Data.regions,
       challenges: app.Data.challenges,
       routeArt: app.Data.routeArt
     };
     let interactiveHandles = [];
     let hasRendered = false;
+    let trackRequestId = 0;
+    const trackLoader = app.TrackLoader.create({
+      documentRef: root.document,
+      registry: app.TrackRegistry,
+      manifest: app.TrackManifest,
+      baseUrl: root.document.baseURI
+    });
 
     app.Theme.applyTheme(state.theme, root.document.documentElement, root.localStorage);
 
@@ -81,17 +97,36 @@
       interactiveHandles = [];
     }
 
+    function hydratedRoute(route) {
+      const trackState = state.trackState;
+      if (
+        !route ||
+        trackState.routeId !== route.id ||
+        trackState.status !== "ready" ||
+        !trackState.track ||
+        !Array.isArray(trackState.track.coordinates)
+      ) {
+        return route;
+      }
+      return Object.assign({}, route, {
+        coordinates: trackState.track.coordinates,
+        track: trackState.track
+      });
+    }
+
     function mountInteractiveViews() {
       rootElement.querySelectorAll("[data-route-map]").forEach(element => {
-        const route = state.allRoutes.find(item => item.id === element.dataset.routeMap);
-        if (!route) return;
+        const route = hydratedRoute(state.allRoutes.find(item => item.id === element.dataset.routeMap));
+        if (!route || !Array.isArray(route.coordinates) || route.coordinates.length < 2) return;
         const handle = app.MapView.mount(element, route);
         interactiveHandles.push(handle);
         element.setAttribute("aria-busy", "false");
       });
       rootElement.querySelectorAll("[data-elevation]").forEach(element => {
-        const route = state.allRoutes.find(item => item.id === element.dataset.elevation);
-        if (route) app.MapView.mountElevation(element, route);
+        const route = hydratedRoute(state.allRoutes.find(item => item.id === element.dataset.elevation));
+        if (route && Array.isArray(route.coordinates) && route.coordinates.length > 1) {
+          app.MapView.mountElevation(element, route);
+        }
       });
       const editorRoot = rootElement.querySelector("[data-editor-root]");
       if (editorRoot) {
@@ -102,6 +137,7 @@
           imageTools: app.ImageTools,
           gpx: app.Gpx,
           geo: app.Geo,
+          trackLoader,
           announce,
           onChanged: () => render()
         }));
@@ -121,9 +157,82 @@
         : null;
     }
 
+    function setIdleTrackState() {
+      trackRequestId += 1;
+      state.trackState = { routeId: null, status: "idle", track: null, error: null };
+    }
+
+    function startTrackLoad(route) {
+      const requestedRouteId = route.id;
+      const requestedTrackRef = route.trackRef;
+      const requestId = ++trackRequestId;
+      state.trackState = {
+        routeId: requestedRouteId,
+        status: "loading",
+        track: null,
+        error: null
+      };
+      trackLoader.load(requestedTrackRef).then(track => {
+        const selected = state.selectedRoute;
+        if (
+          requestId !== trackRequestId ||
+          !selected ||
+          selected.id !== requestedRouteId ||
+          selected.trackRef !== requestedTrackRef
+        ) return;
+        state.trackState = { routeId: requestedRouteId, status: "ready", track, error: null };
+        render();
+      }).catch(error => {
+        const selected = state.selectedRoute;
+        if (
+          requestId !== trackRequestId ||
+          !selected ||
+          selected.id !== requestedRouteId ||
+          selected.trackRef !== requestedTrackRef
+        ) return;
+        state.trackState = { routeId: requestedRouteId, status: "error", track: null, error };
+        render();
+      });
+    }
+
+    function ensureSelectedTrack() {
+      const route = state.selectedRoute;
+      if (!route) {
+        if (state.trackState.status !== "idle" || state.trackState.routeId) setIdleTrackState();
+        return;
+      }
+
+      if (!route.trackRef && Array.isArray(route.coordinates) && route.coordinates.length >= 2) {
+        if (state.trackState.routeId !== route.id || state.trackState.status !== "ready") {
+          trackRequestId += 1;
+          state.trackState = {
+            routeId: route.id,
+            status: "ready",
+            track: { routeId: route.id, coordinates: route.coordinates },
+            error: null
+          };
+        }
+        return;
+      }
+
+      if (!route.trackRef) {
+        if (state.trackState.routeId !== route.id || state.trackState.status !== "idle") {
+          trackRequestId += 1;
+          state.trackState = { routeId: route.id, status: "idle", track: null, error: null };
+        }
+        return;
+      }
+
+      if (state.trackState.routeId === route.id && ["loading", "ready", "error"].includes(state.trackState.status)) {
+        return;
+      }
+      startTrackLoad(route);
+    }
+
     function render(options) {
       clearInteractiveViews();
       updateDerivedState();
+      ensureSelectedTrack();
       root.document.title = app.Render.pageTitle(state.routeInfo, state.allRoutes);
       const result = app.Render.mount(rootElement, state, actions);
       mountInteractiveViews();
@@ -163,14 +272,27 @@
         render();
         announce(`目前顯示 ${state.visibleRoutes.length} 條路線。`);
       },
-      downloadGpx(route) {
+      downloadGpx(route, track) {
         try {
-          const download = app.Gpx.createDownload(route);
+          const activeTrack = track || (
+            state.trackState.routeId === route.id && state.trackState.status === "ready"
+              ? state.trackState.track
+              : null
+          );
+          const download = app.Gpx.createDownload(route, activeTrack);
           createFileDownload(download.filename, download.text, download.mimeType);
           announce(`已準備下載 ${route.name} GPX。`);
         } catch (error) {
           announce(error.message || "目前無法建立 GPX。");
         }
+      },
+      retryTrack(routeId) {
+        const route = state.selectedRoute;
+        if (!route || route.id !== routeId || !route.trackRef) return;
+        trackLoader.clear(route.trackRef);
+        trackRequestId += 1;
+        state.trackState = { routeId, status: "idle", track: null, error: null };
+        render();
       },
       toggleFavorite(routeId) {
         if (state.favorites.has(routeId)) {
