@@ -19,6 +19,7 @@
   const GRADE_WINDOW_M = 100;
   const MIN_CLIMB_DISTANCE_M = 500;
   const MIN_CLIMB_GAIN_M = 30;
+  const CLIMB_DESCENT_TOLERANCE_M = 10;
 
   function normalizePoint(point) {
     if (!Geo || !Geo.isCoordinate(point)) return null;
@@ -71,21 +72,52 @@
     const useInterpolation = targetDistanceKm > previous.distanceKm && next && next.distanceKm > previous.distanceKm;
     const anchorDistanceKm = useInterpolation ? targetDistanceKm : previous.distanceKm;
     const anchorElevation = useInterpolation
-      ? previous.ele + (next.ele - previous.ele) * (targetDistanceKm - previous.distanceKm) / (next.distanceKm - previous.distanceKm)
-      : previous.ele;
+      ? previous.smoothedEle + (next.smoothedEle - previous.smoothedEle) * (targetDistanceKm - previous.distanceKm) / (next.distanceKm - previous.distanceKm)
+      : previous.smoothedEle;
     const distanceM = (current.distanceKm - anchorDistanceKm) * 1000;
-    return distanceM > 0 ? (current.ele - anchorElevation) / distanceM * 100 : 0;
+    return distanceM > 0 ? (current.smoothedEle - anchorElevation) / distanceM * 100 : 0;
   }
 
   function elevationTotals(coordinates, noiseThresholdM) {
     let elevationGainM = 0;
     let elevationLossM = 0;
+    if (coordinates.length < 2) return { elevationGainM, elevationLossM };
+
+    let direction = 0;
+    let trendStart = coordinates[0].smoothedEle;
+    let extreme = trendStart;
 
     for (let index = 1; index < coordinates.length; index += 1) {
-      const change = coordinates[index].smoothedEle - coordinates[index - 1].smoothedEle;
-      if (change >= noiseThresholdM) elevationGainM += change;
-      if (change <= -noiseThresholdM) elevationLossM -= change;
+      const elevation = coordinates[index].smoothedEle;
+
+      if (direction === 0) {
+        if (Math.abs(elevation - trendStart) < noiseThresholdM) continue;
+        direction = elevation > trendStart ? 1 : -1;
+        extreme = elevation;
+        continue;
+      }
+
+      if (direction === 1) {
+        if (elevation >= extreme) {
+          extreme = elevation;
+        } else if (extreme - elevation >= noiseThresholdM) {
+          elevationGainM += extreme - trendStart;
+          trendStart = extreme;
+          extreme = elevation;
+          direction = -1;
+        }
+      } else if (elevation <= extreme) {
+        extreme = elevation;
+      } else if (elevation - extreme >= noiseThresholdM) {
+        elevationLossM += trendStart - extreme;
+        trendStart = extreme;
+        extreme = elevation;
+        direction = 1;
+      }
     }
+
+    if (direction === 1) elevationGainM += extreme - trendStart;
+    if (direction === -1) elevationLossM += trendStart - extreme;
 
     return { elevationGainM, elevationLossM };
   }
@@ -99,13 +131,12 @@
     return "extreme";
   }
 
-  function createClimb(coordinates, startIndex, endIndex, minDistanceM, minGainM) {
+  function createClimb(coordinates, startIndex, endIndex, gainM, minDistanceM, minGainM) {
     const start = coordinates[startIndex];
     const end = coordinates[endIndex];
     const distanceKm = end.distanceKm - start.distanceKm;
-    const elevationGainM = end.smoothedEle - start.smoothedEle;
 
-    if (distanceKm * 1000 < minDistanceM || elevationGainM < minGainM) return null;
+    if (distanceKm * 1000 < minDistanceM || gainM < minGainM) return null;
 
     const grades = coordinates.slice(startIndex + 1, endIndex + 1).map(point => point.gradePct);
     return {
@@ -114,9 +145,9 @@
       startDistanceKm: start.distanceKm,
       endDistanceKm: end.distanceKm,
       distanceKm,
-      elevationGainM,
-      averageGradePct: elevationGainM / (distanceKm * 1000) * 100,
-      maxGradePct: Math.max(0, ...grades)
+      gainM,
+      averageGradePct: gainM / (distanceKm * 1000) * 100,
+      maximumGradePct: Math.max(0, ...grades)
     };
   }
 
@@ -125,24 +156,35 @@
       minDistanceM: MIN_CLIMB_DISTANCE_M,
       minGainM: MIN_CLIMB_GAIN_M
     }, options || {});
-    const minDistanceM = Number.isFinite(settings.minDistanceM) && settings.minDistanceM >= 0
-      ? settings.minDistanceM
+    const minDistanceM = Number.isFinite(settings.minDistanceM)
+      ? Math.max(MIN_CLIMB_DISTANCE_M, settings.minDistanceM)
       : MIN_CLIMB_DISTANCE_M;
-    const minGainM = Number.isFinite(settings.minGainM) && settings.minGainM >= 0
-      ? settings.minGainM
+    const minGainM = Number.isFinite(settings.minGainM)
+      ? Math.max(MIN_CLIMB_GAIN_M, settings.minGainM)
       : MIN_CLIMB_GAIN_M;
     if (!Array.isArray(coordinates) || coordinates.length < 2) return [];
     const climbs = [];
     let startIndex = 0;
+    let peakIndex = 0;
+    let gainM = 0;
 
     for (let index = 1; index < coordinates.length; index += 1) {
-      if (coordinates[index].smoothedEle >= coordinates[index - 1].smoothedEle) continue;
-      const climb = createClimb(coordinates, startIndex, index - 1, minDistanceM, minGainM);
+      const change = coordinates[index].ele - coordinates[index - 1].ele;
+      if (change > 0) {
+        gainM += change;
+        peakIndex = index;
+        continue;
+      }
+
+      if (coordinates[peakIndex].ele - coordinates[index].ele <= CLIMB_DESCENT_TOLERANCE_M) continue;
+      const climb = createClimb(coordinates, startIndex, peakIndex, gainM, minDistanceM, minGainM);
       if (climb) climbs.push(climb);
       startIndex = index;
+      peakIndex = index;
+      gainM = 0;
     }
 
-    const finalClimb = createClimb(coordinates, startIndex, coordinates.length - 1, minDistanceM, minGainM);
+    const finalClimb = createClimb(coordinates, startIndex, coordinates.length - 1, gainM, minDistanceM, minGainM);
     if (finalClimb) climbs.push(finalClimb);
     return climbs;
   }
@@ -152,11 +194,11 @@
       gradeWindowM: GRADE_WINDOW_M,
       smoothingWindowM: GRADE_WINDOW_M,
       noiseThresholdM: 2,
-      minClimbDistanceM: MIN_CLIMB_DISTANCE_M,
-      minClimbGainM: MIN_CLIMB_GAIN_M
+      climbMinDistanceM: MIN_CLIMB_DISTANCE_M,
+      climbMinGainM: MIN_CLIMB_GAIN_M
     }, options || {});
-    const gradeWindowM = Number.isFinite(settings.gradeWindowM) && settings.gradeWindowM > 0
-      ? settings.gradeWindowM
+    const gradeWindowM = Number.isFinite(settings.gradeWindowM)
+      ? Math.max(GRADE_WINDOW_M, settings.gradeWindowM)
       : GRADE_WINDOW_M;
     const smoothingWindowM = Number.isFinite(settings.smoothingWindowM) && settings.smoothingWindowM > 0
       ? settings.smoothingWindowM
@@ -164,11 +206,11 @@
     const noiseThresholdM = Number.isFinite(settings.noiseThresholdM) && settings.noiseThresholdM >= 0
       ? settings.noiseThresholdM
       : 2;
-    const minClimbDistanceM = Number.isFinite(settings.minClimbDistanceM) && settings.minClimbDistanceM >= 0
-      ? settings.minClimbDistanceM
+    const minClimbDistanceM = Number.isFinite(settings.climbMinDistanceM)
+      ? Math.max(MIN_CLIMB_DISTANCE_M, settings.climbMinDistanceM)
       : MIN_CLIMB_DISTANCE_M;
-    const minClimbGainM = Number.isFinite(settings.minClimbGainM) && settings.minClimbGainM >= 0
-      ? settings.minClimbGainM
+    const minClimbGainM = Number.isFinite(settings.climbMinGainM)
+      ? Math.max(MIN_CLIMB_GAIN_M, settings.climbMinGainM)
       : MIN_CLIMB_GAIN_M;
     const coordinates = [];
 
@@ -198,9 +240,9 @@
         distanceKm: coordinates.length ? coordinates[coordinates.length - 1].distanceKm : 0,
         elevationGainM: elevation.elevationGainM,
         elevationLossM: elevation.elevationLossM,
-        minElevationM: elevations.length ? Math.min(...elevations) : 0,
-        maxElevationM: elevations.length ? Math.max(...elevations) : 0,
-        maxSustainedGradePct: Math.max(0, ...coordinates.map(point => point.gradePct))
+        minimumElevationM: elevations.length ? Math.min(...elevations) : 0,
+        maximumElevationM: elevations.length ? Math.max(...elevations) : 0,
+        maximumSustainedGradePct: Math.max(0, ...coordinates.map(point => point.gradePct))
       },
       climbs: detectClimbs(coordinates, {
         minDistanceM: minClimbDistanceM,
