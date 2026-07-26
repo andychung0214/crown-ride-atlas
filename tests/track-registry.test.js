@@ -67,3 +67,22 @@ test("固定 manifest 涵蓋且只涵蓋 Data.routes 的 72 個 route ID", () =>
     assert.match(entry.src, /^js\/data\/tracks\/[a-z0-9-]+\.js$/);
   });
 });
+
+test("六條路線美學都由獨立 route-art bundle 載入", () => {
+  const manifest = require("../js/data/track-manifest.js");
+  const routeArtIds = [
+    "route-art-little-taiwan",
+    "route-art-elephant",
+    "route-art-heart-bay",
+    "route-art-crown",
+    "route-art-bear",
+    "route-art-flying-bird"
+  ];
+
+  routeArtIds.forEach(routeId => {
+    assert.deepEqual(manifest[routeId], {
+      bundleId: "route-art",
+      src: "js/data/tracks/route-art.js"
+    });
+  });
+});

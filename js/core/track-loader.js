@@ -21,6 +21,7 @@
     const baseUrl = settings.baseUrl || (documentRef && documentRef.baseURI);
     const routePromises = new Map();
     const bundlePromises = new Map();
+    const bundleScripts = new Map();
 
     function getEntry(routeId) {
       const entry = manifest[routeId];
@@ -35,6 +36,16 @@
         script.remove();
       } else if (script.parentNode) {
         script.parentNode.removeChild(script);
+      }
+    }
+
+    function clearBundle(bundleId, bundlePromise) {
+      if (bundlePromises.get(bundleId) !== bundlePromise) return;
+      bundlePromises.delete(bundleId);
+      const record = bundleScripts.get(bundleId);
+      if (record && record.promise === bundlePromise) {
+        bundleScripts.delete(bundleId);
+        removeScript(record.script);
       }
     }
 
@@ -56,13 +67,11 @@
         rejectBundle = reject;
       });
       bundlePromises.set(entry.bundleId, bundlePromise);
+      bundleScripts.set(entry.bundleId, { script, promise: bundlePromise });
 
       script.onload = () => resolveBundle();
       script.onerror = () => {
-        if (bundlePromises.get(entry.bundleId) === bundlePromise) {
-          bundlePromises.delete(entry.bundleId);
-        }
-        removeScript(script);
+        clearBundle(entry.bundleId, bundlePromise);
         rejectBundle(new Error(`軌跡 bundle 載入失敗：${entry.bundleId}`));
       };
       documentRef.head.append(script);
@@ -86,9 +95,13 @@
         return cached;
       }
 
-      let routePromise = loadBundle(entry).then(() => {
+      const bundlePromise = loadBundle(entry);
+      let routePromise = bundlePromise.then(() => {
         const track = registry.get(routeId);
-        if (!track) throw new Error(`軌跡 bundle 未註冊路線：${routeId}`);
+        if (!track) {
+          clearBundle(entry.bundleId, bundlePromise);
+          throw new Error(`軌跡 bundle 未註冊路線：${routeId}`);
+        }
         return track;
       });
       routePromise = routePromise.catch(error => {

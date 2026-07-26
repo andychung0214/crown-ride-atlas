@@ -80,12 +80,12 @@
     "lienchiang-nangan": { bundleId: "lienchiang", src: "js/data/tracks/lienchiang.js" },
     "lienchiang-beigan": { bundleId: "lienchiang", src: "js/data/tracks/lienchiang.js" },
     "lienchiang-dongyin": { bundleId: "lienchiang", src: "js/data/tracks/lienchiang.js" },
-    "route-art-little-taiwan": { bundleId: "taichung", src: "js/data/tracks/taichung.js" },
-    "route-art-elephant": { bundleId: "changhua", src: "js/data/tracks/changhua.js" },
-    "route-art-heart-bay": { bundleId: "kaohsiung", src: "js/data/tracks/kaohsiung.js" },
-    "route-art-crown": { bundleId: "taipei", src: "js/data/tracks/taipei.js" },
-    "route-art-bear": { bundleId: "hualien", src: "js/data/tracks/hualien.js" },
-    "route-art-flying-bird": { bundleId: "taitung", src: "js/data/tracks/taitung.js" }
+    "route-art-little-taiwan": { bundleId: "route-art", src: "js/data/tracks/route-art.js" },
+    "route-art-elephant": { bundleId: "route-art", src: "js/data/tracks/route-art.js" },
+    "route-art-heart-bay": { bundleId: "route-art", src: "js/data/tracks/route-art.js" },
+    "route-art-crown": { bundleId: "route-art", src: "js/data/tracks/route-art.js" },
+    "route-art-bear": { bundleId: "route-art", src: "js/data/tracks/route-art.js" },
+    "route-art-flying-bird": { bundleId: "route-art", src: "js/data/tracks/route-art.js" }
   };
 
   Object.values(manifest).forEach(Object.freeze);
