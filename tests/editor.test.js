@@ -170,3 +170,41 @@ test("編輯內建路線前會取得已載入的軌跡，本機路線則沿用�
   assert.deepEqual(builtIn, track.coordinates);
   assert.deepEqual(local, coordinates);
 });
+
+test("較新的編輯選擇完成後不會被較舊的軌跡載入覆蓋", async () => {
+  const gate = Editor.createEditRequestGate();
+  const pending = new Map();
+  const rendered = [];
+  const open = routeId => {
+    const requestId = gate.begin();
+    return new Promise(resolve => pending.set(routeId, resolve)).then(track => {
+      if (gate.isCurrent(requestId)) rendered.push(track.routeId);
+    });
+  };
+
+  const older = open("A");
+  const newer = open("B");
+  pending.get("B")({ routeId: "B" });
+  await newer;
+  pending.get("A")({ routeId: "A" });
+  await older;
+
+  assert.deepEqual(rendered, ["B"]);
+});
+
+test("編輯器卸載後不會渲染或顯示已失效載入的錯誤", async () => {
+  const gate = Editor.createEditRequestGate();
+  const requestId = gate.begin();
+  let rendered = 0;
+  let announced = 0;
+  const pending = Promise.reject(new Error("軌跡載入失敗")).then(
+    () => { if (gate.isCurrent(requestId)) rendered += 1; },
+    () => { if (gate.isCurrent(requestId)) announced += 1; }
+  );
+
+  gate.destroy();
+  await pending;
+
+  assert.equal(rendered, 0);
+  assert.equal(announced, 0);
+});

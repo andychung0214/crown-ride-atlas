@@ -162,6 +162,18 @@
       state.trackState = { routeId: null, status: "idle", track: null, error: null };
     }
 
+    function hasUsableCoordinates(coordinates) {
+      return Array.isArray(coordinates)
+        && coordinates.length >= 2
+        && coordinates.every(point => point
+          && Number.isFinite(point.lat)
+          && Number.isFinite(point.lng)
+          && point.lat >= -90
+          && point.lat <= 90
+          && point.lng >= -180
+          && point.lng <= 180);
+    }
+
     function startTrackLoad(route) {
       const requestedRouteId = route.id;
       const requestedTrackRef = route.trackRef;
@@ -180,6 +192,9 @@
           selected.id !== requestedRouteId ||
           selected.trackRef !== requestedTrackRef
         ) return;
+        if (!hasUsableCoordinates(track && track.coordinates)) {
+          throw new Error("路線軌跡至少需要兩個有效座標。");
+        }
         state.trackState = { routeId: requestedRouteId, status: "ready", track, error: null };
         render();
       }).catch(error => {
@@ -202,7 +217,7 @@
         return;
       }
 
-      if (!route.trackRef && Array.isArray(route.coordinates) && route.coordinates.length >= 2) {
+      if (!route.trackRef && hasUsableCoordinates(route.coordinates)) {
         if (state.trackState.routeId !== route.id || state.trackState.status !== "ready") {
           trackRequestId += 1;
           state.trackState = {
@@ -216,7 +231,15 @@
       }
 
       if (!route.trackRef) {
-        if (state.trackState.routeId !== route.id || state.trackState.status !== "idle") {
+        if (Array.isArray(route.coordinates)) {
+          trackRequestId += 1;
+          state.trackState = {
+            routeId: route.id,
+            status: "error",
+            track: null,
+            error: new Error("路線軌跡至少需要兩個有效座標。")
+          };
+        } else if (state.trackState.routeId !== route.id || state.trackState.status !== "idle") {
           trackRequestId += 1;
           state.trackState = { routeId: route.id, status: "idle", track: null, error: null };
         }

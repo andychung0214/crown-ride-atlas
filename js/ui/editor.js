@@ -117,6 +117,24 @@
     return track.coordinates.map(point => ({ ...point }));
   }
 
+  function createEditRequestGate() {
+    let generation = 0;
+    let mounted = true;
+    return {
+      begin() {
+        generation += 1;
+        return generation;
+      },
+      isCurrent(requestId) {
+        return mounted && requestId === generation;
+      },
+      destroy() {
+        mounted = false;
+        generation += 1;
+      }
+    };
+  }
+
   function node(documentRef, tag, options, children) {
     const element = documentRef.createElement(tag);
     const settings = options || {};
@@ -188,6 +206,7 @@
     const trackLoader = settings.trackLoader;
     const announce = settings.announce || function () {};
     const onChanged = settings.onChanged || function () {};
+    const editRequestGate = createEditRequestGate();
 
     function confirmAction(message) {
       return browserWindow.confirm(message);
@@ -229,6 +248,7 @@
     }
 
     async function openForm(route) {
+      const requestId = editRequestGate.begin();
       const base = route || null;
       let workingCoordinates = base && base.trackSource === "local" && Array.isArray(base.coordinates)
         ? base.coordinates.map(point => ({ ...point }))
@@ -238,10 +258,13 @@
         try {
           builtInCoordinates = await resolveWorkingCoordinates(base, trackLoader);
         } catch (error) {
-          announce(error.message || "內建路線軌跡暫時無法載入。");
+          if (editRequestGate.isCurrent(requestId)) {
+            announce(error.message || "內建路線軌跡暫時無法載入。");
+          }
           return;
         }
       }
+      if (!editRequestGate.isCurrent(requestId)) return;
       let workingThumbnail = base ? base.thumbnail : "";
       const form = node(documentRef, "form", { className: "route-editor-form" });
       const heading = node(documentRef, "div", { className: "editor-dialog__header" }, [
@@ -520,13 +543,19 @@
       node(documentRef, "div", { className: "editor-route-list" }, routes.map(routeRow)),
       dialog
     );
-    return { destroy() { dialog.remove(); } };
+    return {
+      destroy() {
+        editRequestGate.destroy();
+        dialog.remove();
+      }
+    };
   }
 
   return {
     buildRoute,
     buildImportPrompt,
     resolveWorkingCoordinates,
+    createEditRequestGate,
     mount
   };
 });

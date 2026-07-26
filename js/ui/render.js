@@ -48,6 +48,18 @@
     };
   }
 
+  function hasUsableCoordinates(coordinates) {
+    return Array.isArray(coordinates)
+      && coordinates.length >= 2
+      && coordinates.every(point => point
+        && Number.isFinite(point.lat)
+        && Number.isFinite(point.lng)
+        && point.lat >= -90
+        && point.lat <= 90
+        && point.lng >= -180
+        && point.lng <= 180);
+  }
+
   function routeArtEntries(routeArt, routes) {
     const routeById = new Map((Array.isArray(routes) ? routes : []).map(route => [route.id, route]));
     return (Array.isArray(routeArt) ? routeArt : [])
@@ -507,7 +519,7 @@
       : { status: "idle", track: null, error: null };
     const trackReady = currentTrackState.status === "ready"
       && currentTrackState.track
-      && Array.isArray(currentTrackState.track.coordinates);
+      && hasUsableCoordinates(currentTrackState.track.coordinates);
     const route = trackReady
       ? Object.assign({}, sourceRoute, {
         coordinates: currentTrackState.track.coordinates,
@@ -518,7 +530,8 @@
     const favorite = state.favorites.has(route.id);
     const elevation = elevationSummary(route.coordinates);
     const trackLoading = currentTrackState.status === "loading";
-    const trackError = currentTrackState.status === "error";
+    const trackError = currentTrackState.status === "error"
+      || (currentTrackState.status === "ready" && !trackReady);
     const trackMessage = trackLoading
       ? "正在載入路線資料，地圖與 GPX 下載暫時停用。"
       : trackError

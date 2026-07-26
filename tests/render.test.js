@@ -154,3 +154,23 @@ test("軌跡就緒時顯示地圖與可下載 GPX", () => {
   assert.equal(download.disabled, undefined);
   assert.ok(nodes.some(node => node.dataset.elevation === "r1"));
 });
+
+for (const coordinates of [[], [{ lat: 25, lng: 121, ele: 10 }]]) {
+  test(`不足兩個座標點的 ready 軌跡會改為可重試錯誤（${coordinates.length} 點）`, () => {
+    let retried = null;
+    const state = routeState("ready");
+    state.trackState.track = { routeId: "r1", coordinates };
+    const page = Render.routeDetailPage(fakeDocument(), state, {
+      retryTrack(routeId) { retried = routeId; }
+    });
+    const nodes = descendants(page);
+    const download = nodes.find(node => node.name === "button" && node.textContent === "下載 GPX");
+    const retry = nodes.find(node => node.name === "button" && node.textContent === "重新載入路線資料");
+
+    assert.equal(download.disabled, true);
+    assert.ok(retry);
+    retry.handlers.click();
+    assert.equal(retried, "r1");
+    assert.equal(nodes.some(node => node.dataset.elevation === "r1"), false);
+  });
+}
