@@ -17,7 +17,8 @@ const Geo = require("../js/core/geo.js");
 const { analyzeCoordinates } = require("../js/core/track-analysis.js");
 const DEFAULT_PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const COMPARISON_TOLERANCE = 1e-6;
-const MAX_WAYPOINT_TRACK_DISTANCE_KM = 0.2;
+// 人工地標容許 200m，另加重採樣最大 5m 幾何偏差。
+const MAX_WAYPOINT_TRACK_DISTANCE_KM = 0.205;
 const VALID_DIRECTIONS = new Set(["loop", "out-and-back", "point-to-point"]);
 const VALID_WAYPOINT_ROLES = new Set(["start", "via", "finish"]);
 
@@ -70,6 +71,32 @@ function isIsoTimestamp(value) {
     && new Date(value).toISOString() === value;
 }
 
+function nearestTrackDistanceKm(point, coordinates) {
+  const latitudeKm = 111.32;
+  const longitudeKm = latitudeKm * Math.cos(point.lat * Math.PI / 180);
+  let nearestDistanceKm = Infinity;
+
+  for (let index = 1; index < coordinates.length; index += 1) {
+    const start = coordinates[index - 1];
+    const end = coordinates[index];
+    const startX = (start.lng - point.lng) * longitudeKm;
+    const startY = (start.lat - point.lat) * latitudeKm;
+    const endX = (end.lng - point.lng) * longitudeKm;
+    const endY = (end.lat - point.lat) * latitudeKm;
+    const segmentX = endX - startX;
+    const segmentY = endY - startY;
+    const segmentLengthSquared = segmentX * segmentX + segmentY * segmentY;
+    const projection = segmentLengthSquared > 0
+      ? Math.max(0, Math.min(1, -(startX * segmentX + startY * segmentY) / segmentLengthSquared))
+      : 0;
+    nearestDistanceKm = Math.min(
+      nearestDistanceKm,
+      Math.hypot(startX + segmentX * projection, startY + segmentY * projection)
+    );
+  }
+  return nearestDistanceKm;
+}
+
 function validateReviewMetadata(routeId, track) {
   if (track.routeId !== routeId) throw new Error(`${routeId} Track routeId 不一致。`);
   if (!VALID_DIRECTIONS.has(track.direction)) throw new Error(`${routeId} 路線方向無效。`);
@@ -84,6 +111,9 @@ function validateReviewMetadata(routeId, track) {
     || typeof source.reviewerNote !== "string" || !source.reviewerNote.trim()) {
     throw new Error(`${routeId} 人工審查資料不完整。`);
   }
+  if (Date.parse(source.reviewedAt) < Date.parse(source.generatedAt)) {
+    throw new Error(`${routeId} 審查時間不得早於資料產生時間。`);
+  }
   if (!Array.isArray(track.waypoints) || track.waypoints.length < 2) {
     throw new Error(`${routeId} 缺少人工地標。`);
   }
@@ -94,9 +124,7 @@ function validateReviewMetadata(routeId, track) {
       throw new Error(`${routeId} 第 ${index + 1} 個人工地標無效。`);
     }
     roles.push(waypoint.role);
-    const nearestDistanceKm = Math.min(...track.coordinates.map(point => (
-      Geo.haversineKm(waypoint, point)
-    )));
+    const nearestDistanceKm = nearestTrackDistanceKm(waypoint, track.coordinates);
     if (nearestDistanceKm > MAX_WAYPOINT_TRACK_DISTANCE_KM) {
       throw new Error(`${routeId} 人工地標「${waypoint.name}」未貼近軌跡。`);
     }
@@ -138,6 +166,22 @@ function validateTrack(routeId, track, options = {}) {
     track.coordinates.map(point => ({ lat: point.lat, lng: point.lng, ele: point.ele })),
     validateElevationAnalysis(track.source && track.source.elevationAnalysis, routeId) || undefined
   );
+  track.coordinates.forEach((point, index) => {
+    const expected = recomputed.coordinates[index];
+    if (!expected) throw new Error(`${routeId} 座標數量不一致。`);
+    if (index > 0
+      && point.distanceKm + COMPARISON_TOLERANCE < track.coordinates[index - 1].distanceKm) {
+      throw new Error(`${routeId} 座標 distanceKm 必須單調遞增。`);
+    }
+    for (const field of ["distanceKm", "smoothedEle", "gradePct"]) {
+      if (!approximatelyEqual(point[field], expected[field])) {
+        throw new Error(`${routeId} 座標欄位不一致：${field}`);
+      }
+    }
+    if (point.gradeBand !== expected.gradeBand) {
+      throw new Error(`${routeId} 座標欄位不一致：gradeBand`);
+    }
+  });
   summaryFields.forEach(field => {
     if (!approximatelyEqual(summary[field], recomputed.summary[field])) {
       throw new Error(`${routeId} 摘要欄位不一致：${field}`);

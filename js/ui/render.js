@@ -77,6 +77,9 @@
       parts.push(`海拔：${source.elevation}`);
       if (String(source.elevation).toUpperCase() === "SRTM") parts.push("SRTM 適合路線規劃，非測量級資料");
     }
+    if (typeof source.samplingNote === "string" && source.samplingNote) {
+      parts.push(source.samplingNote);
+    }
     const analysis = source.elevationAnalysis;
     if (analysis) {
       parts.push(

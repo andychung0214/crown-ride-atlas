@@ -13,8 +13,14 @@ const defaultManifest = require("../js/data/track-manifest.js");
 const DEFAULT_RESAMPLE_INTERVAL_M = 50;
 const MIN_RESAMPLE_INTERVAL_M = 30;
 const MAX_RESAMPLE_INTERVAL_M = 80;
-const TURN_ANCHOR_DEGREES = 15;
 const GRADE_CHANGE_ANCHOR_PCT = 3;
+const ANCHOR_WINDOW_M = 30;
+const MIN_ANCHOR_SPACING_M = 35;
+const SHARP_CORNER_DEGREES = 45;
+const GEOMETRY_SMOOTH_WINDOW_M = 15;
+const GEOMETRY_TOLERANCE_M = 0.25;
+const MAX_RESAMPLED_DISTANCE_ERROR_RATIO = 0.005;
+export const MAX_RESAMPLED_GEOMETRY_DEVIATION_M = 5;
 const MAX_ADJACENT_DISTANCE_KM = 5;
 const REQUEST_INTERVAL_MS = 1500;
 const MAX_RETRIES = 3;
@@ -22,6 +28,7 @@ const BROUTER_URL = "https://brouter.de/brouter";
 const BROUTER_PROFILE = "fastbike";
 const BROUTER_FORMAT = "geojson";
 const BROUTER_ELEVATION = "SRTM";
+const TRACK_SAMPLING_NOTE = "一般路段約 30–80m；髮夾彎會加密取樣以貼合真實道路幾何。";
 const ROUTE_DIRECTIONS = new Set(["loop", "out-and-back", "point-to-point"]);
 const WAYPOINT_ROLES = new Set(["start", "via", "finish"]);
 const TAIWAN_BOUNDS = [
@@ -117,7 +124,7 @@ export function parseBrouterFeature(payload) {
   return points;
 }
 
-export function resampleTrack(points, intervalM = DEFAULT_RESAMPLE_INTERVAL_M) {
+export function resampleTrack(points, intervalM = DEFAULT_RESAMPLE_INTERVAL_M, diagnostics = null) {
   if (!Array.isArray(points) || points.length < 2) return Array.isArray(points) ? points.slice() : [];
   const preferredIntervalM = Number.isFinite(intervalM)
     ? Math.max(MIN_RESAMPLE_INTERVAL_M, Math.min(MAX_RESAMPLE_INTERVAL_M, intervalM))
@@ -128,11 +135,29 @@ export function resampleTrack(points, intervalM = DEFAULT_RESAMPLE_INTERVAL_M) {
       cumulativeM[index - 1] + Geo.haversineKm(points[index - 1], points[index]) * 1000
     );
   }
+  const totalDistanceM = cumulativeM.at(-1);
 
-  function turnDegrees(index) {
-    const previous = points[index - 1];
-    const current = points[index];
-    const next = points[index + 1];
+  function interpolate(targetM) {
+    let lowerIndex = 0;
+    let upperIndex = cumulativeM.length - 1;
+    while (lowerIndex + 1 < upperIndex) {
+      const middleIndex = Math.floor((lowerIndex + upperIndex) / 2);
+      if (cumulativeM[middleIndex] < targetM) {
+        lowerIndex = middleIndex;
+      } else {
+        upperIndex = middleIndex;
+      }
+    }
+    const spanM = cumulativeM[upperIndex] - cumulativeM[lowerIndex];
+    const ratio = spanM > 0 ? (targetM - cumulativeM[lowerIndex]) / spanM : 0;
+    return {
+      lat: points[lowerIndex].lat + (points[upperIndex].lat - points[lowerIndex].lat) * ratio,
+      lng: points[lowerIndex].lng + (points[upperIndex].lng - points[lowerIndex].lng) * ratio,
+      ele: points[lowerIndex].ele + (points[upperIndex].ele - points[lowerIndex].ele) * ratio
+    };
+  }
+
+  function turnDegrees(previous, current, next) {
     const latitudeScale = Math.cos(current.lat * Math.PI / 180);
     const incoming = {
       x: (current.lng - previous.lng) * latitudeScale,
@@ -152,61 +177,346 @@ export function resampleTrack(points, intervalM = DEFAULT_RESAMPLE_INTERVAL_M) {
     return Math.acos(cosine) * 180 / Math.PI;
   }
 
+  function pointToSegmentDistanceM(point, start, end) {
+    const latitudeM = 111_320;
+    const longitudeM = latitudeM * Math.cos(point.lat * Math.PI / 180);
+    const startX = (start.lng - point.lng) * longitudeM;
+    const startY = (start.lat - point.lat) * latitudeM;
+    const endX = (end.lng - point.lng) * longitudeM;
+    const endY = (end.lat - point.lat) * latitudeM;
+    const segmentX = endX - startX;
+    const segmentY = endY - startY;
+    const segmentLengthSquared = segmentX * segmentX + segmentY * segmentY;
+    const projection = segmentLengthSquared > 0
+      ? Math.max(0, Math.min(1, -(startX * segmentX + startY * segmentY) / segmentLengthSquared))
+      : 0;
+    return Math.hypot(
+      startX + segmentX * projection,
+      startY + segmentY * projection
+    );
+  }
+
+  const sharpCandidates = [];
+  for (let index = 1; index < points.length - 1; index += 1) {
+    const turn = turnDegrees(points[index - 1], points[index], points[index + 1]);
+    if (turn >= SHARP_CORNER_DEGREES) {
+      sharpCandidates.push({ index, distanceM: cumulativeM[index], turn });
+    }
+  }
+  const selectedSharpAnchors = [];
+  for (const candidate of sharpCandidates) {
+    if (candidate.distanceM < MIN_ANCHOR_SPACING_M
+      || totalDistanceM - candidate.distanceM < MIN_ANCHOR_SPACING_M) {
+      continue;
+    }
+    const previous = selectedSharpAnchors.at(-1);
+    if (!previous || candidate.distanceM - previous.distanceM >= MIN_ANCHOR_SPACING_M) {
+      selectedSharpAnchors.push(candidate);
+    } else if (candidate.turn > previous.turn) {
+      selectedSharpAnchors[selectedSharpAnchors.length - 1] = candidate;
+    }
+  }
+  const sharpAnchors = [0, ...selectedSharpAnchors.map(anchor => anchor.index)];
+  sharpAnchors.push(points.length - 1);
+
+  const smoothedGeometry = points.map(point => ({ lat: point.lat, lng: point.lng }));
+  for (let section = 1; section < sharpAnchors.length; section += 1) {
+    const startIndex = sharpAnchors[section - 1];
+    const endIndex = sharpAnchors[section];
+    for (let index = startIndex + 1; index < endIndex; index += 1) {
+      let latitude = 0;
+      let longitude = 0;
+      let sampleCount = 0;
+      for (let sampleIndex = index;
+        sampleIndex >= startIndex
+          && cumulativeM[index] - cumulativeM[sampleIndex] <= GEOMETRY_SMOOTH_WINDOW_M;
+        sampleIndex -= 1) {
+        latitude += points[sampleIndex].lat;
+        longitude += points[sampleIndex].lng;
+        sampleCount += 1;
+      }
+      for (let sampleIndex = index + 1;
+        sampleIndex <= endIndex
+          && cumulativeM[sampleIndex] - cumulativeM[index] <= GEOMETRY_SMOOTH_WINDOW_M;
+        sampleIndex += 1) {
+        latitude += points[sampleIndex].lat;
+        longitude += points[sampleIndex].lng;
+        sampleCount += 1;
+      }
+      smoothedGeometry[index] = {
+        lat: latitude / sampleCount,
+        lng: longitude / sampleCount
+      };
+    }
+  }
+
+  function findRdpAnchorSet(geometry, toleranceM) {
+    const anchors = new Set(sharpAnchors);
+    const sections = sharpAnchors.slice(1).map((endIndex, index) => ({
+      startIndex: sharpAnchors[index],
+      endIndex
+    }));
+    while (sections.length) {
+      const { startIndex, endIndex } = sections.pop();
+      let farthestIndex = -1;
+      let maximumDeviationM = 0;
+      for (let index = startIndex + 1; index < endIndex; index += 1) {
+        const deviationM = pointToSegmentDistanceM(
+          geometry[index],
+          geometry[startIndex],
+          geometry[endIndex]
+        );
+        if (deviationM > maximumDeviationM) {
+          maximumDeviationM = deviationM;
+          farthestIndex = index;
+        }
+      }
+      if (farthestIndex >= 0 && maximumDeviationM > toleranceM) {
+        anchors.add(farthestIndex);
+        sections.push(
+          { startIndex, endIndex: farthestIndex },
+          { startIndex: farthestIndex, endIndex }
+        );
+      }
+    }
+    return anchors;
+  }
+  const rdpAnchorSet = findRdpAnchorSet(smoothedGeometry, GEOMETRY_TOLERANCE_M);
+  const rawDeviationAnchorSet = findRdpAnchorSet(
+    points,
+    MAX_RESAMPLED_GEOMETRY_DEVIATION_M * 0.9
+  );
+  const geometryAnchorSet = new Set(sharpAnchors);
+  for (const index of [...rdpAnchorSet].sort((left, right) => left - right)) {
+    const distanceM = cumulativeM[index];
+    if ([...geometryAnchorSet].every(anchorIndex =>
+      Math.abs(cumulativeM[anchorIndex] - distanceM) >= MIN_ANCHOR_SPACING_M
+    )) {
+      geometryAnchorSet.add(index);
+    }
+  }
+
   function gradeChangePct(index) {
-    const incomingM = cumulativeM[index] - cumulativeM[index - 1];
-    const outgoingM = cumulativeM[index + 1] - cumulativeM[index];
-    if (incomingM === 0 || outgoingM === 0) return 0;
-    const incomingGrade = (points[index].ele - points[index - 1].ele) / incomingM * 100;
-    const outgoingGrade = (points[index + 1].ele - points[index].ele) / outgoingM * 100;
+    const sampleWindowM = Math.min(
+      ANCHOR_WINDOW_M,
+      cumulativeM[index],
+      totalDistanceM - cumulativeM[index]
+    );
+    if (sampleWindowM < MIN_RESAMPLE_INTERVAL_M) return 0;
+    const previous = interpolate(cumulativeM[index] - sampleWindowM);
+    const next = interpolate(cumulativeM[index] + sampleWindowM);
+    const incomingGrade = (points[index].ele - previous.ele) / sampleWindowM * 100;
+    const outgoingGrade = (next.ele - points[index].ele) / sampleWindowM * 100;
     return Math.abs(outgoingGrade - incomingGrade);
   }
 
-  const anchorIndices = [0];
+  const gradeAnchorCandidates = [];
   for (let index = 1; index < points.length - 1; index += 1) {
-    if (turnDegrees(index) >= TURN_ANCHOR_DEGREES
-      || gradeChangePct(index) >= GRADE_CHANGE_ANCHOR_PCT) {
-      anchorIndices.push(index);
+    const gradeChange = gradeChangePct(index);
+    if (gradeChange >= GRADE_CHANGE_ANCHOR_PCT) {
+      gradeAnchorCandidates.push({
+        index,
+        distanceM: cumulativeM[index],
+        score: gradeChange
+      });
     }
   }
-  anchorIndices.push(points.length - 1);
-
-  function interpolate(targetM, startIndex, endIndex) {
-    let upperIndex = startIndex + 1;
-    while (upperIndex < endIndex && cumulativeM[upperIndex] < targetM) {
-      upperIndex += 1;
+  const geometryAnchorDistances = [...geometryAnchorSet].map(index => cumulativeM[index]);
+  const selectedGradeAnchors = [];
+  for (const candidate of gradeAnchorCandidates) {
+    if (candidate.distanceM < MIN_ANCHOR_SPACING_M
+      || totalDistanceM - candidate.distanceM < MIN_ANCHOR_SPACING_M
+      || geometryAnchorDistances.some(distanceM =>
+        Math.abs(distanceM - candidate.distanceM) < MIN_ANCHOR_SPACING_M
+      )) {
+      continue;
     }
-    const lowerIndex = upperIndex - 1;
-    const spanM = cumulativeM[upperIndex] - cumulativeM[lowerIndex];
-    const ratio = spanM > 0 ? (targetM - cumulativeM[lowerIndex]) / spanM : 0;
-    return {
-      lat: points[lowerIndex].lat + (points[upperIndex].lat - points[lowerIndex].lat) * ratio,
-      lng: points[lowerIndex].lng + (points[upperIndex].lng - points[lowerIndex].lng) * ratio,
-      ele: points[lowerIndex].ele + (points[upperIndex].ele - points[lowerIndex].ele) * ratio
-    };
+    const previous = selectedGradeAnchors.at(-1);
+    if (!previous
+      || candidate.distanceM - previous.distanceM >= MIN_ANCHOR_SPACING_M) {
+      selectedGradeAnchors.push(candidate);
+    } else if (candidate.score > previous.score) {
+      selectedGradeAnchors[selectedGradeAnchors.length - 1] = candidate;
+    }
   }
+  const baseAnchorIndices = [...new Set([
+    ...geometryAnchorSet,
+    ...selectedGradeAnchors.map(anchor => anchor.index)
+  ])].sort((left, right) => left - right);
 
-  const resampled = [Object.assign({}, points[0])];
-  for (let anchor = 1; anchor < anchorIndices.length; anchor += 1) {
-    const startIndex = anchorIndices[anchor - 1];
-    const endIndex = anchorIndices[anchor];
-    const sectionDistanceM = cumulativeM[endIndex] - cumulativeM[startIndex];
-    let sectionCount = Math.max(1, Math.round(sectionDistanceM / preferredIntervalM));
-    while (sectionDistanceM / sectionCount > MAX_RESAMPLE_INTERVAL_M) sectionCount += 1;
-    while (sectionCount > 1 && sectionDistanceM / sectionCount < MIN_RESAMPLE_INTERVAL_M) {
-      sectionCount -= 1;
+  function buildResampled(anchorIndices, necessaryAnchorSet = null, report = null) {
+    const resampled = [Object.assign({}, points[0])];
+    const sourceDistancesM = [0];
+    const sourceAnchorIndices = [0];
+    for (let anchor = 1; anchor < anchorIndices.length; anchor += 1) {
+      const startIndex = anchorIndices[anchor - 1];
+      const endIndex = anchorIndices[anchor];
+      const sectionDistanceM = cumulativeM[endIndex] - cumulativeM[startIndex];
+      let sectionCount = Math.max(1, Math.round(sectionDistanceM / preferredIntervalM));
+      while (sectionDistanceM / sectionCount > MAX_RESAMPLE_INTERVAL_M) sectionCount += 1;
+      while (sectionCount > 1 && sectionDistanceM / sectionCount < MIN_RESAMPLE_INTERVAL_M) {
+        sectionCount -= 1;
+      }
+
+      for (let step = 1; step < sectionCount; step += 1) {
+        const sourceDistanceM = cumulativeM[startIndex] + sectionDistanceM * step / sectionCount;
+        resampled.push(interpolate(
+          sourceDistanceM
+        ));
+        sourceDistancesM.push(sourceDistanceM);
+        sourceAnchorIndices.push(null);
+      }
+      resampled.push(Object.assign({}, points[endIndex]));
+      sourceDistancesM.push(cumulativeM[endIndex]);
+      sourceAnchorIndices.push(endIndex);
     }
-
-    for (let step = 1; step < sectionCount; step += 1) {
-      resampled.push(interpolate(
-        cumulativeM[startIndex] + sectionDistanceM * step / sectionCount,
-        startIndex,
-        endIndex
+    if (report && typeof report === "object") {
+      const adjacentDistancesM = resampled.slice(1).map((point, index) => (
+        Geo.haversineKm(resampled[index], point) * 1000
       ));
+      let essentialShortSegmentCount = 0;
+      let nonEssentialShortSegmentCount = 0;
+      adjacentDistancesM.forEach((distanceM, index) => {
+        if (distanceM >= MIN_RESAMPLE_INTERVAL_M) return;
+        const startAnchorIndex = sourceAnchorIndices[index];
+        const endAnchorIndex = sourceAnchorIndices[index + 1];
+        if ((startAnchorIndex !== null && necessaryAnchorSet && necessaryAnchorSet.has(startAnchorIndex))
+          || (endAnchorIndex !== null && necessaryAnchorSet && necessaryAnchorSet.has(endAnchorIndex))) {
+          essentialShortSegmentCount += 1;
+        } else {
+          nonEssentialShortSegmentCount += 1;
+        }
+      });
+      let maximumGeometryDeviationM = 0;
+      let segmentIndex = 0;
+      for (let index = 0; index < points.length; index += 1) {
+        while (segmentIndex < sourceDistancesM.length - 2
+          && sourceDistancesM[segmentIndex + 1] < cumulativeM[index]) {
+          segmentIndex += 1;
+        }
+        maximumGeometryDeviationM = Math.max(
+          maximumGeometryDeviationM,
+          pointToSegmentDistanceM(
+            points[index],
+            resampled[segmentIndex],
+            resampled[segmentIndex + 1]
+          )
+        );
+      }
+      Object.assign(report, {
+        distanceErrorRatio: distanceErrorRatio(resampled),
+        maximumGeometryDeviationM,
+        maximumAdjacentM: adjacentDistancesM.length ? Math.max(...adjacentDistancesM) : 0,
+        essentialShortSegmentCount,
+        nonEssentialShortSegmentCount,
+        essentialShortSegmentRatio: adjacentDistancesM.length
+          ? essentialShortSegmentCount / adjacentDistancesM.length
+          : 0,
+        nonEssentialShortSegmentRatio: adjacentDistancesM.length
+          ? nonEssentialShortSegmentCount / adjacentDistancesM.length
+          : 0
+      });
     }
-    resampled.push(Object.assign({}, points[endIndex]));
+    return resampled;
   }
 
-  return resampled;
+  function distanceErrorRatio(samples) {
+    const sampledDistanceM = samples.slice(1).reduce((total, point, index) => (
+      total + Geo.haversineKm(samples[index], point) * 1000
+    ), 0);
+    return totalDistanceM > 0 ? Math.abs(sampledDistanceM - totalDistanceM) / totalDistanceM : 0;
+  }
+
+  const baseAnchorSet = new Set(baseAnchorIndices);
+  const extraCandidates = [...new Set([...rdpAnchorSet, ...rawDeviationAnchorSet])]
+    .filter(index => !baseAnchorSet.has(index))
+    .map(index => {
+      let upper = 1;
+      while (upper < baseAnchorIndices.length && baseAnchorIndices[upper] < index) upper += 1;
+      const startIndex = baseAnchorIndices[upper - 1];
+      const endIndex = baseAnchorIndices[upper];
+      const directKm = Geo.haversineKm(points[startIndex], points[endIndex]);
+      const splitKm = Geo.haversineKm(points[startIndex], points[index])
+        + Geo.haversineKm(points[index], points[endIndex]);
+      return {
+        index,
+        benefitKm: splitKm - directKm,
+        deviationM: pointToSegmentDistanceM(
+          points[index],
+          points[startIndex],
+          points[endIndex]
+        )
+      };
+    });
+  const benefitRank = new Map(
+    extraCandidates
+      .slice()
+      .sort((left, right) => right.benefitKm - left.benefitKm)
+      .map((candidate, rank) => [candidate.index, rank])
+  );
+  const deviationRank = new Map(
+    extraCandidates
+      .slice()
+      .sort((left, right) => right.deviationM - left.deviationM)
+      .map((candidate, rank) => [candidate.index, rank])
+  );
+  extraCandidates.sort((left, right) => {
+    const leftBestRank = Math.min(
+      benefitRank.get(left.index),
+      deviationRank.get(left.index)
+    );
+    const rightBestRank = Math.min(
+      benefitRank.get(right.index),
+      deviationRank.get(right.index)
+    );
+    if (leftBestRank !== rightBestRank) return leftBestRank - rightBestRank;
+    const leftRankSum = benefitRank.get(left.index) + deviationRank.get(left.index);
+    const rightRankSum = benefitRank.get(right.index) + deviationRank.get(right.index);
+    if (leftRankSum !== rightRankSum) return leftRankSum - rightRankSum;
+    return left.index - right.index;
+  });
+
+  function anchorsWithExtraCount(extraCount) {
+    return [...new Set([
+      ...baseAnchorIndices,
+      ...extraCandidates.slice(0, extraCount).map(candidate => candidate.index)
+    ])].sort((left, right) => left - right);
+  }
+
+  let lowerCount = 0;
+  let upperCount = extraCandidates.length;
+  function meetsResamplingTargets(extraCount) {
+    const selectedCandidates = extraCandidates.slice(0, extraCount);
+    const trialDiagnostics = {};
+    buildResampled(
+      anchorsWithExtraCount(extraCount),
+      new Set(selectedCandidates.map(candidate => candidate.index)),
+      trialDiagnostics
+    );
+    return trialDiagnostics.distanceErrorRatio <= MAX_RESAMPLED_DISTANCE_ERROR_RATIO
+      && trialDiagnostics.maximumGeometryDeviationM
+        <= MAX_RESAMPLED_GEOMETRY_DEVIATION_M;
+  }
+
+  if (!meetsResamplingTargets(0)) {
+    while (lowerCount < upperCount) {
+      const middleCount = Math.floor((lowerCount + upperCount) / 2);
+      if (meetsResamplingTargets(middleCount)) {
+        upperCount = middleCount;
+      } else {
+        lowerCount = middleCount + 1;
+      }
+    }
+  }
+
+  const necessaryAnchorSet = new Set(
+    extraCandidates.slice(0, lowerCount).map(candidate => candidate.index)
+  );
+  return buildResampled(
+    anchorsWithExtraCount(lowerCount),
+    necessaryAnchorSet,
+    diagnostics
+  );
 }
 
 export function buildTrack(payload, options = {}) {
@@ -226,6 +536,7 @@ export function buildTrack(payload, options = {}) {
     router: "BRouter",
     profile: BROUTER_PROFILE,
     elevation: BROUTER_ELEVATION,
+    samplingNote: TRACK_SAMPLING_NOTE,
     generatedAt,
     reviewStatus: seed.reviewStatus
   };
@@ -393,6 +704,15 @@ function brouterUrl(seed, endpoint) {
 }
 
 function cacheFingerprint(seed) {
+  return createHash("sha256").update(JSON.stringify({
+    id: seed.id,
+    profile: seed.profile,
+    direction: seed.direction,
+    waypoints: seedWaypoints(seed)
+  })).digest("hex");
+}
+
+function legacyCacheFingerprint(seed) {
   return createHash("sha256").update(JSON.stringify({
     profile: BROUTER_PROFILE,
     format: BROUTER_FORMAT,
@@ -636,8 +956,11 @@ export async function runCli(argv, options = {}) {
     const fingerprint = cacheFingerprint(seed);
     const cacheEntry = await readJsonIfExists(cachePath);
     const cacheHit = cacheEntry
-      && cacheEntry.fingerprint === fingerprint
+      && (cacheEntry.fingerprint === fingerprint
+        || (cacheEntry.version === 2
+          && cacheEntry.fingerprint === legacyCacheFingerprint(seed)))
       && cacheEntry.response;
+    const needsCacheUpgrade = cacheHit && cacheEntry.fingerprint !== fingerprint;
     let payload = cacheHit ? cacheEntry.response : null;
 
     if (!cacheHit) {
@@ -648,9 +971,9 @@ export async function runCli(argv, options = {}) {
       ? cacheEntry.generatedAt || new Date(0).toISOString()
       : new Date((options.now || Date.now)()).toISOString();
     const track = buildTrack(payload, { routeId, seed, generatedAt });
-    if (!cacheHit) {
+    if (!cacheHit || needsCacheUpgrade) {
       await atomicWrite(cachePath, `${JSON.stringify({
-        version: 2,
+        version: 3,
         fingerprint,
         generatedAt,
         response: payload

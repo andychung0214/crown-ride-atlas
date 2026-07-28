@@ -95,6 +95,7 @@ test("正式軌跡保留路線識別、BRouter SRTM 來源與具名人工地標"
     router: "BRouter",
     profile: "fastbike",
     elevation: "SRTM",
+    samplingNote: "一般路段約 30–80m；髮夾彎會加密取樣以貼合真實道路幾何。",
     generatedAt: "2026-07-25T00:00:00.000Z",
     reviewedAt: "2026-07-26T00:00:00.000Z",
     reviewStatus: "approved",
@@ -638,6 +639,43 @@ test("正式 validator 要求已審查來源、正確 routeId 與貼近軌跡的
   );
 });
 
+test("正式 validator 以軌跡線段而非取樣頂點判斷地標貼近程度", async () => {
+  const { serializeBundle } = await loadGenerator();
+  const { validateBundleSources } = await loadValidator();
+  const { analyzeCoordinates } = require("../js/core/track-analysis.js");
+  const routeId = "taipei-fengguizui";
+  const analysis = analyzeCoordinates([
+    { lat: 25, lng: 121, ele: 10 },
+    { lat: 25, lng: 121.01, ele: 10 }
+  ]);
+  const track = {
+    routeId,
+    direction: "point-to-point",
+    source: {
+      router: "BRouter",
+      profile: "fastbike",
+      elevation: "SRTM",
+      generatedAt: "2026-07-25T00:00:00.000Z",
+      reviewStatus: "approved",
+      reviewedAt: "2026-07-26T00:00:00.000Z",
+      reviewerNote: "測試線段距離。"
+    },
+    waypoints: [
+      { name: "線段中點起點", lat: 25, lng: 121.005, role: "start" },
+      { name: "線段中點終點", lat: 25, lng: 121.005, role: "finish" }
+    ],
+    ...analysis
+  };
+  const manifest = {
+    [routeId]: { bundleId: "taipei", src: "js/data/tracks/taipei.js" }
+  };
+
+  assert.equal(validateBundleSources(
+    new Map([["taipei", serializeBundle("taipei", { [routeId]: track })]]),
+    { manifest, requireComplete: true, requireReviewMetadata: true }
+  ).routeCount, 1);
+});
+
 test("validator --regions 只要求指定地區完整並套用正式審查閘門", async t => {
   const { buildTrack, serializeBundle } = await loadGenerator();
   const { runCli: runValidatorCli } = await loadValidator();
@@ -902,6 +940,126 @@ test("直線密集點會整理為 30 至 80 公尺取樣", async () => {
   });
 });
 
+test("密集真實轉彎與 SRTM 雜訊不會把每個原始點都變成短距離 anchor", async () => {
+  const {
+    resampleTrack,
+    MAX_RESAMPLED_GEOMETRY_DEVIATION_M
+  } = await loadGenerator();
+  const diagnostics = {};
+  const metersToLatitude = meters => meters / 111_320;
+  const metersToLongitude = meters => meters / (111_320 * Math.cos(25 * Math.PI / 180));
+  const denseNoisyRoute = [];
+
+  for (let meters = 0; meters <= 300; meters += 5) {
+    const lateralJitterM = meters === 0 || meters === 300
+      ? 0
+      : meters % 10 === 0 ? 0.8 : -0.8;
+    denseNoisyRoute.push({
+      lat: 25 + metersToLatitude(meters),
+      lng: 121 + metersToLongitude(lateralJitterM),
+      ele: 100 + meters * 0.05 + (meters % 10 === 0 ? 1.2 : -1.2)
+    });
+  }
+  for (let meters = 5; meters <= 300; meters += 5) {
+    const lateralJitterM = meters === 300
+      ? 0
+      : meters % 10 === 0 ? 0.8 : -0.8;
+    denseNoisyRoute.push({
+      lat: 25 + metersToLatitude(300 + lateralJitterM),
+      lng: 121 + metersToLongitude(meters),
+      ele: 115 - meters * 0.03 + (meters % 10 === 0 ? 1.2 : -1.2)
+    });
+  }
+
+  const sampled = resampleTrack(denseNoisyRoute, undefined, diagnostics);
+  const distancesM = sampled.slice(1).map((point, index) => (
+    Geo.haversineKm(sampled[index], point) * 1000
+  ));
+  const shortSegments = distancesM.filter(distanceM => distanceM < 30);
+  const corner = denseNoisyRoute[60];
+
+  assert.ok(sampled.length < denseNoisyRoute.length / 2);
+  assert.ok(sampled.some(point => point.lat === corner.lat && point.lng === corner.lng));
+  assert.ok(distancesM.every(distanceM => distanceM <= 80.01));
+  assert.ok(shortSegments.length <= 1, `非必要短片段共 ${shortSegments.length} 段`);
+  assert.ok(Math.max(...sampled.map(point => point.ele)) >= 113);
+  assert.ok(sampled.at(-1).ele < 108);
+  assert.ok(
+    diagnostics.maximumGeometryDeviationM <= MAX_RESAMPLED_GEOMETRY_DEVIATION_M
+  );
+  assert.ok(diagnostics.nonEssentialShortSegmentRatio <= 0.05);
+  assert.ok(diagnostics.maximumAdjacentM <= 80);
+});
+
+test("必要急彎可保留短距離 anchor 以避免髮夾彎被弦線截短", async () => {
+  const {
+    resampleTrack,
+    MAX_RESAMPLED_GEOMETRY_DEVIATION_M
+  } = await loadGenerator();
+  const diagnostics = {};
+  const radiusM = 20;
+  const centerLat = 25;
+  const centerLng = 121;
+  const metersToLatitude = meters => meters / 111_320;
+  const metersToLongitude = meters => meters / (111_320 * Math.cos(25 * Math.PI / 180));
+  const hairpin = Array.from({ length: 37 }, (_, index) => {
+    const angle = Math.PI * index / 36;
+    return {
+      lat: centerLat + metersToLatitude(Math.sin(angle) * radiusM),
+      lng: centerLng + metersToLongitude(Math.cos(angle) * radiusM),
+      ele: 100
+    };
+  });
+  const distanceKm = points => points.slice(1).reduce((total, point, index) => (
+    total + Geo.haversineKm(points[index], point)
+  ), 0);
+
+  const sampled = resampleTrack(hairpin, undefined, diagnostics);
+
+  assert.ok(distanceKm(sampled) >= distanceKm(hairpin) * 0.995);
+  assert.ok(sampled.some(point => (
+    Geo.haversineKm(point, hairpin[18]) * 1000 < 1
+  )));
+  assert.ok(diagnostics.essentialShortSegmentCount > 0);
+  assert.equal(diagnostics.nonEssentialShortSegmentCount, 0);
+  assert.ok(diagnostics.distanceErrorRatio <= 0.005);
+  assert.ok(
+    diagnostics.maximumGeometryDeviationM <= MAX_RESAMPLED_GEOMETRY_DEVIATION_M
+  );
+});
+
+test("整體距離已達標時仍須保留局部偏離道路超過 5 公尺的彎點", async () => {
+  const {
+    resampleTrack,
+    MAX_RESAMPLED_GEOMETRY_DEVIATION_M
+  } = await loadGenerator();
+  const diagnostics = {};
+  const metersToLatitude = meters => meters / 111_320;
+  const metersToLongitude = meters => meters / (111_320 * Math.cos(25 * Math.PI / 180));
+  const route = Array.from({ length: 2001 }, (_, index) => {
+    const forwardM = index * 5;
+    const distanceFromDetourM = Math.abs(forwardM - 5_025);
+    const detourM = distanceFromDetourM <= 15
+      ? 15 * (1 - distanceFromDetourM / 15)
+      : 0;
+    return {
+      lat: 25 + metersToLatitude(forwardM),
+      lng: 121 + metersToLongitude(detourM),
+      ele: 100
+    };
+  });
+
+  const sampled = resampleTrack(route, undefined, diagnostics);
+
+  assert.ok(diagnostics.distanceErrorRatio <= 0.005);
+  assert.ok(
+    diagnostics.maximumGeometryDeviationM <= MAX_RESAMPLED_GEOMETRY_DEVIATION_M,
+    `最大道路偏差 ${diagnostics.maximumGeometryDeviationM}m 超過 `
+      + `${MAX_RESAMPLED_GEOMETRY_DEVIATION_M}m`
+  );
+  assert.ok(sampled.length < route.length);
+});
+
 test("重採樣會保留道路轉彎點", async () => {
   const { resampleTrack } = await loadGenerator();
   const corner = { lat: 25.00045, lng: 121, ele: 100 };
@@ -964,6 +1122,44 @@ test("validator 拒絕與座標重新分析結果矛盾的摘要", async () => {
     ),
     /摘要.*不一致/
   );
+});
+
+test("validator 拒絕遭篡改的逐點距離、平滑海拔、坡度與坡度分級", async () => {
+  const { buildTrack, serializeBundle } = await loadGenerator();
+  const { validateBundleSources } = await loadValidator();
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  const routeId = "taipei-fengguizui";
+  const track = buildTrack(fixture, {
+    routeId,
+    seed: formalSeed(routeId),
+    generatedAt: "2026-07-25T00:00:00.000Z"
+  });
+  const manifest = {
+    [routeId]: {
+      bundleId: "taipei",
+      src: "js/data/tracks/taipei.js"
+    }
+  };
+
+  for (const [field, bogusValue] of [
+    ["distanceKm", 999],
+    ["smoothedEle", 999],
+    ["gradePct", 999],
+    ["gradeBand", "bogus"]
+  ]) {
+    const tampered = JSON.parse(JSON.stringify(track));
+    tampered.coordinates[1][field] = bogusValue;
+    assert.throws(
+      () => validateBundleSources(
+        new Map([[
+          "taipei",
+          serializeBundle("taipei", { [routeId]: tampered })
+        ]]),
+        { manifest, requireComplete: true }
+      ),
+      new RegExp(`座標.*${field}`)
+    );
+  }
 });
 
 test("validator 拒絕欄位矛盾與索引越界的爬坡", async () => {
@@ -1092,6 +1288,168 @@ test("人工 seed 變更時不會誤用舊 BRouter 快取", async t => {
 
   assert.equal(fetchCount, 2);
   assert.notEqual(firstCache.fingerprint, secondCache.fingerprint);
+});
+
+test("路線方向變更時不會誤用舊 BRouter 快取", async t => {
+  const { runCli } = await loadGenerator();
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "crown-cache-direction-"));
+  t.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
+  const seedDirectory = path.join(temporaryRoot, "tools", "route-data", "seeds");
+  await fs.mkdir(seedDirectory, { recursive: true });
+  const seedPath = path.join(seedDirectory, "taipei-fengguizui.json");
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  const routes = [{
+    id: "taipei-fengguizui",
+    trackRef: "taipei-fengguizui",
+    regionId: "taipei"
+  }];
+  const manifest = {
+    "taipei-fengguizui": {
+      bundleId: "taipei",
+      src: "js/data/tracks/taipei.js"
+    }
+  };
+  let fetchCount = 0;
+  const options = {
+    projectRoot: temporaryRoot,
+    routes,
+    manifest,
+    sleep: async () => {},
+    now: () => 0,
+    fetchImpl: async () => {
+      fetchCount += 1;
+      return { ok: true, status: 200, async json() { return fixture; } };
+    }
+  };
+  const firstSeed = formalSeed("taipei-fengguizui");
+  await fs.writeFile(seedPath, JSON.stringify(firstSeed), "utf8");
+  await runCli(["--route", firstSeed.id, "--staging"], options);
+  await fs.writeFile(
+    seedPath,
+    JSON.stringify({ ...firstSeed, direction: "out-and-back" }),
+    "utf8"
+  );
+  await runCli(["--route", firstSeed.id, "--staging"], options);
+
+  assert.equal(fetchCount, 2);
+});
+
+test("僅修改審查 metadata 時仍命中既有 BRouter 快取", async t => {
+  const { runCli } = await loadGenerator();
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "crown-cache-review-"));
+  t.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
+  const seedDirectory = path.join(temporaryRoot, "tools", "route-data", "seeds");
+  await fs.mkdir(seedDirectory, { recursive: true });
+  const seedPath = path.join(seedDirectory, "taipei-fengguizui.json");
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  const routeId = "taipei-fengguizui";
+  const routes = [{ id: routeId, trackRef: routeId, regionId: "taipei" }];
+  const manifest = {
+    [routeId]: { bundleId: "taipei", src: "js/data/tracks/taipei.js" }
+  };
+  let fetchCount = 0;
+  const options = {
+    projectRoot: temporaryRoot,
+    routes,
+    manifest,
+    sleep: async () => {},
+    now: () => Date.parse("2026-07-25T00:00:00.000Z"),
+    fetchImpl: async () => {
+      fetchCount += 1;
+      return { ok: true, status: 200, async json() { return fixture; } };
+    }
+  };
+  const seed = formalSeed(routeId);
+  await fs.writeFile(seedPath, JSON.stringify(seed), "utf8");
+  await runCli(["--route", routeId, "--staging"], options);
+  await fs.writeFile(seedPath, JSON.stringify({
+    ...seed,
+    reviewedAt: "2026-07-27T00:00:00.000Z",
+    reviewerNote: "完成第二次人工疊圖複核。"
+  }), "utf8");
+  await runCli(["--route", routeId, "--staging"], options);
+
+  assert.equal(fetchCount, 1);
+});
+
+test("只修改海拔分析設定時重新分析但不重新請求 BRouter", async t => {
+  const { runCli } = await loadGenerator();
+  const { parseBundleSource } = await loadValidator();
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "crown-cache-analysis-"));
+  t.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
+  const seedDirectory = path.join(temporaryRoot, "tools", "route-data", "seeds");
+  await fs.mkdir(seedDirectory, { recursive: true });
+  const seedPath = path.join(seedDirectory, "taipei-fengguizui.json");
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  const routeId = "taipei-fengguizui";
+  const routes = [{ id: routeId, trackRef: routeId, regionId: "taipei" }];
+  const manifest = {
+    [routeId]: { bundleId: "taipei", src: "js/data/tracks/taipei.js" }
+  };
+  let fetchCount = 0;
+  const options = {
+    projectRoot: temporaryRoot,
+    routes,
+    manifest,
+    sleep: async () => {},
+    now: () => Date.parse("2026-07-25T00:00:00.000Z"),
+    fetchImpl: async () => {
+      fetchCount += 1;
+      return { ok: true, status: 200, async json() { return fixture; } };
+    }
+  };
+  const seed = formalSeed(routeId);
+  await fs.writeFile(seedPath, JSON.stringify(seed), "utf8");
+  await runCli(["--route", routeId, "--staging"], options);
+  const elevationAnalysis = {
+    smoothingWindowM: 500,
+    gradeWindowM: 100,
+    reason: "測試重新分析。",
+    referenceUrl: "https://example.com/reference",
+    referenceLabel: "測試參考"
+  };
+  await fs.writeFile(seedPath, JSON.stringify({ ...seed, elevationAnalysis }), "utf8");
+  await runCli(["--route", routeId, "--staging"], options);
+  const source = await fs.readFile(
+    path.join(temporaryRoot, "tools", "route-data", ".staging", "taipei.js"),
+    "utf8"
+  );
+
+  assert.equal(fetchCount, 1);
+  assert.equal(
+    JSON.stringify(parseBundleSource("taipei", source)[routeId].source.elevationAnalysis),
+    JSON.stringify(elevationAnalysis)
+  );
+});
+
+test("正式 validator 拒絕早於資料產生時間的審查時間", async () => {
+  const { buildTrack, serializeBundle } = await loadGenerator();
+  const { validateBundleSources } = await loadValidator();
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  const routeId = "taipei-fengguizui";
+  const seed = {
+    ...formalSeed(routeId),
+    reviewedAt: "2026-07-24T23:59:59.000Z"
+  };
+  const track = buildTrack(fixture, {
+    routeId,
+    seed,
+    generatedAt: "2026-07-25T00:00:00.000Z"
+  });
+  const manifest = {
+    [routeId]: { bundleId: "taipei", src: "js/data/tracks/taipei.js" }
+  };
+
+  assert.throws(
+    () => validateBundleSources(
+      new Map([[
+        "taipei",
+        serializeBundle("taipei", { [routeId]: track })
+      ]]),
+      { manifest, requireComplete: true, requireReviewMetadata: true }
+    ),
+    /審查時間.*資料產生時間/
+  );
 });
 
 test("無效 seed 在發出請求前失敗且不重試", async () => {

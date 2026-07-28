@@ -188,6 +188,7 @@ test("路線資料來源只呈現實際提供的 BRouter、SRTM 與審核欄位"
       router: "BRouter",
       profile: "fastbike",
       elevation: "SRTM",
+      samplingNote: "一般路段約 30–80m；髮夾彎會加密取樣以貼合真實道路幾何。",
       generatedAt: "2026-07-26T00:00:00.000Z",
       reviewedAt: "2026-07-27T00:00:00.000Z",
       reviewStatus: "approved"
@@ -196,6 +197,7 @@ test("路線資料來源只呈現實際提供的 BRouter、SRTM 與審核欄位"
 
   assert.match(Render.profileSourceText(details), /BRouter · fastbike/);
   assert.match(Render.profileSourceText(details), /SRTM/);
+  assert.match(Render.profileSourceText(details), /髮夾彎會加密取樣/);
   assert.match(Render.profileSourceText(details), /人工審核完成/);
   assert.match(Render.profileSourceText({ source: null }), /本機 GPX/);
 });

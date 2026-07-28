@@ -78,36 +78,36 @@
 
 | 路線 ID | 距離 | 爬升 | 軌跡點 | OSM 道路稽核 |
 |---|---:|---:|---:|---|
-| `keelung-harbor-coast` | 19.9 km | 236 m | 502 | 港區與濱海道路，禁止類別 0 |
-| `keelung-nuannuan-hills` | 23.8 km | 350 m | 599 | 暖暖丘陵公路，禁止類別 0 |
-| `keelung-waimushan-wanli` | 29.2 km | 415 m | 780 | 外木山至萬里海線，禁止類別 0 |
-| `taipei-fengguizui` | 25.6 km | 515 m | 652 | 風櫃嘴公路，禁止類別 0 |
-| `taipei-zhongsha-road` | 8.5 km | 328 m | 344 | 中社路公路，禁止類別 0 |
-| `taipei-lengshuikeng` | 32.1 km | 1,035 m | 947 | 陽明山公路，禁止類別 0 |
-| `new-taipei-yangjin-3p` | 77.8 km | 2,757 m | 2,599 | 陽金三峰公路走廊，禁止類別 0 |
-| `new-taipei-north-coast` | 39.8 km | 455 m | 836 | 北海岸公路，禁止類別 0 |
-| `new-taipei-buyanting` | 54.4 km | 1,478 m | 1,698 | 雙溪、不厭亭公路，禁止類別 0 |
-| `taoyuan-roman-road` | 77.8 km | 1,791 m | 2,315 | 羅馬公路，禁止類別 0 |
-| `taoyuan-north-cross-baling` | 92.8 km | 1,713 m | 3,430 | 台 7 北橫至下巴陵，禁止類別 0 |
-| `taoyuan-shimen-loop` | 54.9 km | 1,006 m | 1,421 | 石門水庫道路；保留官方入口 `barrier=gate`，須查開放規則 |
-| `hsinchu-city-coast-17k` | 29.0 km | 67 m | 604 | 官方十七公里自行車道；OSM 有一段約 514 m 尚標 footway，已記錄官方證據與現地查核提醒 |
-| `hsinchu-city-18-peaks` | 13.9 km | 177 m | 343 | 十八尖山外圍公共道路，禁止類別 0 |
-| `hsinchu-city-nanliao-baoshan` | 44.8 km | 488 m | 1,071 | 南寮、寶山公共道路，避開水庫行人環湖步道，禁止類別 0 |
-| `hsinchu-county-five-fingers` | 37.0 km | 1,078 m | 1,203 | 竹 37-4、五指山路與縣道 122，禁止類別 0 |
-| `hsinchu-county-yulao` | 69.3 km | 1,459 m | 2,888 | 縣道 120、竹 60；其中約 1.33 km 在 OSM 尚標 `highway=track`，公開公路車實騎資料與主線幾何交叉檢核，須現地確認路面 |
-| `hsinchu-county-smangus` | 111.7 km | 3,935 m | 6,534 | 竹 60 與司馬庫斯產業道路；禁止類別 0，水泥與狹路風險另列安全提醒 |
-| `miaoli-xianshan` | 52.6 km | 1,440 m | 1,647 | 台 6、台 3、縣道 124 至靈洞宮，禁止類別 0 |
-| `miaoli-jiangmayuan` | 38.6 km | 1,258 m | 1,210 | 苗 49、縣道 130 至薑麻園，禁止類別 0 |
-| `miaoli-coast` | 31.5 km | 105 m | 661 | 官方綠光海風中南段，移除好望角與車站 footway 捷徑後禁止類別 0 |
+| `keelung-harbor-coast` | 19.9 km | 233 m | 456 | 港區與濱海道路，禁止類別 0 |
+| `keelung-nuannuan-hills` | 23.8 km | 345 m | 552 | 暖暖丘陵公路，禁止類別 0 |
+| `keelung-waimushan-wanli` | 29.1 km | 402 m | 666 | 外木山至萬里海線，禁止類別 0 |
+| `taipei-fengguizui` | 25.6 km | 510 m | 554 | 風櫃嘴公路，禁止類別 0 |
+| `taipei-zhongsha-road` | 8.4 km | 324 m | 257 | 中社路公路，禁止類別 0 |
+| `taipei-lengshuikeng` | 32.1 km | 1,034 m | 1,016 | 陽明山公路，禁止類別 0 |
+| `new-taipei-yangjin-3p` | 77.7 km | 2,739 m | 2,210 | 陽金三峰公路走廊，禁止類別 0 |
+| `new-taipei-north-coast` | 39.8 km | 452 m | 815 | 北海岸公路，禁止類別 0 |
+| `new-taipei-buyanting` | 54.4 km | 1,469 m | 1,579 | 雙溪、不厭亭公路，禁止類別 0 |
+| `taoyuan-roman-road` | 77.7 km | 1,753 m | 1,992 | 羅馬公路，禁止類別 0 |
+| `taoyuan-north-cross-baling` | 92.6 km | 1,707 m | 2,695 | 台 7 北橫至下巴陵，禁止類別 0 |
+| `taoyuan-shimen-loop` | 54.9 km | 1,003 m | 1,468 | 石門水庫道路；保留官方入口 `barrier=gate`，須查開放規則 |
+| `hsinchu-city-coast-17k` | 29.0 km | 65 m | 609 | 官方十七公里自行車道；OSM 有一段約 514 m 尚標 footway，已記錄官方證據與現地查核提醒 |
+| `hsinchu-city-18-peaks` | 13.8 km | 177 m | 316 | 十八尖山外圍公共道路，禁止類別 0 |
+| `hsinchu-city-nanliao-baoshan` | 44.8 km | 479 m | 981 | 南寮、寶山公共道路，避開水庫行人環湖步道，禁止類別 0 |
+| `hsinchu-county-five-fingers` | 36.9 km | 1,053 m | 950 | 竹 37-4、五指山路與縣道 122，禁止類別 0 |
+| `hsinchu-county-yulao` | 69.2 km | 1,459 m | 2,251 | 縣道 120、竹 60；其中約 1.33 km 在 OSM 尚標 `highway=track`，公開公路車實騎資料與主線幾何交叉檢核，須現地確認路面 |
+| `hsinchu-county-smangus` | 111.4 km | 3,934 m | 4,845 | 竹 60 與司馬庫斯產業道路；禁止類別 0，水泥與狹路風險另列安全提醒 |
+| `miaoli-xianshan` | 52.5 km | 1,409 m | 1,355 | 台 6、台 3、縣道 124 至靈洞宮，禁止類別 0 |
+| `miaoli-jiangmayuan` | 38.6 km | 1,239 m | 1,015 | 苗 49、縣道 130 至薑麻園，禁止類別 0 |
+| `miaoli-coast` | 31.5 km | 106 m | 681 | 官方綠光海風中南段，移除好望角與車站 footway 捷徑後禁止類別 0 |
 
 驗證命令與結果：
 
 - `node scripts/validate-tracks.mjs --regions keelung,taipei,new-taipei,taoyuan,hsinchu-city,hsinchu-county,miaoli --staging`：7 個 bundle、21 條路線通過。
 - `node scripts/generate-tracks.mjs --regions keelung,taipei,new-taipei,taoyuan,hsinchu-city,hsinchu-county,miaoli --publish`：發布 7 個 bundle、21 條路線。
 - `node scripts/validate-tracks.mjs --regions keelung,taipei,new-taipei,taoyuan,hsinchu-city,hsinchu-county,miaoli --published`：7 個 bundle、21 條路線通過。
-- 本機 HTTP 實際網站逐條開啟 21 個 `#/route/<id>`：21/21 均顯示相符標題、「路線資料已載入」、Leaflet、海拔剖面與 GPX 下載控制。
+- 本機 HTTP 實際網站逐條開啟 21 個 `#/route/<id>`：21/21 均顯示相符標題、「路線資料已載入」、Leaflet、海拔剖面、GPX 下載控制及「髮夾彎會加密取樣」說明；瀏覽器主控台錯誤為 0。
 - 「司馬庫斯部落挑戰」正常詳情頁實測顯示 2 至 3 公尺狹路、車輛單向時段、櫻花季總量管制、非全天候自由通行與查核主管機關最新公告；同頁明示 500m／100m 路線級濾波與未匯入外部 GPX。
-- 路線相關 focused 測試：78/78 通過；完整 `npm test`：172/172 通過。
+- 路線相關 focused 測試：87/87 通過；完整 `npm test`：181/181 通過。
 
 三條深谷／山壁路線採路線級 500 公尺海拔平滑與 100 公尺坡度視窗，原始 SRTM 海拔仍完整保留：
 
@@ -116,3 +116,35 @@
 - 司馬庫斯：以 115 公里／約 4,100 公尺實騎摘要交叉檢核，候選資料為 111.7 公里／3,935 公尺。
 
 稽核頁明示平滑原因、交叉檢核名稱與「未匯入外部 GPX」，不把第三方摘要偽裝成本站軌跡來源。
+
+### 重採樣道路幾何驗證
+
+2026-07-28 依 21 份 BRouter 原始快取重新量測。一般路段目標約 30–80 公尺；道路高曲率或髮夾彎可使用 30 公尺以下必要片段。驗收條件為每條路線距離誤差 ≤ 0.5%、原始點到重採樣折線最大偏差 ≤ 5 公尺、相鄰點 ≤ 80 公尺、非必要短片段 ≤ 5%。
+
+| 路線 ID | 點數 | 距離誤差 | 最大幾何偏差 | 必要短段 | 非必要短段 | 最大相鄰距離 |
+|---|---:|---:|---:|---:|---:|---:|
+| `keelung-harbor-coast` | 456 | 0.154% | 4.37 m | 16.48% | 0.00% | 74.20 m |
+| `keelung-nuannuan-hills` | 552 | 0.101% | 3.16 m | 17.79% | 0.00% | 74.40 m |
+| `keelung-waimushan-wanli` | 666 | 0.245% | 4.76 m | 14.89% | 0.00% | 74.38 m |
+| `taipei-fengguizui` | 554 | 0.169% | 4.79 m | 5.97% | 0.00% | 74.85 m |
+| `taipei-zhongsha-road` | 257 | 0.464% | 4.72 m | 38.67% | 0.00% | 73.32 m |
+| `taipei-lengshuikeng` | 1,016 | 0.047% | 4.34 m | 51.23% | 0.00% | 74.95 m |
+| `new-taipei-yangjin-3p` | 2,210 | 0.295% | 4.76 m | 37.44% | 0.00% | 74.95 m |
+| `new-taipei-north-coast` | 815 | 0.049% | 4.75 m | 3.81% | 0.00% | 74.89 m |
+| `new-taipei-buyanting` | 1,579 | 0.143% | 4.63 m | 39.54% | 0.00% | 74.40 m |
+| `taoyuan-roman-road` | 1,992 | 0.243% | 4.91 m | 26.82% | 0.00% | 74.87 m |
+| `taoyuan-north-cross-baling` | 2,695 | 0.288% | 4.93 m | 38.90% | 0.00% | 74.92 m |
+| `taoyuan-shimen-loop` | 1,468 | 0.048% | 3.97 m | 34.29% | 0.00% | 74.89 m |
+| `hsinchu-city-coast-17k` | 609 | 0.040% | 4.49 m | 3.29% | 0.00% | 73.46 m |
+| `hsinchu-city-18-peaks` | 316 | 0.204% | 4.88 m | 13.02% | 0.00% | 72.86 m |
+| `hsinchu-city-nanliao-baoshan` | 981 | 0.155% | 4.52 m | 10.10% | 0.00% | 74.61 m |
+| `hsinchu-county-five-fingers` | 950 | 0.338% | 4.91 m | 26.87% | 0.00% | 74.97 m |
+| `hsinchu-county-yulao` | 2,251 | 0.222% | 4.70 m | 48.09% | 0.00% | 74.30 m |
+| `hsinchu-county-smangus` | 4,845 | 0.318% | 4.70 m | 68.19% | 0.00% | 74.37 m |
+| `miaoli-xianshan` | 1,355 | 0.274% | 4.96 m | 27.40% | 0.00% | 73.99 m |
+| `miaoli-jiangmayuan` | 1,015 | 0.311% | 4.99 m | 29.88% | 0.00% | 74.82 m |
+| `miaoli-coast` | 681 | 0.022% | 4.36 m | 11.18% | 0.00% | 74.79 m |
+
+量測結果：21/21 通過；最接近幾何上限為 `miaoli-jiangmayuan` 4.99 公尺，最高必要短段比例為 `hsinchu-county-smangus` 68.19%，非必要短段最差值仍為 0.00%，最大相鄰距離為 `hsinchu-county-five-fingers` 74.97 公尺。
+
+發布後 7 個 bundle 大小：`keelung` 418.8 KiB、`taipei` 452.4 KiB、`new-taipei` 1,136.6 KiB、`taoyuan` 1,517.5 KiB、`hsinchu-city` 480.2 KiB、`hsinchu-county` 1,961.9 KiB、`miaoli` 757.5 KiB；最大為 `hsinchu-county`。
