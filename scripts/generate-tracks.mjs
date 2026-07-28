@@ -21,6 +21,9 @@ const MAX_RETRIES = 3;
 const BROUTER_URL = "https://brouter.de/brouter";
 const BROUTER_PROFILE = "fastbike";
 const BROUTER_FORMAT = "geojson";
+const BROUTER_ELEVATION = "SRTM";
+const ROUTE_DIRECTIONS = new Set(["loop", "out-and-back", "point-to-point"]);
+const WAYPOINT_ROLES = new Set(["start", "via", "finish"]);
 const TAIWAN_BOUNDS = [
   { minimumLat: 21.8, maximumLat: 25.7, minimumLng: 120, maximumLng: 122.2 },
   { minimumLat: 23.1, maximumLat: 23.8, minimumLng: 119.2, maximumLng: 119.8 },
@@ -209,7 +212,33 @@ export function resampleTrack(points, intervalM = DEFAULT_RESAMPLE_INTERVAL_M) {
 export function buildTrack(payload, options = {}) {
   const points = parseBrouterFeature(payload);
   const coordinates = resampleTrack(points, options.resampleIntervalM);
-  return analyzeCoordinates(coordinates, options.analysis);
+  if (!options.routeId && !options.seed) {
+    return analyzeCoordinates(coordinates, options.analysis);
+  }
+  if (!options.routeId || !options.seed) {
+    throw new TypeError("正式軌跡必須同時提供 routeId 與人工 seed。");
+  }
+  const seed = validateTrackSeed(options.seed, options.routeId);
+  const elevationAnalysis = validateElevationAnalysis(seed.elevationAnalysis, options.routeId);
+  const analysis = analyzeCoordinates(coordinates, elevationAnalysis || options.analysis);
+  const generatedAt = validIsoTimestamp(options.generatedAt, "資料產生時間");
+  const source = {
+    router: "BRouter",
+    profile: BROUTER_PROFILE,
+    elevation: BROUTER_ELEVATION,
+    generatedAt,
+    reviewStatus: seed.reviewStatus
+  };
+  if (elevationAnalysis) source.elevationAnalysis = elevationAnalysis;
+  if (seed.reviewedAt) source.reviewedAt = seed.reviewedAt;
+  if (seed.reviewerNote) source.reviewerNote = seed.reviewerNote;
+  return {
+    routeId: options.routeId,
+    direction: seed.direction,
+    source,
+    waypoints: seed.waypoints.map(waypoint => ({ ...waypoint })),
+    ...analysis
+  };
 }
 
 export function serializeBundle(bundleId, tracks) {
@@ -225,7 +254,9 @@ export function serializeBundle(bundleId, tracks) {
   ].join("\n");
 }
 
-export function selectRoutes(selector, routes = Data.routes) {
+export function selectRoutes(selector, routes = Data.routes, manifest = null) {
+  const hasTrack = route => !manifest || Boolean(manifest[route.trackRef || route.id]);
+
   if (selector && selector.routeId) {
     assertSafeIdentifier(selector.routeId, "route ID");
     const route = routes.find(candidate => candidate.id === selector.routeId);
@@ -238,10 +269,15 @@ export function selectRoutes(selector, routes = Data.routes) {
     selector.regionIds.forEach(regionId => {
       if (!knownRegions.has(regionId)) throw new Error(`未知地區 ID：${regionId}`);
     });
-    return routes.filter(route => selector.regionIds.includes(route.regionId));
+    return routes.filter(route => {
+      const manifestEntry = manifest && manifest[route.trackRef || route.id];
+      return selector.regionIds.includes(route.regionId)
+        && hasTrack(route)
+        && (!manifestEntry || selector.regionIds.includes(manifestEntry.bundleId));
+    });
   }
 
-  if (selector && selector.all) return routes.slice();
+  if (selector && selector.all) return routes.filter(hasTrack);
   throw new Error("必須指定 --route、--regions 或 --all。");
 }
 
@@ -258,6 +294,91 @@ function seedWaypoints(seed) {
     }
     return values.slice(0, 2);
   });
+}
+
+function validIsoTimestamp(value, label) {
+  if (typeof value !== "string" || !value
+    || !Number.isFinite(Date.parse(value))
+    || new Date(value).toISOString() !== value) {
+    throw new TypeError(`${label}必須是完整 ISO-8601 時間。`);
+  }
+  return value;
+}
+
+export function validateElevationAnalysis(value, routeId) {
+  if (value === undefined) return null;
+  const label = `${routeId} 海拔分析`;
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new TypeError(`${label}設定格式無效。`);
+  }
+  if (!Number.isFinite(value.smoothingWindowM) || value.smoothingWindowM < 100
+    || !Number.isFinite(value.gradeWindowM) || value.gradeWindowM < 100) {
+    throw new TypeError(`${label}視窗不得小於 100 公尺。`);
+  }
+  if (typeof value.reason !== "string" || !value.reason.trim()
+    || typeof value.referenceLabel !== "string" || !value.referenceLabel.trim()) {
+    throw new TypeError(`${label}缺少原因或交叉檢核名稱。`);
+  }
+  let referenceUrl;
+  try {
+    referenceUrl = new URL(value.referenceUrl);
+  } catch {
+    throw new TypeError(`${label}交叉檢核網址無效。`);
+  }
+  if (referenceUrl.protocol !== "https:") {
+    throw new TypeError(`${label}交叉檢核網址必須使用 HTTPS。`);
+  }
+  return {
+    smoothingWindowM: value.smoothingWindowM,
+    gradeWindowM: value.gradeWindowM,
+    reason: value.reason.trim(),
+    referenceUrl: referenceUrl.href,
+    referenceLabel: value.referenceLabel.trim()
+  };
+}
+
+export function validateTrackSeed(seed, routeId) {
+  if (!seed || typeof seed !== "object" || Array.isArray(seed)) {
+    throw new TypeError("人工 seed 格式無效。");
+  }
+  if (seed.id !== routeId) throw new Error(`人工 seed 識別碼與 routeId 不一致：${routeId}`);
+  if (!ROUTE_DIRECTIONS.has(seed.direction)) throw new Error(`${routeId} 路線方向無效。`);
+  if (seed.profile !== BROUTER_PROFILE) throw new Error(`${routeId} profile 必須為 fastbike。`);
+  validateElevationAnalysis(seed.elevationAnalysis, routeId);
+  if (!Array.isArray(seed.waypoints) || seed.waypoints.length < 2) {
+    throw new TypeError(`${routeId} 人工 seed 至少需要兩個 waypoints。`);
+  }
+  const roles = [];
+  seed.waypoints.forEach((waypoint, index) => {
+    if (!waypoint || typeof waypoint !== "object" || Array.isArray(waypoint)) {
+      throw new TypeError(`${routeId} 第 ${index + 1} 個地標格式無效。`);
+    }
+    if (typeof waypoint.name !== "string" || !waypoint.name.trim()) {
+      throw new TypeError(`${routeId} 第 ${index + 1} 個地標缺少名稱。`);
+    }
+    if (!WAYPOINT_ROLES.has(waypoint.role)) {
+      throw new TypeError(`${routeId} 第 ${index + 1} 個地標角色無效。`);
+    }
+    if (!Number.isFinite(waypoint.lat) || !Number.isFinite(waypoint.lng)) {
+      throw new TypeError(`${routeId} 第 ${index + 1} 個地標座標無效。`);
+    }
+    roles.push(waypoint.role);
+  });
+  if (roles[0] !== "start" || roles.at(-1) !== "finish"
+    || roles.filter(role => role === "start").length !== 1
+    || roles.filter(role => role === "finish").length !== 1) {
+    throw new TypeError(`${routeId} 地標必須以唯一 start 開始並以唯一 finish 結束。`);
+  }
+  if (!["pending", "approved"].includes(seed.reviewStatus)) {
+    throw new TypeError(`${routeId} 審查狀態無效。`);
+  }
+  if (seed.reviewStatus === "approved") {
+    validIsoTimestamp(seed.reviewedAt, `${routeId} 審查時間`);
+    if (typeof seed.reviewerNote !== "string" || !seed.reviewerNote.trim()) {
+      throw new TypeError(`${routeId} 已審查路線缺少 reviewerNote。`);
+    }
+  }
+  return seed;
 }
 
 function brouterUrl(seed, endpoint) {
@@ -493,7 +614,7 @@ export async function runCli(argv, options = {}) {
   const projectRoot = options.projectRoot || DEFAULT_PROJECT_ROOT;
   const routes = options.routes || Data.routes;
   const manifest = options.manifest || defaultManifest;
-  const selectedRoutes = selectRoutes(selector, routes);
+  const selectedRoutes = selectRoutes(selector, routes, manifest);
   const cacheDirectory = path.join(projectRoot, "tools", "route-data", "cache");
   const seedDirectory = path.join(projectRoot, "tools", "route-data", "seeds");
   const stagingDirectory = path.join(projectRoot, "tools", "route-data", ".staging");
@@ -511,6 +632,7 @@ export async function runCli(argv, options = {}) {
     const seedPath = path.join(seedDirectory, `${routeId}.json`);
     const seed = await readJsonIfExists(seedPath);
     if (!seed) throw new Error(`缺少人工 seed：${routeId}`);
+    validateTrackSeed(seed, routeId);
     const fingerprint = cacheFingerprint(seed);
     const cacheEntry = await readJsonIfExists(cachePath);
     const cacheHit = cacheEntry
@@ -522,11 +644,15 @@ export async function runCli(argv, options = {}) {
       payload = await client.request(seed);
     }
 
-    const track = buildTrack(payload);
+    const generatedAt = cacheHit
+      ? cacheEntry.generatedAt || new Date(0).toISOString()
+      : new Date((options.now || Date.now)()).toISOString();
+    const track = buildTrack(payload, { routeId, seed, generatedAt });
     if (!cacheHit) {
       await atomicWrite(cachePath, `${JSON.stringify({
-        version: 1,
+        version: 2,
         fingerprint,
+        generatedAt,
         response: payload
       }, null, 2)}\n`);
     }
@@ -564,7 +690,8 @@ export async function runCli(argv, options = {}) {
     const validateBatch = options.validateBatch || (sources => {
       validator.validateBundleSources(sources, {
         manifest: affectedManifest,
-        requireComplete: true
+        requireComplete: true,
+        requireReviewMetadata: true
       });
     });
     await publishBundles(bundleSources, {

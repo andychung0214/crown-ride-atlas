@@ -220,6 +220,27 @@ test("只有 SRTM 海拔來源會顯示規劃用途與非測量級限制", () =>
   assert.doesNotMatch(Render.profileSourceText({ source: { elevation: "GPS" } }), /非測量級資料/);
 });
 
+test("路線級非預設海拔濾波會顯示視窗、原因與交叉檢核來源", () => {
+  const text = Render.profileSourceText({
+    source: {
+      elevation: "SRTM",
+      elevationAnalysis: {
+        smoothingWindowM: 500,
+        gradeWindowM: 100,
+        reason: "橋梁與峽谷地表落差干擾。",
+        referenceUrl: "https://hiking.biji.co/example",
+        referenceLabel: "同距離實測路線"
+      }
+    }
+  });
+
+  assert.match(text, /海拔平滑 500m/);
+  assert.match(text, /坡度視窗 100m/);
+  assert.match(text, /橋梁與峽谷/);
+  assert.match(text, /同距離實測路線/);
+  assert.match(text, /未匯入外部 GPX/);
+});
+
 for (const coordinates of [[], [{ lat: 25, lng: 121, ele: 10 }]]) {
   test(`不足兩個座標點的 ready 軌跡會改為可重試錯誤（${coordinates.length} 點）`, () => {
     let retried = null;

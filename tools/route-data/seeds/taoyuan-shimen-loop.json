@@ -1,0 +1,58 @@
+{
+  "id": "taoyuan-shimen-loop",
+  "direction": "loop",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "龍潭神龍路",
+      "lat": 24.864054,
+      "lng": 121.211414,
+      "role": "start"
+    },
+    {
+      "name": "石門水庫坪林環湖路",
+      "lat": 24.820825,
+      "lng": 121.255684,
+      "role": "via"
+    },
+    {
+      "name": "石門水庫大灣坪環湖路",
+      "lat": 24.812989,
+      "lng": 121.253618,
+      "role": "via"
+    },
+    {
+      "name": "石門水庫龍珠灣環湖路",
+      "lat": 24.818628,
+      "lng": 121.270706,
+      "role": "via"
+    },
+    {
+      "name": "三民復興路三段",
+      "lat": 24.820451,
+      "lng": 121.346139,
+      "role": "via"
+    },
+    {
+      "name": "大溪慈湖路",
+      "lat": 24.88387,
+      "lng": 121.289188,
+      "role": "via"
+    },
+    {
+      "name": "大溪康莊路五段",
+      "lat": 24.828109,
+      "lng": 121.267686,
+      "role": "via"
+    },
+    {
+      "name": "龍潭神龍路",
+      "lat": 24.864054,
+      "lng": 121.211414,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T02:00:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖及桃園官方環湖騎乘說明檢查龍潭、坪林收費站、環湖路、三民、大溪與康莊道路；只使用官方可騎環湖公路，不進維修或 access=private 道路，坪林入口 gate 仍須依園區開放時間與現場規定。"
+}

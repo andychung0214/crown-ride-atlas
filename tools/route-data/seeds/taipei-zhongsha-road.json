@@ -1,0 +1,34 @@
+{
+  "id": "taipei-zhongsha-road",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "中社路一段起坡點",
+      "lat": 25.1108,
+      "lng": 121.55775,
+      "role": "start"
+    },
+    {
+      "name": "中社路二段",
+      "lat": 25.107606,
+      "lng": 121.569137,
+      "role": "via"
+    },
+    {
+      "name": "中社路二段道路終點前",
+      "lat": 25.1077,
+      "lng": 121.5709,
+      "role": "via"
+    },
+    {
+      "name": "中社路一段起坡點",
+      "lat": 25.1108,
+      "lng": 121.55775,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-26T09:14:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查中社路一、二段起坡至道路終點前折返；BRouter 訊息無 footway、path、steps、私人或未鋪面路段。"
+}

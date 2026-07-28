@@ -77,6 +77,13 @@
       parts.push(`海拔：${source.elevation}`);
       if (String(source.elevation).toUpperCase() === "SRTM") parts.push("SRTM 適合路線規劃，非測量級資料");
     }
+    const analysis = source.elevationAnalysis;
+    if (analysis) {
+      parts.push(
+        `路線級濾波：海拔平滑 ${analysis.smoothingWindowM}m、坡度視窗 ${analysis.gradeWindowM}m`
+        + `（${analysis.reason}；交叉檢核：${analysis.referenceLabel}；未匯入外部 GPX）`
+      );
+    }
     if (typeof source.generatedAt === "string" && source.generatedAt) parts.push(`產生：${source.generatedAt.slice(0, 10)}`);
     if (source.reviewStatus === "approved") parts.push(`人工審核完成${source.reviewedAt ? `：${source.reviewedAt.slice(0, 10)}` : ""}`);
     else if (source.reviewStatus) parts.push(`審核狀態：${source.reviewStatus}`);

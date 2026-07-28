@@ -77,10 +77,15 @@ function bootWithTrack(track) {
   return snapshots;
 }
 
-function bootWithInteractiveTrack(track) {
+function bootWithInteractiveTrack(track, onMapMount) {
   const elevationElement = { dataset: { elevation: "r1" }, setAttribute() {} };
+  const mapElement = { dataset: { routeMap: "r1" }, setAttribute() {} };
   const rootElement = {
-    querySelectorAll(selector) { return selector === "[data-elevation]" ? [elevationElement] : []; },
+    querySelectorAll(selector) {
+      if (selector === "[data-elevation]") return [elevationElement];
+      if (selector === "[data-route-map]") return [mapElement];
+      return [];
+    },
     querySelector() { return null; }
   };
   const root = {
@@ -107,7 +112,10 @@ function bootWithInteractiveTrack(track) {
       Store: { create() { return { list() { return root.CrownRideAtlas.Data.routes; } }; } },
       TrackLoader: { create() { return { load: async () => track, clear() {} }; } },
       MapView: {
-        mount() { return { destroy() {} }; },
+        mount(_element, route) {
+          if (onMapMount) onMapMount(route);
+          return { destroy() {} };
+        },
         mountElevation(_element, route, hydratedTrack) {
           TrackAnalysis.hydrateTrack(hydratedTrack || route);
         }
@@ -148,6 +156,24 @@ test("App 水合後傳遞同一份軌跡給海拔掛載，本機 GPX 只分析�
   } finally {
     TrackAnalysis.analyzeCoordinates = originalAnalyze;
   }
+});
+
+test("App 將正式軌跡人工路點一併傳給互動地圖", async () => {
+  let mountedRoute = null;
+  bootWithInteractiveTrack({
+    routeId: "r1",
+    coordinates: [{ lat: 25, lng: 121, ele: 100 }, { lat: 25.01, lng: 121, ele: 150 }],
+    waypoints: [
+      { name: "起點", lat: 25, lng: 121, role: "start" },
+      { name: "折返點", lat: 25.01, lng: 121, role: "finish" }
+    ]
+  }, route => {
+    mountedRoute = route;
+  });
+  await new Promise(resolve => setTimeout(resolve, 0));
+
+  assert.equal(mountedRoute.waypoints.length, 2);
+  assert.equal(mountedRoute.waypoints[1].name, "折返點");
 });
 
 test("已完成分析的內建軌跡經 App 與海拔掛載不會再次分析", async () => {

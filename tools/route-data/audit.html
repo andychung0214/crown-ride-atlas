@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CROWN RIDE ATLAS｜路線資料稽核</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+    <link rel="stylesheet" href="./audit.css">
+    <script defer src="../../js/data/routes.js"></script>
+    <script defer src="../../js/core/track-registry.js"></script>
+    <script defer src="../../js/data/track-manifest.js"></script>
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script defer src="./audit.js"></script>
+  </head>
+  <body>
+    <main class="audit" data-audit-root>
+      <header class="audit__header">
+        <p class="audit__eyebrow">CROWN RIDE ATLAS / BUILD-TIME AUDIT</p>
+        <h1>真實道路疊圖稽核</h1>
+        <p>綠線為 staging BRouter fastbike 軌跡，底圖為 OpenStreetMap。此頁不呼叫 BRouter。</p>
+        <label>選擇路線
+          <select data-audit-route></select>
+        </label>
+        <p role="status" data-audit-status></p>
+      </header>
+      <section>
+        <h2 data-audit-title>等待路線資料</h2>
+        <p class="audit__facts" data-audit-facts></p>
+        <div class="audit__map" data-audit-map aria-label="OpenStreetMap 路線疊圖"></div>
+      </section>
+      <section class="audit__grid">
+        <div>
+          <h2>人工種子地標</h2>
+          <ol data-audit-waypoints></ol>
+        </div>
+        <div>
+          <h2>海拔剖面</h2>
+          <svg class="audit__elevation" viewBox="0 0 900 220" role="img" aria-label="路線海拔剖面">
+            <path data-audit-elevation-path></path>
+          </svg>
+        </div>
+      </section>
+      <footer>道路權限、路況與管制會變動；完成資料稽核不取代出發前再次查核。</footer>
+    </main>
+  </body>
+</html>

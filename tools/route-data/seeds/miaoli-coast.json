@@ -1,0 +1,40 @@
+{
+  "id": "miaoli-coast",
+  "direction": "point-to-point",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "苑港漁港聯外道路",
+      "lat": 24.460632,
+      "lng": 120.650049,
+      "role": "start"
+    },
+    {
+      "name": "通霄漁港聯外濱海道路",
+      "lat": 24.494859,
+      "lng": 120.669969,
+      "role": "via"
+    },
+    {
+      "name": "白沙屯拱天宮",
+      "lat": 24.570793,
+      "lng": 120.708644,
+      "role": "via"
+    },
+    {
+      "name": "後龍好望角聯外道路",
+      "lat": 24.610939,
+      "lng": 120.762945,
+      "role": "via"
+    },
+    {
+      "name": "後龍火車站前道路",
+      "lat": 24.615882,
+      "lng": 120.787243,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T09:00:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查苑港漁港、通霄漁港、白沙屯、苗33好望角至後龍車站的綠光海風自行車道與濱海道路；本線為官方68.5公里海線路網的中南段，部分自行車專用或防風林路段須留意海砂、強側風與臨時施工。"
+}

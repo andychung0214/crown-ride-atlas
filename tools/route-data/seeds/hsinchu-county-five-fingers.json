@@ -1,0 +1,46 @@
+{
+  "id": "hsinchu-county-five-fingers",
+  "direction": "loop",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "竹東火車站站前道路",
+      "lat": 24.738116,
+      "lng": 121.094122,
+      "role": "start"
+    },
+    {
+      "name": "北埔老街南興街",
+      "lat": 24.699679,
+      "lng": 121.057155,
+      "role": "via"
+    },
+    {
+      "name": "五指山玉皇宮",
+      "lat": 24.642111,
+      "lng": 121.089241,
+      "role": "via"
+    },
+    {
+      "name": "五指山觀音寺",
+      "lat": 24.648319,
+      "lng": 121.094101,
+      "role": "via"
+    },
+    {
+      "name": "南清公路五指山入口",
+      "lat": 24.660484,
+      "lng": 121.116697,
+      "role": "via"
+    },
+    {
+      "name": "竹東火車站站前道路",
+      "lat": 24.738116,
+      "lng": 121.094122,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T08:00:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查竹東、北埔、竹37-4、五指山玉皇宮與觀音寺，再由五指山路銜接縣道122南清公路返回竹東；山腰道路狹窄且彎多，騎士應降低下坡速度並在出發前查核施工與臨時管制。"
+}

@@ -1,0 +1,46 @@
+{
+  "id": "hsinchu-city-coast-17k",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "新竹漁港南側自行車道口",
+      "lat": 24.842868,
+      "lng": 120.923192,
+      "role": "start"
+    },
+    {
+      "name": "港南運河公園",
+      "lat": 24.82231,
+      "lng": 120.91052,
+      "role": "via"
+    },
+    {
+      "name": "金城湖",
+      "lat": 24.811521,
+      "lng": 120.911249,
+      "role": "via"
+    },
+    {
+      "name": "香山濕地自行車道",
+      "lat": 24.774178,
+      "lng": 120.913828,
+      "role": "via"
+    },
+    {
+      "name": "南港賞鳥區",
+      "lat": 24.742882,
+      "lng": 120.89446,
+      "role": "via"
+    },
+    {
+      "name": "新竹漁港南側自行車道口",
+      "lat": 24.842868,
+      "lng": 120.923192,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T06:00:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查新竹漁港南側、港南運河、金城湖、香山濕地至南港賞鳥區官方17公里海岸線並折返。24.774178,120.913828 至 24.778785,120.914415 約514公尺／單向在 OSM 標為 footway，疑為自行車權限標籤缺漏；新竹市官方明列此段屬17公里自行車道（https://ssw.hccg.gov.tw/viewpoint/14），故保留官方自行車走廊而不改走台1。公路車騎士仍須出發前現地確認施工與管制。其餘 BRouter 訊息無 path、steps、私人或未鋪面路段。"
+}

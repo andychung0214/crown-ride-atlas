@@ -1,0 +1,64 @@
+{
+  "id": "taipei-lengshuikeng",
+  "direction": "loop",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "仰德大道一段雙向道路",
+      "lat": 25.101546,
+      "lng": 121.53771,
+      "role": "start"
+    },
+    {
+      "name": "陽明山仰德大道格致路口",
+      "lat": 25.1409,
+      "lng": 121.5465,
+      "role": "via"
+    },
+    {
+      "name": "菁山路101巷入口",
+      "lat": 25.143,
+      "lng": 121.562,
+      "role": "via"
+    },
+    {
+      "name": "冷水坑菁山路101巷道路",
+      "lat": 25.165653,
+      "lng": 121.563595,
+      "role": "via"
+    },
+    {
+      "name": "中湖戰備道路東段",
+      "lat": 25.169208,
+      "lng": 121.562476,
+      "role": "via"
+    },
+    {
+      "name": "中湖戰備道路西段",
+      "lat": 25.17357,
+      "lng": 121.559199,
+      "role": "via"
+    },
+    {
+      "name": "陽金公路小油坑路口",
+      "lat": 25.180032,
+      "lng": 121.549196,
+      "role": "via"
+    },
+    {
+      "name": "陽明山國家公園管理處竹子湖路",
+      "lat": 25.155209,
+      "lng": 121.546048,
+      "role": "via"
+    },
+    {
+      "name": "仰德大道一段雙向道路",
+      "lat": 25.101546,
+      "lng": 121.53771,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-26T09:14:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查仰德大道、菁山路101巷、冷水坑、中湖戰備道路、陽金公路與竹子湖路環線；BRouter 訊息無 footway、path、steps、私人或未鋪面路段。"
+}

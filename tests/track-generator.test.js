@@ -28,6 +28,23 @@ async function loadValidator() {
   return import(`${pathToFileURL(validatorPath).href}?test=${Date.now()}`);
 }
 
+function formalSeed(routeId, waypoints = [[121.541, 25.021], [121.542, 25.022]]) {
+  return {
+    id: routeId,
+    direction: "point-to-point",
+    profile: "fastbike",
+    waypoints: waypoints.map(([lng, lat], index) => ({
+      name: index === 0 ? "測試起點" : index === waypoints.length - 1 ? "測試終點" : `測試途經點 ${index}`,
+      lng,
+      lat,
+      role: index === 0 ? "start" : index === waypoints.length - 1 ? "finish" : "via"
+    })),
+    reviewStatus: "approved",
+    reviewedAt: "2026-07-26T00:00:00.000Z",
+    reviewerNote: "測試用人工路線資料。"
+  };
+}
+
 test("解析 BRouter LineString 的經度、緯度與海拔", async () => {
   const { parseBrouterFeature } = await loadGenerator();
   const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
@@ -48,6 +65,129 @@ test("建構軌跡時會產生分析摘要與爬坡陣列", async () => {
   assert.ok(track.summary.distanceKm > 0.1);
   assert.equal(typeof track.summary.elevationGainM, "number");
   assert.ok(Array.isArray(track.climbs));
+});
+
+test("正式軌跡保留路線識別、BRouter SRTM 來源與具名人工地標", async () => {
+  const { buildTrack } = await loadGenerator();
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  const seed = {
+    id: "taipei-fengguizui",
+    direction: "out-and-back",
+    profile: "fastbike",
+    waypoints: [
+      { name: "故宮博物院", lat: 25.1024, lng: 121.5485, role: "start" },
+      { name: "風櫃嘴", lat: 25.1375, lng: 121.5972, role: "finish" }
+    ],
+    reviewStatus: "approved",
+    reviewedAt: "2026-07-26T00:00:00.000Z",
+    reviewerNote: "沿至善路與萬溪產業道路檢查。"
+  };
+
+  const track = buildTrack(fixture, {
+    routeId: "taipei-fengguizui",
+    seed,
+    generatedAt: "2026-07-25T00:00:00.000Z"
+  });
+
+  assert.equal(track.routeId, "taipei-fengguizui");
+  assert.equal(track.direction, "out-and-back");
+  assert.deepEqual(track.source, {
+    router: "BRouter",
+    profile: "fastbike",
+    elevation: "SRTM",
+    generatedAt: "2026-07-25T00:00:00.000Z",
+    reviewedAt: "2026-07-26T00:00:00.000Z",
+    reviewStatus: "approved",
+    reviewerNote: "沿至善路與萬溪產業道路檢查。"
+  });
+  assert.deepEqual(track.waypoints, seed.waypoints);
+  assert.notEqual(track.waypoints, seed.waypoints);
+});
+
+test("正式軌跡依 seed 套用並保留可稽核的路線級海拔分析設定", async () => {
+  const { buildTrack } = await loadGenerator();
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  const seed = formalSeed("taoyuan-north-cross-baling");
+  seed.elevationAnalysis = {
+    smoothingWindowM: 500,
+    gradeWindowM: 100,
+    reason: "山區道路 SRTM 受橋梁與峽谷地表落差干擾。",
+    referenceUrl: "https://hiking.biji.co/index.php?act=gpx_detail&id=4524145&q=trail",
+    referenceLabel: "健行筆記同距離實測路線"
+  };
+
+  const track = buildTrack(fixture, {
+    routeId: seed.id,
+    seed,
+    generatedAt: "2026-07-25T00:00:00.000Z"
+  });
+
+  assert.deepEqual(track.source.elevationAnalysis, seed.elevationAnalysis);
+  assert.equal(track.coordinates[0].ele, 12);
+});
+
+test("路線級海拔分析設定拒絕過小視窗與不可稽核來源", async () => {
+  const { validateTrackSeed } = await loadGenerator();
+  const seed = formalSeed("taoyuan-north-cross-baling");
+
+  assert.throws(() => validateTrackSeed({
+    ...seed,
+    elevationAnalysis: {
+      smoothingWindowM: 99,
+      gradeWindowM: 100,
+      reason: "測試",
+      referenceUrl: "javascript:alert(1)",
+      referenceLabel: ""
+    }
+  }, seed.id), /海拔分析/);
+});
+
+test("正式軌跡拒絕識別不符、無效方向與未具名地標", async () => {
+  const { buildTrack } = await loadGenerator();
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  const baseSeed = {
+    id: "taipei-fengguizui",
+    direction: "out-and-back",
+    profile: "fastbike",
+    waypoints: [
+      { name: "故宮博物院", lat: 25.021, lng: 121.541, role: "start" },
+      { name: "風櫃嘴", lat: 25.022, lng: 121.542, role: "finish" }
+    ],
+    reviewStatus: "approved",
+    reviewedAt: "2026-07-26T00:00:00.000Z",
+    reviewerNote: "已檢查。"
+  };
+
+  assert.throws(
+    () => buildTrack(fixture, {
+      routeId: "other-route",
+      seed: baseSeed,
+      generatedAt: "2026-07-25T00:00:00.000Z"
+    }),
+    /識別碼/
+  );
+  assert.throws(
+    () => buildTrack(fixture, {
+      routeId: baseSeed.id,
+      seed: { ...baseSeed, direction: "teleport" },
+      generatedAt: "2026-07-25T00:00:00.000Z"
+    }),
+    /方向/
+  );
+  assert.throws(
+    () => buildTrack(fixture, {
+      routeId: baseSeed.id,
+      seed: {
+        ...baseSeed,
+        waypoints: [
+          { name: "", lat: 25.021, lng: 121.541, role: "start" },
+          baseSeed.waypoints[1]
+        ]
+      },
+      generatedAt: "2026-07-25T00:00:00.000Z"
+    }),
+    /名稱/
+  );
 });
 
 test("重採樣會將相鄰點距離限制在 30 至 80 公尺並保留端點", async () => {
@@ -148,6 +288,23 @@ test("route 選擇器拒絕未知 route ID", async () => {
   assert.throws(
     () => selectRoutes({ routeId: "unknown-route" }),
     /route ID/
+  );
+});
+
+test("地區 route 選擇器只納入 track manifest 管理的實際騎乘路線", async () => {
+  const { selectRoutes } = await loadGenerator();
+  const routes = [
+    { id: "taipei-fengguizui", regionId: "taipei" },
+    { id: "route-art-crown", regionId: "taipei" }
+  ];
+  const manifest = {
+    "taipei-fengguizui": { bundleId: "taipei" },
+    "route-art-crown": { bundleId: "route-art" }
+  };
+
+  assert.deepEqual(
+    selectRoutes({ regionIds: ["taipei"] }, routes, manifest),
+    [routes[0]]
   );
 });
 
@@ -256,7 +413,7 @@ test("CLI 以注入 fetch 產生 staging，後續執行只讀取快取", async t
   await fs.mkdir(seedDirectory, { recursive: true });
   await fs.writeFile(
     path.join(seedDirectory, "taipei-fengguizui.json"),
-    JSON.stringify({ waypoints: [[121.541, 25.021], [121.542, 25.022]] }),
+    JSON.stringify(formalSeed("taipei-fengguizui")),
     "utf8"
   );
   const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
@@ -312,6 +469,64 @@ test("CLI 以注入 fetch 產生 staging，後續執行只讀取快取", async t
     "utf8"
   );
   assert.match(stagingSource, /taipei-fengguizui/);
+  const { parseBundleSource } = await loadValidator();
+  const stagedTrack = parseBundleSource("taipei", stagingSource)["taipei-fengguizui"];
+  assert.equal(stagedTrack.source.generatedAt, "1970-01-01T00:00:00.000Z");
+  assert.equal(stagedTrack.routeId, "taipei-fengguizui");
+});
+
+test("快取命中時保留原始資料產生時間而非每次改寫", async t => {
+  const { runCli } = await loadGenerator();
+  const { parseBundleSource } = await loadValidator();
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "crown-generated-at-"));
+  t.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
+  const seedDirectory = path.join(temporaryRoot, "tools", "route-data", "seeds");
+  await fs.mkdir(seedDirectory, { recursive: true });
+  await fs.writeFile(
+    path.join(seedDirectory, "taipei-fengguizui.json"),
+    JSON.stringify({
+      id: "taipei-fengguizui",
+      direction: "point-to-point",
+      profile: "fastbike",
+      waypoints: [
+        { name: "起點", lng: 121.541, lat: 25.021, role: "start" },
+        { name: "終點", lng: 121.542, lat: 25.022, role: "finish" }
+      ],
+      reviewStatus: "approved",
+      reviewedAt: "2026-07-26T00:00:00.000Z",
+      reviewerNote: "測試用具名道路。"
+    }),
+    "utf8"
+  );
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  const routes = [{ id: "taipei-fengguizui", trackRef: "taipei-fengguizui", regionId: "taipei" }];
+  const manifest = {
+    "taipei-fengguizui": { bundleId: "taipei", src: "js/data/tracks/taipei.js" }
+  };
+
+  await runCli(["--route", "taipei-fengguizui", "--staging"], {
+    projectRoot: temporaryRoot,
+    routes,
+    manifest,
+    now: () => Date.parse("2026-07-25T12:00:00.000Z"),
+    fetchImpl: async () => ({ ok: true, status: 200, async json() { return fixture; } })
+  });
+  await runCli(["--route", "taipei-fengguizui", "--staging"], {
+    projectRoot: temporaryRoot,
+    routes,
+    manifest,
+    now: () => Date.parse("2026-07-26T12:00:00.000Z"),
+    fetchImpl: async () => { throw new Error("快取命中時不可呼叫"); }
+  });
+
+  const source = await fs.readFile(
+    path.join(temporaryRoot, "tools", "route-data", ".staging", "taipei.js"),
+    "utf8"
+  );
+  assert.equal(
+    parseBundleSource("taipei", source)["taipei-fengguizui"].source.generatedAt,
+    "2026-07-25T12:00:00.000Z"
+  );
 });
 
 test("validator 載入 registry bundle 並拒絕不完整或無效資料", async () => {
@@ -355,6 +570,167 @@ test("validator 載入 registry bundle 並拒絕不完整或無效資料", async
     () => validateBundleSources(new Map(), { manifest, requireComplete: true }),
     /缺少/
   );
+});
+
+test("正式 validator 要求已審查來源、正確 routeId 與貼近軌跡的地標", async () => {
+  const { buildTrack, serializeBundle } = await loadGenerator();
+  const { validateBundleSources } = await loadValidator();
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  const manifest = {
+    "taipei-fengguizui": {
+      bundleId: "taipei",
+      src: "js/data/tracks/taipei.js"
+    }
+  };
+  const seed = {
+    id: "taipei-fengguizui",
+    direction: "point-to-point",
+    profile: "fastbike",
+    waypoints: [
+      { name: "起點", lat: 25.021, lng: 121.541, role: "start" },
+      { name: "終點", lat: 25.022, lng: 121.542, role: "finish" }
+    ],
+    reviewStatus: "approved",
+    reviewedAt: "2026-07-26T00:00:00.000Z",
+    reviewerNote: "依 OSM 與 BRouter 疊圖檢查。"
+  };
+  const track = buildTrack(fixture, {
+    routeId: seed.id,
+    seed,
+    generatedAt: "2026-07-25T00:00:00.000Z"
+  });
+  const source = serializeBundle("taipei", { [seed.id]: track });
+
+  assert.equal(validateBundleSources(new Map([["taipei", source]]), {
+    manifest,
+    requireComplete: true,
+    requireReviewMetadata: true
+  }).routeCount, 1);
+
+  const pending = JSON.parse(JSON.stringify(track));
+  pending.source.reviewStatus = "pending";
+  assert.throws(
+    () => validateBundleSources(
+      new Map([["taipei", serializeBundle("taipei", { [seed.id]: pending })]]),
+      { manifest, requireComplete: true, requireReviewMetadata: true }
+    ),
+    /審查/
+  );
+
+  const farWaypoint = JSON.parse(JSON.stringify(track));
+  farWaypoint.waypoints[1].lat = 24.5;
+  assert.throws(
+    () => validateBundleSources(
+      new Map([["taipei", serializeBundle("taipei", { [seed.id]: farWaypoint })]]),
+      { manifest, requireComplete: true, requireReviewMetadata: true }
+    ),
+    /地標/
+  );
+
+  const wrongRoute = JSON.parse(JSON.stringify(track));
+  wrongRoute.routeId = "other-route";
+  assert.throws(
+    () => validateBundleSources(
+      new Map([["taipei", serializeBundle("taipei", { [seed.id]: wrongRoute })]]),
+      { manifest, requireComplete: true, requireReviewMetadata: true }
+    ),
+    /routeId/
+  );
+});
+
+test("validator --regions 只要求指定地區完整並套用正式審查閘門", async t => {
+  const { buildTrack, serializeBundle } = await loadGenerator();
+  const { runCli: runValidatorCli } = await loadValidator();
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "crown-region-validate-"));
+  t.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
+  const stagingDirectory = path.join(temporaryRoot, "tools", "route-data", ".staging");
+  await fs.mkdir(stagingDirectory, { recursive: true });
+  const seed = {
+    id: "taipei-fengguizui",
+    direction: "point-to-point",
+    profile: "fastbike",
+    waypoints: [
+      { name: "起點", lat: 25.021, lng: 121.541, role: "start" },
+      { name: "終點", lat: 25.022, lng: 121.542, role: "finish" }
+    ],
+    reviewStatus: "approved",
+    reviewedAt: "2026-07-26T00:00:00.000Z",
+    reviewerNote: "依 OSM 與 BRouter 疊圖檢查。"
+  };
+  await fs.writeFile(
+    path.join(stagingDirectory, "taipei.js"),
+    serializeBundle("taipei", {
+      [seed.id]: buildTrack(fixture, {
+        routeId: seed.id,
+        seed,
+        generatedAt: "2026-07-25T00:00:00.000Z"
+      })
+    }),
+    "utf8"
+  );
+  const manifest = {
+    [seed.id]: { bundleId: "taipei", src: "js/data/tracks/taipei.js", regionId: "taipei" },
+    "route-art-crown": {
+      bundleId: "route-art",
+      src: "js/data/tracks/route-art.js",
+      regionId: "taipei"
+    },
+    "taipei-zhongsha-road": {
+      bundleId: "taipei",
+      src: "js/data/tracks/taipei.js",
+      regionId: "taipei"
+    },
+    "taichung-route-136": {
+      bundleId: "taichung",
+      src: "js/data/tracks/taichung.js",
+      regionId: "taichung"
+    }
+  };
+
+  await assert.rejects(
+    runValidatorCli(["--staging", "--regions", "taipei"], {
+      projectRoot: temporaryRoot,
+      manifest,
+      routes: [
+        { id: seed.id, regionId: "taipei" },
+        { id: "route-art-crown", regionId: "taipei" },
+        { id: "taipei-zhongsha-road", regionId: "taipei" },
+        { id: "taichung-route-136", regionId: "taichung" }
+      ]
+    }),
+    /taipei-zhongsha-road/
+  );
+
+  const secondSeed = { ...seed, id: "taipei-zhongsha-road" };
+  await fs.writeFile(
+    path.join(stagingDirectory, "taipei.js"),
+    serializeBundle("taipei", {
+      [seed.id]: buildTrack(fixture, {
+        routeId: seed.id,
+        seed,
+        generatedAt: "2026-07-25T00:00:00.000Z"
+      }),
+      [secondSeed.id]: buildTrack(fixture, {
+        routeId: secondSeed.id,
+        seed: secondSeed,
+        generatedAt: "2026-07-25T00:00:00.000Z"
+      })
+    }),
+    "utf8"
+  );
+  const result = await runValidatorCli(["--staging", "--regions", "taipei"], {
+    projectRoot: temporaryRoot,
+    manifest,
+    routes: [
+      { id: seed.id, regionId: "taipei" },
+      { id: "route-art-crown", regionId: "taipei" },
+      { id: secondSeed.id, regionId: "taipei" },
+      { id: "taichung-route-136", regionId: "taichung" }
+    ]
+  });
+
+  assert.equal(result.routeCount, 2);
 });
 
 test("正式 bundle 第二檔提交失敗時會復原整批原始內容", async t => {
@@ -414,7 +790,7 @@ test("不安全 route ID 不得逃逸 cache 與 seed 目錄", async t => {
   await fs.mkdir(routeDataDirectory, { recursive: true });
   await fs.writeFile(
     path.join(routeDataDirectory, "escaped.json"),
-    JSON.stringify({ waypoints: [[121.541, 25.021], [121.542, 25.022]] }),
+    JSON.stringify(formalSeed("../escaped")),
     "utf8"
   );
   const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
@@ -597,7 +973,7 @@ test("validator 拒絕欄位矛盾與索引越界的爬坡", async () => {
     type: "Feature",
     geometry: {
       type: "LineString",
-      coordinates: [[121, 25, 100], [121, 25.0045, 130]]
+      coordinates: [[121, 25, 100], [121, 25.0045, 140]]
     }
   };
   const track = buildTrack(climbingPayload);
@@ -694,7 +1070,7 @@ test("人工 seed 變更時不會誤用舊 BRouter 快取", async t => {
   };
   await fs.writeFile(
     seedPath,
-    JSON.stringify({ waypoints: [[121.541, 25.021], [121.542, 25.022]] }),
+    JSON.stringify(formalSeed("taipei-fengguizui")),
     "utf8"
   );
   await runCli(["--route", "taipei-fengguizui", "--staging"], options);
@@ -705,7 +1081,7 @@ test("人工 seed 變更時不會誤用舊 BRouter 快取", async t => {
 
   await fs.writeFile(
     seedPath,
-    JSON.stringify({ waypoints: [[121.541, 25.021], [121.543, 25.023]] }),
+    JSON.stringify(formalSeed("taipei-fengguizui", [[121.541, 25.021], [121.543, 25.023]])),
     "utf8"
   );
   await runCli(["--route", "taipei-fengguizui", "--staging"], options);

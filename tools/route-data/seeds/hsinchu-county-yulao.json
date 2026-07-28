@@ -1,0 +1,65 @@
+{
+  "id": "hsinchu-county-yulao",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 100,
+    "reason": "竹60宇老山路緊貼深谷與陡坡，SRTM地表取樣受山壁與谷側落差干擾；預設視窗產生46%短波及高估累積爬升，改用500公尺平滑保留長坡趨勢。",
+    "referenceUrl": "https://running.biji.co/index.php?act=detail&id=47655&q=review",
+    "referenceLabel": "運動筆記「慕名已久的宇老，說騎就騎」實騎路線"
+  },
+  "waypoints": [
+    {
+      "name": "竹東火車站站前道路",
+      "lat": 24.738116,
+      "lng": 121.094122,
+      "role": "start"
+    },
+    {
+      "name": "內灣縣道120",
+      "lat": 24.703592,
+      "lng": 121.183221,
+      "role": "via"
+    },
+    {
+      "name": "尖石大橋縣道120",
+      "lat": 24.704157,
+      "lng": 121.20268,
+      "role": "via"
+    },
+    {
+      "name": "錦屏大橋竹60",
+      "lat": 24.694241,
+      "lng": 121.220852,
+      "role": "via"
+    },
+    {
+      "name": "那羅竹60",
+      "lat": 24.682595,
+      "lng": 121.246097,
+      "role": "via"
+    },
+    {
+      "name": "宇老觀景台竹60",
+      "lat": 24.667632,
+      "lng": 121.282051,
+      "role": "via"
+    },
+    {
+      "name": "錦屏大橋竹60",
+      "lat": 24.694241,
+      "lng": 121.220852,
+      "role": "via"
+    },
+    {
+      "name": "竹東火車站站前道路",
+      "lat": 24.738116,
+      "lng": 121.094122,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T08:00:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查竹東經縣道120、內灣、尖石與竹60那羅至宇老觀景台並原路折返。OSM在那羅至宇老約1.33公里的竹60主線仍標為highway=track且未補surface，但軌跡與公開公路車實騎走廊一致；騎士仍須攜帶足量補給、控制下坡速度並於出發前查核路面、施工與臨時管制。"
+}

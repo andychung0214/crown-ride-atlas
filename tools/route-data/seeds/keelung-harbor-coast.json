@@ -1,0 +1,40 @@
+{
+  "id": "keelung-harbor-coast",
+  "direction": "loop",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "基隆車站忠一路口",
+      "lat": 25.131422,
+      "lng": 121.739869,
+      "role": "start"
+    },
+    {
+      "name": "和平島公園聯外道路",
+      "lat": 25.15875,
+      "lng": 121.7703,
+      "role": "via"
+    },
+    {
+      "name": "碧砂漁港",
+      "lat": 25.14673,
+      "lng": 121.786432,
+      "role": "via"
+    },
+    {
+      "name": "潮境公園聯外道路",
+      "lat": 25.1427,
+      "lng": 121.8028,
+      "role": "via"
+    },
+    {
+      "name": "基隆車站忠一路口",
+      "lat": 25.131422,
+      "lng": 121.739869,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-26T08:30:00.000Z",
+  "reviewerNote": "以稽核頁疊加 OpenStreetMap 目視確認忠一路、正濱路、和一路與北寧路連續；BRouter WayTags 未命中高速公路、樓梯、私人或未鋪裝路段。"
+}

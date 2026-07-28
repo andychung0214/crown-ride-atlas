@@ -1,0 +1,70 @@
+{
+  "id": "new-taipei-buyanting",
+  "direction": "loop",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "雙溪朝陽街",
+      "lat": 25.038591,
+      "lng": 121.866136,
+      "role": "start"
+    },
+    {
+      "name": "瑞雙公路雙溪段",
+      "lat": 25.070338,
+      "lng": 121.846962,
+      "role": "via"
+    },
+    {
+      "name": "不厭亭瑞雙公路",
+      "lat": 25.089281,
+      "lng": 121.847667,
+      "role": "via"
+    },
+    {
+      "name": "九份瑞雙公路",
+      "lat": 25.109426,
+      "lng": 121.848127,
+      "role": "via"
+    },
+    {
+      "name": "瑞芳中山路",
+      "lat": 25.108,
+      "lng": 121.805,
+      "role": "via"
+    },
+    {
+      "name": "十分靜安路三段",
+      "lat": 25.050582,
+      "lng": 121.784519,
+      "role": "via"
+    },
+    {
+      "name": "平溪基福公路",
+      "lat": 25.034965,
+      "lng": 121.779415,
+      "role": "via"
+    },
+    {
+      "name": "雙溪基福公路西段",
+      "lat": 25.016505,
+      "lng": 121.801044,
+      "role": "via"
+    },
+    {
+      "name": "雙溪基福公路東段",
+      "lat": 25.035103,
+      "lng": 121.861211,
+      "role": "via"
+    },
+    {
+      "name": "雙溪朝陽街",
+      "lat": 25.038591,
+      "lng": 121.866136,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T01:20:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查雙溪沿102瑞雙公路經不厭亭、九份、瑞芳，再接106靜安路與台2丙基福公路返回雙溪；BRouter 訊息無 footway、path、steps、私人或未鋪面路段。"
+}

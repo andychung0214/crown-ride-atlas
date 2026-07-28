@@ -173,16 +173,19 @@
     let startIndex = 0;
     let peakIndex = 0;
     let gainM = 0;
+    const elevationAt = index => Number.isFinite(coordinates[index].smoothedEle)
+      ? coordinates[index].smoothedEle
+      : coordinates[index].ele;
 
     for (let index = 1; index < coordinates.length; index += 1) {
-      const change = coordinates[index].ele - coordinates[index - 1].ele;
+      const change = elevationAt(index) - elevationAt(index - 1);
       if (change > 0) {
         gainM += change;
         peakIndex = index;
         continue;
       }
 
-      if (coordinates[peakIndex].ele - coordinates[index].ele <= CLIMB_DESCENT_TOLERANCE_M) continue;
+      if (elevationAt(peakIndex) - elevationAt(index) <= CLIMB_DESCENT_TOLERANCE_M) continue;
       const climb = createClimb(coordinates, startIndex, peakIndex, gainM, minDistanceM, minGainM);
       if (climb) climbs.push(climb);
       startIndex = index;

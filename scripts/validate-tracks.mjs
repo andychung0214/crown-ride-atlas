@@ -6,14 +6,20 @@ import { fileURLToPath } from "node:url";
 import {
   assertSafeIdentifier,
   parseBrouterFeature,
-  resolveManifestSource
+  resolveManifestSource,
+  validateElevationAnalysis
 } from "./generate-tracks.mjs";
 
 const require = createRequire(import.meta.url);
 const defaultManifest = require("../js/data/track-manifest.js");
+const Data = require("../js/data/routes.js");
+const Geo = require("../js/core/geo.js");
 const { analyzeCoordinates } = require("../js/core/track-analysis.js");
 const DEFAULT_PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const COMPARISON_TOLERANCE = 1e-6;
+const MAX_WAYPOINT_TRACK_DISTANCE_KM = 0.2;
+const VALID_DIRECTIONS = new Set(["loop", "out-and-back", "point-to-point"]);
+const VALID_WAYPOINT_ROLES = new Set(["start", "via", "finish"]);
 
 function freshTrackRegistry() {
   const registryPath = require.resolve("../js/core/track-registry.js");
@@ -58,7 +64,51 @@ function approximatelyEqual(actual, expected) {
   return Number.isFinite(actual) && Math.abs(actual - expected) <= tolerance;
 }
 
-function validateTrack(routeId, track) {
+function isIsoTimestamp(value) {
+  return typeof value === "string"
+    && Number.isFinite(Date.parse(value))
+    && new Date(value).toISOString() === value;
+}
+
+function validateReviewMetadata(routeId, track) {
+  if (track.routeId !== routeId) throw new Error(`${routeId} Track routeId 不一致。`);
+  if (!VALID_DIRECTIONS.has(track.direction)) throw new Error(`${routeId} 路線方向無效。`);
+  const source = track.source;
+  if (!source || source.router !== "BRouter" || source.profile !== "fastbike"
+    || source.elevation !== "SRTM") {
+    throw new Error(`${routeId} 來源必須如實標示 BRouter、fastbike 與 SRTM。`);
+  }
+  if (!isIsoTimestamp(source.generatedAt)) throw new Error(`${routeId} 資料產生時間無效。`);
+  validateElevationAnalysis(source.elevationAnalysis, routeId);
+  if (source.reviewStatus !== "approved" || !isIsoTimestamp(source.reviewedAt)
+    || typeof source.reviewerNote !== "string" || !source.reviewerNote.trim()) {
+    throw new Error(`${routeId} 人工審查資料不完整。`);
+  }
+  if (!Array.isArray(track.waypoints) || track.waypoints.length < 2) {
+    throw new Error(`${routeId} 缺少人工地標。`);
+  }
+  const roles = [];
+  track.waypoints.forEach((waypoint, index) => {
+    if (!waypoint || typeof waypoint.name !== "string" || !waypoint.name.trim()
+      || !Geo.isCoordinate(waypoint) || !VALID_WAYPOINT_ROLES.has(waypoint.role)) {
+      throw new Error(`${routeId} 第 ${index + 1} 個人工地標無效。`);
+    }
+    roles.push(waypoint.role);
+    const nearestDistanceKm = Math.min(...track.coordinates.map(point => (
+      Geo.haversineKm(waypoint, point)
+    )));
+    if (nearestDistanceKm > MAX_WAYPOINT_TRACK_DISTANCE_KM) {
+      throw new Error(`${routeId} 人工地標「${waypoint.name}」未貼近軌跡。`);
+    }
+  });
+  if (roles[0] !== "start" || roles.at(-1) !== "finish"
+    || roles.filter(role => role === "start").length !== 1
+    || roles.filter(role => role === "finish").length !== 1) {
+    throw new Error(`${routeId} 人工地標起終點角色無效。`);
+  }
+}
+
+function validateTrack(routeId, track, options = {}) {
   if (!track || typeof track !== "object" || !Array.isArray(track.coordinates)) {
     throw new TypeError(`${routeId} 軌跡資料格式無效。`);
   }
@@ -85,7 +135,8 @@ function validateTrack(routeId, track) {
     throw new TypeError(`${routeId} 爬坡資料格式無效。`);
   }
   const recomputed = analyzeCoordinates(
-    track.coordinates.map(point => ({ lat: point.lat, lng: point.lng, ele: point.ele }))
+    track.coordinates.map(point => ({ lat: point.lat, lng: point.lng, ele: point.ele })),
+    validateElevationAnalysis(track.source && track.source.elevationAnalysis, routeId) || undefined
   );
   summaryFields.forEach(field => {
     if (!approximatelyEqual(summary[field], recomputed.summary[field])) {
@@ -124,11 +175,13 @@ function validateTrack(routeId, track) {
       throw new Error(`${routeId} 爬坡欄位不一致。`);
     }
   });
+  if (options.requireReviewMetadata) validateReviewMetadata(routeId, track);
 }
 
 export function validateBundleSources(bundleSources, options = {}) {
   const manifest = options.manifest || defaultManifest;
   const requireComplete = options.requireComplete === true;
+  const requireReviewMetadata = options.requireReviewMetadata === true;
   const expectedRouteIds = new Set(Object.keys(manifest));
   const seenRouteIds = new Set();
 
@@ -141,7 +194,7 @@ export function validateBundleSources(bundleSources, options = {}) {
         throw new Error(`${routeId} 不屬於 bundle ${bundleId}。`);
       }
       if (seenRouteIds.has(routeId)) throw new Error(`route ID 重複：${routeId}`);
-      validateTrack(routeId, track);
+      validateTrack(routeId, track, { requireReviewMetadata });
       seenRouteIds.add(routeId);
     }
   }
@@ -180,17 +233,48 @@ async function readBundleSources(mode, projectRoot, manifest) {
 }
 
 export async function runCli(argv, options = {}) {
-  const flags = new Set(argv);
-  const mode = flags.has("--published") ? "published" : flags.has("--staging") ? "staging" : null;
-  if (!mode || (flags.has("--published") && flags.has("--staging"))) {
+  let mode = null;
+  let regionIds = null;
+  for (let index = 0; index < argv.length; index += 1) {
+    const argument = argv[index];
+    if (argument === "--published" || argument === "--staging") {
+      if (mode) throw new Error("請只指定一種資料模式。");
+      mode = argument.slice(2);
+    } else if (argument === "--regions") {
+      const value = argv[++index];
+      if (!value) throw new Error("--regions 缺少地區 ID。");
+      regionIds = value.split(",").filter(Boolean);
+    } else {
+      throw new Error(`未知參數：${argument}`);
+    }
+  }
+  if (!mode) {
     throw new Error("請指定 --staging 或 --published。");
   }
   const projectRoot = options.projectRoot || DEFAULT_PROJECT_ROOT;
-  const manifest = options.manifest || defaultManifest;
+  const routes = options.routes || Data.routes;
+  const originalManifest = options.manifest || defaultManifest;
+  let manifest = originalManifest;
+  if (regionIds) {
+    const knownRegionIds = new Set(routes.map(route => route.regionId));
+    regionIds.forEach(regionId => {
+      if (!knownRegionIds.has(regionId)) throw new Error(`未知地區 ID：${regionId}`);
+    });
+    const selectedRouteIds = new Set(
+      routes.filter(route => regionIds.includes(route.regionId)).map(route => route.id)
+    );
+    manifest = Object.fromEntries(
+      Object.entries(originalManifest).filter(([routeId, entry]) =>
+        selectedRouteIds.has(routeId) && regionIds.includes(entry.bundleId)
+      )
+    );
+    if (!Object.keys(manifest).length) throw new Error("指定地區沒有可驗證的路線。");
+  }
   const sources = await readBundleSources(mode, projectRoot, manifest);
   return validateBundleSources(sources, {
     manifest,
-    requireComplete: mode === "published"
+    requireComplete: mode === "published" || Boolean(regionIds),
+    requireReviewMetadata: true
   });
 }
 

@@ -69,3 +69,50 @@
 - 公開網址：[https://andychung0214.github.io/crown-ride-atlas/](https://andychung0214.github.io/crown-ride-atlas/)
 - HTTP 實測：首頁、`css/base.css`、`js/app.js`、`assets/icons/favicon.svg` 均回應 `200`，首頁包含「狂輪誌」識別文字。
 - Chrome 實測：首頁導向 `#/home` 並正確顯示標題；直接開啟 `#/route/new-taipei-yangjin-3p` 顯示「陽金三峰｜狂輪誌」、路線標題與「下載 GPX」，主控台無錯誤。
+
+## 北部 21 條真實道路軌跡候選驗證
+
+驗證日期：2026-07-28
+
+此批資料由人工命名地標、BRouter `fastbike` 道路路由與 SRTM 海拔建構。每條路線均在建構期稽核頁疊合 OpenStreetMap，並以正式驗證器重新計算摘要。這是 Task 7 的送審證據，尚未取代程式碼審查或正式部署驗證。
+
+| 路線 ID | 距離 | 爬升 | 軌跡點 | OSM 道路稽核 |
+|---|---:|---:|---:|---|
+| `keelung-harbor-coast` | 19.9 km | 236 m | 502 | 港區與濱海道路，禁止類別 0 |
+| `keelung-nuannuan-hills` | 23.8 km | 350 m | 599 | 暖暖丘陵公路，禁止類別 0 |
+| `keelung-waimushan-wanli` | 29.2 km | 415 m | 780 | 外木山至萬里海線，禁止類別 0 |
+| `taipei-fengguizui` | 25.6 km | 515 m | 652 | 風櫃嘴公路，禁止類別 0 |
+| `taipei-zhongsha-road` | 8.5 km | 328 m | 344 | 中社路公路，禁止類別 0 |
+| `taipei-lengshuikeng` | 32.1 km | 1,035 m | 947 | 陽明山公路，禁止類別 0 |
+| `new-taipei-yangjin-3p` | 77.8 km | 2,757 m | 2,599 | 陽金三峰公路走廊，禁止類別 0 |
+| `new-taipei-north-coast` | 39.8 km | 455 m | 836 | 北海岸公路，禁止類別 0 |
+| `new-taipei-buyanting` | 54.4 km | 1,478 m | 1,698 | 雙溪、不厭亭公路，禁止類別 0 |
+| `taoyuan-roman-road` | 77.8 km | 1,791 m | 2,315 | 羅馬公路，禁止類別 0 |
+| `taoyuan-north-cross-baling` | 92.8 km | 1,713 m | 3,430 | 台 7 北橫至下巴陵，禁止類別 0 |
+| `taoyuan-shimen-loop` | 54.9 km | 1,006 m | 1,421 | 石門水庫道路；保留官方入口 `barrier=gate`，須查開放規則 |
+| `hsinchu-city-coast-17k` | 29.0 km | 67 m | 604 | 官方十七公里自行車道；OSM 有一段約 514 m 尚標 footway，已記錄官方證據與現地查核提醒 |
+| `hsinchu-city-18-peaks` | 13.9 km | 177 m | 343 | 十八尖山外圍公共道路，禁止類別 0 |
+| `hsinchu-city-nanliao-baoshan` | 44.8 km | 488 m | 1,071 | 南寮、寶山公共道路，避開水庫行人環湖步道，禁止類別 0 |
+| `hsinchu-county-five-fingers` | 37.0 km | 1,078 m | 1,203 | 竹 37-4、五指山路與縣道 122，禁止類別 0 |
+| `hsinchu-county-yulao` | 69.3 km | 1,459 m | 2,888 | 縣道 120、竹 60；其中約 1.33 km 在 OSM 尚標 `highway=track`，公開公路車實騎資料與主線幾何交叉檢核，須現地確認路面 |
+| `hsinchu-county-smangus` | 111.7 km | 3,935 m | 6,534 | 竹 60 與司馬庫斯產業道路；禁止類別 0，水泥與狹路風險另列安全提醒 |
+| `miaoli-xianshan` | 52.6 km | 1,440 m | 1,647 | 台 6、台 3、縣道 124 至靈洞宮，禁止類別 0 |
+| `miaoli-jiangmayuan` | 38.6 km | 1,258 m | 1,210 | 苗 49、縣道 130 至薑麻園，禁止類別 0 |
+| `miaoli-coast` | 31.5 km | 105 m | 661 | 官方綠光海風中南段，移除好望角與車站 footway 捷徑後禁止類別 0 |
+
+驗證命令與結果：
+
+- `node scripts/validate-tracks.mjs --regions keelung,taipei,new-taipei,taoyuan,hsinchu-city,hsinchu-county,miaoli --staging`：7 個 bundle、21 條路線通過。
+- `node scripts/generate-tracks.mjs --regions keelung,taipei,new-taipei,taoyuan,hsinchu-city,hsinchu-county,miaoli --publish`：發布 7 個 bundle、21 條路線。
+- `node scripts/validate-tracks.mjs --regions keelung,taipei,new-taipei,taoyuan,hsinchu-city,hsinchu-county,miaoli --published`：7 個 bundle、21 條路線通過。
+- 本機 HTTP 實際網站逐條開啟 21 個 `#/route/<id>`：21/21 均顯示相符標題、「路線資料已載入」、Leaflet、海拔剖面與 GPX 下載控制。
+- 「司馬庫斯部落挑戰」正常詳情頁實測顯示 2 至 3 公尺狹路、車輛單向時段、櫻花季總量管制、非全天候自由通行與查核主管機關最新公告；同頁明示 500m／100m 路線級濾波與未匯入外部 GPX。
+- 路線相關 focused 測試：78/78 通過；完整 `npm test`：172/172 通過。
+
+三條深谷／山壁路線採路線級 500 公尺海拔平滑與 100 公尺坡度視窗，原始 SRTM 海拔仍完整保留：
+
+- 北橫巴陵：以 94.45 公里實測摘要交叉檢核，修正橋梁、峽谷與山壁造成的短波。
+- 宇老：以公開公路車實騎路線交叉檢核，預設分析的 46% 短波不列為實際持續坡度。
+- 司馬庫斯：以 115 公里／約 4,100 公尺實騎摘要交叉檢核，候選資料為 111.7 公里／3,935 公尺。
+
+稽核頁明示平滑原因、交叉檢核名稱與「未匯入外部 GPX」，不把第三方摘要偽裝成本站軌跡來源。

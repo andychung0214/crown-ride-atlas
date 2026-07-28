@@ -1,0 +1,59 @@
+{
+  "id": "taoyuan-north-cross-baling",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 100,
+    "reason": "北橫山區道路的 SRTM 取樣受橋梁、峽谷與鄰近山壁地表落差干擾，原始 100 公尺分析出現不合理短波與累積爬升。",
+    "referenceUrl": "https://hiking.biji.co/index.php?act=gpx_detail&id=4524145&q=trail",
+    "referenceLabel": "健行筆記「北橫公路巴陵大橋」94.45 公里實測摘要"
+  },
+  "waypoints": [
+    {
+      "name": "大溪慈湖路",
+      "lat": 24.88387,
+      "lng": 121.289188,
+      "role": "start"
+    },
+    {
+      "name": "三民復興路三段",
+      "lat": 24.820451,
+      "lng": 121.346139,
+      "role": "via"
+    },
+    {
+      "name": "羅浮復興路五段",
+      "lat": 24.799442,
+      "lng": 121.36619,
+      "role": "via"
+    },
+    {
+      "name": "高義復興路七段",
+      "lat": 24.729748,
+      "lng": 121.358276,
+      "role": "via"
+    },
+    {
+      "name": "下巴陵復興路九段",
+      "lat": 24.675695,
+      "lng": 121.392052,
+      "role": "via"
+    },
+    {
+      "name": "羅浮復興路五段",
+      "lat": 24.799442,
+      "lng": 121.36619,
+      "role": "via"
+    },
+    {
+      "name": "大溪慈湖路",
+      "lat": 24.88387,
+      "lng": 121.289188,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T02:00:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查大溪至下巴陵台7北橫公路並原路折返；折返點保留在雙向柏油 primary，不進上巴陵 service 道路，BRouter 訊息無隧道限制、footway、path、steps、私人或未鋪面路段。"
+}

@@ -1,0 +1,28 @@
+{
+  "id": "taipei-fengguizui",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "大湖公園成功路五段",
+      "lat": 25.08115,
+      "lng": 121.58665,
+      "role": "start"
+    },
+    {
+      "name": "風櫃嘴五指山道路折返點",
+      "lat": 25.134184,
+      "lng": 121.595777,
+      "role": "via"
+    },
+    {
+      "name": "大湖公園成功路五段",
+      "lat": 25.08115,
+      "lng": 121.58665,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-26T09:14:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查大湖公園成功路、五指山道路至風櫃嘴折返點；BRouter 訊息無 footway、path、steps、私人或未鋪面路段。"
+}

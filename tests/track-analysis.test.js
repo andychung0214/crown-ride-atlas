@@ -39,6 +39,58 @@ test("單點海拔尖峰經平滑後不會產生極端坡度", () => {
   assert.ok(result.summary.maximumSustainedGradePct < 50);
 });
 
+test("路線級五百公尺濾波會抑制橋梁峽谷的短距離六十公尺 V 型 SRTM 異常", () => {
+  const elevations = [120, 122, 124, 126, 68, 128, 130, 132, 134];
+  const result = TrackAnalysis.analyzeCoordinates(elevations.map((ele, index) => ({
+    lat: 25 + index * 0.00045,
+    lng: 121,
+    ele
+  })), { smoothingWindowM: 500, gradeWindowM: 100 });
+
+  assert.equal(result.coordinates[4].ele, 68);
+  assert.ok(result.summary.maximumSustainedGradePct < 30);
+  assert.ok(result.summary.elevationGainM < 25);
+  assert.ok(result.summary.elevationLossM < 10);
+});
+
+test("預設一百公尺濾波保留真實持續二十公尺坡", () => {
+  const elevations = [100, 110, 120, 130, 140, 150, 150, 150];
+  const result = TrackAnalysis.analyzeCoordinates(elevations.map((ele, index) => ({
+    lat: 25 + index * 0.00045,
+    lng: 121,
+    ele
+  })));
+
+  assert.ok(result.summary.maximumSustainedGradePct > 17);
+  assert.ok(result.summary.maximumSustainedGradePct < 23);
+  assert.ok(result.summary.elevationGainM > 45);
+});
+
+test("預設一百公尺濾波保留一般滾動地形", () => {
+  const elevations = [100, 108, 116, 108, 100, 109, 118, 109, 100];
+  const result = TrackAnalysis.analyzeCoordinates(elevations.map((ele, index) => ({
+    lat: 25 + index * 0.00045,
+    lng: 121,
+    ele
+  })));
+
+  assert.ok(result.summary.elevationGainM > 15);
+  assert.ok(result.summary.elevationLossM > 8);
+  assert.ok(result.summary.maximumSustainedGradePct > 7);
+});
+
+test("主要爬坡使用平滑海拔而非原始 SRTM 單點尖峰", () => {
+  const elevations = [100, 100, 100, 100, 100, 100, 220, 100, 100, 100, 100, 100, 100];
+  const result = TrackAnalysis.analyzeCoordinates(elevations.map((ele, index) => ({
+    lat: 25 + index * 0.0009,
+    lng: 121,
+    ele
+  })), { smoothingWindowM: 500, gradeWindowM: 100 });
+
+  assert.deepEqual(result.climbs, []);
+  assert.equal(result.coordinates[6].ele, 220);
+});
+
 test("海拔正負一公尺抖動不會累加成大量爬升", () => {
   const result = TrackAnalysis.analyzeCoordinates([
     { lat: 25, lng: 121, ele: 100 },
@@ -87,7 +139,7 @@ test("含短下降的一點二公里累積五十公尺爬升仍會辨識爬坡",
   })));
 
   assert.equal(result.climbs.length, 1);
-  assert.equal(result.climbs[0].gainM, 50);
+  assert.ok(result.climbs[0].gainM > 45);
 });
 
 test("選項不能繞過最小 100 公尺坡度視窗與爬坡門檻", () => {

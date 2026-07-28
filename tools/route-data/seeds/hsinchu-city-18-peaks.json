@@ -1,0 +1,46 @@
+{
+  "id": "hsinchu-city-18-peaks",
+  "direction": "loop",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "信義街站前道路",
+      "lat": 24.8016,
+      "lng": 120.97,
+      "role": "start"
+    },
+    {
+      "name": "十八尖山學府路北側",
+      "lat": 24.796364,
+      "lng": 120.983156,
+      "role": "via"
+    },
+    {
+      "name": "寶山路赤土崎",
+      "lat": 24.785343,
+      "lng": 120.989488,
+      "role": "via"
+    },
+    {
+      "name": "高峰路丘陵",
+      "lat": 24.780427,
+      "lng": 120.980933,
+      "role": "via"
+    },
+    {
+      "name": "青草湖明湖路",
+      "lat": 24.770683,
+      "lng": 120.973294,
+      "role": "via"
+    },
+    {
+      "name": "信義街站前道路",
+      "lat": 24.8016,
+      "lng": 120.97,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T06:00:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查站前信義街、學府路、寶山路、高峰路與青草湖明湖路環線；十八尖山官方定位為健行森林公園，本路線只沿山腳公共道路騎乘，不進園內步道，BRouter 訊息無 footway、path、steps、私人或未鋪面路段。"
+}

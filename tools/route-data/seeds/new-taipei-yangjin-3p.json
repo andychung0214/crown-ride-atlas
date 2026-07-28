@@ -1,0 +1,70 @@
+{
+  "id": "new-taipei-yangjin-3p",
+  "direction": "point-to-point",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "仰德大道一段雙向道路",
+      "lat": 25.101546,
+      "lng": 121.53771,
+      "role": "start"
+    },
+    {
+      "name": "陽金公路小油坑路口",
+      "lat": 25.180032,
+      "lng": 121.549196,
+      "role": "via"
+    },
+    {
+      "name": "金山中山路台2線",
+      "lat": 25.217166,
+      "lng": 121.641959,
+      "role": "via"
+    },
+    {
+      "name": "大坪產業道路東段",
+      "lat": 25.168491,
+      "lng": 121.659565,
+      "role": "via"
+    },
+    {
+      "name": "大坪產業道路西段",
+      "lat": 25.169832,
+      "lng": 121.628592,
+      "role": "via"
+    },
+    {
+      "name": "風櫃嘴五指山道路",
+      "lat": 25.134184,
+      "lng": 121.595777,
+      "role": "via"
+    },
+    {
+      "name": "至善路三段",
+      "lat": 25.120488,
+      "lng": 121.584704,
+      "role": "via"
+    },
+    {
+      "name": "平菁街起坡段",
+      "lat": 25.118799,
+      "lng": 121.570742,
+      "role": "via"
+    },
+    {
+      "name": "平菁街上段",
+      "lat": 25.139557,
+      "lng": 121.569442,
+      "role": "via"
+    },
+    {
+      "name": "冷水坑菁山路101巷道路",
+      "lat": 25.165653,
+      "lng": 121.563595,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T01:20:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查第一峰仰德大道至陽金公路、第二峰金山經大坪產業道路至風櫃嘴、第三峰至善路和平菁街至冷水坑；BRouter 訊息無 footway、path、steps、私人或未鋪面路段。"
+}

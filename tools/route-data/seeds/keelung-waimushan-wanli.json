@@ -1,0 +1,40 @@
+{
+  "id": "keelung-waimushan-wanli",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "基隆車站忠一路口",
+      "lat": 25.131422,
+      "lng": 121.739869,
+      "role": "start"
+    },
+    {
+      "name": "外木山漁港",
+      "lat": 25.159349,
+      "lng": 121.734383,
+      "role": "via"
+    },
+    {
+      "name": "瑪鋉萬里漁港",
+      "lat": 25.180466,
+      "lng": 121.696007,
+      "role": "via"
+    },
+    {
+      "name": "野柳港東路入口",
+      "lat": 25.20526,
+      "lng": 121.690269,
+      "role": "via"
+    },
+    {
+      "name": "基隆車站忠一路口",
+      "lat": 25.131422,
+      "lng": 121.739869,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-26T08:45:00.000Z",
+  "reviewerNote": "完整騎乘改為基隆車站經外木山、萬里、野柳港東路後沿海線返回的 29.2 公里往返；以稽核頁疊加 OpenStreetMap 目視確認，WayTags 未命中高速公路、樓梯、私人或未鋪裝路段。"
+}

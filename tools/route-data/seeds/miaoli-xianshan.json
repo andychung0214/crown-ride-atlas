@@ -1,0 +1,46 @@
+{
+  "id": "miaoli-xianshan",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "公館台6中正路",
+      "lat": 24.501672,
+      "lng": 120.828592,
+      "role": "start"
+    },
+    {
+      "name": "汶水台6台3路口",
+      "lat": 24.453432,
+      "lng": 120.87572,
+      "role": "via"
+    },
+    {
+      "name": "獅潭台3與124路口",
+      "lat": 24.543413,
+      "lng": 120.922034,
+      "role": "via"
+    },
+    {
+      "name": "仙山靈洞宮",
+      "lat": 24.54205,
+      "lng": 120.94858,
+      "role": "via"
+    },
+    {
+      "name": "獅潭台3與124路口",
+      "lat": 24.543413,
+      "lng": 120.922034,
+      "role": "via"
+    },
+    {
+      "name": "公館台6中正路",
+      "lat": 24.501672,
+      "lng": 120.828592,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T09:00:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查公館台6、汶水台3、獅潭市區與縣道124至仙山靈洞宮並原路折返；終點停在宮前可行車道路，不進入後方登山步道。仙山道路彎多且局部狹窄，騎士須控制下坡速度並於出發前確認施工與天候。"
+}

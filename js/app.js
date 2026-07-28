@@ -110,6 +110,9 @@
       }
       return Object.assign({}, route, {
         coordinates: trackState.track.coordinates,
+        waypoints: Array.isArray(trackState.track.waypoints)
+          ? trackState.track.waypoints
+          : route.waypoints,
         track: trackState.track
       });
     }

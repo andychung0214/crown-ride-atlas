@@ -1,0 +1,46 @@
+{
+  "id": "keelung-nuannuan-hills",
+  "direction": "loop",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "基隆車站忠一路口",
+      "lat": 25.131422,
+      "lng": 121.739869,
+      "role": "start"
+    },
+    {
+      "name": "暖暖車站",
+      "lat": 25.1014,
+      "lng": 121.7377,
+      "role": "via"
+    },
+    {
+      "name": "東勢街暖暖壺穴入口",
+      "lat": 25.0947,
+      "lng": 121.7425,
+      "role": "via"
+    },
+    {
+      "name": "暖東峽谷聯外道路",
+      "lat": 25.0772,
+      "lng": 121.7551,
+      "role": "via"
+    },
+    {
+      "name": "七堵車站前站道路",
+      "lat": 25.0934,
+      "lng": 121.7134,
+      "role": "via"
+    },
+    {
+      "name": "基隆車站忠一路口",
+      "lat": 25.131422,
+      "lng": 121.739869,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-26T08:45:00.000Z",
+  "reviewerNote": "完整騎乘改為基隆車站、暖暖、東勢街暖東峽谷、七堵再回基隆的 23.8 公里環線；以稽核頁疊加 OpenStreetMap 目視確認道路連續，WayTags 未命中高速公路、樓梯、私人或未鋪裝路段。"
+}

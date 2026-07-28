@@ -1,0 +1,77 @@
+{
+  "id": "hsinchu-county-smangus",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 100,
+    "reason": "竹60與司馬庫斯產業道路多次沿深谷、橋梁與山壁升降，SRTM地表取樣受鄰近地形干擾；預設視窗產生51%短波與明顯高估累積爬升，改用500公尺平滑保留七段長坡趨勢。",
+    "referenceUrl": "https://www.keepon.com.tw/thread-3c6cedd5-62f9-e511-80c1-901b0e54a4e6.html",
+    "referenceLabel": "登山補給站「單車體驗司馬庫斯一日去回」115公里／約4100公尺實騎摘要"
+  },
+  "waypoints": [
+    {
+      "name": "內灣縣道120",
+      "lat": 24.703592,
+      "lng": 121.183221,
+      "role": "start"
+    },
+    {
+      "name": "尖石大橋縣道120",
+      "lat": 24.704157,
+      "lng": 121.20268,
+      "role": "via"
+    },
+    {
+      "name": "那羅竹60",
+      "lat": 24.682595,
+      "lng": 121.246097,
+      "role": "via"
+    },
+    {
+      "name": "宇老觀景台竹60",
+      "lat": 24.667632,
+      "lng": 121.282051,
+      "role": "via"
+    },
+    {
+      "name": "秀巒檢查哨竹60",
+      "lat": 24.620093,
+      "lng": 121.286418,
+      "role": "via"
+    },
+    {
+      "name": "泰崗岔路",
+      "lat": 24.607872,
+      "lng": 121.30227,
+      "role": "via"
+    },
+    {
+      "name": "司馬庫斯部落道路終點",
+      "lat": 24.57866,
+      "lng": 121.3342,
+      "role": "via"
+    },
+    {
+      "name": "泰崗岔路",
+      "lat": 24.607872,
+      "lng": 121.30227,
+      "role": "via"
+    },
+    {
+      "name": "宇老觀景台竹60",
+      "lat": 24.667632,
+      "lng": 121.282051,
+      "role": "via"
+    },
+    {
+      "name": "內灣縣道120",
+      "lat": 24.703592,
+      "lng": 121.183221,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T08:00:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查內灣經縣道120、竹60宇老、秀巒、泰崗岔路與司馬庫斯產業道路至部落並原路折返。OSM在那羅至宇老約1.33公里的竹60主線仍標為highway=track且未補surface，後段實騎資料亦指出水泥路面會震；務必現地查核輪胎適用性。產業道路局部僅約2至3公尺、彎急且會車困難；該路段有車輛單向時段，櫻花季亦可能實施總量管制，並非全天候自由通行。自行車是否適用各項管制應以現場與主管機關最新公告為準，出發前必須查核：https://www.hsinchu.gov.tw/News_Content.aspx?n=154&s=259715 與 https://tourism.hsinchu.gov.tw/News.aspx?n=598&sms=9002 。"
+}

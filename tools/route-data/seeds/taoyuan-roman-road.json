@@ -1,0 +1,64 @@
+{
+  "id": "taoyuan-roman-road",
+  "direction": "loop",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "大溪慈湖路",
+      "lat": 24.88387,
+      "lng": 121.289188,
+      "role": "start"
+    },
+    {
+      "name": "三民復興路三段",
+      "lat": 24.820451,
+      "lng": 121.346139,
+      "role": "via"
+    },
+    {
+      "name": "羅浮復興路五段",
+      "lat": 24.799442,
+      "lng": 121.36619,
+      "role": "via"
+    },
+    {
+      "name": "羅馬公路羅浮端",
+      "lat": 24.791256,
+      "lng": 121.36578,
+      "role": "via"
+    },
+    {
+      "name": "羅馬公路鳥嘴段",
+      "lat": 24.777862,
+      "lng": 121.266283,
+      "role": "via"
+    },
+    {
+      "name": "羅馬公路馬武督段",
+      "lat": 24.770452,
+      "lng": 121.226978,
+      "role": "via"
+    },
+    {
+      "name": "關西中正路",
+      "lat": 24.788621,
+      "lng": 121.176346,
+      "role": "via"
+    },
+    {
+      "name": "龍潭中豐路",
+      "lat": 24.871976,
+      "lng": 121.213724,
+      "role": "via"
+    },
+    {
+      "name": "大溪慈湖路",
+      "lat": 24.88387,
+      "lng": 121.289188,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T02:00:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查大溪台7、羅浮至關西完整縣道118羅馬公路、關西與龍潭台3返回大溪；BRouter 訊息無 footway、path、steps、私人或未鋪面路段。"
+}

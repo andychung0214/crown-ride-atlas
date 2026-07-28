@@ -21,9 +21,9 @@
       base: [25.1283, 121.7419],
       character: "港灣、岬角與東北季風",
       routes: [
-        ["keelung-harbor-coast", "基隆港濱海晨騎", "海岸", 36, 420, 2, ["港灣", "海風"]],
-        ["keelung-nuannuan-hills", "暖暖東勢坑丘陵", "丘陵", 43, 780, 3, ["林道", "短坡"]],
-        ["keelung-waimushan-wanli", "外木山至萬里海線", "海岸", 58, 610, 3, ["海景", "補給便利"]]
+        ["keelung-harbor-coast", "基隆港濱海晨騎", "海岸", 19.9, 236, 2, ["港灣", "海風"]],
+        ["keelung-nuannuan-hills", "暖暖東勢坑丘陵", "丘陵", 23.8, 350, 3, ["林道", "短坡"]],
+        ["keelung-waimushan-wanli", "外木山至萬里海線", "海岸", 29.2, 415, 3, ["海景", "補給便利"]]
       ]
     },
     {
@@ -33,9 +33,9 @@
       base: [25.1055, 121.5637],
       character: "火山稜線、城市邊界與密集短坡",
       routes: [
-        ["taipei-fengguizui", "風櫃嘴晨間線", "山岳", 42, 1080, 3, ["經典爬坡", "晨騎"]],
-        ["taipei-zhongsha-road", "中社路五指山", "丘陵", 31, 720, 3, ["短坡", "夜景"]],
-        ["taipei-lengshuikeng", "冷水坑硫磺線", "山岳", 54, 1380, 4, ["火山地景", "霧"]]
+        ["taipei-fengguizui", "風櫃嘴晨間線", "山岳", 25.6, 515, 3, ["經典爬坡", "晨騎"]],
+        ["taipei-zhongsha-road", "中社路五指山", "丘陵", 8.5, 328, 3, ["短坡", "夜景"]],
+        ["taipei-lengshuikeng", "冷水坑硫磺線", "山岳", 32.1, 1035, 4, ["火山地景", "霧"]]
       ]
     },
     {
@@ -45,9 +45,9 @@
       base: [25.0988, 121.4672],
       character: "海岸、礦山聚落與連續山路",
       routes: [
-        ["new-taipei-yangjin-3p", "陽金三峰", "山岳", 87.4, 2146, 4, ["長爬坡", "經典"]],
-        ["new-taipei-north-coast", "北海岸雙灣", "海岸", 76, 820, 2, ["海景", "長距離"]],
-        ["new-taipei-buyanting", "雙溪不厭亭", "山岳", 69, 1580, 4, ["礦山", "展望"]]
+        ["new-taipei-yangjin-3p", "陽金三峰", "山岳", 77.8, 2757, 4, ["長爬坡", "經典"]],
+        ["new-taipei-north-coast", "北海岸雙灣", "海岸", 39.8, 455, 2, ["海景", "長距離"]],
+        ["new-taipei-buyanting", "雙溪不厭亭", "山岳", 54.4, 1478, 4, ["礦山", "展望"]]
       ]
     },
     {
@@ -57,9 +57,9 @@
       base: [24.8543, 121.2787],
       character: "水庫、茶園與北橫山谷",
       routes: [
-        ["taoyuan-roman-road", "羅馬公路縱走", "山岳", 92, 1760, 4, ["長距離", "茶園"]],
-        ["taoyuan-north-cross-baling", "北橫巴陵線", "山岳", 116, 2480, 5, ["北橫", "長爬坡"]],
-        ["taoyuan-shimen-loop", "石門水庫環湖", "丘陵", 61, 940, 3, ["水庫", "補給便利"]]
+        ["taoyuan-roman-road", "羅馬公路縱走", "山岳", 77.8, 1791, 4, ["長距離", "茶園"]],
+        ["taoyuan-north-cross-baling", "北橫巴陵線", "山岳", 92.8, 1713, 5, ["北橫", "長爬坡"]],
+        ["taoyuan-shimen-loop", "石門水庫環湖", "丘陵", 54.9, 1006, 3, ["水庫", "補給便利"]]
       ]
     },
     {
@@ -69,9 +69,9 @@
       base: [24.8156, 120.9463],
       character: "強風海岸、河濱與城市丘陵",
       routes: [
-        ["hsinchu-city-coast-17k", "十七公里海岸線", "海岸", 35, 180, 1, ["親水", "強風"]],
-        ["hsinchu-city-18-peaks", "十八尖山晨光線", "丘陵", 28, 390, 2, ["都會", "晨騎"]],
-        ["hsinchu-city-nanliao-baoshan", "南寮寶山丘陵", "丘陵", 57, 850, 3, ["海風", "水庫"]]
+        ["hsinchu-city-coast-17k", "十七公里海岸線", "海岸", 29, 67, 1, ["親水", "強風"]],
+        ["hsinchu-city-18-peaks", "十八尖山晨光線", "丘陵", 13.9, 177, 2, ["都會", "晨騎"]],
+        ["hsinchu-city-nanliao-baoshan", "南寮寶山丘陵", "丘陵", 44.8, 488, 3, ["海風", "水庫"]]
       ]
     },
     {
@@ -81,9 +81,9 @@
       base: [24.6585, 121.0924],
       character: "竹林、深谷與高山部落",
       routes: [
-        ["hsinchu-county-five-fingers", "五指山環線", "山岳", 62, 1490, 4, ["竹林", "展望"]],
-        ["hsinchu-county-yulao", "宇老觀景台", "山岳", 101, 2380, 5, ["高山", "長爬坡"]],
-        ["hsinchu-county-smangus", "鎮西堡神木線", "山岳", 128, 3220, 5, ["部落", "極限"]]
+        ["hsinchu-county-five-fingers", "五指山環線", "山岳", 37, 1078, 4, ["竹林", "展望"]],
+        ["hsinchu-county-yulao", "宇老觀景台", "山岳", 69.3, 1459, 5, ["高山", "長爬坡"]],
+        ["hsinchu-county-smangus", "司馬庫斯部落挑戰", "山岳", 111.7, 3935, 5, ["部落", "極限"]]
       ]
     },
     {
@@ -93,9 +93,9 @@
       base: [24.4712, 120.9021],
       character: "山城、果園與起伏海線",
       routes: [
-        ["miaoli-xianshan", "仙山靈洞宮", "山岳", 55, 1320, 4, ["陡坡", "山城"]],
-        ["miaoli-jiangmayuan", "大湖薑麻園", "丘陵", 67, 1280, 4, ["果園", "雲海"]],
-        ["miaoli-coast", "苑裡後龍海線", "海岸", 83, 620, 2, ["海風", "長距離"]]
+        ["miaoli-xianshan", "仙山靈洞宮", "山岳", 52.6, 1440, 4, ["陡坡", "山城"]],
+        ["miaoli-jiangmayuan", "大湖薑麻園", "丘陵", 38.6, 1258, 4, ["果園", "雲海"]],
+        ["miaoli-coast", "苑裡後龍海線", "海岸", 31.5, 105, 2, ["海風", "長距離"]]
       ]
     },
     {
@@ -334,7 +334,13 @@
         difficulty,
         durationMinutes: Math.round(distanceKm * 2.4 + elevationGainM / 22),
         tags: tags.concat(category),
-        cautions: cautionsFor(category),
+        cautions: id === "hsinchu-county-smangus"
+          ? [
+            "司馬庫斯產業道路局部僅約 2 至 3 公尺，彎急、路面顛簸且會車困難",
+            "車輛有單向通行時段，櫻花季亦可能總量管制；自行車適用規則須以現場與主管機關最新公告為準",
+            "並非全天候自由通行，出發前務必查核道路、天候與最新管制"
+          ]
+          : cautionsFor(category),
         supplies: suppliesFor(distanceKm, difficulty),
         trackRef: id,
         featured: [

@@ -1,0 +1,52 @@
+{
+  "id": "new-taipei-north-coast",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "淡金路一段紅樹林",
+      "lat": 25.171798,
+      "lng": 121.45956,
+      "role": "start"
+    },
+    {
+      "name": "淺水灣淡金公路",
+      "lat": 25.256424,
+      "lng": 121.475806,
+      "role": "via"
+    },
+    {
+      "name": "白沙灣淡金公路",
+      "lat": 25.28035,
+      "lng": 121.518843,
+      "role": "via"
+    },
+    {
+      "name": "富基村淡金公路折返點",
+      "lat": 25.289691,
+      "lng": 121.535906,
+      "role": "via"
+    },
+    {
+      "name": "白沙灣淡金公路",
+      "lat": 25.28035,
+      "lng": 121.518843,
+      "role": "via"
+    },
+    {
+      "name": "淺水灣淡金公路",
+      "lat": 25.256424,
+      "lng": 121.475806,
+      "role": "via"
+    },
+    {
+      "name": "淡金路一段紅樹林",
+      "lat": 25.171798,
+      "lng": 121.45956,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T01:20:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查紅樹林沿台2淡金公路經淺水灣、白沙灣至富基村並原路返回；BRouter 訊息無 footway、path、steps、私人或未鋪面路段。"
+}
