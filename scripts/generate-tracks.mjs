@@ -21,6 +21,7 @@ const GEOMETRY_SMOOTH_WINDOW_M = 15;
 const GEOMETRY_TOLERANCE_M = 0.25;
 const MAX_RESAMPLED_DISTANCE_ERROR_RATIO = 0.005;
 export const MAX_RESAMPLED_GEOMETRY_DEVIATION_M = 5;
+const RAW_GEOMETRY_TOLERANCE_RATIO = 0.5;
 const MAX_ADJACENT_DISTANCE_KM = 5;
 const REQUEST_INTERVAL_MS = 1500;
 const MAX_RETRIES = 3;
@@ -28,7 +29,7 @@ const BROUTER_URL = "https://brouter.de/brouter";
 const BROUTER_PROFILE = "fastbike";
 const BROUTER_FORMAT = "geojson";
 const BROUTER_ELEVATION = "SRTM";
-const TRACK_SAMPLING_NOTE = "一般路段約 30–80m；髮夾彎會加密取樣以貼合真實道路幾何。";
+const TRACK_SAMPLING_NOTE = "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。";
 const ROUTE_DIRECTIONS = new Set(["loop", "out-and-back", "point-to-point"]);
 const WAYPOINT_ROLES = new Set(["start", "via", "finish"]);
 const TAIWAN_BOUNDS = [
@@ -284,7 +285,7 @@ export function resampleTrack(points, intervalM = DEFAULT_RESAMPLE_INTERVAL_M, d
   const rdpAnchorSet = findRdpAnchorSet(smoothedGeometry, GEOMETRY_TOLERANCE_M);
   const rawDeviationAnchorSet = findRdpAnchorSet(
     points,
-    MAX_RESAMPLED_GEOMETRY_DEVIATION_M * 0.9
+    MAX_RESAMPLED_GEOMETRY_DEVIATION_M * RAW_GEOMETRY_TOLERANCE_RATIO
   );
   const geometryAnchorSet = new Set(sharpAnchors);
   for (const index of [...rdpAnchorSet].sort((left, right) => left - right)) {
@@ -508,20 +509,49 @@ export function resampleTrack(points, intervalM = DEFAULT_RESAMPLE_INTERVAL_M, d
       }
     }
   }
+  if (!meetsResamplingTargets(lowerCount)) {
+    let fallbackCount = -1;
+    for (let candidateCount = 0;
+      candidateCount <= extraCandidates.length;
+      candidateCount += 1) {
+      if (meetsResamplingTargets(candidateCount)) {
+        fallbackCount = candidateCount;
+        break;
+      }
+    }
+    lowerCount = fallbackCount < 0 ? extraCandidates.length : fallbackCount;
+  }
 
   const necessaryAnchorSet = new Set(
     extraCandidates.slice(0, lowerCount).map(candidate => candidate.index)
   );
-  return buildResampled(
+  const result = buildResampled(
     anchorsWithExtraCount(lowerCount),
     necessaryAnchorSet,
     diagnostics
   );
+  if (diagnostics && typeof diagnostics === "object") {
+    diagnostics.targetsSatisfied = diagnostics.distanceErrorRatio
+      <= MAX_RESAMPLED_DISTANCE_ERROR_RATIO
+      && diagnostics.maximumGeometryDeviationM
+        <= MAX_RESAMPLED_GEOMETRY_DEVIATION_M;
+  }
+  return result;
 }
 
 export function buildTrack(payload, options = {}) {
   const points = parseBrouterFeature(payload);
-  const coordinates = resampleTrack(points, options.resampleIntervalM);
+  const resamplingDiagnostics = {};
+  const coordinates = resampleTrack(
+    points,
+    options.resampleIntervalM,
+    resamplingDiagnostics
+  );
+  if (!resamplingDiagnostics.targetsSatisfied) {
+    throw new RangeError(
+      "軌跡重採樣無法同時符合距離誤差與道路幾何偏差門檻。"
+    );
+  }
   if (!options.routeId && !options.seed) {
     return analyzeCoordinates(coordinates, options.analysis);
   }
@@ -692,24 +722,24 @@ export function validateTrackSeed(seed, routeId) {
   return seed;
 }
 
-function brouterUrl(seed, endpoint) {
-  const lonlats = seedWaypoints(seed).map(point => point.join(",")).join("|");
-  const parameters = new URLSearchParams({
-    lonlats,
+function brouterRequestParameters(seed) {
+  return {
+    lonlats: seedWaypoints(seed).map(point => point.join(",")).join("|"),
     profile: BROUTER_PROFILE,
     alternativeidx: "0",
     format: BROUTER_FORMAT
-  });
+  };
+}
+
+function brouterUrl(seed, endpoint) {
+  const parameters = new URLSearchParams(brouterRequestParameters(seed));
   return `${endpoint}?${parameters}`;
 }
 
 function cacheFingerprint(seed) {
-  return createHash("sha256").update(JSON.stringify({
-    id: seed.id,
-    profile: seed.profile,
-    direction: seed.direction,
-    waypoints: seedWaypoints(seed)
-  })).digest("hex");
+  return createHash("sha256")
+    .update(JSON.stringify(brouterRequestParameters(seed)))
+    .digest("hex");
 }
 
 function legacyCacheFingerprint(seed) {
@@ -718,6 +748,17 @@ function legacyCacheFingerprint(seed) {
     format: BROUTER_FORMAT,
     waypoints: seedWaypoints(seed)
   })).digest("hex");
+}
+
+function previousV3CacheFingerprints(seed) {
+  return new Set([...ROUTE_DIRECTIONS].map(direction => (
+    createHash("sha256").update(JSON.stringify({
+      id: seed.id,
+      profile: seed.profile,
+      direction,
+      waypoints: seedWaypoints(seed)
+    })).digest("hex")
+  )));
 }
 
 function responseError(response, body) {
@@ -958,7 +999,9 @@ export async function runCli(argv, options = {}) {
     const cacheHit = cacheEntry
       && (cacheEntry.fingerprint === fingerprint
         || (cacheEntry.version === 2
-          && cacheEntry.fingerprint === legacyCacheFingerprint(seed)))
+          && cacheEntry.fingerprint === legacyCacheFingerprint(seed))
+        || (cacheEntry.version === 3
+          && previousV3CacheFingerprints(seed).has(cacheEntry.fingerprint)))
       && cacheEntry.response;
     const needsCacheUpgrade = cacheHit && cacheEntry.fingerprint !== fingerprint;
     let payload = cacheHit ? cacheEntry.response : null;

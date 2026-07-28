@@ -5,6 +5,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs/promises");
 const os = require("node:os");
 const path = require("node:path");
+const { createHash } = require("node:crypto");
 const { pathToFileURL } = require("node:url");
 const vm = require("node:vm");
 const Geo = require("../js/core/geo.js");
@@ -95,7 +96,7 @@ test("正式軌跡保留路線識別、BRouter SRTM 來源與具名人工地標"
     router: "BRouter",
     profile: "fastbike",
     elevation: "SRTM",
-    samplingNote: "一般路段約 30–80m；髮夾彎會加密取樣以貼合真實道路幾何。",
+    samplingNote: "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
     generatedAt: "2026-07-25T00:00:00.000Z",
     reviewedAt: "2026-07-26T00:00:00.000Z",
     reviewStatus: "approved",
@@ -1060,6 +1061,80 @@ test("整體距離已達標時仍須保留局部偏離道路超過 5 公尺的�
   assert.ok(sampled.length < route.length);
 });
 
+test("非單調候選前綴仍須找到同時符合距離與幾何門檻的結果", async () => {
+  const {
+    resampleTrack,
+    MAX_RESAMPLED_GEOMETRY_DEVIATION_M
+  } = await loadGenerator();
+  const diagnostics = {};
+  let randomState = 246813579;
+  const random = () => {
+    randomState = (1664525 * randomState + 1013904223) >>> 0;
+    return randomState / 4294967296;
+  };
+  let route;
+  for (let trial = 0; trial <= 11; trial += 1) {
+    const pointCount = 100 + Math.floor(random() * 400);
+    let eastM = 0;
+    let northM = 0;
+    let slope = 0;
+    route = Array.from({ length: pointCount }, (_, index) => {
+      eastM += 3 + random() * 17;
+      if (random() < 0.12) {
+        slope += (random() - 0.5) * 1.8;
+      } else {
+        slope *= 0.92;
+      }
+      northM += slope * (3 + random() * 17);
+      return {
+        lat: 25 + northM / 111_320,
+        lng: 121 + eastM / (111_320 * Math.cos(25 * Math.PI / 180)),
+        ele: 100 + Math.sin(index / 10) * 5
+      };
+    });
+    if (trial === 11) {
+      assert.equal(route.length, 398);
+    }
+  }
+
+  resampleTrack(route, undefined, diagnostics);
+
+  assert.ok(
+    diagnostics.maximumGeometryDeviationM <= MAX_RESAMPLED_GEOMETRY_DEVIATION_M,
+    `最大道路偏差 ${diagnostics.maximumGeometryDeviationM}m 超過 `
+      + `${MAX_RESAMPLED_GEOMETRY_DEVIATION_M}m`
+  );
+  assert.ok(
+    diagnostics.distanceErrorRatio <= 0.005,
+    `距離誤差 ${diagnostics.distanceErrorRatio} 超過 0.005`
+  );
+});
+
+test("所有 RDP 候選仍無法達標時 buildTrack 必須 hard-fail", async () => {
+  const { buildTrack } = await loadGenerator();
+  const metersToLatitude = meters => meters / 111_320;
+  const metersToLongitude = meters => meters / (111_320 * Math.cos(25 * Math.PI / 180));
+  const coordinates = Array.from({ length: 257 }, (_, index) => {
+    const lateralM = index === 0 || index === 256
+      ? 0
+      : index % 2 === 0 ? -0.5 : 0.5;
+    return [
+      121 + metersToLongitude(lateralM),
+      25 + metersToLatitude(index * 5),
+      100
+    ];
+  });
+
+  assert.throws(
+    () => buildTrack({
+      type: "Feature",
+      geometry: { type: "LineString", coordinates },
+      properties: {}
+    }),
+    /重採樣.*無法同時符合/
+  );
+});
+
 test("重採樣會保留道路轉彎點", async () => {
   const { resampleTrack } = await loadGenerator();
   const corner = { lat: 25.00045, lng: 121, ele: 100 };
@@ -1290,8 +1365,61 @@ test("人工 seed 變更時不會誤用舊 BRouter 快取", async t => {
   assert.notEqual(firstCache.fingerprint, secondCache.fingerprint);
 });
 
-test("路線方向變更時不會誤用舊 BRouter 快取", async t => {
+test("舊版 v3 快取命中時不重新請求並升級為請求參數 fingerprint", async t => {
   const { runCli } = await loadGenerator();
+  const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "crown-cache-v3-"));
+  t.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
+  const routeDataDirectory = path.join(temporaryRoot, "tools", "route-data");
+  const seedDirectory = path.join(routeDataDirectory, "seeds");
+  const cacheDirectory = path.join(routeDataDirectory, "cache");
+  await fs.mkdir(seedDirectory, { recursive: true });
+  await fs.mkdir(cacheDirectory, { recursive: true });
+  const routeId = "taipei-fengguizui";
+  const previousSeed = formalSeed(routeId);
+  const seed = { ...previousSeed, direction: "out-and-back" };
+  const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  const oldFingerprint = createHash("sha256").update(JSON.stringify({
+    id: previousSeed.id,
+    profile: previousSeed.profile,
+    direction: previousSeed.direction,
+    waypoints: previousSeed.waypoints.map(waypoint => [waypoint.lng, waypoint.lat])
+  })).digest("hex");
+  const cachePath = path.join(cacheDirectory, `${routeId}.geojson`);
+  await fs.writeFile(
+    path.join(seedDirectory, `${routeId}.json`),
+    JSON.stringify(seed),
+    "utf8"
+  );
+  await fs.writeFile(cachePath, JSON.stringify({
+    version: 3,
+    fingerprint: oldFingerprint,
+    generatedAt: "2026-07-25T00:00:00.000Z",
+    response: fixture
+  }), "utf8");
+  let fetchCount = 0;
+
+  await runCli(["--route", routeId, "--staging"], {
+    projectRoot: temporaryRoot,
+    routes: [{ id: routeId, trackRef: routeId, regionId: "taipei" }],
+    manifest: {
+      [routeId]: { bundleId: "taipei", src: "js/data/tracks/taipei.js" }
+    },
+    fetchImpl: async () => {
+      fetchCount += 1;
+      return { ok: true, status: 200, async json() { return fixture; } };
+    }
+  });
+
+  const upgradedCache = JSON.parse(await fs.readFile(cachePath, "utf8"));
+  assert.equal(fetchCount, 0);
+  assert.equal(upgradedCache.version, 3);
+  assert.notEqual(upgradedCache.fingerprint, oldFingerprint);
+  assert.deepEqual(upgradedCache.response, fixture);
+});
+
+test("路線方向變更時沿用 BRouter 幾何快取並更新輸出方向", async t => {
+  const { runCli } = await loadGenerator();
+  const { parseBundleSource } = await loadValidator();
   const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "crown-cache-direction-"));
   t.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
   const seedDirectory = path.join(temporaryRoot, "tools", "route-data", "seeds");
@@ -1330,8 +1458,14 @@ test("路線方向變更時不會誤用舊 BRouter 快取", async t => {
     "utf8"
   );
   await runCli(["--route", firstSeed.id, "--staging"], options);
+  const source = await fs.readFile(
+    path.join(temporaryRoot, "tools", "route-data", ".staging", "taipei.js"),
+    "utf8"
+  );
+  const tracks = parseBundleSource("taipei", source);
 
-  assert.equal(fetchCount, 2);
+  assert.equal(fetchCount, 1);
+  assert.equal(tracks[firstSeed.id].direction, "out-and-back");
 });
 
 test("僅修改審查 metadata 時仍命中既有 BRouter 快取", async t => {

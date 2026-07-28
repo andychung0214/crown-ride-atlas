@@ -105,9 +105,10 @@
 - `node scripts/validate-tracks.mjs --regions keelung,taipei,new-taipei,taoyuan,hsinchu-city,hsinchu-county,miaoli --staging`：7 個 bundle、21 條路線通過。
 - `node scripts/generate-tracks.mjs --regions keelung,taipei,new-taipei,taoyuan,hsinchu-city,hsinchu-county,miaoli --publish`：發布 7 個 bundle、21 條路線。
 - `node scripts/validate-tracks.mjs --regions keelung,taipei,new-taipei,taoyuan,hsinchu-city,hsinchu-county,miaoli --published`：7 個 bundle、21 條路線通過。
-- 本機 HTTP 實際網站逐條開啟 21 個 `#/route/<id>`：21/21 均顯示相符標題、「路線資料已載入」、Leaflet、海拔剖面、GPX 下載控制及「髮夾彎會加密取樣」說明；瀏覽器主控台錯誤為 0。
+- 本機 HTTP 實際網站逐條開啟 21 個 `#/route/<id>`：21/21 均顯示相符標題、「路線資料已載入」、Leaflet、海拔剖面、GPX 下載控制及取樣說明；瀏覽器主控台錯誤為 0。
+- 本次抽查「風櫃嘴晨間線」、「陽金三峰」與「仙山靈洞宮」：3/3 均顯示 Leaflet、海拔與坡度剖面、可用 GPX 下載控制及「髮夾彎與局部高曲率道路會加密取樣」說明；網站程式主控台錯誤為 0。
 - 「司馬庫斯部落挑戰」正常詳情頁實測顯示 2 至 3 公尺狹路、車輛單向時段、櫻花季總量管制、非全天候自由通行與查核主管機關最新公告；同頁明示 500m／100m 路線級濾波與未匯入外部 GPX。
-- 路線相關 focused 測試：87/87 通過；完整 `npm test`：181/181 通過。
+- 軌跡產生器 focused 測試：47/47 通過；完整 `npm test`：184/184 通過。
 
 三條深谷／山壁路線採路線級 500 公尺海拔平滑與 100 公尺坡度視窗，原始 SRTM 海拔仍完整保留：
 
