@@ -1,0 +1,65 @@
+{
+  "id": "nantou-sun-moon-lake",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "環潭公路緊貼湖岸山壁並有多處急彎，SRTM 地表取樣混入鄰近水面與坡面高度，預設分析出現過高累積爬升與短距坡度尖峰；採 500 公尺平滑與 200 公尺坡度視窗。",
+    "referenceUrl": "https://www.gianttour.com.tw/tw/pdf/%E6%97%A5%E6%9C%88%E6%BD%AD%E5%96%AE%E8%BB%8A%E7%92%B0%E6%B9%962%E6%97%A5.pdf",
+    "referenceLabel": "巨大旅遊日月潭環湖挑戰組約29公里、總爬升約430公尺騎乘資料"
+  },
+  "waypoints": [
+    {
+      "name": "向山遊客中心旁台21",
+      "lat": 23.852397,
+      "lng": 120.9013,
+      "role": "start"
+    },
+    {
+      "name": "水社遊客中心旁台21",
+      "lat": 23.865381,
+      "lng": 120.913024,
+      "role": "via"
+    },
+    {
+      "name": "文武廟旁台21甲",
+      "lat": 23.869581,
+      "lng": 120.926998,
+      "role": "via"
+    },
+    {
+      "name": "日月潭纜車站旁台21甲",
+      "lat": 23.85167,
+      "lng": 120.93613,
+      "role": "via"
+    },
+    {
+      "name": "伊達邵旁台21甲",
+      "lat": 23.849005,
+      "lng": 120.930267,
+      "role": "via"
+    },
+    {
+      "name": "玄光碼頭上方台21甲",
+      "lat": 23.851579,
+      "lng": 120.91291,
+      "role": "via"
+    },
+    {
+      "name": "頭社派出所旁台21",
+      "lat": 23.83386,
+      "lng": 120.89607,
+      "role": "via"
+    },
+    {
+      "name": "向山遊客中心旁台21",
+      "lat": 23.852397,
+      "lng": 120.9013,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T06:05:47.300Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖按官方建議順時針逐段檢查向山、水社、文武廟、纜車站、伊達邵、玄光碼頭上方、頭社至向山；將6個景點 waypoint 移至台21／台21甲道路中心線，移除初版13段 footway 與水社 oneway:bicycle=no service。最終 BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段；東北岸保留1270公尺 highway=cycleway，OSM 同段為 access=no、foot=designated、bicycle=designated，屬一般車禁入但自行車指定通行的官方自行車道。西南岸全程留在台21／台21甲環潭公路，完全避開官方明示「月牙灣自行車道至環潭1號隧道口禁止騎乘、請牽行」段，亦未進水社壩木質鋪面。預設100公尺分析為爬升980公尺、最大25.7%，受湖岸水面、山壁與急彎 SRTM 取樣影響；採500公尺平滑／200公尺坡度視窗後為450公尺、最大10.5%，符合巨大旅遊29公里、總爬升約430公尺資料。環潭路線會因颱風、天然災害或整修暫時封閉，出發前須查景區最新公告。官方路線與禁騎段：https://theme.sunmoonlake.gov.tw/ComeBikeDay/FullPage.aspx?a=323&l=1；公路環潭指引：https://168.motc.gov.tw/theme/bike/post/2108021726616；景區現況：https://www.sunmoonlake.gov.tw/zh-tw/attractions/Attractions?A=20&Id=134&P=1"
+}

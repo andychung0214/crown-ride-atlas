@@ -1,0 +1,65 @@
+{
+  "id": "taichung-daxueshan",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "大雪山林道位於陡峭山壁與深切溪谷之間，SRTM 地表取樣在連續髮夾彎容易混入相鄰山壁高度；採 500 公尺平滑與 200 公尺坡度視窗，降低短距離鋸齒與不合理坡度峰值。",
+    "referenceUrl": "https://topmso-cycling.blogspot.com/2010/08/blog-post.html",
+    "referenceLabel": "勇腳鐵馬社「大雪山林道」50 公里、高程 360 至 2600 公尺、單向爬升 2240 公尺騎乘摘要"
+  },
+  "waypoints": [
+    {
+      "name": "東勢客家文化園區南側道路",
+      "lat": 24.256042,
+      "lng": 120.832468,
+      "role": "start"
+    },
+    {
+      "name": "大雪山林道0K",
+      "lat": 24.2535,
+      "lng": 120.849,
+      "role": "via"
+    },
+    {
+      "name": "大棟派出所",
+      "lat": 24.24099,
+      "lng": 120.90721,
+      "role": "via"
+    },
+    {
+      "name": "橫嶺山隧道",
+      "lat": 24.23559,
+      "lng": 120.9512,
+      "role": "via"
+    },
+    {
+      "name": "大雪山遊客中心",
+      "lat": 24.25526,
+      "lng": 121.00822,
+      "role": "via"
+    },
+    {
+      "name": "大雪山林道50K管制鐵門前",
+      "lat": 24.27889,
+      "lng": 121.026214,
+      "role": "via"
+    },
+    {
+      "name": "大棟派出所",
+      "lat": 24.24099,
+      "lng": 120.90721,
+      "role": "via"
+    },
+    {
+      "name": "東勢客家文化園區南側道路",
+      "lat": 24.256042,
+      "lng": 120.832468,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T04:29:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查東勢至大雪山林道50K管制鐵門前並原路折返；初版園區 waypoint 導入短距 footway，50K waypoint 越過 barrier=gate 後導入 track，均已移至一般道路側。最終 BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段。原始100公尺分析受陡峭山壁與溪谷 SRTM 短波影響，出現爬升5505公尺、最大持續坡度42.4%與25段主要爬坡；依50公里由約360公尺升至2600公尺、單向爬升約2240公尺的實騎摘要交叉檢核，改採500公尺平滑／200公尺坡度視窗後為爬升2506公尺、最大17.9%與連續單峰折返剖面。林業保育署現行資料列全線通行、50K禁止汽機車但自行車可自由進出，仍保守於鐵門前折返；雨後倒木、落石與臨時施工須出發前再查。官方管制：https://www.forest.gov.tw/0003303；實騎交叉依據：https://topmso-cycling.blogspot.com/2010/08/blog-post.html"
+}

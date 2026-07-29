@@ -1,0 +1,65 @@
+{
+  "id": "nantou-wuling-west",
+  "direction": "point-to-point",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "台14與台14甲穿越深切峽谷、陡峭山壁及連續髮夾彎，SRTM 地表取樣混入鄰近坡面高度，預設分析出現過高累積爬升與短距坡度尖峰；採 500 公尺平滑與 200 公尺坡度視窗。",
+    "referenceUrl": "https://www.cycling-update.info/cycling-travel/taiwan-ride/2120-2016-11-17-02-49-48",
+    "referenceLabel": "單車誌「西進武嶺」53 公里、總爬升 2800 公尺騎乘摘要"
+  },
+  "waypoints": [
+    {
+      "name": "埔里地理中心碑旁道路",
+      "lat": 23.9734,
+      "lng": 120.97891,
+      "role": "start"
+    },
+    {
+      "name": "人止關台14",
+      "lat": 24.008,
+      "lng": 121.10958,
+      "role": "via"
+    },
+    {
+      "name": "霧社台14與台14甲起點",
+      "lat": 24.021,
+      "lng": 121.131,
+      "role": "via"
+    },
+    {
+      "name": "清境國民賓館旁台14甲",
+      "lat": 24.04435,
+      "lng": 121.15561,
+      "role": "via"
+    },
+    {
+      "name": "翠峰18K",
+      "lat": 24.101655,
+      "lng": 121.187605,
+      "role": "via"
+    },
+    {
+      "name": "鳶峰24.1K",
+      "lat": 24.118125,
+      "lng": 121.237088,
+      "role": "via"
+    },
+    {
+      "name": "昆陽29.2K",
+      "lat": 24.121683,
+      "lng": 121.265373,
+      "role": "via"
+    },
+    {
+      "name": "武嶺31K台14甲",
+      "lat": 24.137936,
+      "lng": 121.273595,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T06:18:29.509Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查埔里地理中心碑、人止關、霧社、清境、翠峰、鳶峰、昆陽至武嶺31K台14甲；初版終點誤導入146公尺 path、147公尺私人 service 與54公尺 path，已移至台14甲 primary 道路中心線。整區 validator 再發現研究來源的翠峰與昆陽地標分別偏離道路449公尺與300公尺，已量測最終軌跡最近點並移至台14甲道路中心後重新產生、疊圖與高度稽核。最終 BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段。原始100公尺分析受深切峽谷、陡峭山壁與髮夾彎 SRTM 地表取樣影響，為爬升3425公尺、最大34.1%且有17段爬坡；採500公尺平滑／200公尺坡度視窗後為2876公尺、最大18.5%與4段爬坡，符合單車誌53公里、總爬升2800公尺摘要。2026合歡山杜鵑花季假日高乘載範圍為台14甲18K翠峰至41.5K大禹嶺，慢車不受高乘載限制；雪季路面積雪或結冰時慢車與機車禁止進入管制路段，緊急除雪可全線封閉，出發前必須查168省道即時路況。騎乘參考：https://www.cycling-update.info/cycling-travel/taiwan-ride/2120-2016-11-17-02-49-48；雪季管制：https://www.taroko.gov.tw/ch/titlelist/news/3808；花季管制：https://www.taroko.gov.tw/ch/titlelist/news/4142"
+}

@@ -1,0 +1,65 @@
+{
+  "id": "nantou-shanlinxi",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 1000,
+    "gradeWindowM": 500,
+    "reason": "投95穿越深切峽谷、連續髮夾彎與陡峭側坡，SRTM 地表取樣混入道路旁坡面高度；原始100公尺分析在安定隧道前61公尺內跳升約40公尺，產生64.9%假峰，750公尺平滑／300公尺坡度視窗仍保留21.0%側坡假峰，故採最小可用的1公里高程平滑與500公尺坡度視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://cyclingtime.com/tw/documents/7417.html",
+    "referenceLabel": "單車時代杉林溪挑戰賽38公里、爬升約1700公尺且主要爬坡約5%至8%騎乘紀錄"
+  },
+  "waypoints": [
+    {
+      "name": "消防署訓練中心旁南雲路",
+      "lat": 23.7905,
+      "lng": 120.6985,
+      "role": "start"
+    },
+    {
+      "name": "鹿谷鄉公所",
+      "lat": 23.7458,
+      "lng": 120.75331,
+      "role": "via"
+    },
+    {
+      "name": "溪頭投95杉林溪公路口",
+      "lat": 23.669838,
+      "lng": 120.799072,
+      "role": "via"
+    },
+    {
+      "name": "忘憂森林登山口旁投95",
+      "lat": 23.648,
+      "lng": 120.7915,
+      "role": "via"
+    },
+    {
+      "name": "安定隧道",
+      "lat": 23.642536,
+      "lng": 120.786215,
+      "role": "via"
+    },
+    {
+      "name": "杉林溪園區大門",
+      "lat": 23.639547,
+      "lng": 120.791742,
+      "role": "via"
+    },
+    {
+      "name": "溪頭投95杉林溪公路口",
+      "lat": 23.669838,
+      "lng": 120.799072,
+      "role": "via"
+    },
+    {
+      "name": "消防署訓練中心旁南雲路",
+      "lat": 23.7905,
+      "lng": 120.6985,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T06:16:38.525Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查消防署訓練中心、鹿谷、溪頭、投95、忘憂森林登山口、安定隧道至杉林溪園區大門並原路折返。初版溪頭地標導入雙向320公尺 footway與兩段209公尺 steps；錯誤安定隧道座標導入雙向477公尺 bicycle=no path、627公尺 path與147公尺 bicycle=no path；原園區內點另導入雙向748公尺 path。已將溪頭點移至投95道路、安定隧道移至OSM way 148466941的tertiary隧道中心、大門移至主題會館前最後tertiary道路，並刪除1,394公尺access=permissive園內道路。最終 BRouter 訊息無 footway、path、steps、track、私人、禁止自行車或未鋪面路段；沿線少量未設權限限制的公共 service 聯絡道路，投95、安定隧道及大門終點本身均非service。原始100公尺分析在安定隧道前61公尺內由1734公尺跳至1773公尺，產生爬升3032公尺、最大64.9%與10段爬坡；500／200仍為28.2%，750／300仍在投95髮夾彎保留21.0%側坡假峰，故採最小可用的1000公尺高程平滑／500公尺坡度視窗，為爬升1974公尺、最大16.2%與5段爬坡。單車時代賽事資料為單程38公里、爬升約1700公尺，投95主要坡度約5%至8%；本分析供路線規劃，不是道路測量。投95狹窄、多髮夾彎，安定隧道及晨昏必須使用前後燈；假日溪頭車潮、濃霧、落石或道路施工時應改期。園區大門後自行車規則未明，軌跡不進園；觀光署亦說明園內後段景點須步行或搭專車。官方活動路線紀錄：https://www.nantou.gov.tw/getfile.php?path=upload%2F104398_f16.pdf；安定彎道路安全：https://www.nantou.gov.tw/big5/news_content.php?cid=267&dptid=376480000&id=97915；觀光署園區資料：https://www.tad.gov.tw/m1.aspx?id=C100_247&sNo=0001114"
+}

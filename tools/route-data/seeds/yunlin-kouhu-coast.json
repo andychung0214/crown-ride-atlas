@@ -1,0 +1,65 @@
+{
+  "id": "yunlin-kouhu-coast",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "口湖、四湖濱海路線最高僅約11公尺，魚塭、海堤與橋梁周邊的SRTM微幅起伏會在100公尺視窗累加為75公尺爬升及2.6%坡度；500公尺平滑／200公尺坡度視窗將規劃值收斂為約50公尺與0.9%，符合官方濱海濕地自行車路線的低平地形。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://tour.yunlin.gov.tw/mainssl/modules/MySpace/BlogInfo.php?xmlid=1038118",
+    "referenceLabel": "雲林縣官方一騎趣雲林：真愛密碼1799與金水164濱海自行車路線"
+  },
+  "waypoints": [
+    {
+      "name": "口湖遊客中心旁道路",
+      "lat": 23.54834,
+      "lng": 120.18221,
+      "role": "start"
+    },
+    {
+      "name": "椬梧滯洪池外圍道路",
+      "lat": 23.54155,
+      "lng": 120.17352,
+      "role": "via"
+    },
+    {
+      "name": "成龍濕地旁道路",
+      "lat": 23.557434,
+      "lng": 120.164466,
+      "role": "via"
+    },
+    {
+      "name": "萡子寮漁港旁道路",
+      "lat": 23.620195,
+      "lng": 120.137254,
+      "role": "via"
+    },
+    {
+      "name": "黑森林自行車道",
+      "lat": 23.65726,
+      "lng": 120.15289,
+      "role": "via"
+    },
+    {
+      "name": "三條崙海水浴場旁海清路",
+      "lat": 23.663877,
+      "lng": 120.153246,
+      "role": "via"
+    },
+    {
+      "name": "四湖鄉公所旁道路",
+      "lat": 23.6381,
+      "lng": 120.22432,
+      "role": "via"
+    },
+    {
+      "name": "口湖遊客中心旁道路",
+      "lat": 23.54834,
+      "lng": 120.18221,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T12:56:20.402Z",
+  "reviewerNote": "已以Leaflet／OpenStreetMap逐段覆核口湖遊客中心、椬梧滯洪池外圍、成龍濕地、萡子寮漁港、黑森林自行車道、三條崙海清路及四湖市街；成龍濕地、萡子寮與三條崙人工地標已由景點中心修正到相鄰實際軌跡道路。全線BRouter waytags僅為primary／secondary／tertiary／residential／unclassified／service，沒有motorway、trunk、motorroad、private或access禁制，明確未進入台61主線與匝道；也未使用潮間帶、魚塭便道、未鋪面海堤、footway、path或track。服務道路段包含椬梧滯洪池外圍往返各282公尺、濱海黑森林與三條崙串接3421公尺、782公尺、522公尺及1141公尺，以及口湖遊客中心起終點各12公尺，均無自行車或私人通行禁制；其中長段與官方『真愛密碼1799』串聯黑森林自行車道、三條崙、椬梧與成龍濕地的路廊一致。官方來源：https://tour.yunlin.gov.tw/mainssl/modules/MySpace/BlogInfo.php?xmlid=1038118；黑森林：https://tour.yunlin.gov.tw/mainssl/modules/MySpace/BlogInfo.php?xmlid=1037509；椬梧滯洪池：https://tour.yunlin.gov.tw/main/modules/MySpace/index.php?xmlid=1037029。海拔比較：100／100為74.8公尺、2.6%；500／200為49.6公尺、0.9%；750／300為35.1公尺、0.6%，採可抑制濱海SRTM微幅雜訊且保留橋梁起伏的500／200視窗。強風、鹽霧、積水與海岸施工會改變路況，出發前須查即時公告。"
+}

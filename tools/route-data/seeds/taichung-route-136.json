@@ -1,0 +1,58 @@
+{
+  "id": "taichung-route-136",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "東門橋",
+      "lat": 24.13274,
+      "lng": 120.69937,
+      "role": "start"
+    },
+    {
+      "name": "一江橋",
+      "lat": 24.13234,
+      "lng": 120.73696,
+      "role": "via"
+    },
+    {
+      "name": "頭汴坑長龍路一段",
+      "lat": 24.12461,
+      "lng": 120.74909,
+      "role": "via"
+    },
+    {
+      "name": "蝙蝠洞入口旁市道136",
+      "lat": 24.10712,
+      "lng": 120.778285,
+      "role": "via"
+    },
+    {
+      "name": "赤崁頂長龍路",
+      "lat": 24.08596,
+      "lng": 120.8182,
+      "role": "via"
+    },
+    {
+      "name": "市道136臺中南投縣界前",
+      "lat": 24.081556,
+      "lng": 120.818788,
+      "role": "via"
+    },
+    {
+      "name": "頭汴坑長龍路一段",
+      "lat": 24.12461,
+      "lng": 120.74909,
+      "role": "via"
+    },
+    {
+      "name": "東門橋",
+      "lat": 24.13274,
+      "lng": 120.69937,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T04:23:33.171Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查東門橋至市道136臺中／南投縣界前並原路折返；依臺中市觀光旅遊局「臺中市136線自行車道」官方路線確認主線，微調蝙蝠洞與縣界 waypoint 至市道中心線。BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段；海拔剖面連續且符合單峰折返，山區陡坡、狹彎及雨天風險仍須出發前確認。官方來源：https://travel.taichung.gov.tw/zh-tw/experience/cyclingtrip/12"
+}

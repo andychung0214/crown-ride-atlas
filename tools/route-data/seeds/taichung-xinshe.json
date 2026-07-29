@@ -1,0 +1,52 @@
+{
+  "id": "taichung-xinshe",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "大坑圓環",
+      "lat": 24.17901,
+      "lng": 120.74009,
+      "role": "start"
+    },
+    {
+      "name": "中興嶺",
+      "lat": 24.206765,
+      "lng": 120.790043,
+      "role": "via"
+    },
+    {
+      "name": "新社區公所",
+      "lat": 24.23358,
+      "lng": 120.8085,
+      "role": "via"
+    },
+    {
+      "name": "新社花海協興街",
+      "lat": 24.20243,
+      "lng": 120.81173,
+      "role": "via"
+    },
+    {
+      "name": "百菇莊協中街",
+      "lat": 24.18057,
+      "lng": 120.81608,
+      "role": "via"
+    },
+    {
+      "name": "中興嶺",
+      "lat": 24.206765,
+      "lng": 120.790043,
+      "role": "via"
+    },
+    {
+      "name": "大坑圓環",
+      "lat": 24.17901,
+      "lng": 120.74009,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T04:29:06.218Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查大坑圓環、市道129中興嶺、新社區公所、新社花海與協中街後折返；初版東山路 waypoint 使 BRouter 繞入多段 service 道路，中興嶺點亦形成 service 支線，移除冗餘點並改至市道中心線後，最終訊息無 footway、path、steps、service、track、私人或未鋪面路段。海拔剖面連續，34.9公里、爬升588公尺與丘陵農路走向相符。官方路線以臺中觀旅「大坑東山路至中興嶺單車挑戰之旅」交叉核對；新社花海活動期間可能單行或改道，須以當屆公告為準。官方來源：https://travel.taichung.gov.tw/zh-tw/tourist/tour/1135"
+}

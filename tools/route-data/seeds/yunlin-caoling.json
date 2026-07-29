@@ -1,0 +1,65 @@
+{
+  "id": "yunlin-caoling",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "149甲與石壁環狀產業道路穿越深切河谷、髮夾彎及陡峭側坡，SRTM地表取樣在回程75.05公里處產生55.5%假峰；500公尺平滑／200公尺坡度視窗已將假峰降至16.7%，而750／300與1000／500僅再降至16.2%與14.4%，故採可消除側坡假峰的最小視窗。官方37公里草嶺石壁爬坡賽總爬升1456公尺，支持本線含五元二角環狀段與回程後約2713公尺的規劃值；此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://www.yunlin.gov.tw/News_Content.aspx?n=1244&s=385744",
+    "referenceLabel": "雲林縣政府草嶺石壁爬坡自行車邀請賽37公里、總爬升1456公尺"
+  },
+  "waypoints": [
+    {
+      "name": "古坑綠色隧道公園旁道路",
+      "lat": 23.65656,
+      "lng": 120.5444,
+      "role": "start"
+    },
+    {
+      "name": "永光台3與縣道149甲路口",
+      "lat": 23.622,
+      "lng": 120.561,
+      "role": "via"
+    },
+    {
+      "name": "樟湖生態國民中小學附近149甲",
+      "lat": 23.610164,
+      "lng": 120.641909,
+      "role": "via"
+    },
+    {
+      "name": "草嶺第一停車場旁道路",
+      "lat": 23.59578,
+      "lng": 120.69223,
+      "role": "via"
+    },
+    {
+      "name": "東碧山莊旁道路",
+      "lat": 23.61019,
+      "lng": 120.70958,
+      "role": "via"
+    },
+    {
+      "name": "五元二角道路端",
+      "lat": 23.62392,
+      "lng": 120.71358,
+      "role": "via"
+    },
+    {
+      "name": "草嶺第一停車場旁道路",
+      "lat": 23.59578,
+      "lng": 120.69223,
+      "role": "via"
+    },
+    {
+      "name": "古坑綠色隧道公園旁道路",
+      "lat": 23.65656,
+      "lng": 120.5444,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T06:31:17.559Z",
+  "reviewerNote": "已以Leaflet／OpenStreetMap逐段覆核並移除古坑綠色隧道園區步道、樟湖支線步道／產業小徑及草嶺停車場景觀步道。石壁端保留雲嶺之丘至五元二角、再回九芎神木方向的4041公尺環狀單行服務道路：BRouter標籤為highway=service、foot=yes、oneway=yes，未標surface，也沒有bicycle、private或access禁制；不以未標surface宣稱完整柏油鋪面，改以交通部公路局205幸福巴士固定行駛石壁湖→雲嶺之丘→石壁湖→五元二角→九芎神木的官方順序作為可通車證據，軌跡亦依該單行方向由北往南，沒有逆向。另保留東碧山莊入口137公尺一般服務道路／gate折返與起終點各136公尺公園聯外服務道路。2026草嶺石壁櫻花季2月17日至3月1日官方要求汽車行駛149甲、停第一至第三停車場後改搭接駁或步行；九芎神木周邊為徒步區，東碧山莊—九芎神木—雲嶺之丘—五元二角禁止甲類大客車且禁止路邊停車，但未禁止自行車。出發前仍須查詢149甲、205幸福巴士與雲林縣災害應變公告；若149甲因豪雨、坍方或活動封閉，本路線不提供產業道路替代繞行。通車與方向來源：https://www.thb.gov.tw/News_Content_Table.aspx?n=10738&s=244634；https://tour.yunlin.gov.tw/mainssl/modules/MySpace/BlogInfo.php?xi=1041803；櫻花季管制：https://tour.yunlin.gov.tw/mainssl/modules/MySpace/index.php?xmlid=1040615；災害停駛範例：https://disaster.yunlin.gov.tw/News_Content.aspx?n=33576&s=553905。海拔比較：100／100為4335.6公尺、55.5%、21段爬坡；500／200為2713.4公尺、16.7%、7段；750／300為2585.0公尺、16.2%、7段；1000／500為2502.7公尺、14.4%、6段，採最小可消除側坡假峰的500／200視窗。"
+}

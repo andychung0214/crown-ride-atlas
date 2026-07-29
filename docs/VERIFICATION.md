@@ -149,3 +149,38 @@
 量測結果：21/21 通過；最接近幾何上限為 `miaoli-jiangmayuan` 4.99 公尺，最高必要短段比例為 `hsinchu-county-smangus` 68.19%，非必要短段最差值仍為 0.00%，最大相鄰距離為 `hsinchu-county-five-fingers` 74.97 公尺。
 
 發布後 7 個 bundle 大小：`keelung` 418.8 KiB、`taipei` 452.4 KiB、`new-taipei` 1,136.6 KiB、`taoyuan` 1,517.5 KiB、`hsinchu-city` 480.2 KiB、`hsinchu-county` 1,961.9 KiB、`miaoli` 757.5 KiB；最大為 `hsinchu-county`。
+
+## 中部 12 條真實道路軌跡驗證
+
+驗證日期：2026-07-29
+
+此批資料涵蓋台中、彰化、南投與雲林。每條路線均由人工命名地標、BRouter `fastbike` 道路路由與 SRTM 海拔建構，並在建構期稽核頁逐條疊合 OpenStreetMap；正式驗證器會重新計算摘要並檢查道路類別、取樣幾何與人工核准狀態。
+
+| 路線 ID | 距離 | 爬升 | 最高海拔 | 最大持續坡度 | 軌跡點 | OSM 道路稽核 |
+|---|---:|---:|---:|---:|---:|---|
+| `taichung-route-136` | 39.4 km | 982 m | 736 m | 22.2% | 1,221 | 縣道 136 與山城公路，禁止類別 0 |
+| `taichung-daxueshan` | 97.4 km | 2,512 m | 2,613 m | 17.8% | 3,755 | 大雪山林道；入口、天候與崩塌風險已列提醒 |
+| `taichung-xinshe` | 34.9 km | 581 m | 561 m | 17.7% | 802 | 新社丘陵公共道路，禁止類別 0 |
+| `changhua-route-139` | 53.7 km | 803 m | 442 m | 14.4% | 1,223 | 縣道 139 稜線公路，禁止類別 0 |
+| `changhua-baguashan` | 60.5 km | 979 m | 443 m | 19.2% | 1,419 | 八卦山稜線與茶園公共道路，禁止類別 0 |
+| `changhua-coast` | 69.0 km | 72 m | 12 m | 2.4% | 1,424 | 彰濱海線；排除台 61 主線與匝道 |
+| `nantou-wuling-west` | 52.6 km | 2,876 m | 3,283 m | 18.5% | 1,996 | 台 14、台 14 甲；雪季與自行車管制另列提醒 |
+| `nantou-sun-moon-lake` | 29.1 km | 450 m | 868 m | 10.5% | 891 | 環湖公路；排除自行車禁行路段 |
+| `nantou-shanlinxi` | 80.8 km | 1,974 m | 1,907 m | 16.2% | 2,422 | 杉林溪公路；園區入口、照明與交通風險另列提醒 |
+| `yunlin-caoling` | 100.6 km | 2,713 m | 1,603 m | 16.7% | 3,597 | 草嶺、石壁山區公路；季節管制與封閉風險另列提醒 |
+| `yunlin-huashan` | 34.3 km | 413 m | 398 m | 12.6% | 722 | 古坑華山安全內圈；不冒稱官方活動完整路線 |
+| `yunlin-kouhu-coast` | 46.4 km | 50 m | 11 m | 0.9% | 965 | 排除台 61、港區、潮間帶、魚塭便道與未鋪面海堤 |
+
+驗證命令與結果：
+
+- `node --test tests/track-analysis.test.js tests/track-generator.test.js tests/track-loader.test.js tests/track-registry.test.js tests/route-audit.test.js`：76/76 通過。
+- `node scripts/validate-tracks.mjs --staging --regions taichung,changhua,nantou,yunlin`：4 個 bundle、12 條路線通過。
+- `node scripts/generate-tracks.mjs --regions taichung,changhua,nantou,yunlin --publish`：發布 4 個 bundle、12 條路線。
+- `node scripts/validate-tracks.mjs --published --regions taichung,changhua,nantou,yunlin`：4 個 bundle、12 條路線通過。
+- 完整 `npm test`：184/184 通過。
+- 本機 HTTP 實際網站逐條開啟 12 個 `#/route/<id>`：12/12 均顯示相符路線 ID、「路線資料已載入」、Leaflet、海拔剖面、GPX 下載控制及高曲率道路加密取樣說明，未顯示載入失敗。
+- 本機建構期稽核頁逐條開啟 12 個 `audit.html?route=<id>`：12/12 均顯示相符路線 ID、`approved`、OpenStreetMap 疊圖與海拔剖面，未顯示載入失敗。
+
+山壁、深谷與濱海低地路線使用逐路線海拔分析設定，原始 SRTM 海拔仍保留於發布資料。較長平滑視窗用於抑制橋梁、山壁或低平地形的 SRTM 短波，不把短波誤報為持續坡度；各路線的設定、理由、對照值與道路例外均記錄於 Task 8 逐條稽核帳。
+
+發布後 4 個 bundle 大小：`taichung` 1,418.2 KiB、`changhua` 1,026.7 KiB、`nantou` 1,301.1 KiB、`yunlin` 1,311.0 KiB；最大為 `taichung`。

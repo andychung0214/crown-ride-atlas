@@ -1,0 +1,58 @@
+{
+  "id": "changhua-baguashan",
+  "direction": "loop",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "員林運動公園",
+      "lat": 23.94043,
+      "lng": 120.61944,
+      "role": "start"
+    },
+    {
+      "name": "百果山自行車道入口",
+      "lat": 23.9565,
+      "lng": 120.6235,
+      "role": "via"
+    },
+    {
+      "name": "縣道139橫山",
+      "lat": 23.889278,
+      "lng": 120.633992,
+      "role": "via"
+    },
+    {
+      "name": "松柏嶺茶文化主題館",
+      "lat": 23.8375,
+      "lng": 120.6325,
+      "role": "via"
+    },
+    {
+      "name": "松柏嶺受天宮",
+      "lat": 23.83927,
+      "lng": 120.63026,
+      "role": "via"
+    },
+    {
+      "name": "縣道139乙台3交會",
+      "lat": 23.828421,
+      "lng": 120.690247,
+      "role": "via"
+    },
+    {
+      "name": "縣道148員草路",
+      "lat": 23.955,
+      "lng": 120.653,
+      "role": "via"
+    },
+    {
+      "name": "員林運動公園",
+      "lat": 23.94043,
+      "lng": 120.61944,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-28T05:49:44.347Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查員林運動公園、百果山、縣道139、松柏嶺、139乙、台3與148環線；橫山研究點原導入359公尺觀日步道 track，139乙／台3點原形成137公尺 track 折返，均已移至一般道路側。最終僅百果山自行車道保留約1.78公里 OSM `highway=track tracktype=grade1`，其中412公尺明標 asphalt、foot=yes、bicycle=yes；彰化縣政府將完整8.1公里路段列為全天開放的「百果山自行車道」，描述為產業山路並提醒坡度落差大，因此列為具官方依據的鋪面／硬質自行車路線例外。其餘無 footway、path、steps、私人或未鋪面捷徑；Leaflet 與海拔剖面連續。官方來源：https://tourism.chcg.gov.tw/AttractionsContent.aspx?chk=d7f3b524-5fb2-416c-9d54-0c0766419d7a&id=518&l=TW"
+}
