@@ -20,7 +20,7 @@
 | 中部真實軌跡 | 依序驗證 `taichung,changhua,nantou,yunlin` 的 staging 與 published bundle | 4 個 bundle、12 條路線均具 BRouter／SRTM 來源、人工地標、審查時間與可重算摘要 |
 | 中部道路例外 | 檢查 12 份 BRouter waytags 與 reviewer note | 台 61 主線／匝道、禁行步道、私人道路與未鋪面捷徑均排除；保留例外具長度、標籤與官方通車證據 |
 | 南部真實軌跡 | 依序驗證 `chiayi-city,chiayi-county,tainan,kaohsiung,pingtung` 的 staging 與 published bundle | 5 個 bundle、15 條路線均具 BRouter／SRTM 來源、人工地標、審查時間、路線級海拔設定與可重算摘要 |
-| 南部道路例外 | 檢查 15 份 BRouter raw waytags、單行方向與 reviewer note | 阿里山、梅山、甲仙六龜與壽卡均使用一般道路；港區、過港隧道、草埔森永隧道、步道、私人道路及未鋪面捷徑均排除；快照標籤差異須具精確長度、座標與目前 OSM way 證據 |
+| 南部道路閘門 | 檢查 15 份 BRouter raw waytags、單行方向、live OSM 幾何與 reviewer note | 阿里山、梅山、甲仙六龜與壽卡均使用一般道路；港區、過港隧道、草埔森永隧道、服務道路、步道、私人道路及未鋪面捷徑均排除；`service`／`track` 必須為 0，除非精確段落另有官方公開與鋪面證據 |
 | 旗津島內 GPX | 檢查 `kaohsiung-harbor` 軌跡座標與 raw waytags | GPX 僅含旗津公共道路；渡輪、跨水域、過港隧道、壽山、高雄港北岸與港區管制道路的里程及海拔均不納入 |
 | 台 9 戊閘門 | 檢查 `pingtung-shouka-mudan` raw waytags 與道路疊圖 | 使用台 9 戊及台 9 一般道路；`tunnel`、`motorroad`、`trunk`、`track`、`service` 與權限禁制均為 0，所有單行道路順向 |
 | 單行道逆向閘門 | 以合成 BRouter raw messages 測試 `reversedirection=yes` 與 `oneway=yes` 組合 | 無明確自行車逆向例外時拒絕建構並列出座標、長度、完整標籤；僅放行 `oneway:bicycle=no`、`bicycle:backward` 合法值或 `cycleway*` 的 `opposite*` 合法值 |
@@ -29,6 +29,16 @@
 | 局部彎道回歸 | 建立 10km 合成路線，使整體距離誤差先達標但單一彎道原始偏差 > 5m | 自適應取樣不得只依全程距離停止；保留彎點後偏差 ≤ 5m |
 | 轉彎與髮夾彎 | 建立 90° 轉彎、20m 半徑 180° 髮夾彎與密集 SRTM 雜訊資料 | 轉彎點保留，髮夾彎距離誤差 ≤ 0.5%，一般雜訊不產生大量非必要短片段 |
 | 路線級海拔設定 | 測試預設 100 公尺與可追溯的路線級平滑設定 | 一般路線保留 100 公尺分析；北橫巴陵、宇老、司馬庫斯只在具原因與 HTTPS 交叉檢核來源時使用 500 公尺平滑 |
+
+## Live OpenStreetMap 幾何審查流程
+
+1. 先掃描 BRouter raw messages，將 `service`、`track`、`footway`、`path`、`steps`、施工道路與權限禁制列為拒絕項目；不得以「路由快照過舊」直接核准。
+2. 以風險訊息的座標與長度定位 GPX 的正確出現位置。往返路線可能有重複座標，必須依前後軌跡與方向選對去程或回程，不可只取第一個座標。
+3. 對問題段建立足以涵蓋整段折線的 bbox，請求 live OSM `/api/0.6/map?bbox=<west,south,east,north>`。不可只看 way 頁面的首尾節點，因為端點相接不代表中間幾何沿同一條道路。
+4. XML 解析必須同時納入自閉合 `<node .../>` 與帶 `<tag>` 子節點的非自閉合 `<node ...>...</node>`。漏掉後者會遺失道路共用節點，造成假的偏離或斷線。
+5. 將 GPX 問題段等距取樣，計算每個取樣點到 live way 完整折線各線段的距離，並記錄最近 way 的 `highway`、`ref`、`surface`、`access` 與 `bicycle`。交叉口共用節點可同時落在多條 way，判斷時須保留所有距離容許值內的候選道路。
+6. 只有 raw 與 live 幾何的禁止道路均為 0 才可核准。若 `service`／`track` 無法降為 0，必須提供該精確段落的官方公開騎乘與鋪面證據；一般景點、相鄰省道或 way 端點資訊不構成證據。
+7. reviewer note 應記錄原問題長度、修正控制點、live way／node、取樣結果與最後數值；修改後重新產生 cache，且 `reviewedAt` 必須晚於 `generatedAt`。
 
 ## 瀏覽器端對端與手動功能
 

@@ -5,7 +5,7 @@
   "elevationAnalysis": {
     "smoothingWindowM": 500,
     "gradeWindowM": 200,
-    "reason": "縣道166由海岸平原進入瑞里山區，後段有密集髮夾彎與陡峭側坡，預設 100 公尺分析在路線 72.2 公里處產生 31.9% 假峰。比較 500/200、750/300、1000/500 公尺後，最大持續坡度依序為 14.9%、9.8%、9.1%，爬升依序為 1331、1272、1239 公尺；實騎資料記錄嘉義山區相關路線 100 公里爬升約 2000 公尺、166沿線交力坪約997公尺，本路線78.4公里終點約1031公尺，500/200 已消除假峰且保留山區短陡坡，故採用最小視窗。此分析供路線規劃，不是道路測量。",
+    "reason": "縣道166由海岸平原進入瑞里山區，後段有密集髮夾彎與陡峭側坡，預設 100 公尺分析在路線 72.2 公里處產生 31.9% 假峰。比較 500/200、750/300、1000/500 公尺後，最大持續坡度依序為 14.9%、9.8%、9.1%，爬升依序為 1331、1272、1239 公尺；實騎資料記錄嘉義山區相關路線 100 公里爬升約 2000 公尺、166沿線交力坪約997公尺，本路線78.6公里終點約1031公尺，500/200 已消除假峰且保留山區短陡坡，故採用最小視窗。此分析供路線規劃，不是道路測量。",
     "referenceUrl": "https://cyclingtime.com/tw/documents/9619.html",
     "referenceLabel": "單車時代縣道166瑞里山區實騎與交力坪海拔資料"
   },
@@ -95,6 +95,18 @@
       "role": "via"
     },
     {
+      "name": "文峰西側髮夾彎第一控制點縣道166主線",
+      "lat": 23.5194899,
+      "lng": 120.5951883,
+      "role": "via"
+    },
+    {
+      "name": "文峰西側髮夾彎第二控制點縣道166主線",
+      "lat": 23.5192292,
+      "lng": 120.5962947,
+      "role": "via"
+    },
+    {
       "name": "文峰彎道縣道166主線",
       "lat": 23.5186808,
       "lng": 120.5974762,
@@ -180,6 +192,6 @@
     }
   ],
   "reviewStatus": "approved",
-  "reviewedAt": "2026-07-29T14:48:13.732Z",
-  "reviewerNote": "研究景點座標曾導入東石港footway、朴子／民雄／竹崎service、文峰path/service及青年嶺—瑞里footway，均未採用；以28個現行 ref=166 主線節點加密後，raw只剩一項經核准的資料快照分類差異：23.518879,120.596991起129公尺 `reversedirection=yes highway=service`，沒有surface、access、private、bicycle或oneway標記，故不據此宣稱鋪面；其前後皆為secondary。該折線位於現行OpenStreetMap way 230358329（ref=166、highway=secondary：https://www.openstreetmap.org/way/230358329），公路局縣道166山區里程與限制及阿里山官方166路廊亦證明它是縣道主線，判定為BRouter舊快照分類差異而非產業支線。其餘無 footway、path、steps、track、private、access 禁制或 bicycle=no；1500公尺 oneway=yes 全順向，精確為1245公尺secondary、188公尺primary且route_bicycle_ncn=yes、67公尺tertiary_link。500/200公尺分析為78.4公里、爬升1331公尺、最大14.9%，三組比較已記於 elevationAnalysis。官方路廊：https://www.ali-nsa.net/zh-tw/traffic/self-driving；公路局限制：https://ws.thb.gov.tw/Download.ashx?icon=.pdf&n=57ij6YSJ6YGT562J56aB6KGM6Lev5q61MTE1MDIxMy5wZGY%3D%3D&u=LzAwMS9VcGxvYWQvNDM2L3JlbGZpbGUvMTIyNzEvODkvN2JmOTAxZDYtNGRlNy00OGJkLTg3OTQtYTJmN2ZhYzFmZThmLnBkZg%3D%3D；56.2K後路窄彎多，出發前查通阻。"
+  "reviewedAt": "2026-07-29T16:22:30.000Z",
+  "reviewerNote": "2026-07-30 重新稽核：舊文峰控制點讓 BRouter 在縣道166髮夾彎切入129公尺 service；新增目前 OSM way 230358329（ref=166、highway=secondary）的兩個內彎節點後重產。最終 raw messages 的 service、track、footway、path、steps、private、access禁制與bicycle=no均為0；以 live OSM `/api/0.6/map?bbox=` 對原問題區段取樣，60/60點皆貼合 way 230358329，禁止道路段為0。Leaflet與海拔剖面連續，500/200公尺分析為78.6公里、爬升1331公尺、最大14.9%。"
 }

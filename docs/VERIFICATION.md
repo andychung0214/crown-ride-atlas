@@ -220,12 +220,12 @@
 | `chiayi-city-two-lakes` | 29.1 km | 286 m | 208 m | 11.4% | 635 | 蘭潭、仁義潭外圍公共道路；禁止類別 0 |
 | `chiayi-alishan` | 66.1 km | 2,413 m | 2,195 m | 14.5% | 1,759 | 台 18 阿里山公路；排除步道與產業捷徑 |
 | `chiayi-meishan-36` | 40.5 km | 1,589 m | 1,170 m | 11.7% | 1,732 | 縣道 162 甲與梅山三十六彎 |
-| `chiayi-route-166` | 78.4 km | 1,331 m | 1,031 m | 14.9% | 1,940 | 縣道 166／162 甲；快照差異具精確 OSM way 證據 |
-| `tainan-route-175` | 60.9 km | 1,121 m | 444 m | 10.5% | 1,793 | 175 咖啡公路；快照差異具精確 OSM way 證據 |
+| `chiayi-route-166` | 78.6 km | 1,331 m | 1,031 m | 14.9% | 1,953 | 縣道 166；raw 與 live OSM 禁止道路均為 0 |
+| `tainan-route-175` | 61.6 km | 1,122 m | 444 m | 10.4% | 1,796 | 175 咖啡公路；raw 與 live OSM 禁止道路均為 0 |
 | `tainan-guanziling` | 42.7 km | 543 m | 539 m | 11.5% | 1,121 | 關子嶺公共道路；禁止類別 0 |
 | `tainan-nanhua` | 77.5 km | 1,168 m | 440 m | 10.3% | 1,972 | 台 20／南 179；排除水庫管理道路 |
-| `kaohsiung-qimei` | 55.9 km | 291 m | 217 m | 10.0% | 1,146 | 旗美公共道路；快照差異具精確 OSM way 證據 |
-| `kaohsiung-jiaxian-liugui` | 103.7 km | 956 m | 639 m | 10.0% | 2,305 | 台 20／27／29；排除河床及施工便道 |
+| `kaohsiung-qimei` | 31.2 km | 225 m | 217 m | 10.0% | 641 | 旗山、美濃至十八羅漢山單向線；service／track 為 0 |
+| `kaohsiung-jiaxian-liugui` | 73.7 km | 847 m | 639 m | 10.0% | 1,663 | 台 20／27／29 單向線；排除服務道路、河床及施工便道 |
 | `kaohsiung-harbor` | 8.0 km | 12 m | 11 m | 1.0% | 165 | 旗津公共道路；渡輪、隧道、港區與北岸里程均為 0 |
 | `pingtung-south-border` | 57.0 km | 273 m | 119 m | 5.9% | 1,151 | 台 1／台 26；排除快速化道路、步道與海岸小徑 |
 | `pingtung-dapengbay` | 11.9 km | 7 m | 3 m | 0.7% | 247 | 環灣道路與官方自行車道；排除濕地步道 |
@@ -239,6 +239,8 @@
 - `node scripts/generate-tracks.mjs --regions chiayi-city,chiayi-county,tainan,kaohsiung,pingtung --publish`：發布 5 個 bundle、15 條路線。
 - 南部 published validator：5 個 bundle、15 條路線通過。
 - 北部＋中部＋南部完整 raw 單行道閘門重產：16 個 bundle、48 條路線通過。
+- 全 48 條 BRouter raw 重新掃描；南部 15/15 的 `service`／`track` 均為 0，四條本次修正路線亦各為 0。
+- 四條修正路線以 live OSM `/api/0.6/map?bbox=` 複查原問題段共 277 個取樣點，禁止道路與未覆蓋點皆為 0；另對全 48 條各取一個軌跡中點抽查 live 道路幾何，48/48 在 5 公尺內貼合 highway way。
 - 重產後完整 staging 與 published validator：各 16 個 bundle、48 條路線通過。
 - 本機 HTTP 正式網站逐條開啟 15 個 `#/route/<id>`：15/15 均顯示相符路線 ID、「路線資料已載入」、Leaflet、海拔剖面、GPX 下載控制與 30–80 公尺取樣說明，載入失敗為 0。
 - 建構期稽核頁逐條開啟 15 個 `audit.html?route=<id>`：15/15 均顯示相符路線 ID、`approved`、OpenStreetMap 疊圖與海拔剖面，載入失敗為 0。
@@ -248,6 +250,6 @@
 
 - `kaohsiung-harbor` 正式名稱改為「旗津港岸晨騎」。GPX 全程位於旗津一路、旗津二路公共道路，不包含渡輪、跨水域、過港隧道、壽山、高雄港北岸或港區管制道路；渡輪只作為騎士抵達起點時自行安排的獨立交通。
 - `pingtung-shouka-mudan` 最終 raw 的 `tunnel`、`motorroad`、`trunk`、`track`、`service`、步道與權限禁制均為 0，21,436 公尺單行道路全順向；路線固定使用台 9 戊與台 9 一般道路，不進入草埔森永隧道、安朔高架、交流道或河床便道。
-- BRouter 快照在 `chiayi-route-166`、`tainan-route-175`、`kaohsiung-qimei` 及 `kaohsiung-jiaxian-liugui` 的少數省／縣道路段仍保留舊 `highway=service` 標籤；每一段均在逐條稽核帳記錄長度、座標與目前 OpenStreetMap way。未把其他 `service` 道路一概推定為鋪面或可騎。
+- `chiayi-route-166`、`tainan-route-175`、`kaohsiung-qimei` 及 `kaohsiung-jiaxian-liugui` 已移除原先誤判為「快照差異」的服務道路捷徑；四線 BRouter raw 與 live OSM 幾何的 `service`／`track` 均為 0。live XML 解析同時涵蓋自閉合與帶 tag 的非自閉合 node，避免漏掉台 20／台 27 共用節點。
 
-發布後 5 個 bundle 大小：`chiayi-city` 255.7 KiB、`chiayi-county` 1,342.7 KiB、`tainan` 1,216.5 KiB、`kaohsiung` 918.3 KiB、`pingtung` 855.5 KiB；最大為 `chiayi-county`。
+發布後 5 個 bundle 大小：`chiayi-city` 255.7 KiB、`chiayi-county` 1,345.3 KiB、`tainan` 1,219.7 KiB、`kaohsiung` 629.4 KiB、`pingtung` 855.5 KiB；最大為 `chiayi-county`。
