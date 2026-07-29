@@ -91,6 +91,64 @@ function lineStringFeature(payload) {
   return payload;
 }
 
+function parseWayTags(value) {
+  return new Map(String(value || "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map(tag => {
+      const separatorIndex = tag.indexOf("=");
+      return separatorIndex < 0
+        ? [tag, ""]
+        : [tag.slice(0, separatorIndex), tag.slice(separatorIndex + 1)];
+    }));
+}
+
+function hasBicycleReverseException(wayTags) {
+  if (wayTags.get("oneway:bicycle") === "no") return true;
+  if (new Set(["yes", "designated", "permissive"])
+    .has(wayTags.get("bicycle:backward"))) {
+    return true;
+  }
+  const oppositeCycleways = new Set([
+    "opposite", "opposite_lane", "opposite_track", "opposite_share_busway"
+  ]);
+  return ["cycleway", "cycleway:left", "cycleway:right", "cycleway:both"]
+    .some(key => oppositeCycleways.has(wayTags.get(key)));
+}
+
+export function findUnsafeReverseOnewaySegments(payload) {
+  const feature = lineStringFeature(payload);
+  const messages = feature && feature.properties && feature.properties.messages;
+  if (!Array.isArray(messages) || !Array.isArray(messages[0])) return [];
+  const fieldIndexes = new Map(messages[0].map((field, index) => [field, index]));
+  const longitudeIndex = fieldIndexes.get("Longitude");
+  const latitudeIndex = fieldIndexes.get("Latitude");
+  const distanceIndex = fieldIndexes.get("Distance");
+  const wayTagsIndex = fieldIndexes.get("WayTags");
+  if ([longitudeIndex, latitudeIndex, distanceIndex, wayTagsIndex]
+    .some(index => !Number.isInteger(index))) {
+    return [];
+  }
+
+  return messages.slice(1).flatMap(message => {
+    if (!Array.isArray(message)) return [];
+    const wayTagsText = String(message[wayTagsIndex] || "");
+    const wayTags = parseWayTags(wayTagsText);
+    if (wayTags.get("reversedirection") !== "yes"
+      || wayTags.get("oneway") !== "yes"
+      || hasBicycleReverseException(wayTags)) {
+      return [];
+    }
+    return [{
+      lat: Number(message[latitudeIndex]) / 1_000_000,
+      lng: Number(message[longitudeIndex]) / 1_000_000,
+      distanceM: Number(message[distanceIndex]),
+      wayTags: wayTagsText
+    }];
+  });
+}
+
 export function parseBrouterFeature(payload) {
   const feature = lineStringFeature(payload);
   if (!feature || feature.type !== "Feature" || !feature.geometry
@@ -540,6 +598,15 @@ export function resampleTrack(points, intervalM = DEFAULT_RESAMPLE_INTERVAL_M, d
 }
 
 export function buildTrack(payload, options = {}) {
+  const unsafeReverseOnewaySegments = findUnsafeReverseOnewaySegments(payload);
+  if (unsafeReverseOnewaySegments.length > 0) {
+    const routeLabel = options.routeId ? `路線 ${options.routeId}` : "BRouter 軌跡";
+    const segmentList = unsafeReverseOnewaySegments.map(segment => (
+      `${segment.lat.toFixed(6)},${segment.lng.toFixed(6)}`
+      + ` · ${segment.distanceM}m · ${segment.wayTags}`
+    )).join("\n");
+    throw new Error(`${routeLabel}包含未授權的單行道逆向段：\n${segmentList}`);
+  }
   const points = parseBrouterFeature(payload);
   const resamplingDiagnostics = {};
   const coordinates = resampleTrack(

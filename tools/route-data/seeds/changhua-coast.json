@@ -17,9 +17,9 @@
       "role": "start"
     },
     {
-      "name": "白蘭氏健康博物館旁鹿工路",
+      "name": "白蘭氏健康博物館東側鹿工路",
       "lat": 24.07804,
-      "lng": 120.40069,
+      "lng": 120.4025,
       "role": "via"
     },
     {
@@ -60,6 +60,6 @@
     }
   ],
   "reviewStatus": "approved",
-  "reviewedAt": "2026-07-28T05:54:04.102Z",
-  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查鹿港、彰濱產業園區、肉粽角、自然生態教育中心至中彰大橋南端平面道路並原路折返；初版折返點導入48公尺海堤 track，已移至 unclassified 平面道路。最終 BRouter 訊息無 motorway、trunk、motorroad、footway、path、steps、track、私人或未鋪面路段；primary 路段均明標國家自行車路線，Leaflet 疊圖未進台61主線、匝道、港區或海堤。原始100公尺分析受潮間帶、水域與橋梁 SRTM 影響，為爬升192公尺、最大13.3%且有低於海平面尖峰；採500公尺平滑／200公尺坡度視窗後為72公尺、最大2.4%，符合官方台17平坦海岸公路走向。台17與台61重疊區大型車多，出發前仍須查道路現況。官方來源：https://tourism.chcg.gov.tw/AttractionsContent.aspx?chk=5c497bea-0d40-479f-a430-dba0e2965fbf&id=515"
+  "reviewedAt": "2026-07-29T13:50:00.000Z",
+  "reviewerNote": "2026-07-29 重新稽核：舊白蘭氏 waypoint 使 BRouter 在24.077300,120.401185逆行32公尺 `highway=service oneway=yes`；已移至東側鹿工路主線。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、motorroad、footway、path、steps、track、private、access禁制或bicycle=no；service合計7087公尺，精確分組為3633公尺 `highway=service` 與3454公尺 `reversedirection=yes highway=service`，兩組皆未標surface，不據此宣稱鋪面；官方台17自行車道路廊只作通行走廊依據。Leaflet未進台61主線、匝道、港區或海堤。500公尺平滑／200公尺坡度視窗後為68.5公里、爬升71公尺、最大2.4%。官方來源：https://tourism.chcg.gov.tw/AttractionsContent.aspx?chk=5c497bea-0d40-479f-a430-dba0e2965fbf&id=515"
 }

@@ -60,6 +60,6 @@
     }
   ],
   "reviewStatus": "approved",
-  "reviewedAt": "2026-07-28T06:18:29.509Z",
-  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查埔里地理中心碑、人止關、霧社、清境、翠峰、鳶峰、昆陽至武嶺31K台14甲；初版終點誤導入146公尺 path、147公尺私人 service 與54公尺 path，已移至台14甲 primary 道路中心線。整區 validator 再發現研究來源的翠峰與昆陽地標分別偏離道路449公尺與300公尺，已量測最終軌跡最近點並移至台14甲道路中心後重新產生、疊圖與高度稽核。最終 BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段。原始100公尺分析受深切峽谷、陡峭山壁與髮夾彎 SRTM 地表取樣影響，為爬升3425公尺、最大34.1%且有17段爬坡；採500公尺平滑／200公尺坡度視窗後為2876公尺、最大18.5%與4段爬坡，符合單車誌53公里、總爬升2800公尺摘要。2026合歡山杜鵑花季假日高乘載範圍為台14甲18K翠峰至41.5K大禹嶺，慢車不受高乘載限制；雪季路面積雪或結冰時慢車與機車禁止進入管制路段，緊急除雪可全線封閉，出發前必須查168省道即時路況。騎乘參考：https://www.cycling-update.info/cycling-travel/taiwan-ride/2120-2016-11-17-02-49-48；雪季管制：https://www.taroko.gov.tw/ch/titlelist/news/3808；花季管制：https://www.taroko.gov.tw/ch/titlelist/news/4142"
+  "reviewedAt": "2026-07-29T13:50:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查埔里地理中心碑、人止關、霧社、清境、翠峰、鳶峰、昆陽至武嶺31K台14甲；初版終點誤導入146公尺 path、147公尺私人 service 與54公尺 path，已移至台14甲 primary 道路中心線。整區 validator 再發現研究來源的翠峰與昆陽地標分別偏離道路449公尺與300公尺，已量測最終軌跡最近點並移至台14甲道路中心後重新產生、疊圖與高度稽核。最終 BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段。原始訊息另含905公尺 highway=service，未標 surface；不據此推論鋪面，只以官方道路資料佐證台14甲公開道路走廊。原始100公尺分析受深切峽谷、陡峭山壁與髮夾彎 SRTM 地表取樣影響，為爬升3425公尺、最大34.1%且有17段爬坡；採500公尺平滑／200公尺坡度視窗後為2876公尺、最大18.5%與4段爬坡，符合單車誌53公里、總爬升2800公尺摘要。2026合歡山杜鵑花季假日高乘載範圍為台14甲18K翠峰至41.5K大禹嶺，慢車不受高乘載限制；雪季路面積雪或結冰時慢車與機車禁止進入管制路段，緊急除雪可全線封閉，出發前必須查168省道即時路況。騎乘參考：https://www.cycling-update.info/cycling-travel/taiwan-ride/2120-2016-11-17-02-49-48；雪季管制：https://www.taroko.gov.tw/ch/titlelist/news/3808；花季管制：https://www.taroko.gov.tw/ch/titlelist/news/4142"
 }

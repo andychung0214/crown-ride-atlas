@@ -29,9 +29,9 @@
       "role": "via"
     },
     {
-      "name": "萡子寮漁港旁道路",
+      "name": "萡子寮市街雲131",
       "lat": 23.620195,
-      "lng": 120.137254,
+      "lng": 120.143,
       "role": "via"
     },
     {
@@ -60,6 +60,6 @@
     }
   ],
   "reviewStatus": "approved",
-  "reviewedAt": "2026-07-29T12:56:20.402Z",
-  "reviewerNote": "已以Leaflet／OpenStreetMap逐段覆核口湖遊客中心、椬梧滯洪池外圍、成龍濕地、萡子寮漁港、黑森林自行車道、三條崙海清路及四湖市街；成龍濕地、萡子寮與三條崙人工地標已由景點中心修正到相鄰實際軌跡道路。全線BRouter waytags僅為primary／secondary／tertiary／residential／unclassified／service，沒有motorway、trunk、motorroad、private或access禁制，明確未進入台61主線與匝道；也未使用潮間帶、魚塭便道、未鋪面海堤、footway、path或track。服務道路段包含椬梧滯洪池外圍往返各282公尺、濱海黑森林與三條崙串接3421公尺、782公尺、522公尺及1141公尺，以及口湖遊客中心起終點各12公尺，均無自行車或私人通行禁制；其中長段與官方『真愛密碼1799』串聯黑森林自行車道、三條崙、椬梧與成龍濕地的路廊一致。官方來源：https://tour.yunlin.gov.tw/mainssl/modules/MySpace/BlogInfo.php?xmlid=1038118；黑森林：https://tour.yunlin.gov.tw/mainssl/modules/MySpace/BlogInfo.php?xmlid=1037509；椬梧滯洪池：https://tour.yunlin.gov.tw/main/modules/MySpace/index.php?xmlid=1037029。海拔比較：100／100為74.8公尺、2.6%；500／200為49.6公尺、0.9%；750／300為35.1公尺、0.6%，採可抑制濱海SRTM微幅雜訊且保留橋梁起伏的500／200視窗。強風、鹽霧、積水與海岸施工會改變路況，出發前須查即時公告。"
+  "reviewedAt": "2026-07-29T13:50:00.000Z",
+  "reviewerNote": "2026-07-29 重新稽核：舊萡子寮漁港 waypoint 使 BRouter 在23.620167,120.140201逆行421公尺 `highway=residential oneway=yes`；改至萡子寮市街雲131，避免作業港區與單行支路。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、motorroad、footway、path、track、private、access禁制或bicycle=no；service合計3185公尺，精確分組為1674公尺 `highway=service` 與1511公尺 `reversedirection=yes highway=service`，皆未標surface，不據此宣稱鋪面。Leaflet明確未進台61、港區、潮間帶、魚塭便道或未鋪面海堤。500／200海拔分析後為45.5公里、爬升43公尺、最大0.9%。官方路廊：https://tour.yunlin.gov.tw/mainssl/modules/MySpace/BlogInfo.php?xmlid=1038118；黑森林：https://tour.yunlin.gov.tw/mainssl/modules/MySpace/BlogInfo.php?xmlid=1037509；椬梧滯洪池：https://tour.yunlin.gov.tw/main/modules/MySpace/index.php?xmlid=1037029。"
 }

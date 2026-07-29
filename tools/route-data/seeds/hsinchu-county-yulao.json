@@ -1,6 +1,6 @@
 {
   "id": "hsinchu-county-yulao",
-  "direction": "out-and-back",
+  "direction": "point-to-point",
   "profile": "fastbike",
   "elevationAnalysis": {
     "smoothingWindowM": 500,
@@ -44,22 +44,10 @@
       "name": "宇老觀景台竹60",
       "lat": 24.667632,
       "lng": 121.282051,
-      "role": "via"
-    },
-    {
-      "name": "錦屏大橋竹60",
-      "lat": 24.694241,
-      "lng": 121.220852,
-      "role": "via"
-    },
-    {
-      "name": "竹東火車站站前道路",
-      "lat": 24.738116,
-      "lng": 121.094122,
       "role": "finish"
     }
   ],
   "reviewStatus": "approved",
-  "reviewedAt": "2026-07-28T04:38:44.415Z",
-  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查竹東經縣道120、內灣、尖石與竹60那羅至宇老觀景台並原路折返。OSM在那羅至宇老約1.33公里的竹60主線仍標為highway=track且未補surface，但軌跡與公開公路車實騎走廊一致；騎士仍須攜帶足量補給、控制下坡速度並於出發前查核路面、施工與臨時管制。"
+  "reviewedAt": "2026-07-29T13:50:00.000Z",
+  "reviewerNote": "2026-07-29 重新稽核：竹60宇老唯一走廊含452公尺 `highway=unclassified oneway=yes`，舊往返軌跡在回程24.667996,121.281100必然逆行；改為竹東至宇老觀景台point-to-point，只依OSM方向合法進入。raw messages 無未授權單行道逆向段；另有合計1571公尺track（240公尺正向、240公尺reverse-direction、744公尺與347公尺），未標surface，沿竹60主線且與運動筆記公開公路車實騎走廊一致，不據此宣稱鋪面。Leaflet與海拔剖面為34.8公里、爬升1401公尺、最大持續坡度23.3%。本站GPX不得反向騎乘；回程須依當日交通管制另行安排，並查核路面、施工與臨時管制。"
 }

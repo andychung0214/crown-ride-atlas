@@ -46,6 +46,36 @@ function formalSeed(routeId, waypoints = [[121.541, 25.021], [121.542, 25.022]])
   };
 }
 
+function brouterPayloadWithWayTags(wayTags) {
+  return {
+    type: "FeatureCollection",
+    features: [{
+      type: "Feature",
+      properties: {
+        messages: [
+          [
+            "Longitude", "Latitude", "Elevation", "Distance", "CostPerKm",
+            "ElevCost", "TurnCost", "NodeCost", "InitialCost", "WayTags",
+            "NodeTags", "Time", "Energy"
+          ],
+          [
+            "120401185", "24077300", "7", "32", "7200",
+            "0", "108", "0", "0", wayTags, "", "907", "90743"
+          ]
+        ]
+      },
+      geometry: {
+        type: "LineString",
+        coordinates: [
+          [121.541, 25.021, 12],
+          [121.5415, 25.0215, 20],
+          [121.542, 25.022, 31]
+        ]
+      }
+    }]
+  };
+}
+
 test("解析 BRouter LineString 的經度、緯度與海拔", async () => {
   const { parseBrouterFeature } = await loadGenerator();
   const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));
@@ -55,6 +85,46 @@ test("解析 BRouter LineString 的經度、緯度與海拔", async () => {
     { lat: 25.0215, lng: 121.5415, ele: 20 },
     { lat: 25.022, lng: 121.542, ele: 31 }
   ]);
+});
+
+test("buildTrack 拒絕沒有自行車例外的單行道逆向段並列出段落", async () => {
+  const { buildTrack } = await loadGenerator();
+
+  for (const wayTags of [
+    "reversedirection=yes highway=service oneway=yes",
+    "reversedirection=yes highway=primary oneway=yes route_bicycle_ncn=yes",
+    "reversedirection=yes highway=primary oneway=yes cycleway:right=shared_lane"
+  ]) {
+    assert.throws(
+      () => buildTrack(brouterPayloadWithWayTags(wayTags)),
+      error => (
+        /單行道逆向/.test(error.message)
+        && error.message.includes("24.077300,120.401185")
+        && error.message.includes("32m")
+        && error.message.includes(wayTags)
+      )
+    );
+  }
+});
+
+test("buildTrack 放行明確允許自行車逆向的單行道路段", async () => {
+  const { buildTrack } = await loadGenerator();
+
+  for (const exceptionTag of [
+    "oneway:bicycle=no",
+    "bicycle:backward=yes",
+    "bicycle:backward=designated",
+    "bicycle:backward=permissive",
+    "cycleway=opposite",
+    "cycleway=opposite_lane",
+    "cycleway:left=opposite_track",
+    "cycleway:right=opposite_share_busway",
+    "cycleway:both=opposite_lane"
+  ]) {
+    assert.doesNotThrow(() => buildTrack(brouterPayloadWithWayTags(
+      `reversedirection=yes highway=residential oneway=yes ${exceptionTag}`
+    )));
+  }
 });
 
 test("建構軌跡時會產生分析摘要與爬坡陣列", async () => {

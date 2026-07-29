@@ -35,6 +35,6 @@
     }
   ],
   "reviewStatus": "approved",
-  "reviewedAt": "2026-07-28T05:47:19.407Z",
-  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查八卦山大佛東側道路至橫山縣道139並原路折返；初版大佛、猴探井與橫山研究點分別落入鋪面 footway／steps、遊憩區 footway 與觀日步道 track，均已移至一般道路側，另移除會使路由往銀行山 service 支線折返的冗餘 waypoint。最終 BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段，短距 service 僅為大佛與橫山公共道路接線；Leaflet 疊圖沿139稜線，海拔剖面連續。彰化縣政府官方資料列139線彰化段約22.2公里且坡度落差大，須具山路經驗。官方來源：https://tourism.chcg.gov.tw/AttractionsContent.aspx?chk=D02F4129-FBDA-498E-8772-03185A0CEB24&id=502"
+  "reviewedAt": "2026-07-29T13:50:00.000Z",
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查八卦山大佛東側道路至橫山縣道139並原路折返；初版大佛、猴探井與橫山研究點分別落入鋪面 footway／steps、遊憩區 footway 與觀日步道 track，均已移至一般道路側，另移除會使路由往銀行山 service 支線折返的冗餘 waypoint。最終 BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段。原始訊息的 highway=service 共1464公尺，順向與 reversedirection=yes 各732公尺；未標示 surface，故不推論鋪面，只依彰化縣官方資料佐證縣道139公開道路走廊，Leaflet 疊圖沿139稜線且海拔剖面連續。彰化縣政府官方資料列139線彰化段約22.2公里且坡度落差大，須具山路經驗。官方來源：https://tourism.chcg.gov.tw/AttractionsContent.aspx?chk=D02F4129-FBDA-498E-8772-03185A0CEB24&id=502"
 }
