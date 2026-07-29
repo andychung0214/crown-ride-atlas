@@ -1,0 +1,40 @@
+{
+  "id": "chiayi-city-two-lakes",
+  "direction": "loop",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "蘭潭南岸環潭公路",
+      "lat": 23.46505,
+      "lng": 120.47975,
+      "role": "start"
+    },
+    {
+      "name": "仁義潭南側嘉127潭情路",
+      "lat": 23.4585727,
+      "lng": 120.5129376,
+      "role": "via"
+    },
+    {
+      "name": "潭情路西端公共道路",
+      "lat": 23.4584713,
+      "lng": 120.5066943,
+      "role": "via"
+    },
+    {
+      "name": "觸口台18公共道路",
+      "lat": 23.4459675,
+      "lng": 120.583833,
+      "role": "via"
+    },
+    {
+      "name": "蘭潭南岸環潭公路",
+      "lat": 23.46505,
+      "lng": 120.47975,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T14:18:29.613Z",
+  "reviewerNote": "研究座標曾導入 2203、1341、6 公尺 track、仁義潭壩體 footway 與番路／吳鳳廟服務道路，均未獲准；改為蘭潭南岸環潭公路、仁義潭南側嘉127潭情路公共道路、潭情路西端折返與台18觸口道路側的清楚雙潭公路串聯。最終 raw messages 無 motorway、trunk、motorroad、footway、path、steps、track、service、private、access 禁制或 bicycle=no；單行道精確為 3842 公尺 `highway=primary surface=asphalt oneway=yes` 與 92 公尺 tertiary 圓環，皆為順向，無 `reversedirection=yes` 與 `oneway=yes` 同段。Leaflet 疊圖確認環潭公路、嘉127潭情路外圍道路及台18連續，未進水庫壩體管理道路、遊客中心人行區或大學校內；29.1 公里、爬升 286 公尺、最大持續坡度 11.4%。仁義潭官方景點資料：https://www.taiwan.net.tw/m1.aspx?id=r37&sno=0001116；蘭潭—仁義潭自行車活動與交管：https://website.ncyu.edu.tw/admission/Subject/Detail/242408?nodeId=34504"
+}

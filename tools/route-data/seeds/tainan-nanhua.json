@@ -1,0 +1,34 @@
+{
+  "id": "tainan-nanhua",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "台20與南179沿水庫山區反覆起伏，預設100公尺分析為爬升1943公尺、最大持續坡度20.2%，短距離尖峰偏高。比較500/200、750/300、1000/500公尺後，爬升依序為1168、1012、912公尺，最大持續坡度依序為10.3%、9.3%、8.2%；環南化水庫實騎資料指出完整環線各種地圖試算約爬升1500公尺，本路線只走玉井至關山里後折返而不含台3與嘉149，因此500/200所得1168公尺尺度合理且保留南179的反覆爬升，採用最小合理視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://www.ptt.cc/bbs/bicycle/M.1663425568.A.A7C.html",
+    "referenceLabel": "環南化水庫實騎與多種地圖約1500公尺爬升比較"
+  },
+  "waypoints": [
+    { "name": "玉井台20中山路主線", "lat": 23.1202505, "lng": 120.462038, "role": "start" },
+    { "name": "玉井東南側台20主線", "lat": 23.0806425, "lng": 120.4889618, "role": "via" },
+    { "name": "頭份台20主線", "lat": 23.0718762, "lng": 120.5068637, "role": "via" },
+    { "name": "玉山台20主線", "lat": 23.0811657, "lng": 120.5209023, "role": "via" },
+    { "name": "南化隧道西側台20主線", "lat": 23.081604, "lng": 120.5270922, "role": "via" },
+    { "name": "南化隧道東側台20主線", "lat": 23.0757499, "lng": 120.5321131, "role": "via" },
+    { "name": "台20與南179路口", "lat": 23.0721881, "lng": 120.5476729, "role": "via" },
+    { "name": "南179水庫南段主線", "lat": 23.0813447, "lng": 120.5605331, "role": "via" },
+    { "name": "南179關山三號橋路段", "lat": 23.0936561, "lng": 120.566811, "role": "via" },
+    { "name": "南179關山四號橋路段", "lat": 23.1049016, "lng": 120.5656603, "role": "via" },
+    { "name": "南179關山五號橋路段", "lat": 23.110242, "lng": 120.5679163, "role": "via" },
+    { "name": "南179關山七號橋路段", "lat": 23.129988, "lng": 120.5708469, "role": "via" },
+    { "name": "南179關山十號橋路段", "lat": 23.144989, "lng": 120.5845326, "role": "via" },
+    { "name": "南179關山十一號橋路段", "lat": 23.1625459, "lng": 120.5920021, "role": "via" },
+    { "name": "南179關山十三號橋路段", "lat": 23.1832499, "lng": 120.5998918, "role": "via" },
+    { "name": "關山里南179主線", "lat": 23.1908706, "lng": 120.6014211, "role": "via" },
+    { "name": "玉井台20中山路主線", "lat": 23.1202505, "lng": 120.462038, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T15:18:00.000Z",
+  "reviewerNote": "初版研究座標導入玉井起終點service各97公尺、南化區公所service往返各32公尺、水庫景點周邊service／track合計約2.5公里，以及研究16K點track 2270公尺往返與service 422公尺往返，全部未採用。重建時刪除南化區公所與休閒公園景點點位，以17個現行ref=20與ref=南179道路節點固定台20及南179主線；最終raw無footway、path、steps、track、service、private、access禁制或bicycle=no，也未使用水庫壩體、巡查、清淤、維修、湖岸農路或南179-1。2415公尺oneway=yes皆為台20 `highway=primary surface=asphalt estimated_traffic_class=4`且順向，沒有reversedirection=yes與oneway=yes同段。500/200公尺分析為77.5公里、爬升1168公尺、最大10.3%，三組比較已記於elevationAnalysis。臺南旅遊網確認南179可由水庫邊通往關山里：https://www.twtainan.net/zh-tw/Attractions/Detail/623/；但南179為主要聯外道路且豪雨可能中斷，出發前須查災害公告：https://web.tainan.gov.tw/publicdisaster/News_Content.aspx?n=21182&s=7759838。"
+}

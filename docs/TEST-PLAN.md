@@ -19,6 +19,10 @@
 | 建構期真實軌跡 | 執行 `node scripts/validate-tracks.mjs --regions keelung,taipei,new-taipei,taoyuan,hsinchu-city,hsinchu-county,miaoli --published` | 7 個 bundle、21 條路線均可重新計算出相同距離、爬升、坡度與主要爬坡，且具完整人工審查資料 |
 | 中部真實軌跡 | 依序驗證 `taichung,changhua,nantou,yunlin` 的 staging 與 published bundle | 4 個 bundle、12 條路線均具 BRouter／SRTM 來源、人工地標、審查時間與可重算摘要 |
 | 中部道路例外 | 檢查 12 份 BRouter waytags 與 reviewer note | 台 61 主線／匝道、禁行步道、私人道路與未鋪面捷徑均排除；保留例外具長度、標籤與官方通車證據 |
+| 南部真實軌跡 | 依序驗證 `chiayi-city,chiayi-county,tainan,kaohsiung,pingtung` 的 staging 與 published bundle | 5 個 bundle、15 條路線均具 BRouter／SRTM 來源、人工地標、審查時間、路線級海拔設定與可重算摘要 |
+| 南部道路例外 | 檢查 15 份 BRouter raw waytags、單行方向與 reviewer note | 阿里山、梅山、甲仙六龜與壽卡均使用一般道路；港區、過港隧道、草埔森永隧道、步道、私人道路及未鋪面捷徑均排除；快照標籤差異須具精確長度、座標與目前 OSM way 證據 |
+| 旗津島內 GPX | 檢查 `kaohsiung-harbor` 軌跡座標與 raw waytags | GPX 僅含旗津公共道路；渡輪、跨水域、過港隧道、壽山、高雄港北岸與港區管制道路的里程及海拔均不納入 |
+| 台 9 戊閘門 | 檢查 `pingtung-shouka-mudan` raw waytags 與道路疊圖 | 使用台 9 戊及台 9 一般道路；`tunnel`、`motorroad`、`trunk`、`track`、`service` 與權限禁制均為 0，所有單行道路順向 |
 | 單行道逆向閘門 | 以合成 BRouter raw messages 測試 `reversedirection=yes` 與 `oneway=yes` 組合 | 無明確自行車逆向例外時拒絕建構並列出座標、長度、完整標籤；僅放行 `oneway:bicycle=no`、`bicycle:backward` 合法值或 `cycleway*` 的 `opposite*` 合法值 |
 | 中部路線級海拔 | 比較草嶺、杉林溪及兩條濱海路線的 100／100、500／200 等視窗 | 深谷側坡假峰與濱海 SRTM 微幅雜訊受抑制，原因、比較值及交叉檢核來源可追溯 |
 | 軌跡重採樣幾何 | 對北部 21 條 BRouter 原始快取逐點量測重採樣結果 | 每條距離誤差 ≤ 0.5%、原始點到重採樣折線最大偏差 ≤ 5m、相鄰點 ≤ 80m；非必要 30m 以下片段 ≤ 5%，必要髮夾彎短片段另行回報 |
@@ -42,6 +46,8 @@
 | 離線降級 | 載入後停用網路，再開啟路線詳情 | 文字、圖片與本機資料可讀，地圖以 SVG 降級呈現 |
 | 北部 21 條路線詳情 | 逐條開啟基隆、台北、新北、桃園、新竹市、新竹縣與苗栗的路線詳情 | 標題、距離、爬升、坡度區間、主要爬坡、人工地標、Leaflet 道路疊圖與 GPX 下載控制均顯示 |
 | 中部 12 條路線詳情 | 逐條開啟台中、彰化、南投與雲林的路線詳情 | 標題、真實距離與爬升、Leaflet、海拔剖面、人工地標、GPX 控制及取樣說明均顯示 |
+| 南部 15 條路線詳情 | 逐條開啟嘉義市、嘉義縣、臺南、高雄與屏東的正式路線詳情 | 相符路線 ID、真實距離與爬升、「路線資料已載入」、Leaflet、海拔剖面、人工地標、GPX 控制及取樣說明均顯示，載入失敗為 0 |
+| 南部動態管制提醒 | 開啟阿里山、梅山、南化、甲仙六龜、旗津、國境之南、大鵬灣與壽卡牡丹詳情 | 顯示山路封閉、港區／渡輪、落山風、跨海大橋及台 9 戊等對應警示；旗津不得宣稱含渡輪或北岸里程 |
 | 取樣原則揭露 | 開啟任一北部真實路線詳情並檢查資料來源段落 | 顯示一般路段約 30–80m，並明示髮夾彎與局部高曲率道路會加密取樣 |
 | 建構期 OSM 疊圖稽核 | 以 `tools/route-data/audit.html?route=<id>` 逐條疊合 OpenStreetMap | 軌跡貼合可騎道路；不得含樓梯、私人道路、施工道路或明顯未鋪面捷徑，例外必須有官方路線證據與審查註記 |
 | 宇老／司馬庫斯單向 GPX | 開啟「宇老觀景台」與「司馬庫斯部落挑戰」詳情 | 明示單向 GPX 不得反轉騎乘，回程須依當日交通管制另行安排；司馬庫斯另顯示狹路、單向時段、櫻花季總量管制與最新公告查核要求 |

@@ -1,0 +1,24 @@
+{
+  "id": "pingtung-south-border",
+  "direction": "point-to-point",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "台1與台26由西岸低地繞行鵝鑾鼻至風吹砂，含海岸丘陵與長緩坡；預設100公尺分析為爬升388公尺、最大持續坡度9.5%。比較500/200、750/300、1000/500公尺後，爬升依序為273、244、216公尺，最大持續坡度依序為5.9%、5.6%、5.1%；路線最高約119公尺，公路局資料確認風吹砂位於台26約49K海岸丘陵路段，500/200保留鵝鑾鼻至風吹砂持續緩坡並排除短距離高程雜訊，因此採用最小合理視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://www.thb.gov.tw/News_Content_table.aspx?n=87&s=57348",
+    "referenceLabel": "公路局台26風吹砂49K海岸丘陵路段資料"
+  },
+  "waypoints": [
+    { "name": "枋山車站南側公共道路", "lat": 22.262287, "lng": 120.659198, "role": "start" },
+    { "name": "車城福安宮外台26主線", "lat": 22.073247, "lng": 120.714, "role": "via" },
+    { "name": "恆春古城東門外台26", "lat": 22.00455, "lng": 120.75048, "role": "via" },
+    { "name": "南灣台26主線", "lat": 21.961084, "lng": 120.763083, "role": "via" },
+    { "name": "船帆石台26", "lat": 21.93215, "lng": 120.82352, "role": "via" },
+    { "name": "鵝鑾鼻公園外台26主線", "lat": 21.905757, "lng": 120.850661, "role": "via" },
+    { "name": "風吹砂台26觀景道路", "lat": 21.946683, "lng": 120.839111, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T15:55:00.000Z",
+  "reviewerNote": "初版枋山車站點導入pedestrian 67公尺，楓港研究點導入footway 8公尺，車城福安宮點導入steps 9公尺往返，南灣點導入service／footway約76與71公尺往返，鵝鑾鼻點導入path 42公尺往返，均未採用；起點移到車站南側公共道路，刪除楓港偏點，車城、南灣與鵝鑾鼻均改至台26主線。最終raw無footway、pedestrian、path、steps、track、service、private、access禁制、bicycle=no、motorway、trunk或motorroad；46492公尺oneway=yes全部順向，沒有reversedirection=yes與oneway=yes同段。軌跡只走枋山南側公共道路、台1與台26一般道路，不使用台9快速化路段、交流道匝道、國家公園步道、沙灘、草原或珊瑚礁小徑。500/200公尺分析為57.0公里、爬升273公尺、最大5.9%，三組比較已記於elevationAnalysis。公路局台26資料：https://www.thb.gov.tw/News.aspx?PageSize=100&n=455&page=1&sms=13741；冬季落山風、夏季曝曬、大型車、野生動物及墾丁活動交通管制均須出發前重新查核。"
+}

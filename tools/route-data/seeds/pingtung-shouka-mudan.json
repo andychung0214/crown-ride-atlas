@@ -1,0 +1,37 @@
+{
+  "id": "pingtung-shouka-mudan",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "縣道199爬升壽卡後由台9戊與台9一般道路下降，沿線有髮夾彎及陡峭側坡；預設100公尺分析為爬升1527公尺、最大持續坡度24.7%，短距離尖峰明顯偏高。比較500/200、750/300、1000/500公尺後，爬升依序為731、661、618公尺，最大持續坡度依序為7.3%、6.3%、6.2%；國立臺灣科學教育館資料記載壽卡海拔約460公尺、東源後連續數公里約3%至6%，本軌跡最高468公尺，500/200最接近路段尺度且保留真實長爬坡，因此採用最小合理視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://twsf.ntsec.gov.tw/activity/race-1/65/pdf/NPHSF2025-032807.pdf",
+    "referenceLabel": "國立臺灣科學教育館壽卡海拔與東源後3%至6%坡度資料"
+  },
+  "waypoints": [
+    { "name": "車城東側縣道199主線", "lat": 22.072264, "lng": 120.720304, "role": "start" },
+    { "name": "石門古戰場外縣道199主線", "lat": 22.112339, "lng": 120.761589, "role": "via" },
+    { "name": "牡丹大橋縣道199", "lat": 22.140621, "lng": 120.779828, "role": "via" },
+    { "name": "東源村縣道199主線", "lat": 22.205344, "lng": 120.854436, "role": "via" },
+    { "name": "壽卡縣道199與台9戊", "lat": 22.2452, "lng": 120.83571, "role": "via" },
+    { "name": "壽卡西側台9戊主線", "lat": 22.2435416, "lng": 120.8251117, "role": "via" },
+    { "name": "渡月橋西側台9戊主線", "lat": 22.2406171, "lng": 120.8084833, "role": "via" },
+    { "name": "遊仙橋西側台9戊主線", "lat": 22.2387398, "lng": 120.8039067, "role": "via" },
+    { "name": "台9戊與台9一般道路銜接", "lat": 22.2380885, "lng": 120.8036506, "role": "via" },
+    { "name": "草埔東側台9一般道路", "lat": 22.2295669, "lng": 120.79876, "role": "via" },
+    { "name": "草埔台9一般道路", "lat": 22.2195074, "lng": 120.7940678, "role": "via" },
+    { "name": "草埔西側台9一般道路", "lat": 22.2149447, "lng": 120.7921742, "role": "via" },
+    { "name": "伊屯橋台9一般道路", "lat": 22.2142071, "lng": 120.7887981, "role": "via" },
+    { "name": "丹路東側台9一般道路", "lat": 22.2124705, "lng": 120.7646954, "role": "via" },
+    { "name": "丹路台9一般道路", "lat": 22.2092172, "lng": 120.7550101, "role": "via" },
+    { "name": "沙布鐵橋台9一般道路", "lat": 22.2044675, "lng": 120.7458213, "role": "via" },
+    { "name": "丹路西側台9一般道路", "lat": 22.2059792, "lng": 120.7405699, "role": "via" },
+    { "name": "上牡丹台9一般道路", "lat": 22.2066427, "lng": 120.721025, "role": "via" },
+    { "name": "楓港台9一般道路", "lat": 22.2052208, "lng": 120.6889048, "role": "via" },
+    { "name": "車城東側縣道199主線", "lat": 22.072264, "lng": 120.720304, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T16:15:00.000Z",
+  "reviewerNote": "初版車城點導入steps／pedestrian，石門點導入path／footway，東源點導入footway 296公尺往返，楓港點導入footway 8公尺；最嚴重的是草埔研究點偏離正式道路，導入track 5054公尺往返、concrete grade1 track 2972公尺往返及asphalt grade1 track 144公尺往返，均未採用。重建時把199沿線景點移到secondary主線，並以現行ref=9戊 primary ways 345069464、386557627、724352236、724352237、724352952、724352953、763170624逐段固定壽卡至草埔，再以不含motorroad與tunnel的ref=9一般道路節點加密至楓港；精確路廊範例：https://www.openstreetmap.org/way/345069464；https://www.openstreetmap.org/way/724352952；https://www.openstreetmap.org/way/380718566；https://www.openstreetmap.org/way/300963447。最終raw的tunnel、motorroad、trunk、track、service、footway、pedestrian、path、steps、private、access禁制與bicycle=no全為零；21436公尺oneway=yes全部順向，沒有reversedirection=yes與oneway=yes同段。軌跡明確不使用草埔隧道、森永隧道、安朔高架、河床便道、牡丹水庫管理道路、199甲、林道或產業道路。500/200公尺分析為81.4公里、爬升731公尺、最大7.3%，三組比較已記於elevationAnalysis。縣道199官方起訖與里程：https://www.thb.gov.tw/News.aspx?PageSize=200&n=107&page=1&sms=13789；台9戊替代道路：https://www.thb.gov.tw/News_Content_table.aspx?n=12181&s=275170&sms=14672；道路改善、落石與豪雨管制須出發前查核。"
+}

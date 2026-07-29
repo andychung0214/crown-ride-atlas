@@ -1,0 +1,29 @@
+{
+  "id": "kaohsiung-jiaxian-liugui",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "甲仙、寶來與荖濃溪谷路線包含長距離河谷爬升及陡峭側坡，預設100公尺分析為爬升1577公尺、最大持續坡度26.0%，短距離尖峰偏高。比較500/200、750/300、1000/500公尺後，爬升依序為956、872、822公尺，最大持續坡度依序為10.0%、8.6%、7.1%；相近的旗山、甲仙、荖濃、六龜、美濃100公里實騎環線記錄總爬升約1100公尺，本路線103.7公里所得956公尺合理且500/200仍保留台20主要爬升，因此採用最小合理視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://www.ptt.cc/bbs/bicycle/M.1763468449.A.983.html",
+    "referenceLabel": "旗山甲仙六龜美濃100公里環線約1100公尺爬升實騎資料"
+  },
+  "waypoints": [
+    { "name": "旗山車站外公共道路", "lat": 22.88462, "lng": 120.48197, "role": "start" },
+    { "name": "甲仙台29主線", "lat": 23.08145, "lng": 120.58718, "role": "via" },
+    { "name": "寶來台20主線", "lat": 23.108026, "lng": 120.698936, "role": "via" },
+    { "name": "荖濃東側台20主線", "lat": 23.0760736, "lng": 120.6746016, "role": "via" },
+    { "name": "荖濃橋東側台20主線", "lat": 23.0715542, "lng": 120.6717151, "role": "via" },
+    { "name": "荖濃橋台20主線", "lat": 23.0707987, "lng": 120.6699538, "role": "via" },
+    { "name": "荖濃橋西側台20主線", "lat": 23.0702307, "lng": 120.6662486, "role": "via" },
+    { "name": "荖濃台20與台27路口", "lat": 23.07144, "lng": 120.660021, "role": "via" },
+    { "name": "六龜台27主線", "lat": 22.99569, "lng": 120.634967, "role": "via" },
+    { "name": "十八羅漢山台27甲", "lat": 22.95008, "lng": 120.64185, "role": "via" },
+    { "name": "美濃市區台28", "lat": 22.9, "lng": 120.542, "role": "via" },
+    { "name": "旗山車站外公共道路", "lat": 22.88462, "lng": 120.48197, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T15:39:00.000Z",
+  "reviewerNote": "初版寶來景點座標導入service 670公尺往返、荖濃研究點導入service 928公尺往返、六龜景點座標導入service 218公尺往返，均未採用；改至台20與台27主線，並以現行省道節點固定台29、台20、台27、台27甲與台28。最終raw無footway、path、steps、track、private、access禁制或bicycle=no；1218公尺oneway=yes全部順向，精確為568公尺primary asphalt class5 ncn、466公尺tertiary asphalt class1、71公尺primary asphalt class2、52公尺tertiary_link、36公尺primary asphalt class4 ncn與25公尺tertiary_link，沒有reversedirection=yes與oneway=yes同段。raw保留四項經核准的BRouter資料快照分類差異：23.085925,120.679326起679公尺 `reversedirection=yes highway=service`，現行OSM way1456044235為ref=20 primary；23.070858,120.672552起115公尺 `highway=service`，現行台20由ways447651531、447650033、354320381、398280701連續；22.891887,120.628252起621公尺 `highway=service`及22.891582,120.624810起386公尺 `reversedirection=yes highway=service`，現行台28／27甲對應ways260286147、1337383115、881515396均為primary。上述raw段皆無surface、access、private、bicycle或oneway，故不據此猜測鋪面；精確證據：https://www.openstreetmap.org/way/1456044235；https://www.openstreetmap.org/way/447650033；https://www.openstreetmap.org/way/354320381；https://www.openstreetmap.org/way/260286147。500/200公尺分析為103.7公里、爬升956公尺、最大10.0%，三組比較已記於elevationAnalysis。公路局省道路線：https://www.thb.gov.tw/News.aspx?PageSize=100&n=455&page=1&sms=13741；不使用台20臨時便道、河床便道或台27甲延伸工程construction段，施工、豪雨與颱風期間須查分時放行或預警封閉。"
+}

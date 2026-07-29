@@ -1,0 +1,29 @@
+{
+  "id": "kaohsiung-qimei",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "旗山、美濃至十八羅漢山以平緩台28與荖濃溪谷為主，預設100公尺分析為爬升484公尺、最大持續坡度16.5%，局部尖峰偏高。比較500/200、750/300、1000/500公尺後，爬升依序為291、252、239公尺，最大持續坡度依序為10.0%、8.0%、7.1%；茂林國家風景區自行車路線資料公布相關旗美六龜路線總爬升381公尺，本路線較短且原路折返，500/200所得291公尺尺度合理並保留新威與十八羅漢山短坡，因此採用最小合理視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://theme.maolin-nsa.gov.tw/bike/zh-tw/bike-route/1",
+    "referenceLabel": "茂林國家風景區騎遊茂林路線總爬升381公尺資料"
+  },
+  "waypoints": [
+    { "name": "旗山車站外公共道路", "lat": 22.88462, "lng": 120.48197, "role": "start" },
+    { "name": "美濃湖外民權路", "lat": 22.907483, "lng": 120.551383, "role": "via" },
+    { "name": "美濃客家文物館外民族路", "lat": 22.91107, "lng": 120.55754, "role": "via" },
+    { "name": "美濃永安老街公共道路", "lat": 22.8997, "lng": 120.5418, "role": "via" },
+    { "name": "新威森林公園外台28主線", "lat": 22.8874176, "lng": 120.6220085, "role": "via" },
+    { "name": "新威台28西側主線", "lat": 22.8909368, "lng": 120.6246803, "role": "via" },
+    { "name": "台28與台27甲銜接主線", "lat": 22.8918773, "lng": 120.6248767, "role": "via" },
+    { "name": "新威台27甲南側主線", "lat": 22.8922612, "lng": 120.624978, "role": "via" },
+    { "name": "新威台27甲北側主線", "lat": 22.8930136, "lng": 120.6251182, "role": "via" },
+    { "name": "新威北側台27甲主線", "lat": 22.9025431, "lng": 120.6288512, "role": "via" },
+    { "name": "十八羅漢山台27甲", "lat": 22.95008, "lng": 120.64185, "role": "via" },
+    { "name": "旗山車站外公共道路", "lat": 22.88462, "lng": 120.48197, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T15:32:00.000Z",
+  "reviewerNote": "初版美濃湖研究點導入footway 31與8公尺往返、龍肚研究點導入service 1046公尺往返、新威研究點導入service 935與177公尺往返，均未採用；美濃湖移到民權路，刪除偏離台28的龍肚點，並以現行台28與台27甲primary節點加密新威銜接。最終raw無footway、path、steps、track、private、access禁制或bicycle=no；2303公尺oneway=yes全順向，精確為1640公尺primary asphalt class5 ncn、464公尺tertiary asphalt class1、190公尺primary asphalt class4 ncn及9公尺primary asphalt class4，沒有reversedirection=yes與oneway=yes同段。raw仍有兩項經核准的BRouter資料快照分類差異：22.891887,120.628252起621公尺 `highway=service` 與22.891582,120.624810起386公尺 `reversedirection=yes highway=service`，兩段均無surface、access、private、bicycle或oneway標記，故不據此猜測鋪面；其折線位於現行OpenStreetMap台28／台27甲新威省道銜接，對應ways 260286147、1337383115、881515396，皆為highway=primary且ref=28或27甲（https://www.openstreetmap.org/way/260286147；https://www.openstreetmap.org/way/1337383115；https://www.openstreetmap.org/way/881515396），判定為BRouter舊快照分類差異。500/200公尺分析為55.9公里、爬升291公尺、最大10.0%，三組比較已記於elevationAnalysis。旗美六龜正式道路系統：https://thbwcs.thb.gov.tw/cp.aspx?n=5667；省道工程與活動管制仍須出發前查核。"
+}

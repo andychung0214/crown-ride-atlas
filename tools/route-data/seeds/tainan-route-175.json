@@ -1,0 +1,31 @@
+{
+  "id": "tainan-route-175",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "市道175沿東山淺山稜線反覆起伏，預設100公尺分析為爬升1715公尺、最大持續坡度21.4%，局部尖峰偏高。比較500/200、750/300、1000/500公尺後，爬升依序為1121、1031、966公尺，最大持續坡度依序為10.5%、9.0%、8.8%；既有46.6公里活動路線公布總爬升1260公尺，且BRouter原始filtered ascend為1343公尺，500/200已排除短距離雜訊並保留咖啡公路反覆爬升，因此採用最小合理視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://running.biji.co/index.php?act=info&cid=3788&q=competition&subtitle=175+%E6%9D%B1%E5%B1%B1%E5%92%96%E5%95%A1%E5%85%AC%E8%B7%AF",
+    "referenceLabel": "運動筆記175東山咖啡公路46.6公里與總爬升1260公尺資料"
+  },
+  "waypoints": [
+    { "name": "關子嶺市道175主線", "lat": 23.339545, "lng": 120.504572, "role": "start" },
+    { "name": "關子嶺南側市道175主線", "lat": 23.3350111, "lng": 120.5033142, "role": "via" },
+    { "name": "南寮市道175主線", "lat": 23.3268338, "lng": 120.4982861, "role": "via" },
+    { "name": "高原北側市道175主線", "lat": 23.3003753, "lng": 120.5012392, "role": "via" },
+    { "name": "高原南側市道175主線", "lat": 23.2868138, "lng": 120.506715, "role": "via" },
+    { "name": "孚佑宮路段市道175主線", "lat": 23.2731058, "lng": 120.4957643, "role": "via" },
+    { "name": "李子園市道175主線", "lat": 23.2447236, "lng": 120.4800286, "role": "via" },
+    { "name": "林安北側市道175主線", "lat": 23.2380595, "lng": 120.4761617, "role": "via" },
+    { "name": "林安南側市道175主線", "lat": 23.2319376, "lng": 120.4736918, "role": "via" },
+    { "name": "咖啡公路南段市道175主線", "lat": 23.2180746, "lng": 120.46571, "role": "via" },
+    { "name": "六甲大丘市道175主線", "lat": 23.196297, "lng": 120.4663895, "role": "via" },
+    { "name": "楠西北側市道175主線", "lat": 23.1889991, "lng": 120.4779017, "role": "via" },
+    { "name": "楠西市道174與175路口", "lat": 23.184249, "lng": 120.488717, "role": "via" },
+    { "name": "關子嶺市道175主線", "lat": 23.339545, "lng": 120.504572, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T15:05:00.000Z",
+  "reviewerNote": "研究景點座標初版曾導入高原／孚佑宮track與service、咖啡公路中段path及bicycle=no path、六甲大丘service，均未採用；改以現行ref=175主線ways的13個控制點加密後，所有waypoint均在軌跡0至0.3公尺內，footway、path、steps、track、private、access禁制與bicycle=no皆為零，且無oneway=yes。raw只保留一項經核准的資料快照分類差異：23.244785,120.474135起850公尺 `reversedirection=yes highway=service`，未標surface、access、private、bicycle或oneway，故不據此猜測鋪面；該折線位於現行OpenStreetMap市道175主線ways 199690387與689428955，兩者皆為ref=175、highway=secondary（https://www.openstreetmap.org/way/199690387；https://www.openstreetmap.org/way/689428955），判定為BRouter舊快照分類差異。公路局公告市道175全長31.13公里，本軌跡單程約30.4公里，起終點與主線里程一致：https://www.thb.gov.tw/News.aspx?PageSize=10&n=107&page=12&sms=13789。500/200公尺分析為60.9公里、爬升1121公尺、最大10.5%，三組比較已記於elevationAnalysis。25.4K為歷史地滑監測區，豪雨後出發前須查臺南市道路通阻。"
+}

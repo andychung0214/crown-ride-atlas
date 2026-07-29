@@ -1,0 +1,65 @@
+{
+  "id": "chiayi-meishan-36",
+  "direction": "point-to-point",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "縣道162甲包含太平36彎、瑞水公路髮夾彎與陡峭側坡，預設 100 公尺分析在路線 40.0 公里處產生 36.4% 假峰。比較 500/200、750/300、1000/500 公尺後，最大持續坡度依序為 11.7%、9.6%、8.3%，爬升依序為 1589、1562、1537 公尺；實騎資料指出36彎整體約6%至7%、局部11%甚至14%，因此 500/200 已消除 SRTM 假峰且仍保留真實短陡坡，採用這組最小視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://cyclingtime.com/tw/documents/13747.html",
+    "referenceLabel": "單車時代梅山36彎13公里穩定持續爬坡騎乘解析"
+  },
+  "waypoints": [
+    {
+      "name": "梅山市區縣道162甲玄廟路",
+      "lat": 23.5821877,
+      "lng": 120.5613645,
+      "role": "start"
+    },
+    {
+      "name": "太平36彎眺景道路側",
+      "lat": 23.5630169,
+      "lng": 120.5958268,
+      "role": "via"
+    },
+    {
+      "name": "太平東側縣道162甲主線",
+      "lat": 23.5661844,
+      "lng": 120.6169036,
+      "role": "via"
+    },
+    {
+      "name": "碧湖路段縣道162甲主線",
+      "lat": 23.566867,
+      "lng": 120.627989,
+      "role": "via"
+    },
+    {
+      "name": "瑞水公路縣道162甲主線",
+      "lat": 23.5629115,
+      "lng": 120.6445046,
+      "role": "via"
+    },
+    {
+      "name": "竹坑溪北側縣道162甲主線",
+      "lat": 23.5633953,
+      "lng": 120.6579088,
+      "role": "via"
+    },
+    {
+      "name": "瑞峰西側縣道162甲主線",
+      "lat": 23.5516034,
+      "lng": 120.6789847,
+      "role": "via"
+    },
+    {
+      "name": "太和西側縣道162甲主線",
+      "lat": 23.5438514,
+      "lng": 120.6998348,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T14:48:13.732Z",
+  "reviewerNote": "研究景點座標曾導入起點 footway 17+126公尺、太平雲梯逆向單行service 50+6公尺、龍眼茶園track 915公尺往返、瑞峰service 221+442+29公尺與太和track 1207公尺，均未採用；改以現行 ref=162甲 的正式主線節點並增加竹坑溪北側主線控制點，排除trailhead service 443+168公尺捷徑。最終 raw messages 全部為 secondary，精確分組為24724公尺 class3 oneway=no、11977公尺 class2、2520公尺 class2 oneway=no、1153公尺 class3、145公尺 class4；無 footway、path、steps、track、service、private、access 禁制、bicycle=no或oneway=yes。500/200公尺分析為40.5公里、爬升1589公尺、最大11.7%，與實騎36彎局部11%至14%相符；三組比較已記於 elevationAnalysis。官方36彎資料：https://www.ali-nsa.net/zh-tw/attractions/detail/199；公路局162甲路線資料：https://www.thb.gov.tw/News.aspx?PageSize=10&n=107&page=10&sms=13789；39K後路窄且豪雨後須查通阻。"
+}

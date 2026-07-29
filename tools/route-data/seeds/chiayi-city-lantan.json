@@ -1,0 +1,46 @@
+{
+  "id": "chiayi-city-lantan",
+  "direction": "loop",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "嘉義公園東側公園街",
+      "lat": 23.48382,
+      "lng": 120.4664,
+      "role": "start"
+    },
+    {
+      "name": "大雅路二段與小雅路口",
+      "lat": 23.4772,
+      "lng": 120.4765,
+      "role": "via"
+    },
+    {
+      "name": "蘭潭國小小雅路",
+      "lat": 23.4684,
+      "lng": 120.4787,
+      "role": "via"
+    },
+    {
+      "name": "蘭潭南岸環潭公路",
+      "lat": 23.46505,
+      "lng": 120.47975,
+      "role": "via"
+    },
+    {
+      "name": "彌陀路與啟明路口",
+      "lat": 23.47242,
+      "lng": 120.46363,
+      "role": "via"
+    },
+    {
+      "name": "嘉義公園東側公園街",
+      "lat": 23.48382,
+      "lng": 120.4664,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T14:18:29.613Z",
+  "reviewerNote": "將嘉義公園起終點、月影潭心與音樂噴泉人行區、彌陀路停車支線等研究點逐一移到一般道路側後重產；最終 raw messages 無 motorway、trunk、motorroad、footway、path、steps、track、service、private、access 禁制或 bicycle=no。單行道標記共 1405 公尺，精確分組為 1379 公尺 `highway=tertiary surface=asphalt oneway=yes` 與 26 公尺同標記且 estimated_traffic_class=4，皆為順向，無 `reversedirection=yes` 與 `oneway=yes` 同段。Leaflet 疊圖確認公園街、大雅路、小雅路、環潭公路、彌陀路與啟明路連續；9.0 公里、爬升 99 公尺、最大持續坡度 5.1%。嘉義市官方將小雅路與環潭公路列入自行車活動路線，大型活動仍可能實施交通管制：https://website.ncyu.edu.tw/admission/Subject/Detail/242408?nodeId=34504"
+}

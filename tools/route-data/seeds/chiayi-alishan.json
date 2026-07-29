@@ -1,0 +1,35 @@
+{
+  "id": "chiayi-alishan",
+  "direction": "point-to-point",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "台18阿里山公路穿越深切山谷、連續髮夾彎與陡峭側坡，預設 100 公尺分析在路線 26.5 公里處產生 51.3% 假峰。比較 500/200、750/300、1000/500 公尺後，最大持續坡度依序為 14.5%、13.1%、12.4%，爬升依序為 2413、2336、2295 公尺；500/200 已消除山側 SRTM 假峰，且爬升接近實騎資料的 60.7 公里爬升 2221 公尺與自行車資料的約 2649 公尺，故採用能保留最多局部起伏的最小視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://cyclingtime.com/tw/documents/8427.html",
+    "referenceLabel": "單車時代阿里山公路連續56公里、平均4.6%與累計爬升2649公尺騎乘資料"
+  },
+  "waypoints": [
+    {
+      "name": "嘉義火車站東側中山路",
+      "lat": 23.4793,
+      "lng": 120.44307,
+      "role": "start"
+    },
+    {
+      "name": "觸口台18公共道路",
+      "lat": 23.4459675,
+      "lng": 120.583833,
+      "role": "via"
+    },
+    {
+      "name": "阿里山森林遊樂區入口前台18終點",
+      "lat": 23.5080971,
+      "lng": 120.8007966,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T14:48:13.732Z",
+  "reviewerNote": "將頂六、龍隱寺、隙頂、石棹與園區入口等研究點移除，因原座標分別導入 track、service 或園區單行 service；最終固定嘉義火車站東側一般道路、台18觸口公共道路及阿里山入口前台18終點。raw messages 無 motorway、trunk、motorroad、footway、path、steps、track、service、private、access 禁制或 bicycle=no；5244 公尺 oneway=yes 全為順向，精確分組為2055公尺 tertiary class3、1919公尺 primary class4、630公尺 primary class5、585公尺 tertiary class4及55公尺 tertiary圓環，無 `reversedirection=yes` 與 `oneway=yes` 同段。Leaflet 疊圖確認未進園區與茶園支線。500/200公尺分析為66.1公里、爬升2413公尺、最大14.5%；其與750/300、1000/500比較及26.483公里假峰座標已記於 elevationAnalysis。台18官方道路與安全說明：https://www.ali-nsa.net/zh-tw/traffic/self-driving；2026交通管制：https://www.ali-nsa.net/zh-tw/event/news/3492；出發前另查公路局168。"
+}

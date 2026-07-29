@@ -1,0 +1,26 @@
+{
+  "id": "kaohsiung-harbor",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "旗津一路與旗津二路位於狹長沙洲半島，實際高程僅約負1至11公尺；預設100公尺分析仍累計44公尺爬升、最大持續坡度4.0%，主要來自低海拔SRTM細微起伏。比較500/200、750/300、1000/500公尺後，爬升依序為12、9、7公尺，最大持續坡度依序為1.0%、0.7%、0.4%；500/200已排除平坦海岸道路的短距離雜訊且使用最小合理視窗，因此採用。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://khh.travel/zh-tw/attractions/detail/1143/",
+    "referenceLabel": "高雄旅遊網旗津狹長沙洲半島與自行車旅遊資料"
+  },
+  "waypoints": [
+    { "name": "旗津輪渡站南側廟前路", "lat": 22.611748, "lng": 120.270071, "role": "start" },
+    { "name": "旗津一路北段公共道路", "lat": 22.607997, "lng": 120.272372, "role": "via" },
+    { "name": "旗津一路南段公共道路", "lat": 22.596066, "lng": 120.281338, "role": "via" },
+    { "name": "旗津二路中段公共道路", "lat": 22.58802, "lng": 120.288264, "role": "via" },
+    { "name": "旗津二路南側公共道路", "lat": 22.582187, "lng": 120.291247, "role": "via" },
+    { "name": "旗津二路中段公共道路", "lat": 22.58802, "lng": 120.288264, "role": "via" },
+    { "name": "旗津一路南段公共道路", "lat": 22.596066, "lng": 120.281338, "role": "via" },
+    { "name": "旗津一路北段公共道路", "lat": 22.607997, "lng": 120.272372, "role": "via" },
+    { "name": "旗津輪渡站南側廟前路", "lat": 22.611748, "lng": 120.270071, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T15:45:00.000Z",
+  "reviewerNote": "依旗津島內方案重建。初版旗津輪渡站入口觸發1與9公尺逆向單行service而被產生器拒絕；第二版海岸公園點導入service 39／28公尺與footway 44公尺往返，風車公園與回程研究點導入service、access=permit及oneway service，均未採用。最終起終點設於旗津輪渡站南側廟前路公共道路，只沿旗津一路與旗津二路往返；raw全程3979公尺去程加3979公尺回程皆為tertiary，無footway、path、steps、track、service、private、access禁制、bicycle=no或oneway=yes。raw明確無route=ferry與tunnel，軌跡座標全在旗津島，不含渡輪、跨水域、高雄港過港隧道、港區管制道路、壽山或北岸里程與海拔，也不宣稱行經壽山或北岸。500/200公尺分析為8.0公里、爬升12公尺、最大1.0%，三組比較已記於elevationAnalysis。抵達起點需自行另行搭乘渡輪者，必須獨立查詢當日班次、營運公告及自行車載運規定，渡輪移動不屬本GPX；旗津交通資訊：https://cijin.kcg.gov.tw/Content_List.aspx?Create=1&n=7957C12CCD70E4E1。過港隧道禁止腳踏車等慢車：https://kh.twport.com.tw/zh-tw/service/Articles?a=1047。"
+}

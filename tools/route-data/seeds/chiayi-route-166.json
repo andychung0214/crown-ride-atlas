@@ -1,0 +1,185 @@
+{
+  "id": "chiayi-route-166",
+  "direction": "point-to-point",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "縣道166由海岸平原進入瑞里山區，後段有密集髮夾彎與陡峭側坡，預設 100 公尺分析在路線 72.2 公里處產生 31.9% 假峰。比較 500/200、750/300、1000/500 公尺後，最大持續坡度依序為 14.9%、9.8%、9.1%，爬升依序為 1331、1272、1239 公尺；實騎資料記錄嘉義山區相關路線 100 公里爬升約 2000 公尺、166沿線交力坪約997公尺，本路線78.4公里終點約1031公尺，500/200 已消除假峰且保留山區短陡坡，故採用最小視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://cyclingtime.com/tw/documents/9619.html",
+    "referenceLabel": "單車時代縣道166瑞里山區實騎與交力坪海拔資料"
+  },
+  "waypoints": [
+    {
+      "name": "東石縣道166西端主線",
+      "lat": 23.458292,
+      "lng": 120.1524175,
+      "role": "start"
+    },
+    {
+      "name": "朴子北側縣道166主線",
+      "lat": 23.488156,
+      "lng": 120.2273701,
+      "role": "via"
+    },
+    {
+      "name": "六腳西側縣道166主線",
+      "lat": 23.504993,
+      "lng": 120.2461724,
+      "role": "via"
+    },
+    {
+      "name": "六腳縣道166主線",
+      "lat": 23.5040495,
+      "lng": 120.2557481,
+      "role": "via"
+    },
+    {
+      "name": "六腳東側縣道166主線",
+      "lat": 23.5057172,
+      "lng": 120.275303,
+      "role": "via"
+    },
+    {
+      "name": "新港西側縣道166主線",
+      "lat": 23.5060499,
+      "lng": 120.2841619,
+      "role": "via"
+    },
+    {
+      "name": "新港縣道166主線",
+      "lat": 23.5084677,
+      "lng": 120.2951879,
+      "role": "via"
+    },
+    {
+      "name": "溪口縣道166主線",
+      "lat": 23.5164415,
+      "lng": 120.3422651,
+      "role": "via"
+    },
+    {
+      "name": "大林南側縣道166主線",
+      "lat": 23.5260496,
+      "lng": 120.3695525,
+      "role": "via"
+    },
+    {
+      "name": "民雄西側縣道166主線",
+      "lat": 23.5207826,
+      "lng": 120.3878331,
+      "role": "via"
+    },
+    {
+      "name": "民雄中段縣道166主線",
+      "lat": 23.5191717,
+      "lng": 120.4146831,
+      "role": "via"
+    },
+    {
+      "name": "民雄南側縣道166主線",
+      "lat": 23.5263377,
+      "lng": 120.4432658,
+      "role": "via"
+    },
+    {
+      "name": "竹崎縣道166主線",
+      "lat": 23.5182344,
+      "lng": 120.553097,
+      "role": "via"
+    },
+    {
+      "name": "文峰縣道166主線",
+      "lat": 23.5179822,
+      "lng": 120.5932291,
+      "role": "via"
+    },
+    {
+      "name": "文峰彎道縣道166主線",
+      "lat": 23.5186808,
+      "lng": 120.5974762,
+      "role": "via"
+    },
+    {
+      "name": "文峰第一控制點縣道166主線",
+      "lat": 23.5192895,
+      "lng": 120.5975339,
+      "role": "via"
+    },
+    {
+      "name": "文峰第二控制點縣道166主線",
+      "lat": 23.5160873,
+      "lng": 120.6015652,
+      "role": "via"
+    },
+    {
+      "name": "文峰第三控制點縣道166主線",
+      "lat": 23.5178253,
+      "lng": 120.6060219,
+      "role": "via"
+    },
+    {
+      "name": "文峰東側縣道166主線",
+      "lat": 23.5170822,
+      "lng": 120.6063905,
+      "role": "via"
+    },
+    {
+      "name": "金獅西側縣道166主線",
+      "lat": 23.5134346,
+      "lng": 120.6136447,
+      "role": "via"
+    },
+    {
+      "name": "金獅東側縣道166主線",
+      "lat": 23.5206857,
+      "lng": 120.6128441,
+      "role": "via"
+    },
+    {
+      "name": "瑞水第一控制點縣道166主線",
+      "lat": 23.5183703,
+      "lng": 120.6227441,
+      "role": "via"
+    },
+    {
+      "name": "瑞水第二控制點縣道166主線",
+      "lat": 23.5165869,
+      "lng": 120.6221144,
+      "role": "via"
+    },
+    {
+      "name": "瑞水公路西側縣道166主線",
+      "lat": 23.5273373,
+      "lng": 120.626959,
+      "role": "via"
+    },
+    {
+      "name": "瑞水公路縣道166主線",
+      "lat": 23.5290907,
+      "lng": 120.628382,
+      "role": "via"
+    },
+    {
+      "name": "圓潭瑞里第一號橋縣道166",
+      "lat": 23.528979,
+      "lng": 120.6593101,
+      "role": "via"
+    },
+    {
+      "name": "青年嶺外縣道166主線",
+      "lat": 23.532738,
+      "lng": 120.659434,
+      "role": "via"
+    },
+    {
+      "name": "瑞里縣道166主線",
+      "lat": 23.5392857,
+      "lng": 120.6651725,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T14:48:13.732Z",
+  "reviewerNote": "研究景點座標曾導入東石港footway、朴子／民雄／竹崎service、文峰path/service及青年嶺—瑞里footway，均未採用；以28個現行 ref=166 主線節點加密後，raw只剩一項經核准的資料快照分類差異：23.518879,120.596991起129公尺 `reversedirection=yes highway=service`，沒有surface、access、private、bicycle或oneway標記，故不據此宣稱鋪面；其前後皆為secondary。該折線位於現行OpenStreetMap way 230358329（ref=166、highway=secondary：https://www.openstreetmap.org/way/230358329），公路局縣道166山區里程與限制及阿里山官方166路廊亦證明它是縣道主線，判定為BRouter舊快照分類差異而非產業支線。其餘無 footway、path、steps、track、private、access 禁制或 bicycle=no；1500公尺 oneway=yes 全順向，精確為1245公尺secondary、188公尺primary且route_bicycle_ncn=yes、67公尺tertiary_link。500/200公尺分析為78.4公里、爬升1331公尺、最大14.9%，三組比較已記於 elevationAnalysis。官方路廊：https://www.ali-nsa.net/zh-tw/traffic/self-driving；公路局限制：https://ws.thb.gov.tw/Download.ashx?icon=.pdf&n=57ij6YSJ6YGT562J56aB6KGM6Lev5q61MTE1MDIxMy5wZGY%3D%3D&u=LzAwMS9VcGxvYWQvNDM2L3JlbGZpbGUvMTIyNzEvODkvN2JmOTAxZDYtNGRlNy00OGJkLTg3OTQtYTJmN2ZhYzFmZThmLnBkZg%3D%3D；56.2K後路窄彎多，出發前查通阻。"
+}

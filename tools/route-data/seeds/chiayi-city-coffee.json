@@ -1,0 +1,58 @@
+{
+  "id": "chiayi-city-coffee",
+  "direction": "loop",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "嘉義火車站東側中山路",
+      "lat": 23.4793,
+      "lng": 120.44307,
+      "role": "start"
+    },
+    {
+      "name": "中央噴水圓環中山路側",
+      "lat": 23.47989,
+      "lng": 120.44985,
+      "role": "via"
+    },
+    {
+      "name": "東市場民族路口",
+      "lat": 23.47805,
+      "lng": 120.45575,
+      "role": "via"
+    },
+    {
+      "name": "昭和十八中山路外側",
+      "lat": 23.482656,
+      "lng": 120.46354,
+      "role": "via"
+    },
+    {
+      "name": "檜意森活村林森東路外側",
+      "lat": 23.48608,
+      "lng": 120.45453,
+      "role": "via"
+    },
+    {
+      "name": "北門驛共和路外側",
+      "lat": 23.48748,
+      "lng": 120.45452,
+      "role": "via"
+    },
+    {
+      "name": "嘉義市立博物館南側林森西路",
+      "lat": 23.48565,
+      "lng": 120.4532,
+      "role": "via"
+    },
+    {
+      "name": "嘉義火車站東側中山路",
+      "lat": 23.4793,
+      "lng": 120.44307,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T14:18:29.613Z",
+  "reviewerNote": "將嘉義火車站前廣場、東市場內部、昭和十八停車區、檜意森活村、北門驛與博物館人行區等研究點移到一般道路側，並排除站前 11 公尺逆向單行道後重產；最終 raw messages 無 motorway、trunk、motorroad、pedestrian、footway、path、steps、track、service、private、access 禁制或 bicycle=no。單行道共 815 公尺，精確分組為 403 公尺 residential、248 公尺 secondary 且 route_bicycle_ncn=yes、127 公尺 tertiary 圓環及 37 公尺 tertiary，皆為順向，無 `reversedirection=yes` 與 `oneway=yes` 同段。Leaflet 疊圖確認中山路、民族路、公明路、林森東／西路及共和路外圍道路連續；6.4 公里、爬升 17 公尺、最大持續坡度 3.0%。文化路徒步區於管制時段禁止自行車，本軌跡未進入該徒步區：https://economic.chiayi.gov.tw/News_Content.aspx?n=4&s=917359"
+}

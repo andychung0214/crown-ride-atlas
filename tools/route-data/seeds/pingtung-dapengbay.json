@@ -1,0 +1,27 @@
+{
+  "id": "pingtung-dapengbay",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "大鵬灣環灣道路與自行車道位於低平潟湖海岸，軌跡高程約負3至3公尺；預設100公尺分析仍累計16公尺爬升、最大持續坡度3.0%，主要來自低海拔SRTM細微起伏。比較500/200、750/300、1000/500公尺後，爬升依序為7、6、6公尺，最大持續坡度依序為0.7%、0.4%、0.2%；500/200已排除平坦環灣路線的短距離雜訊且使用最小合理視窗，因此採用。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://www.dbnsa.gov.tw/zh-tw/PlanTrip/articles?a=566",
+    "referenceLabel": "大鵬灣國家風景區16公里環灣自行車道資料"
+  },
+  "waypoints": [
+    { "name": "大鵬灣遊客中心外環灣道路", "lat": 22.45598, "lng": 120.483478, "role": "start" },
+    { "name": "右岸濕地外環灣道路", "lat": 22.442388, "lng": 120.491254, "role": "via" },
+    { "name": "環灣自行車道東側", "lat": 22.436619, "lng": 120.4901678, "role": "via" },
+    { "name": "環灣自行車道東南側", "lat": 22.4325183, "lng": 120.4850095, "role": "via" },
+    { "name": "環灣自行車道南側", "lat": 22.434699, "lng": 120.480255, "role": "via" },
+    { "name": "環灣自行車道西南側", "lat": 22.4374842, "lng": 120.4751351, "role": "via" },
+    { "name": "環灣自行車道西側", "lat": 22.4404476, "lng": 120.4697525, "role": "via" },
+    { "name": "鵬灣跨海大橋東側環灣道路", "lat": 22.445649, "lng": 120.458829, "role": "via" },
+    { "name": "鵬灣跨海大橋官方自行車側道", "lat": 22.456375, "lng": 120.453979, "role": "via" },
+    { "name": "大鵬灣遊客中心外環灣道路", "lat": 22.45598, "lng": 120.483478, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T16:04:00.000Z",
+  "reviewerNote": "初版遊客中心點導入footway／service，右岸濕地點導入footway 172公尺，崎峰濕地點導入木棧footway 39公尺與混凝土footway 92公尺，南側點導入service 437公尺，青洲點導入footway，東隆宮及聯絡點另導入多段service，均未採用。刪除景點內部與東隆宮偏點後，以現行環灣道路及OpenStreetMap way651980145 `環灣自行車道`精確節點加密；最終raw無footway、pedestrian、path、steps、track、service、private、access禁制或bicycle=no，2889公尺為官方環灣cycleway，其中2796公尺明確標記surface=asphalt bicycle=yes；9029公尺oneway=yes環灣道路全部順向，沒有reversedirection=yes與oneway=yes同段。軌跡不使用濕地木棧道、賞鳥步道、維護道路、沙灘、未鋪裝海堤或水域活動區。500/200公尺分析為11.9公里、爬升7公尺、最大0.7%，三組比較已記於elevationAnalysis。官方環灣自行車路線：https://www.dbnsa.gov.tw/zh-tw/Experience/articles?a=330；跨海大橋自行車側道可能因開橋、燈具或橋面施工局部管制，出發前須查最新公告。"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "tainan-guanziling",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "關子嶺172乙山路含連續彎道與陡峭側坡，預設100公尺分析為爬升807公尺、最大持續坡度21.6%，局部尖峰偏高。比較500/200、750/300、1000/500公尺後，爬升依序為543、525、510公尺，最大持續坡度依序為11.5%、10.4%、9.6%；實騎報導記錄白河往關子嶺先有約6%緩坡，172乙另有約1公里10%左右爬升，500/200最接近路段尺度且保留真實短陡坡，因此採用最小合理視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://www.cycling-update.info/cycling-travel/taiwan-ride/2770-gg",
+    "referenceLabel": "單車誌關子嶺環狀線172與172乙實騎坡度資料"
+  },
+  "waypoints": [
+    { "name": "後壁車站東南側公共道路", "lat": 23.363537, "lng": 120.360352, "role": "start" },
+    { "name": "白河運動公園外市道172", "lat": 23.3515, "lng": 120.4148, "role": "via" },
+    { "name": "大仙寺外市道172乙", "lat": 23.34052, "lng": 120.47453, "role": "via" },
+    { "name": "火山碧雲寺外市道172乙", "lat": 23.32516, "lng": 120.48093, "role": "via" },
+    { "name": "水火同源外市道172乙", "lat": 23.322037, "lng": 120.483878, "role": "via" },
+    { "name": "關子嶺溫泉區市道175", "lat": 23.339545, "lng": 120.504572, "role": "via" },
+    { "name": "紅葉隧道西口市道175", "lat": 23.339278, "lng": 120.503035, "role": "via" },
+    { "name": "後壁車站東南側公共道路", "lat": 23.363537, "lng": 120.360352, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T15:10:00.000Z",
+  "reviewerNote": "初版後壁車站座標導入往返service 405公尺及多段站區service，水火同源景點座標導入footway 25與21公尺，關子嶺研究點另造成19公尺逆向單行service而被產生器拒絕，均未採用；起終點改至站區東南側公共道路，水火同源只取景點外市道172乙，關子嶺控制點改至市道175主線。最終raw無footway、path、steps、track、service、private、access禁制或bicycle=no；3897公尺oneway=yes全部順向，精確為2456公尺secondary asphalt class5、1211公尺secondary asphalt class4、169公尺secondary class5及61公尺unclassified roundabout，沒有reversedirection=yes與oneway=yes同段。軌跡以市道172、172乙與175為山區骨幹，寺院與停車場內部道路均未納入。500/200公尺分析為42.7公里、爬升543公尺、最大11.5%，與172乙約1公里10%左右實騎資料相符，三組比較已記於elevationAnalysis。官方聯外道路：https://baihe.tainan.gov.tw/cp.aspx?n=20888&s=7177；節慶可能管制關子嶺路段，出發前須查公告。"
+}

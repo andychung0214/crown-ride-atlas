@@ -9,7 +9,7 @@
 
 ## 重要權限與風險結論
 
-- 高雄港過港隧道明文禁止腳踏車、電動輔助自行車等慢車；`kaohsiung-harbor` 必須利用鼓山—旗津渡輪，不可讓路由導入隧道。
+- 高雄港過港隧道明文禁止腳踏車、電動輔助自行車等慢車；`kaohsiung-harbor` 最終採旗津島內公共道路往返，GPX 不納入渡輪、跨水域、隧道、壽山或高雄港北岸里程。抵達起點的渡輪交通由騎士自行另行安排。
 - 高雄港第一至第六貨櫃中心、碼頭管制站及港埠用地道路不是一般觀光道路，港都路線只走公共市區道路及旗津公共道路。
 - 草埔森永隧道與安朔高架橋的新台 9 線不適合一般自行車；`pingtung-shouka-mudan` 必須固定走台 9 戊線舊南迴公路。
 - 縣道 199 壽卡—石門彎多路窄；縣道 166 山區段與縣道 162 甲瑞里—太和亦有路寬及會車限制，豪雨後應先確認通阻。
@@ -293,25 +293,24 @@
 
 ### `kaohsiung-harbor`
 
-- `direction`: `loop`
-- 建議 waypoint：
-  1. start 駁二外大勇路／公園二路：`22.61942, 120.28216`
-  2. via 鼓山輪渡站：`22.61974, 120.26989`
-  3. via 旗津輪渡站：`22.61396, 120.26967`
-  4. via 旗津海岸公園公共道路側：`22.60183, 120.27388`
-  5. via 旗津風車公園旗津二路側：`22.58829, 120.28415`
-  6. via 壽山情人觀景台興隆路側：`22.62551, 120.27397`
-  7. via 高雄市音樂館河西路：`22.62743, 120.28646`
-  8. finish 駁二外大勇路／公園二路：`22.61942, 120.28216`
-- 正式道路／運輸：大勇路、公園二路、臨海二路、鼓山—旗津渡輪、廟前路、旗津一／二／三路、興隆路、萬壽路、河西路。
+- `direction`: `out-and-back`
+- 正式名稱：旗津港岸晨騎。
+- 最終 waypoint：
+  1. start 旗津輪渡站南側廟前路：`22.611748, 120.270071`
+  2. via 旗津一路北段公共道路：`22.607997, 120.272372`
+  3. via 旗津一路南段公共道路：`22.596066, 120.281338`
+  4. via 旗津二路中段公共道路：`22.588020, 120.288264`
+  5. turnaround 旗津二路南側公共道路：`22.582187, 120.291247`
+  6. finish 原路返回旗津輪渡站南側廟前路。
+- 正式道路：廟前路、旗津一路及旗津二路公共道路；GPX 全程位於旗津島。
 - 避開：
   - 高雄港過港隧道；管理作業要點明文禁止腳踏車等慢車。
   - 第一至第六貨櫃中心管制區、大華一路至四路、亞太路及各碼頭管制站。
-  - 壽山登山步道與軍事管制區。
+  - 鼓山、壽山、高雄港北岸及跨水域直線。
   - 旗津廟前路假日徒步區。
 - 權限與風險：
-  - 種子必須依賴鼓山—旗津渡輪；產生後確認 BRouter 使用 `route=ferry`，沒有改導過港隧道。
-  - 興隆路、萬壽路每日 8–18 時可能彈性單行，應依現場標誌騎乘。
+  - raw messages 無 `route=ferry`、`tunnel`、`service`、`footway`、`path`、`track`、`access` 禁制或 `oneway=yes`；去回程各 3,979 公尺均為 `highway=tertiary`。
+  - 抵達起點若需搭乘渡輪，須自行另行查詢當日班次、營運公告及自行車搭載規則；渡輪移動不屬本 GPX。
   - 連假旗津可能分階段實施全島與道路管制。
 - 官方來源：
   - [高雄港過港隧道禁止慢車](https://kh.twport.com.tw/zh-tw/service/Articles?a=1047)
@@ -400,3 +399,40 @@
   - [牡丹水庫](https://www.dbnsa.gov.tw/zh-tw/attraction/AttractionPage?a=234)
   - [台 9 戊替代道路說明](https://www.thb.gov.tw/News_Content_table.aspx?n=12181&s=275170&sms=14672)
   - [縣道 199 道路管制範例](https://thbu3.thb.gov.tw/News_Content_table.aspx?n=4796&s=279466)
+
+## Task 9 最終逐條稽核帳
+
+完成日期：2026-07-29。以下數值由本站發布的 BRouter `fastbike`／SRTM 軌跡重新計算；外部來源只用於道路、管制與海拔合理性交叉檢核，未匯入第三方 GPX。15 條路線均為 `reviewStatus: approved`，人工審查時間晚於對應快取產生時間。
+
+| 路線 ID | 距離 | 爬升 | 最大持續坡度 | 主要爬坡 | 最終道路稽核 |
+|---|---:|---:|---:|---:|---|
+| `chiayi-city-lantan` | 9.0 km | 99 m | 5.1% | 1 | 蘭潭周邊公共道路；禁止類別 0，單行道全順向 |
+| `chiayi-city-coffee` | 6.4 km | 17 m | 3.0% | 0 | 市區公共道路；避開文化路徒步區，單行道全順向 |
+| `chiayi-city-two-lakes` | 29.1 km | 286 m | 11.4% | 3 | 蘭潭、仁義潭外圍公共道路；禁止類別 0，單行道全順向 |
+| `chiayi-alishan` | 66.1 km | 2,413 m | 14.5% | 8 | 台 18 阿里山公路；無步道、產業捷徑或未授權逆向 |
+| `chiayi-meishan-36` | 40.5 km | 1,589 m | 11.7% | 3 | 縣道 162 甲與梅山三十六彎；raw 全程為 `secondary` |
+| `chiayi-route-166` | 78.4 km | 1,331 m | 14.9% | 6 | 縣道 166／162 甲山路；一段 BRouter 快照標籤差異有逐段證據 |
+| `tainan-route-175` | 60.9 km | 1,121 m | 10.5% | 10 | 175 咖啡公路；一段 BRouter 快照標籤差異有逐段證據 |
+| `tainan-guanziling` | 42.7 km | 543 m | 11.5% | 1 | 關子嶺公共道路；禁止類別 0，單行道全順向 |
+| `tainan-nanhua` | 77.5 km | 1,168 m | 10.3% | 10 | 台 20／南 179；未進水庫管理道路或南 179-1 |
+| `kaohsiung-qimei` | 55.9 km | 291 m | 10.0% | 3 | 旗山、美濃公共道路；兩段 BRouter 快照標籤差異有逐段證據 |
+| `kaohsiung-jiaxian-liugui` | 103.7 km | 956 m | 10.0% | 7 | 台 20／台 27／台 29；未使用河床或施工便道 |
+| `kaohsiung-harbor` | 8.0 km | 12 m | 1.0% | 0 | 旗津一路／二路島內往返；無渡輪、隧道、港區或北岸里程 |
+| `pingtung-south-border` | 57.0 km | 273 m | 5.9% | 3 | 台 1／台 26；排除快速化道路、步道、沙灘與未鋪面小徑 |
+| `pingtung-dapengbay` | 11.9 km | 7 m | 0.7% | 0 | 環灣道路與官方自行車道；排除木棧道、濕地步道與海堤捷徑 |
+| `pingtung-shouka-mudan` | 81.4 km | 731 m | 7.3% | 4 | 縣道 199、台 9 戊與台 9 一般道路；排除草埔森永隧道與高架 |
+
+道路例外與拒絕紀錄：
+
+- `chiayi-route-166` 的 BRouter raw 快照在 `23.518879` 附近將約 129 公尺記為 `highway=service`；人工以目前 OpenStreetMap way `230358329` 的 `ref=166 highway=secondary` 交叉檢核。除這個精確快照差異外，沒有步道、未鋪面、私人或權限禁制例外。
+- `tainan-route-175` 在 `23.244785` 附近約 850 公尺同樣是 BRouter 快照標籤差異；目前 OpenStreetMap way `199690387`、`689428955` 為 `ref=175 highway=secondary`。其餘無 `footway`、`path`、`track` 或未授權單行道逆向。
+- `kaohsiung-qimei` 的兩段 raw `service` 共 1,007 公尺，現在對應 way `260286147`、`1337383115`、`881515396`，為台 28／台 27 甲公共省道。`kaohsiung-jiaxian-liugui` 另有台 20 三組相同性質的快照差異；均只核准明確列出的道路段，不把 `highway=service` 一概推定為鋪面或可騎。
+- `kaohsiung-harbor` 初版渡輪與北岸構想未採用；最終 GPX 只在旗津公共道路往返，raw 無 `route=ferry`、`tunnel`、`service`、步道、權限禁制或單行道。渡輪只作為抵達起點的獨立交通選項。
+- `pingtung-shouka-mudan` 最終 raw 的 `tunnel`、`motorroad`、`trunk`、`track`、`service`、`footway`、`path`、`steps`、`pedestrian`、`private`、`bicycle=no` 與 `access` 禁制均為 0；21,436 公尺 `oneway=yes` 全部順向。
+
+驗收結果：
+
+- 五區 staging validator：5 個 bundle、15 條路線通過。
+- 五區 published validator：5 個 bundle、15 條路線通過。
+- 目前北部＋中部＋南部完整 raw 單行道閘門掃描與 staging validator：16 個 bundle、48 條路線通過。
+- 建構期稽核頁逐條確認 15/15：相符路線 ID、`approved`、Leaflet 與海拔剖面均顯示，載入失敗 0。
