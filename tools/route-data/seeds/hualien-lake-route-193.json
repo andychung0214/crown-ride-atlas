@@ -1,0 +1,24 @@
+{
+  "id": "hualien-lake-route-193",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "縣道193與台9丙沿丘陵、橋梁和鯉魚潭起伏，預設100公尺分析為爬升321公尺、最大持續坡度10.4%。比較500/200、750/300、1000/500公尺後，爬升依序為201、184、175公尺，最大持續坡度依序為4.3%、3.8%、3.1%；官方鯉魚潭自行車資料確認環潭與田園線路廊，500/200可排除橋梁與短距離SRTM尖峰並保留193丘陵起伏，因此採用最小合理視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://theme.erv-nsa.gov.tw/bike/zh-tw/themes/liyutan",
+    "referenceLabel": "花東縱谷國家風景區鯉魚潭自行車官方資料"
+  },
+  "waypoints": [
+    { "name": "花蓮大橋縣道193主線", "lat": 23.923664, "lng": 121.597728, "role": "start" },
+    { "name": "月眉縣道193主線", "lat": 23.86891, "lng": 121.553123, "role": "via" },
+    { "name": "米棧大橋東端縣道193", "lat": 23.83917, "lng": 121.529313, "role": "via" },
+    { "name": "壽豐台9北向主線", "lat": 23.868799, "lng": 121.5090329, "role": "via" },
+    { "name": "鯉魚潭北側環潭公共道路", "lat": 23.9348728, "lng": 121.507174, "role": "via" },
+    { "name": "干城花32公共道路", "lat": 23.9524926, "lng": 121.534682, "role": "via" },
+    { "name": "花蓮大橋縣道193主線", "lat": 23.923664, "lng": 121.597728, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T17:40:00.000Z",
+  "reviewerNote": "初版鯉魚潭景點座標導入42公尺footway與14公尺service，已改吸附環潭北路公共道路，並用花32公共道路控制返回路徑。最終raw的motorway、trunk、tunnel、service、highway=track、footway、pedestrian、path、steps、construction、私人與禁制道路全為0；waytags中的tracktype=grade1屬highway=cycleway、surface=paved的田園線自行車道，不是track道路。live OSM五點取樣5/5分別貼合台11丙、縣道193、台9丙與一般公共道路，最大0.0公尺、禁止0；不進米棧古道、河床、鯉魚山或湖畔木棧。最終500/200公尺bundle為43.8公里、爬升198公尺、最大4.3%。"
+}

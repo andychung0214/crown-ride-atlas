@@ -1,0 +1,22 @@
+{
+  "id": "hualien-qixingtan",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "七星潭與花蓮濱海路線平緩，預設100公尺分析為爬升105公尺、最大持續坡度6.2%。比較500/200、750/300、1000/500公尺後，爬升依序為82、76、68公尺，最大持續坡度依序為4.3%、3.0%、1.6%；官方兩潭自行車道資料確認本區為海岸自行車路線，500/200可抑制橋梁與海岸SRTM短尖峰並保留市區緩坡，因此採用最小合理視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://tour-hualien.hl.gov.tw/TourContent.aspx?n=36&s=73",
+    "referenceLabel": "花蓮觀光資訊網兩潭自行車道官方資料"
+  },
+  "waypoints": [
+    { "name": "花蓮港濱海公共道路", "lat": 23.99852, "lng": 121.63483, "role": "start" },
+    { "name": "七星潭南側海岸路", "lat": 24.0238743, "lng": 121.6298031, "role": "via" },
+    { "name": "七星潭兩潭自行車道公路入口", "lat": 24.0279328, "lng": 121.6282194, "role": "via" },
+    { "name": "花蓮市府前公共道路", "lat": 23.99115, "lng": 121.6212, "role": "via" },
+    { "name": "花蓮港濱海公共道路", "lat": 23.99852, "lng": 121.63483, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T17:35:00.000Z",
+  "reviewerNote": "初版奇萊鼻與四八高地景點定位導入1146公尺service、336公尺paved track與190公尺footway；即使部分service帶route_bicycle_ncn，仍屬不必要景點支線，故未採例外。核准版僅使用花蓮港濱海公共道路、海岸路secondary、七星潭大橋與七星街公共道路到兩潭自行車道公路入口，不進木棧、礫石灘、東13坑道、燈塔或軍事服務道路；raw所有特殊類別、私人與禁制道路為0。live OSM五點取樣5/5均貼合一般公共道路，最大0.0公尺、禁止0。最終500/200公尺bundle為11.1公里、爬升83公尺、最大4.2%。"
+}

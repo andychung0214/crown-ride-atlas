@@ -1,0 +1,26 @@
+{
+  "id": "taitung-dulan-coast",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "台11都蘭海岸跨越海階與橋梁；500/200、750/300、1000/500公尺三組分析的爬升依序約308、252、216公尺，最大持續坡度依序約4.7%、3.4%、2.7%。500/200公尺仍能反映海階緩起伏，並與官方海岸自行車資料交叉檢核，因此採用最小合理視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://www.eastcoast-nsa.gov.tw/zh-tw/travel/cycling/holyland/",
+    "referenceLabel": "東部海岸國家風景區單車聖地官方資料"
+  },
+  "waypoints": [
+    { "name": "富岡台11主線", "lat": 22.7935091, "lng": 121.1923896, "role": "start" },
+    { "name": "加路蘭台11主線", "lat": 22.8124269, "lng": 121.1935908, "role": "via" },
+    { "name": "都蘭台11主線", "lat": 22.8739522, "lng": 121.2281259, "role": "via" },
+    { "name": "金樽台11主線", "lat": 22.9451285, "lng": 121.2793612, "role": "via" },
+    { "name": "東河橋台11主線", "lat": 22.9767239, "lng": 121.3075911, "role": "via" },
+    { "name": "回程金樽台11主線", "lat": 22.9451285, "lng": 121.2793612, "role": "via" },
+    { "name": "回程都蘭台11主線", "lat": 22.8739522, "lng": 121.2281259, "role": "via" },
+    { "name": "回程加路蘭台11主線", "lat": 22.8124269, "lng": 121.1935908, "role": "via" },
+    { "name": "富岡台11主線", "lat": 22.7935091, "lng": 121.1923896, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T18:05:00.000Z",
+  "reviewerNote": "初版金樽景點控制點導入service 426公尺，加路蘭景點控制點導入track 492公尺，均未採用。重建時把富岡、加路蘭、都蘭、金樽與東河去回控制點逐一移到live OSM台11 primary主線節點。最終raw為53.768公里，除起點零長度living_street標記外全程53.768公里皆為primary；service、track、path、footway、steps、construction、private、access=no與bicycle=no全為零。live OSM五個窗口皆命中ref=11或23 primary，距離0.0公尺。500/200公尺正式分析為53.8公里、爬升304公尺、最高90公尺、最大持續坡度4.8%。"
+}

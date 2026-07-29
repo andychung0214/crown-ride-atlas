@@ -1,0 +1,22 @@
+{
+  "id": "taitung-route-197",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "縣道197南段沿利吉惡地丘陵起伏；500/200、750/300、1000/500公尺三組分析的爬升依序約806、770、732公尺，最大持續坡度依序約10.1%、9.3%、9.2%。500/200公尺保留短陡丘陵特徵，並以官方23K至37K碎石路範圍交叉檢核，因此採用最小合理視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://www.erv-nsa.gov.tw/zh-tw/travel/check-in",
+    "referenceLabel": "花東縱谷國家風景區縣道197里程與碎石路段資料"
+  },
+  "waypoints": [
+    { "name": "台東大橋縣道197南端", "lat": 22.791281, "lng": 121.141459, "role": "start" },
+    { "name": "富源縣道197主線", "lat": 22.82996, "lng": 121.152151, "role": "via" },
+    { "name": "鸞山縣道197碎石路南端前", "lat": 22.9020047, "lng": 121.1763649, "role": "via" },
+    { "name": "回程富源縣道197主線", "lat": 22.82996, "lng": 121.152151, "role": "via" },
+    { "name": "台東大橋北側縣道197南端", "lat": 22.803253, "lng": 121.150668, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T18:00:00.000Z",
+  "reviewerNote": "初版富源研究點導入service、track與footway，另一個北端定位點會進入grade1 track 597公尺往返，均未採用。最終轉折點22.9020047,121.1763649是縣道197 tertiary way 892910116在碎石track way 674684942起點22.9020968,121.1764836之前的相鄰節點，明確在官方23K至37K碎石段南端前折返。最終raw為36.676公里，service、track、path、footway、steps、construction、private、access=no與bicycle=no全為零；live OSM五個窗口皆在ref=197、東40或合法一般道路，距離0.0公尺。500/200公尺正式分析為36.6公里、爬升805公尺、最高496公尺、最大持續坡度10.0%。"
+}

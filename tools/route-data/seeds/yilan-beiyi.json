@@ -1,0 +1,20 @@
+{
+  "id": "yilan-beiyi",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "台9北宜公路為連續長坡與彎道路段，預設100公尺分析為爬升1140公尺、最大持續坡度24.3%，短距離尖峰明顯偏高。比較500/200、750/300、1000/500公尺後，爬升依序為521、481、454公尺，最大持續坡度依序為8.0%、5.9%、5.3%；實騎資料顯示完整新店至宜蘭71公里爬升1063公尺，本路線僅取縣界至坪林36.8公里往返，500/200的521公尺符合其局部尺度並保留山路起伏，因此採用最小合理視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://www.ptt.cc/bbs/bicycle/M.1657784486.A.C32.html",
+    "referenceLabel": "北宜公路新店至宜蘭71公里、爬升1063公尺實騎資料"
+  },
+  "waypoints": [
+    { "name": "北宜公路縣界台9主線", "lat": 24.8651203, "lng": 121.7756527, "role": "start" },
+    { "name": "坪林橋台9北宜公路主線", "lat": 24.9340776, "lng": 121.7109625, "role": "via" },
+    { "name": "北宜公路縣界台9主線", "lat": 24.8651203, "lng": 121.7756527, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T17:10:00.000Z",
+  "reviewerNote": "研究版曾因縣界公園、石碇與坪林景點近似座標偏離台9，導入1450公尺track、7980公尺path、61公尺footway與57公尺service，已全部棄用。核准版僅使用目前OSM ref=9、highway=primary主線節點，完整原路往返；raw messages的motorway、trunk、tunnel、service、track、footway、pedestrian、path、steps、private、access禁制與bicycle=no全為0。live OSM `/api/0.6/map?bbox=`於10%、30%、50%、70%、90%取樣5/5點皆在0.1公尺內貼合台9 primary，禁止道路為0。最終500/200公尺bundle為36.7公里、爬升519公尺、最大7.8%。"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "yilan-coast",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "宜蘭濱海與平原道路整體平緩，預設100公尺分析為爬升94公尺、最大持續坡度3.7%。比較500/200、750/300、1000/500公尺後，爬升依序為46、34、29公尺，最大持續坡度依序為1.6%、1.2%、1.1%；宜蘭縣官方資料記載濱海北線約14公里，本環線含台2海岸、縣道192、台9與台2庚共25.5公里，500/200可抑制橋梁短尖峰又保留平原緩坡，因此採用最小合理視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://travel.yilan.gov.tw/zh-tw/attraction/341/",
+    "referenceLabel": "宜蘭縣官方濱海自行車北線約14公里資料"
+  },
+  "waypoints": [
+    { "name": "頭城台2與台2庚路口", "lat": 24.8543418, "lng": 121.8225623, "role": "start" },
+    { "name": "竹安溪台2合法道路橋", "lat": 24.8403276, "lng": 121.8239553, "role": "via" },
+    { "name": "大福台2與縣道192路口", "lat": 24.8004232, "lng": 121.8167331, "role": "via" },
+    { "name": "永美路口縣道192主線", "lat": 24.7780459, "lng": 121.7888989, "role": "via" },
+    { "name": "美宜路縣道192主線", "lat": 24.7691222, "lng": 121.7690377, "role": "via" },
+    { "name": "礁溪台9主線", "lat": 24.8278539, "lng": 121.7726094, "role": "via" },
+    { "name": "二城台9與台2庚路口", "lat": 24.8383816, "lng": 121.790869, "role": "via" },
+    { "name": "頭城台2與台2庚路口", "lat": 24.8543418, "lng": 121.8225623, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T17:14:00.000Z",
+  "reviewerNote": "研究景點版含2074公尺service與114公尺track，後續主線版仍在頭城分流與起終點導入3810公尺service，均已棄用。核准環線依序使用台2南向、竹安橋、縣道192、台9北向與台2庚返回頭城，所有控制點均落在目前primary或secondary主線；raw messages的motorway、trunk、tunnel、service、track、footway、pedestrian、path、steps、private、access禁制與bicycle=no全為0。live OSM五點取樣分別貼合台2、縣道192、台9與台2庚，5/5在0.1公尺內且禁止道路為0。最終500/200公尺bundle為25.5公里、爬升48公尺、最大1.6%；路線不進海灘、沙丘、防風林碎石路或交流道。"
+}

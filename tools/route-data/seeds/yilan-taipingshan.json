@@ -1,0 +1,20 @@
+{
+  "id": "yilan-taipingshan",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "宜專1線形成超過1500公尺的連續爬升，預設100公尺分析為爬升2587公尺、最大持續坡度32.4%，短距離尖峰明顯偏高。比較500/200、750/300、1000/500公尺後，爬升依序為1648、1604、1585公尺，最大持續坡度依序為12.0%、10.8%、9.5%；官方路線由土場通往約2000公尺的太平山，本軌跡最高1983公尺，500/200最能保留連續長坡且排除局部SRTM尖峰，因此採用最小合理視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://tps.forest.gov.tw/TPSWeb/wSite/ct?ctNode=274&xItem=2960",
+    "referenceLabel": "太平山國家森林遊樂區官方交通與道路資料"
+  },
+  "waypoints": [
+    { "name": "土場宜專1線0K主線", "lat": 24.5769248, "lng": 121.4919225, "role": "start" },
+    { "name": "太平山莊入口宜專1線主線", "lat": 24.4976643, "lng": 121.5349113, "role": "via" },
+    { "name": "土場宜專1線0K主線", "lat": 24.5769248, "lng": 121.4919225, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T17:12:00.000Z",
+  "reviewerNote": "研究版太平山莊座標導入1644公尺service、618公尺track、6公尺footway與58公尺steps，已棄用。核准版由土場目前OSM way 496940072（tertiary、ref=宜專1、asphalt）起騎，在園區入口前way 1189812619（tertiary、ref=宜專1）折返，不進中央階梯、檜木原始林步道、蹦蹦車區或園內服務道路；raw全部特殊類別、私人與禁制道路為0。live OSM五點取樣5/5均在0.1公尺內貼合宜專1 tertiary，禁止道路為0。最終500/200公尺bundle為49.5公里、爬升1643公尺、最大12.0%、最高1983公尺。2026-07-13已復園，但宜專1線7K與16.8K仍單線雙向，10.5K曾落石搶通，出發前須查最新開放資訊。"
+}

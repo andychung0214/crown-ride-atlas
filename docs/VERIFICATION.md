@@ -253,3 +253,30 @@
 - `chiayi-route-166`、`tainan-route-175`、`kaohsiung-qimei` 及 `kaohsiung-jiaxian-liugui` 已移除原先誤判為「快照差異」的服務道路捷徑；四線 BRouter raw 與 live OSM 幾何的 `service`／`track` 均為 0。live XML 解析同時涵蓋自閉合與帶 tag 的非自閉合 node，避免漏掉台 20／台 27 共用節點。
 
 發布後 5 個 bundle 大小：`chiayi-city` 255.7 KiB、`chiayi-county` 1,345.3 KiB、`tainan` 1,219.7 KiB、`kaohsiung` 629.4 KiB、`pingtung` 855.5 KiB；最大為 `chiayi-county`。
+
+## 東部 9 條真實道路軌跡驗證
+
+驗證日期：2026-07-30
+
+| 路線 ID | 距離 | 爬升 | 最高海拔 | 最大持續坡度 | 軌跡點 | 高風險道路結論 |
+|---|---:|---:|---:|---:|---:|---|
+| `yilan-beiyi` | 36.7 km | 519 m | 552 m | 7.8% | 1,064 | 台 9 北宜公路往返 |
+| `yilan-taipingshan` | 49.5 km | 1,643 m | 1,983 m | 12.0% | 1,853 | 宜專 1 線；不進入步道 |
+| `yilan-coast` | 25.5 km | 48 m | 22 m | 1.6% | 532 | 台 2 與合法橋梁環線 |
+| `hualien-qixingtan` | 11.1 km | 83 m | 46 m | 4.2% | 227 | 公共道路；不進入礫石灘 |
+| `hualien-valley-north` | 82.9 km | 473 m | 238 m | 4.5% | 1,665 | 現行馬太鞍溪鋼便橋 |
+| `hualien-lake-route-193` | 43.8 km | 198 m | 159 m | 4.3% | 917 | 縣道 193 與鯉魚潭公共道路 |
+| `taitung-route-197` | 36.6 km | 805 m | 496 m | 10.0% | 1,078 | 官方碎石段南端前折返 |
+| `taitung-dulan-coast` | 53.8 km | 304 m | 90 m | 4.8% | 1,080 | 台 11 主線往返 |
+| `taitung-south-link` | 52.8 km | 716 m | 457 m | 8.2% | 1,172 | 台 9 與舊南迴台 9 戊 |
+
+驗證命令與結果：
+
+- Task 10 種子測試由缺少 9 份 seed 的 0/9 失敗，轉為 9/9 通過。
+- 宜蘭、花蓮、台東 staging 與 published validator 均為 3 個 bundle、9 條路線通過。
+- 完整 staging 與 published validator 均為 19 個 bundle、57 條路線通過。
+- 9 份 raw 的禁止道路與權限禁制為 0；南迴的 `tunnel`、`motorroad`、`trunk`、`service`、`track` 與單行道路逆向均為 0。
+- live OSM 逐線 5 個窗口共 45/45 命中合法道路，最近距離不超過 0.1 公尺。
+- 建構期稽核頁 9/9 均顯示 `approved`、OpenStreetMap 疊圖與海拔剖面。
+- 正式網站 9/9 均顯示相符路線 ID、「路線資料已載入」、Leaflet、海拔剖面、GPX 下載控制與取樣說明，載入失敗為 0。
+- 全部 JavaScript 通過 `node --check`，JSON seed 均可解析，`git diff --check` 無空白錯誤。

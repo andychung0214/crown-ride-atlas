@@ -1,0 +1,26 @@
+{
+  "id": "taitung-south-link",
+  "direction": "point-to-point",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 750,
+    "gradeWindowM": 300,
+    "reason": "台9南迴與台9戊為長距離海岸、橋梁及壽卡爬升路線；500/200、750/300、1000/500公尺三組分析的爬升依序約767、714、687公尺，最大持續坡度依序約9.4%、8.3%、7.5%。750/300公尺能抑制橋接點短尖峰並保留壽卡長爬升，且與公路局台9戊自行車替代道路評估交叉檢核，因此採用中間視窗。此分析供路線規劃，不是道路測量。",
+    "referenceUrl": "https://ws.thb.gov.tw/Download.ashx?icon=.pdf&n=5Y2X6L%2B05pS55a6J5pyU6I2J5Z%2BU6Lev5q616ZaL5pS%2B5pmu6YCa6YeN5Z6L5qmf6LuK6YCa6KGM5Y%2Bv6KGM5oCn6KmV5Lyw5aCx5ZGKLnBkZg%3D%3D&u=LzAwMS9VcGxvYWQvNDM2L3JlbGZpbGUvMTMyOTEvMjE5MjUwLzFkNTRlNmIzLTg1N2YtNDZlMi1iMGZhLTljNWMwYmU4ODNmNS5wZGY%3D",
+    "referenceLabel": "公路局南迴改與台9戊自行車替代路線評估"
+  },
+  "waypoints": [
+    { "name": "太麻里台9主線", "lat": 22.6169009, "lng": 121.0091155, "role": "start" },
+    { "name": "金崙台9主線", "lat": 22.5327945, "lng": 120.9683296, "role": "via" },
+    { "name": "多良台9主線", "lat": 22.5073767, "lng": 120.9592305, "role": "via" },
+    { "name": "尚武台9南向主線", "lat": 22.4156051, "lng": 120.926796, "role": "via" },
+    { "name": "大鳥台9主線", "lat": 22.3810744, "lng": 120.9122511, "role": "via" },
+    { "name": "大武台9可騎一般道路", "lat": 22.364832, "lng": 120.901067, "role": "via" },
+    { "name": "安朔台9可騎替代線", "lat": 22.294621, "lng": 120.883975, "role": "via" },
+    { "name": "安朔台9戊東段", "lat": 22.269495, "lng": 120.862434, "role": "via" },
+    { "name": "壽卡台9戊鋪面道路", "lat": 22.2458998, "lng": 120.8353892, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-07-29T18:10:00.000Z",
+  "reviewerNote": "初版raw為59.058公里，金崙、大鳥與大武景點點位共導入service 1728公尺，安朔東72點位另導入tertiary 2755公尺往返，均未採用。重建時逐點固定台9可騎一般道路與台9戊，並在尚武以台9南向primary way 894507282節點排除誤選的service連接道。最終raw為52.711公里，primary 46.014公里、合法unclassified 5.288公里、residential 1.409公里；tunnel、motorroad、trunk、trunk_link、service、track、path、footway、steps、construction、private、access=no與bicycle=no全為零，reversedirection=yes與oneway=yes重疊距離亦為零。live OSM五個窗口皆命中台9、台9戊或合法一般道路，台9戊窗口距離0.0公尺。750/300公尺正式分析為52.8公里、爬升716公尺、最高457公尺、最大持續坡度8.2%；路線使用舊南迴台9戊，不進入草埔隧道或自行車禁行快速路段。"
+}
