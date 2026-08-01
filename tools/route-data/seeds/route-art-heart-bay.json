@@ -1,0 +1,15 @@
+{
+  "id": "route-art-heart-bay",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": { "smoothingWindowM": 500, "gradeWindowM": 200, "reason": "100/100、500/200、750/300、1000/500 公尺視窗依序為 10.10 公里、85/9.01%、27/2.05%、19/1.54%、15/2.01%。採 500/200 減少港邊 SRTM 像元短波；僅供行程規劃。", "referenceUrl": "https://www.openstreetmap.org/copyright", "referenceLabel": "OpenStreetMap 即時道路資料" },
+  "waypoints": [
+    { "name": "文橫一路公共道路", "lat": 22.6249356, "lng": 120.3029020, "role": "start" },
+    { "name": "美術館路公共主線", "lat": 22.6548613, "lng": 120.2850326, "role": "via" },
+    { "name": "博仁街公共道路", "lat": 22.6465133, "lng": 120.3041471, "role": "via" },
+    { "name": "文橫一路公共道路", "lat": 22.6249356, "lng": 120.3029020, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T05:30:05.845Z",
+  "reviewerNote": "心形圖形改稱「心形港灣近似線」；已移除駁二 pedestrian、輪渡站 service 與河畔 footway，以南窄北寬三角弧線表現，不宣稱精準心形。raw 的 service、track 等禁止道路與非法逆向均為 0；live OSM 五窗 5/5，最大偏差 0.05 公尺，全程只用合法公共道路。"
+}

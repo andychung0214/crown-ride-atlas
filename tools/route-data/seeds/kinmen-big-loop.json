@@ -1,0 +1,24 @@
+{
+  "id": "kinmen-big-loop",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "SRTM 100/100 公尺視窗易把海風地形短波放大為爬升 449 公尺、最大坡度 9.53%；500/200、750/300、1000/500 依序為 320/4.62%、265/4.27%、234/3.81%。採 500/200 保留島上起伏並降低單一像元雜訊；僅供行程規劃，並非道路測量。",
+    "referenceUrl": "https://kinmen.travel/zh-tw/discover/cycling-tours",
+    "referenceLabel": "金門縣政府觀光處鐵馬之旅"
+  },
+  "waypoints": [
+    { "name": "莒光樓外公共道路", "lat": 24.42539, "lng": 118.31816, "role": "start" },
+    { "name": "水頭聚落外西海路", "lat": 24.41150, "lng": 118.29685, "role": "via" },
+    { "name": "珠水路外圍公共道路", "lat": 24.4000149, "lng": 118.3240815, "role": "via" },
+    { "name": "古寧頭外環島西路二段", "lat": 24.4733159, "lng": 118.3153734, "role": "via" },
+    { "name": "成功路公共主線", "lat": 24.4904782, "lng": 118.4104121, "role": "via" },
+    { "name": "山后民俗村外環島東路", "lat": 24.50328, "lng": 118.44053, "role": "via" },
+    { "name": "莒光樓外公共道路", "lat": 24.42539, "lng": 118.31816, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T05:02:17.708Z",
+  "reviewerNote": "初版景點控制點導入翟山、古寧頭、馬山、八二三與中山林的 service、track、footway，均已改為外圍公共幹道或移除。核准版 raw 的 service、track、footway、path、steps、pedestrian、私人／權限禁制、route=ferry 與非法逆向單行均為 0；live OSM 五窗 5/5 於 0.05 公尺內命中西海路一段、民生路、瓊林圓環、陽沙路、伯玉路二段等完整公共道路 way。路線不進軍事設施、機場與港區；圃畦農路、戰地據點與海風仍需現場判斷。"
+}

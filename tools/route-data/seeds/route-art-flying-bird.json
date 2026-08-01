@@ -1,0 +1,15 @@
+{
+  "id": "route-art-flying-bird",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": { "smoothingWindowM": 500, "gradeWindowM": 200, "reason": "100/100、500/200、750/300、1000/500 公尺視窗依序為 12.63 公里、41/3.28%、30/1.06%、28/0.87%、27/0.75%。採 500/200 降低河海平原 SRTM 短波；僅供行程規劃。", "referenceUrl": "https://www.openstreetmap.org/copyright", "referenceLabel": "OpenStreetMap 即時道路資料" },
+  "waypoints": [
+    { "name": "光明路公共道路", "lat": 22.7514974, "lng": 121.1481032, "role": "start" },
+    { "name": "新站路公共主線", "lat": 22.7934998, "lng": 121.1248106, "role": "via" },
+    { "name": "中興路二段公共主線", "lat": 22.7676821, "lng": 121.1287391, "role": "via" },
+    { "name": "光明路公共道路", "lat": 22.7514974, "lng": 121.1481032, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T05:30:05.845Z",
+  "reviewerNote": "飛鳥圖形保留西高東低的展翼折線；海岸 service、森林公園 footway 與北側 track 均已刪，翼尖改用新站路、中興路公共主線。raw 禁止道路與非法逆向均為 0；live OSM 五窗 5/5，最大偏差 0.05 公尺，合法公共道路優先於完整羽翼。"
+}

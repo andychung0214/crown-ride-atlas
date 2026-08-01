@@ -249,9 +249,9 @@
       base: [23.6043, 119.5665],
       character: "玄武岩、跨海大橋與強勁季風",
       routes: [
-        ["penghu-cross-sea-bridge", "澎湖跨海大橋線", "海岸", 74, 260, 2, ["跨海大橋", "強風"]],
-        ["penghu-south-loop", "菊島南環", "海岸", 49, 210, 2, ["玄武岩", "聚落"]],
-        ["penghu-north-loop", "白沙西嶼北環", "海岸", 62, 330, 2, ["燈塔", "海風"]]
+        ["penghu-cross-sea-bridge", "澎湖跨海大橋線", "海岸", 53, 134, 2, ["跨海大橋", "強風"]],
+        ["penghu-south-loop", "菊島南環", "海岸", 30.3, 90, 1, ["澎 201", "澎 204"]],
+        ["penghu-north-loop", "白沙西嶼北環", "海岸", 71.4, 260, 2, ["縣道 203", "海風"]]
       ]
     },
     {
@@ -261,9 +261,9 @@
       base: [24.4456, 118.3765],
       character: "戰地聚落、風獅爺與濱海林蔭",
       routes: [
-        ["kinmen-big-loop", "環大金門", "平原", 83, 410, 3, ["戰地", "長距離"]],
-        ["kinmen-lieyu", "小金門烈嶼環線", "海岸", 31, 190, 1, ["聚落", "海岸"]],
-        ["kinmen-taiwu", "太武山晨騎", "丘陵", 42, 520, 2, ["林蔭", "晨騎"]]
+        ["kinmen-big-loop", "環大金門公路線", "平原", 50.5, 320, 2, ["公共幹道", "長距離"]],
+        ["kinmen-lieyu", "小金門烈嶼環線", "海岸", 10.7, 56, 1, ["單島", "南北環道"]],
+        ["kinmen-taiwu", "太武山外圍環線", "平原", 13.9, 86, 1, ["外圍公路", "不登頂"]]
       ]
     },
     {
@@ -273,9 +273,9 @@
       base: [26.1591, 119.9517],
       character: "花崗岩島嶼、陡坡與海霧",
       routes: [
-        ["lienchiang-nangan", "南竿環島", "丘陵", 28, 760, 4, ["陡坡", "聚落"]],
-        ["lienchiang-beigan", "北竿坂里芹壁", "丘陵", 24, 690, 4, ["石屋", "海景"]],
-        ["lienchiang-dongyin", "東引燈塔線", "丘陵", 18, 510, 3, ["燈塔", "海霧"]]
+        ["lienchiang-nangan", "南竿公路環線", "丘陵", 15.4, 340, 4, ["單島", "連續陡坡"]],
+        ["lienchiang-beigan", "北竿公路環線", "丘陵", 8.1, 142, 4, ["單島", "高難度短坡"]],
+        ["lienchiang-dongyin", "東引公路往返線", "丘陵", 5.1, 134, 3, ["單島", "海霧"]]
       ]
     }
   ];
@@ -299,6 +299,15 @@
   }
 
   const routeCautions = {
+    "penghu-cross-sea-bridge": ["跨海大橋強側風時應中止騎乘", "軌跡僅沿縣道 203 實體橋面，天候與施工須行前確認"],
+    "penghu-south-loop": ["沿澎 201、澎 204 公路騎乘，不進景點步道", "注意側風、曝曬與路口汽機車"],
+    "penghu-north-loop": ["路線較長，跨海大橋與西嶼海線強風時應縮短行程", "不進灯塔、地質景點步道與 service 支線"],
+    "kinmen-big-loop": ["本線只走公共幹道，不進戰地據點、機場或港區", "農路路況、側風與臨時管制須現場判斷"],
+    "kinmen-lieyu": ["全線僅在烈嶼單島，不可將軌跡直接連向大金門", "南北環道強風、大霧或管制時應停騎"],
+    "kinmen-taiwu": ["本線為太武山外圍公路環線，不代表登頂路線", "不進玉章路、軍事區或登山禁行路徑"],
+    "lienchiang-nangan": ["全線僅在南竿單島，不進港區、機場或軍事設施", "連續陡坡、大霧與強側風需謹慎評估"],
+    "lienchiang-beigan": ["全線僅在北竿單島，不進港區、機場或軍事設施", "最大持續坡度高，行前檢查輪胎與煞車"],
+    "lienchiang-dongyin": ["全線僅在東引單島原路往返，不進港區與軍事設施", "大霧、強側風或管制時應停騎"],
     "hsinchu-county-yulao": [
       "本路線為竹東至宇老的單向 GPX；宇老單行走廊不得直接反向騎乘",
       "回程須依當日交通管制另行安排，切勿將 GPX 反轉後原路騎回",
@@ -521,7 +530,7 @@
     },
     {
       id: "route-art-elephant",
-      name: "大象喝水",
+      name: "大象近似短線",
       regionId: "changhua",
       regionName: "彰化縣",
       base: [24.0814, 120.5233],
@@ -529,7 +538,7 @@
     },
     {
       id: "route-art-heart-bay",
-      name: "海灣愛心",
+      name: "心形港灣近似線",
       regionId: "kaohsiung",
       regionName: "高雄市",
       base: [22.6284, 120.2941],
@@ -561,7 +570,17 @@
     }
   ];
 
+  const artMetrics = {
+    "route-art-little-taiwan": [26.9, 174, 3, 110],
+    "route-art-elephant": [3.3, 11, 1, 20],
+    "route-art-heart-bay": [10.1, 27, 1, 45],
+    "route-art-crown": [7, 24, 1, 35],
+    "route-art-bear": [6.9, 14, 1, 35],
+    "route-art-flying-bird": [12.6, 30, 1, 55]
+  };
+
   artShapes.forEach(function (art, index) {
+    const metrics = artMetrics[art.id];
     routes.push({
       id: art.id,
       slug: art.id,
@@ -573,12 +592,16 @@
       summary: `${art.name}用道路與河濱轉折畫出一枚可以騎乘的島嶼圖案。`,
       story: `這條路線以安全且可辨識的道路節點安排輪廓。完成後可將 GPX 匯入個人騎乘紀錄，從移動軌跡看見${art.name}。`,
       thumbnail: thumbnails[(index + 2) % thumbnails.length],
-      distanceKm: 28 + index * 4,
-      elevationGainM: 180 + index * 75,
-      difficulty: 2 + (index % 2),
-      durationMinutes: 95 + index * 18,
+      distanceKm: metrics[0],
+      elevationGainM: metrics[1],
+      difficulty: metrics[2],
+      durationMinutes: metrics[3],
       tags: ["GPS Art", "路線美學", "城市探索"],
-      cautions: ["圖案轉折較多，路口請減速確認", "道路與天候可能變動，出發前請再次確認"],
+      cautions: [
+        "本線為公共道路優先的圖形近似線，不代表完整精準造型",
+        "圖案轉折較多，路口請減速確認",
+        "道路與天候可能變動，出發前請再次確認"
+      ],
       supplies: ["水與簡易補給", "前後車燈", "可記錄軌跡的裝置"],
       trackRef: art.id,
       featured: index === 0,

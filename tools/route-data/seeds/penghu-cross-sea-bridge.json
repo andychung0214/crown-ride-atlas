@@ -1,0 +1,26 @@
+{
+  "id": "penghu-cross-sea-bridge",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 1000,
+    "gradeWindowM": 500,
+    "reason": "本線為低海拔跨海與濱海道路，SRTM 100/100 公尺視窗把海岸短波累積為爬升 284 公尺、最大坡度 6.76%；500/200、750/300、1000/500 依序為 204/3.59%、156/2.35%、134/1.85%。採 1000/500 保留 4 至 32.5 公尺緩坡，同時抑制海面與橋梁像元短波；僅供行程規劃，並非道路測量。",
+    "referenceUrl": "https://www.penghu-nsa.gov.tw/TravelInformationSceneryDetailC001200.aspx?Cond=bcd530cb-32e6-4b7a-ae23-9c30a6877edd&Language=1028",
+    "referenceLabel": "澎湖國家風景區跨海大橋官方交通說明"
+  },
+  "waypoints": [
+    { "name": "馬公觀音亭外一般道路", "lat": 23.5673086, "lng": 119.5621406, "role": "start" },
+    { "name": "東衛縣道203主線", "lat": 23.5781077, "lng": 119.6038277, "role": "via" },
+    { "name": "跨海大橋白沙端縣道203", "lat": 23.6510816, "lng": 119.5485775, "role": "via" },
+    { "name": "跨海大橋西嶼端縣道203", "lat": 23.6457493, "lng": 119.5443402, "role": "via" },
+    { "name": "小門澎2主線折返點", "lat": 23.652618, "lng": 119.5173404, "role": "via" },
+    { "name": "回程跨海大橋西嶼端", "lat": 23.6457493, "lng": 119.5443402, "role": "via" },
+    { "name": "回程跨海大橋白沙端", "lat": 23.6510816, "lng": 119.5485775, "role": "via" },
+    { "name": "回程東衛縣道203主線", "lat": 23.5781077, "lng": 119.6038277, "role": "via" },
+    { "name": "馬公觀音亭外一般道路", "lat": 23.5673086, "lng": 119.5621406, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T04:50:06.715Z",
+  "reviewerNote": "初版景點近似座標導入 footway 510 公尺、service 3899 公尺與 track 46 公尺，已全部棄用；核准版把觀音亭、東衛、小門及橋端吸附至一般道路、縣道 203、澎 2 實際節點。raw 的 service、track、footway、path、steps、pedestrian、港區／私人／權限禁制、route=ferry 與非法逆向單行均為 0。live OSM 五窗 5/5 命中合法道路；跨海大橋全段 raw 16 點另取 21 樣本，21/21 於 0.13 公尺內貼合 way 1093500111／60878925，兩者均為 name=澎湖跨海大橋、ref=203、highway=secondary、surface=asphalt，橋面 way 另有 bridge=yes。軌跡只沿實體橋面，沒有跨海直線；強側風時應中止騎乘。"
+}

@@ -1,0 +1,22 @@
+{
+  "id": "lienchiang-beigan",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "SRTM 100/100 公尺為 8.11 公里、爬升 228 公尺、最大坡度 24.86%；500/200、750/300、1000/500 依序為 142/17.06%、119/13.44%、104/9.96%。採 500/200 保留北竿陡坡路感並減少崖岸像元雜訊；僅供行程規劃，並非道路測量。",
+    "referenceUrl": "https://www.matsu-nsa.gov.tw/zh-TW/trips/3023",
+    "referenceLabel": "馬祖國家風景區單車健行遊程"
+  },
+  "waypoints": [
+    { "name": "坂里外環島公共主線", "lat": 26.216247, "lng": 119.974330, "role": "start" },
+    { "name": "芹壁聚落上方主道路", "lat": 26.22450, "lng": 119.98245, "role": "via" },
+    { "name": "橋仔聚落外公共道路", "lat": 26.234819, "lng": 119.993813, "role": "via" },
+    { "name": "塘岐外環島公共主線", "lat": 26.230160, "lng": 119.996493, "role": "via" },
+    { "name": "坂里外環島公共主線", "lat": 26.216247, "lng": 119.974330, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T05:09:19.375Z",
+  "reviewerNote": "已移除白沙港、水庫、戰爭和平紀念館與遊客中心的港區、軍事或 service/footway 支線，坂里、橋仔、塘岐控制點均改為外圍公共主線。raw 的 service、track、權限禁制、ferry 與非法逆向均為 0；live OSM 五窗 5/5 於 0.05 公尺內命中環島北路、環島東路等完整公共道路 way。全線僅在北竿單島 bounds，北竿不跨島，不進港區、機場與軍事設施；最大持續坡度為高難度短坡，輪胎、煞車與天候應行前確認。"
+}

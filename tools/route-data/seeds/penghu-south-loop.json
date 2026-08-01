@@ -1,0 +1,23 @@
+{
+  "id": "penghu-south-loop",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 1000,
+    "gradeWindowM": 500,
+    "reason": "本線是澎南低海拔道路，SRTM 100/100 公尺視窗回報爬升 200 公尺、最大坡度 5.14%；500/200、750/300、1000/500 依序為 132/2.84%、107/1.99%、90/1.82%。採 1000/500 抑制海岸像元與聚落短波，仍保留 3.5 至 34.25 公尺地形；僅供行程規劃，並非道路測量。",
+    "referenceUrl": "https://www.penghu-nsa.gov.tw/ChiHoOneLer/tour/ThematicTours/BikeRoutes/SouthPenghuCoast.htm",
+    "referenceLabel": "澎湖國家風景區澎南自行車官方路線"
+  },
+  "waypoints": [
+    { "name": "澎湖遊客中心外縣道204主線", "lat": 23.5555178, "lng": 119.6063112, "role": "start" },
+    { "name": "風櫃外縣道201主線", "lat": 23.5401844, "lng": 119.5447071, "role": "via" },
+    { "name": "嵵裡外縣道201主線", "lat": 23.5271149, "lng": 119.5687699, "role": "via" },
+    { "name": "縣道201與204主線路口", "lat": 23.5525327, "lng": 119.6107026, "role": "via" },
+    { "name": "隘門外澎20主線", "lat": 23.5567613, "lng": 119.639182, "role": "via" },
+    { "name": "澎湖遊客中心外縣道204主線", "lat": 23.5555178, "lng": 119.6063112, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T04:50:06.715Z",
+  "reviewerNote": "研究景點版曾導入多段 service、pedestrian 與 footway；核准版移除休憩園區、沙灘、公園及鎖港景點錨點，固定縣道 201、204 與澎 20 主線。raw 的 service、track、footway、path、steps、pedestrian、機場／私人／權限禁制、route=ferry 與非法逆向單行均為 0。live OSM 五窗 5/5 在 0.06 公尺內命中縣道 201、204 等合法公共道路；其中共點的 track/service 候選未被軌跡採用。路線不進沙灘、木棧、海堤或澎湖機場服務道路，海風與縣道車流須於出發前評估。"
+}

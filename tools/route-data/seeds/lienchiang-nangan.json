@@ -1,0 +1,22 @@
+{
+  "id": "lienchiang-nangan",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "SRTM 100/100 公尺為 15.37 公里、爬升 489 公尺、最大坡度 25.52%；500/200、750/300、1000/500 依序為 340/12.82%、282/12.37%、241/11.70%。採 500/200 保留馬祖實際連續陡坡，同時降低山海交界 SRTM 短波；僅供行程規劃，並非道路測量。",
+    "referenceUrl": "https://www.matsu-nsa.gov.tw/zh-TW/trips/3023",
+    "referenceLabel": "馬祖國家風景區單車健行遊程"
+  },
+  "waypoints": [
+    { "name": "介壽村公共主線", "lat": 26.156191, "lng": 119.951923, "role": "start" },
+    { "name": "馬港天后宮外主道路", "lat": 26.15900, "lng": 119.91860, "role": "via" },
+    { "name": "津沙聚落外公共主線", "lat": 26.146135, "lng": 119.913144, "role": "via" },
+    { "name": "清水村主道路", "lat": 26.14870, "lng": 119.93600, "role": "via" },
+    { "name": "介壽村公共主線", "lat": 26.156191, "lng": 119.951923, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T05:09:19.375Z",
+  "reviewerNote": "已移除福澳港、八八坑道、雲台山軍情館與遊客中心的港區、軍事或 service/footway 支線，介壽、津沙亦吸附至公共主線。raw 的 service、track、權限禁制、ferry 與非法逆向均為 0；live OSM 五窗 5/5 於 0.05 公尺內命中福澳路、濱海大道、勝天路、中央大道等完整公共道路 way。全線僅在南竿單島 bounds，南竿不跨島，不進港區、機場與軍事設施；連續陡坡、大霧與強側風需現場判斷。"
+}

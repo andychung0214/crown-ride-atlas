@@ -1,0 +1,14 @@
+{
+  "id": "route-art-bear",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": { "smoothingWindowM": 500, "gradeWindowM": 200, "reason": "100/100、500/200、750/300、1000/500 公尺視窗依序為 6.94 公里、15/4.02%、14/1.39%、14/0.87%、14/0.65%。採 500/200 壓低海岸 SRTM 短波；僅供行程規劃。", "referenceUrl": "https://www.openstreetmap.org/copyright", "referenceLabel": "OpenStreetMap 即時道路資料" },
+  "waypoints": [
+    { "name": "吉安公共主線", "lat": 23.9641120, "lng": 121.5900500, "role": "start" },
+    { "name": "中興路公共主線", "lat": 23.9739959, "lng": 121.5648581, "role": "via" },
+    { "name": "吉安公共主線", "lat": 23.9641120, "lng": 121.5900500, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T05:30:05.845Z",
+  "reviewerNote": "熊形圖形保留身體弧線與西側頭部方向；為避免北濱 footway、尚志路周邊 service 與吉安車站單行，已捨棄一腳與耳尖。raw 的 service、track 等禁止道路與非法逆向均為 0；live OSM 五窗 5/5，最大偏差 0.02 公尺，只使用合法公共道路。"
+}

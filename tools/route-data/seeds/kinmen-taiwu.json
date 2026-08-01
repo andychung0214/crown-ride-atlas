@@ -1,0 +1,22 @@
+{
+  "id": "kinmen-taiwu",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "SRTM 100/100 公尺視窗為爬升 139 公尺、最大坡度 7.84%；500/200、750/300、1000/500 依序為 86/5.11%、63/3.65%、50/2.49%。採 500/200 保留外圍公路起伏並壓低 SRTM 短波；僅供行程規劃，並非道路測量。",
+    "referenceUrl": "https://kinmen.travel/zh-tw/discover/tour/580",
+    "referenceLabel": "金門縣政府觀光處金湖自行車路線"
+  },
+  "waypoints": [
+    { "name": "山外車站外黃海路", "lat": 24.44231, "lng": 118.41426, "role": "start" },
+    { "name": "伯玉路東側外圍公共道路", "lat": 24.4354282, "lng": 118.3751262, "role": "via" },
+    { "name": "環島東路周邊公共道路", "lat": 24.4445079, "lng": 118.4295978, "role": "via" },
+    { "name": "太湖西側公共道路", "lat": 24.4423375, "lng": 118.4262519, "role": "via" },
+    { "name": "山外車站外黃海路", "lat": 24.44231, "lng": 118.41426, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T05:02:17.708Z",
+  "reviewerNote": "初版為進入太武山而導入大量 service、footway、path、track，含 access=no、bicycle=no 登山路徑；已完全放棄登頂造型，改為太湖、環島南路、環島東路與伯玉路周邊公共道路的「太武山外圍環線」。核准版 raw 特殊道路、權限禁制、ferry 與非法逆向單行均為 0；live OSM 五窗 5/5 於 0.02 公尺內命中市港路、環島南路三、四段與一般公共道路 way。本線不進玉章路、軍事區或登山禁行路徑，絕不代表太武山登頂路線。"
+}

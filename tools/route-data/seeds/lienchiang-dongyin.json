@@ -1,0 +1,22 @@
+{
+  "id": "lienchiang-dongyin",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "SRTM 100/100 公尺為 5.10 公里、爬升 182 公尺、最大坡度 20.25%；500/200、750/300、1000/500 依序為 134/11.52%、113/8.37%、89/5.50%。採 500/200 呈現短而連續的島上陡坡，同時降低崖岸 SRTM 短波；僅供行程規劃，並非道路測量。",
+    "referenceUrl": "https://www.matsu-nsa.gov.tw/zh-TW/trips/3023",
+    "referenceLabel": "馬祖國家風景區單車健行遊程"
+  },
+  "waypoints": [
+    { "name": "東引遊客中心外公共道路", "lat": 26.36350, "lng": 120.48950, "role": "start" },
+    { "name": "東引酒廠外中正路", "lat": 26.36490, "lng": 120.49300, "role": "via" },
+    { "name": "東引東側公共道路折返點", "lat": 26.368722, "lng": 120.506214, "role": "via" },
+    { "name": "回程東引酒廠外中正路", "lat": 26.36490, "lng": 120.49300, "role": "via" },
+    { "name": "東引遊客中心外公共道路", "lat": 26.36350, "lng": 120.48950, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T05:09:19.375Z",
+  "reviewerNote": "東引改為單島原路往返，已移除中柱港、東湧燈塔、烈女義坑等港區、階梯、步道或軍事疑慮支線，東側折返點改為實際公共道路節點。raw 的 service、track、權限禁制、ferry 與非法逆向均為 0；live OSM 五窗 5/5 於 0.05 公尺內命中一般住宅道路與燈塔路完整公共道路 way。全線僅在東引單島 bounds，東引不跨西引，不進港區與軍事設施；折返點不代表景點入口可騎，大霧、側風或管制時應停騎。"
+}

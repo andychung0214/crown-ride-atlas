@@ -1,0 +1,14 @@
+{
+  "id": "route-art-elephant",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": { "smoothingWindowM": 500, "gradeWindowM": 200, "reason": "100/100、500/200、750/300、1000/500 公尺視窗依序為 3.31 公里、27/5.49%、11/1.60%、7/1.24%、6/0.66%。採 500/200 降低都市 SRTM 短波；僅供行程規劃。", "referenceUrl": "https://www.openstreetmap.org/copyright", "referenceLabel": "OpenStreetMap 即時道路資料" },
+  "waypoints": [
+    { "name": "彰化車站周邊公共道路", "lat": 24.0809664, "lng": 120.5381841, "role": "start" },
+    { "name": "公園路一段公共主線", "lat": 24.0753250, "lng": 120.5500277, "role": "via" },
+    { "name": "彰化車站周邊公共道路", "lat": 24.0809664, "lng": 120.5381841, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T05:30:05.845Z",
+  "reviewerNote": "大象圖形為 3.31 公里「大象近似短線」，只保留長鼻與背弧的粗略方向；擴成 5 公里版會引入 471 公尺 service，故以合法公共道路優先，捨棄腹部與四肢。raw 的 service、track 等禁止道路與非法逆向均為 0；live OSM 五窗 5/5，最大偏差 0.06 公尺。"
+}

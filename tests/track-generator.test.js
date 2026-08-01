@@ -380,6 +380,25 @@ test("地區 route 選擇器只納入 track manifest 管理的實際騎乘路線
   );
 });
 
+test("地區 route 選擇器可以 bundle ID 一次產生路線美學軌跡", async () => {
+  const { selectRoutes } = await loadGenerator();
+  const routes = [
+    { id: "taipei-fengguizui", regionId: "taipei" },
+    { id: "route-art-crown", regionId: "taipei" },
+    { id: "route-art-bear", regionId: "hualien" }
+  ];
+  const manifest = {
+    "taipei-fengguizui": { bundleId: "taipei" },
+    "route-art-crown": { bundleId: "route-art" },
+    "route-art-bear": { bundleId: "route-art" }
+  };
+
+  assert.deepEqual(
+    selectRoutes({ regionIds: ["route-art"] }, routes, manifest),
+    [routes[1], routes[2]]
+  );
+});
+
 test("BRouter 用戶端固定 fastbike 與 GeoJSON 並序列化平行呼叫", async () => {
   const { createBrouterClient } = await loadGenerator();
   const fixture = JSON.parse(await fs.readFile(fixturePath, "utf8"));

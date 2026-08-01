@@ -301,11 +301,22 @@ export async function runCli(argv, options = {}) {
   let manifest = originalManifest;
   if (regionIds) {
     const knownRegionIds = new Set(routes.map(route => route.regionId));
+    const knownBundleIds = new Set(Object.values(originalManifest)
+      .map(entry => entry && entry.bundleId)
+      .filter(Boolean));
     regionIds.forEach(regionId => {
-      if (!knownRegionIds.has(regionId)) throw new Error(`未知地區 ID：${regionId}`);
+      if (!knownRegionIds.has(regionId) && !knownBundleIds.has(regionId)) {
+        throw new Error(`未知地區或 bundle ID：${regionId}`);
+      }
     });
     const selectedRouteIds = new Set(
-      routes.filter(route => regionIds.includes(route.regionId)).map(route => route.id)
+      routes.filter(route => {
+        const entry = originalManifest[route.trackRef || route.id];
+        const selectsBundle = entry && regionIds.includes(entry.bundleId);
+        const selectsRegion = regionIds.includes(route.regionId)
+          && (!entry || regionIds.includes(entry.bundleId));
+        return selectsBundle || selectsRegion;
+      }).map(route => route.id)
     );
     manifest = Object.fromEntries(
       Object.entries(originalManifest).filter(([routeId, entry]) =>

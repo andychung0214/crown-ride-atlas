@@ -1,0 +1,30 @@
+{
+  "id": "penghu-north-loop",
+  "direction": "out-and-back",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 1000,
+    "gradeWindowM": 500,
+    "reason": "本線為長距離澎湖與西嶼低丘往返，SRTM 100/100 公尺視窗回報爬升 511 公尺、最大坡度 9.34%；500/200、750/300、1000/500 依序為 377/5.53%、300/4.91%、260/4.27%。採 1000/500 抑制海岸與橋梁短波，同時保留西嶼 4 至 61.25 公尺的實際起伏；僅供規劃，並非道路測量。",
+    "referenceUrl": "https://www.penghu-nsa.gov.tw/ChiHoOneLer/tour/PopularDestination/Bike.htm",
+    "referenceLabel": "澎湖國家風景區官方單車必騎資訊"
+  },
+  "waypoints": [
+    { "name": "馬公觀音亭外一般道路", "lat": 23.5673086, "lng": 119.5621406, "role": "start" },
+    { "name": "東衛縣道203主線", "lat": 23.5781077, "lng": 119.6038277, "role": "via" },
+    { "name": "跨海大橋白沙端縣道203", "lat": 23.6510816, "lng": 119.5485775, "role": "via" },
+    { "name": "跨海大橋西嶼端縣道203", "lat": 23.6457493, "lng": 119.5443402, "role": "via" },
+    { "name": "二崁外澎3主線", "lat": 23.6053421, "lng": 119.5178962, "role": "via" },
+    { "name": "縣道203與澎6路口", "lat": 23.5665882, "lng": 119.4893870, "role": "via" },
+    { "name": "西嶼燈塔外澎6主線", "lat": 23.5626347, "lng": 119.4704057, "role": "via" },
+    { "name": "回程縣道203與澎6路口", "lat": 23.5665882, "lng": 119.4893870, "role": "via" },
+    { "name": "回程二崁外澎3主線", "lat": 23.6053421, "lng": 119.5178962, "role": "via" },
+    { "name": "回程跨海大橋西嶼端", "lat": 23.6457493, "lng": 119.5443402, "role": "via" },
+    { "name": "回程跨海大橋白沙端", "lat": 23.6510816, "lng": 119.5485775, "role": "via" },
+    { "name": "回程東衛縣道203主線", "lat": 23.5781077, "lng": 119.6038277, "role": "via" },
+    { "name": "馬公觀音亭外一般道路", "lat": 23.5673086, "lng": 119.5621406, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T04:50:06.715Z",
+  "reviewerNote": "初版觀音亭、中屯、小門、二崁與燈塔景點點位導入 footway、service 與景點支路；核准版改用觀音亭外一般道路、縣道 203 實體橋面、澎 3、縣道 203 與澎 6 主線，並為排除 428 公尺 service 犧牲大菓葉景點支線。raw 的 service、track、footway、path、steps、pedestrian、軍事／私人／權限禁制、route=ferry 與非法逆向單行均為 0。live OSM 五窗 5/5 在 0.05 公尺內命中縣道 203、澎 6 等合法道路；橋段沿同一實體跨海大橋去回，不以海上直線返回。西嶼強風、曝曬與燈塔入口開放狀態須於出發前確認。"
+}

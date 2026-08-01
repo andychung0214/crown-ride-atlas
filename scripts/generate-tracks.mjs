@@ -674,14 +674,21 @@ export function selectRoutes(selector, routes = Data.routes, manifest = null) {
 
   if (selector && Array.isArray(selector.regionIds)) {
     const knownRegions = new Set(routes.map(route => route.regionId));
+    const knownBundles = new Set(Object.values(manifest || {})
+      .map(entry => entry && entry.bundleId)
+      .filter(Boolean));
     selector.regionIds.forEach(regionId => {
-      if (!knownRegions.has(regionId)) throw new Error(`未知地區 ID：${regionId}`);
+      if (!knownRegions.has(regionId) && !knownBundles.has(regionId)) {
+        throw new Error(`未知地區或 bundle ID：${regionId}`);
+      }
     });
     return routes.filter(route => {
       const manifestEntry = manifest && manifest[route.trackRef || route.id];
-      return selector.regionIds.includes(route.regionId)
-        && hasTrack(route)
+      const selectsBundle = manifestEntry
+        && selector.regionIds.includes(manifestEntry.bundleId);
+      const selectsRegion = selector.regionIds.includes(route.regionId)
         && (!manifestEntry || selector.regionIds.includes(manifestEntry.bundleId));
+      return hasTrack(route) && (selectsBundle || selectsRegion);
     });
   }
 

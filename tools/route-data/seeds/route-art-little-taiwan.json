@@ -1,0 +1,15 @@
+{
+  "id": "route-art-little-taiwan",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": { "smoothingWindowM": 500, "gradeWindowM": 200, "reason": "100/100、500/200、750/300、1000/500 公尺視窗依序為 26.92 公里、262/10.22%、174/7.83%、160/6.25%、147/4.92%。採 500/200 保留台中緩坡並壓低 SRTM 短波；僅供行程規劃。", "referenceUrl": "https://www.openstreetmap.org/copyright", "referenceLabel": "OpenStreetMap 即時道路資料" },
+  "waypoints": [
+    { "name": "向心南路公共主線", "lat": 24.1307859, "lng": 120.6439469, "role": "start" },
+    { "name": "都會園路與中科路口", "lat": 24.21100, "lng": 120.61000, "role": "via" },
+    { "name": "嶺東南路公共道路", "lat": 24.1337620, "lng": 120.6102652, "role": "via" },
+    { "name": "向心南路公共主線", "lat": 24.1307859, "lng": 120.6439469, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T05:30:05.845Z",
+  "reviewerNote": "小台灣圖形以南窄北寬輪廓為辨識重點；為合法公共道路已刪除科博館步道與中科 service 尖角，不追求精準海岸線。raw 的 service、track、footway、path、pedestrian、權限禁制與非法逆向均為 0；live OSM 五窗 5/5，最大偏差 0.06 公尺。"
+}

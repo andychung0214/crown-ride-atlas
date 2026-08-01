@@ -1,0 +1,22 @@
+{
+  "id": "kinmen-lieyu",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 500,
+    "gradeWindowM": 200,
+    "reason": "SRTM 100/100 公尺視窗為爬升 90 公尺、最大坡度 8.39%；500/200、750/300、1000/500 依序為 56/3.65%、45/2.03%、37/1.71%。採 500/200 呈現烈嶼短坡，同時減少海岸像元短波；僅供行程規劃，並非道路測量。",
+    "referenceUrl": "https://kinmen.travel/zh-tw/discover/tour/581",
+    "referenceLabel": "金門縣政府觀光處金寧烈嶼自行車路線"
+  },
+  "waypoints": [
+    { "name": "羅厝聚落外南環道", "lat": 24.42490, "lng": 118.25938, "role": "start" },
+    { "name": "陵水湖外南環道公共路口", "lat": 24.4277616, "lng": 118.2325811, "role": "via" },
+    { "name": "湖井頭外北環道", "lat": 24.4461208, "lng": 118.2312253, "role": "via" },
+    { "name": "南環道東段外圍公共道路", "lat": 24.4298385, "lng": 118.2588677, "role": "via" },
+    { "name": "羅厝聚落外南環道", "lat": 24.42490, "lng": 118.25938, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T05:02:17.708Z",
+  "reviewerNote": "初版在烈女廟附近命中 20 公尺非法逆向 oneway，並有 footway 與 track；已改向、移除高風險景點支線，改用南環道、九井路、北環道外圍公共道路。核准版 raw 的 service、track、權限禁制、ferry 與非法逆向單行均為 0；live OSM 五窗 5/5 於 0.06 公尺內命中合法公共道路 way。全線 bounds 僅在烈嶼單島，沒有直接連向大金門；不進港區與軍事設施，強風、大霧或道路管制時應停騎。"
+}

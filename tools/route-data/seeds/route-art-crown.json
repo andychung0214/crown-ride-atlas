@@ -1,0 +1,15 @@
+{
+  "id": "route-art-crown",
+  "direction": "loop",
+  "profile": "fastbike",
+  "elevationAnalysis": { "smoothingWindowM": 500, "gradeWindowM": 200, "reason": "100/100、500/200、750/300、1000/500 公尺視窗依序為 7.00 公里、49/4.51%、24/1.73%、19/1.43%、14/0.75%。採 500/200 降低都市 SRTM 短波；僅供行程規劃。", "referenceUrl": "https://www.openstreetmap.org/copyright", "referenceLabel": "OpenStreetMap 即時道路資料" },
+  "waypoints": [
+    { "name": "民樂街公共道路", "lat": 25.0574605, "lng": 121.5106009, "role": "start" },
+    { "name": "松江路公共主線", "lat": 25.0627545, "lng": 121.5331558, "role": "via" },
+    { "name": "民族東路公共主線", "lat": 25.0683667, "lng": 121.5294659, "role": "via" },
+    { "name": "民樂街公共道路", "lat": 25.0574605, "lng": 121.5106009, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T05:30:05.845Z",
+  "reviewerNote": "皇冠圖形保留高低折線與西側收邊；酒泉街、南京東路逆向齒尖與車站 service 已刪，因此齒冠數量減少。raw 的 service、track 等禁止道路與非法逆向均為 0；live OSM 五窗 5/5，最大偏差 0.04 公尺，圖形必須讓位給合法公共道路。"
+}
