@@ -601,10 +601,10 @@
       routeIds: ["taipei-zhongsha-road", "changhua-route-139", "kaohsiung-harbor"]
     },
     {
-      id: "challenge-wuling-east",
-      name: "東進武嶺",
-      description: "從花蓮一側向中央山脈高點攀升的高難度挑戰。",
-      routeIds: ["hualien-valley-north", "nantou-wuling-west"]
+      id: "challenge-taipingshan",
+      name: "太平山登高",
+      description: "從土場沿宜專 1 線持續爬升至太平山莊入口的東部高山挑戰。",
+      routeIds: ["yilan-taipingshan"]
     },
     {
       id: "challenge-wuling-west",

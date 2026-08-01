@@ -8,6 +8,7 @@ const { pathToFileURL } = require("node:url");
 
 const root = path.join(__dirname, "..");
 const generatorPath = path.join(root, "scripts", "generate-tracks.mjs");
+const researchPath = path.join(root, "docs", "route-research", "task10-east.md");
 
 async function loadSeed(routeId) {
   const source = await fs.readFile(
@@ -70,4 +71,59 @@ test("taitung-south-link seed 在安朔強制轉入台9戊且終點在壽卡", a
     /壽卡.*台9戊/
   ]);
   assert.equal(seed.waypoints.at(-1).lat > 22.24, true);
+});
+
+const formalSectionTitles = {
+  "yilan-beiyi": "北宜縣界—坪林台 9 往返",
+  "yilan-taipingshan": "太平山土場—太平山莊入口",
+  "yilan-coast": "宜蘭頭城公路環線",
+  "hualien-qixingtan": "七星潭—花蓮港短環線",
+  "hualien-valley-north": "花東縱谷吉安—玉里",
+  "hualien-lake-route-193": "縣道 193 花蓮大橋—鯉魚潭環線",
+  "taitung-route-197": "縣道 197 台東大橋—碎石段前",
+  "taitung-dulan-coast": "都蘭台 11 海岸往返",
+  "taitung-south-link": "南迴太麻里—壽卡台 9 戊"
+};
+
+function sectionFor(document, routeId) {
+  const start = document.indexOf(`\`${routeId}\``);
+  assert.notEqual(start, -1, `${routeId} 應有獨立研究段落`);
+  const next = document.indexOf("\n## ", start + routeId.length + 2);
+  return document.slice(start, next === -1 ? undefined : next);
+}
+
+function escapeRegex(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+test("Task 10 研究文件逐條同步正式 seed 的範圍、方向與道路吸附點", async () => {
+  const document = await fs.readFile(researchPath, "utf8");
+
+  for (const [routeId, title] of Object.entries(formalSectionTitles)) {
+    const seed = await loadSeed(routeId);
+    const section = sectionFor(document, routeId);
+    assert.match(section, new RegExp(`｜${escapeRegex(title)}`));
+    assert.match(section, new RegExp("\\*\\*方向：\\*\\* `" + escapeRegex(seed.direction) + "`"));
+
+    for (const waypoint of seed.waypoints) {
+      assert.match(section, new RegExp(escapeRegex(waypoint.name)));
+      assert.match(section, new RegExp("`" + waypoint.lat + ", " + waypoint.lng + "`"));
+    }
+
+    const first = seed.waypoints[0];
+    const last = seed.waypoints.at(-1);
+    assert.match(section, new RegExp(`\\| 1 \\| 起點 \\| ${escapeRegex(first.name)}`));
+    assert.match(section, new RegExp(`\\| ${seed.waypoints.length} \\| 終點 \\| ${escapeRegex(last.name)}`));
+  }
+});
+
+test("東部高山挑戰只對應太平山正式單一路線", () => {
+  const Data = require("../js/data/routes.js");
+  assert.equal(Data.challenges.length, 8);
+  const challenge = Data.challenges.find(({ id }) => id === "challenge-taipingshan");
+  assert.ok(challenge, "應建立誠實命名的太平山挑戰");
+  assert.equal(challenge.name, "太平山登高");
+  assert.match(challenge.description, /土場.*宜專 1 線.*太平山莊入口/);
+  assert.deepEqual(challenge.routeIds, ["yilan-taipingshan"]);
+  assert.equal(Data.challenges.some(({ id }) => id === "challenge-wuling-east"), false);
 });

@@ -280,3 +280,14 @@
 - 建構期稽核頁 9/9 均顯示 `approved`、OpenStreetMap 疊圖與海拔剖面。
 - 正式網站 9/9 均顯示相符路線 ID、「路線資料已載入」、Leaflet、海拔剖面、GPX 下載控制與取樣說明，載入失敗為 0。
 - 全部 JavaScript 通過 `node --check`，JSON seed 均可解析，`git diff --check` 無空白錯誤。
+
+### Task 10 獨立審查修正
+
+獨立審查發現研究文件仍保留正式建構前的範圍與景點座標，且「東進武嶺」挑戰錯把花東縱谷北段與西進武嶺兩條不連續 GPX 串接。修正後：
+
+- `docs/route-research/task10-east.md` 的 9 條標題、方向、起終點與全部道路吸附點，逐欄改以 `tools/route-data/seeds/{yilan,hualien,taitung}-*.json` 為唯一正式來源；官方道路風險、災害與管制來源保留。
+- 北宜範圍改為縣界至坪林、太平山改為土場至太平山莊入口、頭城改為台 2／192／台 9／台 2 庚環線；花蓮與台東六線同樣移除未納入正式 GPX 的車站、景點及服務道路草案。
+- 經典挑戰維持 8 個；原 `challenge-wuling-east` 改為 `challenge-taipingshan`「太平山登高」，只映射 `yilan-taipingshan`，說明明載土場沿宜專 1 線至太平山莊入口。
+- 新增回歸測試逐線核對標題、方向、全部 seed 控制點名稱與座標，以及挑戰識別碼、名稱、說明與單一路線映射。TDD 紅燈為 9/11 通過，研究文件同步與挑戰映射兩項失敗；完成修正後 focused 測試為 11/11 通過。
+- Task 10 加軌跡 focused 測試為 89/89 通過；完整 `npm test` 為 197/197 通過。
+- 東部 staging 與 published validator 均為 3 個 bundle、9 條路線通過；全部 `.js`／`.mjs` 通過 `node --check`，`git diff --check` 無空白錯誤。
