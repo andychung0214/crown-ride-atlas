@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "forbiddenPolicy": {
+    "highway": ["service", "track", "footway", "path", "steps", "pedestrian"],
+    "access": ["no", "private", "destination"],
+    "bicycle": ["no"],
+    "route": ["ferry"]
+  },
+  "routes": {
+    "penghu-cross-sea-bridge": ["c4e915f77d8318841e9f451e03bb1d39df9d8fb4a51774d48ba16fdef8c5ca37", "2026-08-01T04:38:08.998Z", 345, 0, 0, 0, 0, 0],
+    "penghu-south-loop": ["0b872e0b7a847becc26988e1e5152ac99cbf530b75ee6575062379725bcc2af3", "2026-08-01T04:45:24.862Z", 209, 0, 0, 0, 0, 0],
+    "penghu-north-loop": ["843b4cfdade9bcd7209fa6b2b369d7150267011d0ae2ca298b8d2b7987832509", "2026-08-01T04:48:39.203Z", 403, 0, 0, 0, 0, 0],
+    "kinmen-big-loop": ["0a8e2a88292cf70b71c7a6617608a139779b3f744db2bf910b59eb0d8d287d07", "2026-08-01T05:00:15.953Z", 319, 0, 0, 0, 0, 0],
+    "kinmen-lieyu": ["e52aeb300e48c7467f4ba824b9ba6ecc122e24ad0dec4106d455c7ec09c4e637", "2026-08-01T05:00:16.596Z", 80, 0, 0, 0, 0, 0],
+    "kinmen-taiwu": ["a080c2ea659aa2850d00cfc058de98cd2e586cd6017b06ad5e3b1c49a032879c", "2026-08-01T05:00:18.102Z", 61, 0, 0, 0, 0, 0],
+    "lienchiang-nangan": ["4cab3cdf7a2c6f579c8f3a5d258eb41230fe2907951b40d42b19528a0b8f282a", "2026-08-01T05:07:14.669Z", 97, 0, 0, 0, 0, 0],
+    "lienchiang-beigan": ["5af16779473d473ea2b075434ab82d56445f820524fc13e316390f6bcb83c5ac", "2026-08-01T05:06:35.157Z", 38, 0, 0, 0, 0, 0],
+    "lienchiang-dongyin": ["6ab540d8978cd6c1d8ad6ca878364ce833ef73daf09aea9c11a08c67b0f6ab95", "2026-08-01T05:06:36.663Z", 8, 0, 0, 0, 0, 0],
+    "route-art-little-taiwan": ["6101af02ed3a974a10b397df409cb563f446cfbb567b4d54715b65f2a06767f6", "2026-08-01T05:24:13.518Z", 175, 0, 0, 0, 0, 0],
+    "route-art-elephant": ["0d94be1d93ede62733d588bcfd1f02f271de1a2f096d372ad1c631411f6e8974", "2026-08-01T05:29:16.290Z", 56, 0, 0, 0, 0, 0],
+    "route-art-heart-bay": ["9f2c58f51b426062e83bf79d19cf0a31543c460d3ec2c4fac73e6ff19a038970", "2026-08-01T05:24:15.778Z", 236, 0, 0, 0, 0, 0],
+    "route-art-crown": ["280972c792188e6eb2a6da365743ec3cd206730373f2fa9e9edce631c477cf16", "2026-08-01T05:22:06.175Z", 131, 0, 0, 0, 0, 0],
+    "route-art-bear": ["fd93230d2f7e59596e1b0c5bb767ccb88cf568f266edf1f817084b89d14e04d1", "2026-08-01T05:25:51.045Z", 28, 0, 0, 0, 0, 0],
+    "route-art-flying-bird": ["c1f53760f0aab19551d129ee9cb4d8ca3bee5f6c27ab2a2d2f027fcb68d8baaf", "2026-08-01T05:22:08.347Z", 82, 0, 0, 0, 0, 0]
+  },
+  "routeTuple": ["cacheFingerprint", "generatedAt", "messageRows", "forbiddenHighway", "forbiddenAccess", "bicycleNo", "ferry", "unsafeReverseOneway"]
+}

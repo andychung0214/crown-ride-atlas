@@ -810,7 +810,7 @@ function brouterUrl(seed, endpoint) {
   return `${endpoint}?${parameters}`;
 }
 
-function cacheFingerprint(seed) {
+export function cacheFingerprint(seed) {
   return createHash("sha256")
     .update(JSON.stringify(brouterRequestParameters(seed)))
     .digest("hex");

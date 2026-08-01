@@ -26,6 +26,24 @@ test("減少動態效果設定會停用平滑捲動與長動畫", () => {
   assert.match(tokens, /--motion-medium:\s*0ms/);
 });
 
+test("手機頁首在元件樣式載入後仍隱藏四主題切換器", () => {
+  const css = fs.readFileSync(path.join(__dirname, "..", "css", "components.css"), "utf8");
+
+  assert.match(
+    css,
+    /@media\s*\(max-width:\s*40rem\)[\s\S]*?\.site-header\s+\.theme-switcher\s*\{[\s\S]*?display:\s*none/
+  );
+});
+
+test("路線座標與右下角圖說分居影像兩側", () => {
+  const css = fs.readFileSync(path.join(__dirname, "..", "css", "components.css"), "utf8");
+  const rule = /\.coordinate-stamp\s*\{([\s\S]*?)\}/.exec(css);
+
+  assert.ok(rule, "找不到 coordinate-stamp 規則");
+  assert.match(rule[1], /left:\s*var\(--space-5\)/);
+  assert.match(rule[1], /right:\s*auto/);
+});
+
 test("海拔提示與坡度色帶提供可觸控且可辨識的編輯式標記", () => {
   const css = fs.readFileSync(path.join(__dirname, "..", "css", "components.css"), "utf8");
 

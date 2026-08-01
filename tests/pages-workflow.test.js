@@ -17,7 +17,7 @@ test("GitHub Pages 工作流程具備測試、最小權限與官方部署步驟"
   assert.match(workflow, /actions\/checkout@v6/);
   assert.match(workflow, /actions\/setup-node@v6/);
   assert.match(workflow, /node-version:\s*22/);
-  assert.match(workflow, /run:\s*npm test/);
+  assert.match(workflow, /run:\s*npm run verify/);
   assert.match(workflow, /actions\/configure-pages@v5/);
   assert.match(workflow, /actions\/upload-pages-artifact@v4/);
   assert.match(workflow, /actions\/deploy-pages@v4/);

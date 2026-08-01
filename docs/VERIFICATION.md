@@ -293,3 +293,28 @@ Task 11 另驗證澎湖、金門、馬祖 9 條與路線美學 6 條：raw 禁�
 - 新增回歸測試逐線核對標題、方向、全部 seed 控制點名稱與座標，以及挑戰識別碼、名稱、說明與單一路線映射。TDD 紅燈為 9/11 通過，研究文件同步與挑戰映射兩項失敗；完成修正後 focused 測試為 11/11 通過。
 - Task 10 加軌跡 focused 測試為 89/89 通過；完整 `npm test` 為 197/197 通過。
 - 東部 staging 與 published validator 均為 3 個 bundle、9 條路線通過；全部 `.js`／`.mjs` 通過 `node --check`，`git diff --check` 無空白錯誤。
+
+## 離島與路線美學 15 條真實道路軌跡驗證
+
+驗證日期：2026-08-01
+
+- 澎湖、金門、連江與路線美學共 4 個正式 bundle、15 條路線；完整正式資料為 23 個 bundle、72 條路線。
+- 15 份 seed 均為 `approved`，具 BRouter `fastbike`、SRTM、人工地標、審查時間與道路取捨說明。
+- 澎湖跨海大橋軌跡只沿縣道 203 實體橋面；金門、烈嶼與馬祖路線維持單島範圍，不以直線跨海或把渡輪計入 GPX。
+- 六條路線美學均改用實際公共道路產生；造型服從道路合法性，必要時明載「近似線」，不以畫布座標或人工折線冒充道路。
+- 受版控的 `task11-raw-audit.json` 以 `cacheFingerprint(seed)` 綁定 15 份 seed，並以發布時間對應正式 bundle；禁止 highway、權限禁制、`bicycle=no`、渡輪與非法逆向計數均為 0。
+- live OSM 複查曾因抽樣程式把交叉口共用節點的 `service`／`footway` 誤認為軌跡道路；修正線段與 way 關聯後，五個誤報點皆貼合合法 secondary／residential／tertiary／primary，道路阻塞項撤回。
+- 本機 HTTP 逐頁開啟 15 條詳情：15/15 顯示相符標題、載入完成狀態、Leaflet 路線線條、海拔剖面與 GPX 控制，主內容無水平溢位，console error 為 0。
+- 獨立審查最終結論：Approved。聚焦測試 3/3、Task 11 validator 15/15；最終完整測試 206/206。
+
+## 72 條路線發佈前驗收
+
+驗證日期：2026-08-01
+
+- `npm run verify`：通過；206 項 Node.js 測試零失敗，正式 validator 為 23 個 bundle、72 條路線。
+- `tests/track-data.test.js`：66 條地區路線加 6 條路線美學，全部人工核准；逐點經緯度、海拔與累積距離有限且距離不倒退。
+- 64 個 `.js`／`.mjs` 檔案逐一通過 `node --check`；`git diff --check` 通過。
+- 受版控檔名與憑證指派掃描通過；沒有 `.env`、私人金鑰或憑證型檔案納入版本控制。
+- 實際 HTTP／Chrome 驗證涵蓋 1440×900 桌機、768×1024 平板及 390×844 CSS viewport。390px 結果為 `innerWidth=390`、`scrollWidth=390`、無水平溢位；手機顯示選單並隱藏會擠壓頁首的完整主題切換器。
+- 手機截圖發現座標戳記與右下圖說重疊，修正為分置左右兩側；重驗兩者不重疊。頁首 cascade 回歸與圖說位置均有 CSS 測試保護。
+- GitHub Pages workflow 改為執行 `npm run verify`，測試與全部正式軌跡 validator 通過後才部署。

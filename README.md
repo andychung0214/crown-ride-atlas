@@ -12,7 +12,8 @@
 - 以日式路誌、等高線與紙張質感構成的「峠之路誌」視覺。
 - 依地區、難度、距離與爬升探索台灣公路車路線。
 - Leaflet 互動地圖；離線或直接開啟 HTML 時自動改用 SVG 路線圖。
-- GPX 匯入、下載與路線海拔剖面。
+- 72 條內建路線皆以 BRouter `fastbike` 吸附至道路，搭配 SRTM 海拔、路線級平滑與持續坡度分析。
+- GPX 匯入、下載與可查詢里程／海拔／坡度的詳細剖面。
 - 新增、編輯、刪除、圖片壓縮、JSON 備份與還原，資料只儲存在目前瀏覽器。
 - 鍵盤操作、跳至主要內容、狀態播報、清楚的焦點樣式與減少動態效果支援。
 
@@ -61,9 +62,11 @@ python -m http.server 4173
 
 ```powershell
 npm test
+npm run tracks:validate
+npm run verify
 ```
 
-測試不依賴大型框架，使用 Node.js 內建 `node:test`。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，首版實際結果與工具限制記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
+測試不依賴大型框架，使用 Node.js 內建 `node:test`。`npm run verify` 會檢查 JavaScript 入口、完整測試與 23 個正式軌跡 bundle。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
 
 ## 靜態網站託管
 
@@ -75,7 +78,8 @@ npm test
 
 - 所有新增與編輯內容都保存在 `localStorage`，不同瀏覽器與裝置不會自動同步。
 - 瀏覽器儲存容量有限；上傳影像會先壓縮，但大量圖片仍可能超出容量。
-- 首版內建軌跡為展示用近似路線，正式騎乘前應以官方道路、天候、施工與交通資訊重新確認。
+- 內建軌跡依產生當時的 BRouter／OpenStreetMap 道路資料建構；道路權限、路況、施工與交通管制仍會變動，出發前必須查核最新官方資訊與現場標示。
+- SRTM 海拔適合行程規劃，並非測量級資料；橋梁、深谷、山壁與海岸可能產生誤差，本站以可追溯的路線級視窗降低短波雜訊。
 - 未串接即時路況、會員系統、雲端資料庫或多人協作。
 - OpenStreetMap 圖磚不可當作大量離線下載服務。
 
@@ -85,4 +89,4 @@ npm test
 
 ## 授權
 
-程式碼採 [MIT License](LICENSE)。內建文字、展示軌跡與原創影像僅作專案示範；外部地圖資料依 OpenStreetMap 貢獻者授權與標示規範使用。
+程式碼採 [MIT License](LICENSE)。道路與地圖資料含 © OpenStreetMap contributors，依 ODbL 使用；路線透過 BRouter `fastbike` 建構，海拔採 SRTM。Leaflet 1.9.4 依 BSD-2-Clause 使用。第三方資料不因本專案 MIT 授權而改變其原授權，詳見 [LICENSE](LICENSE)。

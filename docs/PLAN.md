@@ -602,23 +602,23 @@ git commit -m "feat: 建立本機路線編輯與匯入"
 - Data thumbnails consume local paths under `assets/images/`.
 - README commands must match `package.json` scripts.
 
-- [ ] **Step 1: 產生並挑選原創公路車情境影像**
+- [x] **Step 1: 產生並挑選原創公路車情境影像**
 
 建立山岳、海岸、都會晨騎、林道路線、縱谷與島嶼挑戰等影像；避免可辨識品牌、賽事商標、假文字、過度 HDR 與不合理自行車幾何。輸出 WebP 並以描述性英文檔名命名。
 
-- [ ] **Step 2: 撰寫正式視覺規範**
+- [x] **Step 2: 撰寫正式視覺規範**
 
 `docs/ART-DIRECTION.md` 明確列出色票、字體回退、間距、斷點、卡片、按鈕、表單、地圖、動畫、Reduced Motion、禁止事項與圖片規則。
 
-- [ ] **Step 3: 撰寫測試計畫**
+- [x] **Step 3: 撰寫測試計畫**
 
 `docs/TEST-PLAN.md` 包含功能、手動、桌機／平板／手機、鍵盤、螢幕閱讀器、縮放、對比、Reduced Motion、`file://`、離線降級與敏感資訊掃描清單。
 
-- [ ] **Step 4: 撰寫 README、貢獻指南與 MIT 授權**
+- [x] **Step 4: 撰寫 README、貢獻指南與 MIT 授權**
 
 README 包含網站介紹、特色、操作、安裝與執行、結構、測試、靜態網站部署、已知限制、資料安全與授權。明確說明 Leaflet 圖磚需網路，以及路線資訊出發前需再次確認。
 
-- [ ] **Step 5: 檢查連結與文件命令**
+- [x] **Step 5: 檢查連結與文件命令**
 
 Run:
 
@@ -628,7 +628,7 @@ rg -n "TODO|TBD|localhost:[0-9]+/\\?key=|apiAccessKey|apiSecretKey" README.md CO
 
 Expected: no matches。
 
-- [ ] **Step 6: 提交**
+- [x] **Step 6: 提交**
 
 ```bash
 git add assets docs README.md CONTRIBUTING.md LICENSE js/data/routes.js
@@ -646,13 +646,13 @@ git commit -m "docs: 完成狂輪誌視覺與使用文件"
 **Interfaces:**
 - No new public interfaces.
 
-- [ ] **Step 1: 執行自動測試**
+- [x] **Step 1: 執行自動測試**
 
 Run: `node --test`
 
 Expected: 0 failures。
 
-- [ ] **Step 2: 執行敏感資訊與危險 DOM 掃描**
+- [x] **Step 2: 執行敏感資訊與危險 DOM 掃描**
 
 Run:
 
@@ -662,11 +662,11 @@ rg -n "(apiAccessKey|apiSecretKey|client_secret|private[_-]?key|BEGIN [A-Z ]+PRI
 
 Expected: no credential matches and no unsafe DOM sink matches。
 
-- [ ] **Step 3: 執行瀏覽器與響應式驗證**
+- [x] **Step 3: 執行瀏覽器與響應式驗證**
 
 使用本機靜態伺服器開啟網站，依 `docs/TEST-PLAN.md` 驗證 1440×1000、768×1024、390×844；檢查主題、篩選、詳情、Leaflet、SVG 降級、GPX、編輯、備份、鍵盤與 Reduced Motion。保留截圖證據並目視檢查。
 
-- [ ] **Step 4: 執行程式碼審查並修正**
+- [x] **Step 4: 執行程式碼審查並修正**
 
 依規格逐項檢查功能、錯誤處理、資料契約、安全、無障礙與文件。任何修正後重新執行受影響測試與完整測試。
 
@@ -732,13 +732,13 @@ Expected: `main -> main`，並建立 upstream。
 
 ## 驗收條件
 
-- [ ] 可直接開啟 `index.html` 使用核心功能。
-- [ ] 靜態伺服器下 Leaflet 正常，失敗時 SVG 正常。
-- [ ] 四主題可切換並持久化。
-- [ ] 至少 60 條路線可搜尋、篩選與檢視。
-- [ ] 每條路線可下載有效 GPX。
-- [ ] 本機新增、編輯、刪除、備份、匯入與重設可用。
-- [ ] 桌機、平板、手機與鍵盤操作通過。
-- [ ] `node --test` 全數通過。
-- [ ] 儲存庫不含憑證、Token、`.env` 或私人金鑰。
+- [x] 可直接開啟 `index.html` 使用核心功能。
+- [x] 靜態伺服器下 Leaflet 正常，失敗時 SVG 正常。
+- [x] 四主題可切換並持久化。
+- [x] 72 條路線可搜尋、篩選與檢視。
+- [x] 每條路線可下載有效 GPX。
+- [x] 本機新增、編輯、刪除、備份、匯入與重設可用。
+- [x] 桌機、平板、手機與鍵盤操作通過。
+- [x] `node --test` 全數通過。
+- [x] 儲存庫不含憑證、Token、`.env` 或私人金鑰。
 - [ ] 推送前已顯示 remote、branch 與 commit。

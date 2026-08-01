@@ -84,3 +84,45 @@ test("Task 11 正式軌跡維持單島／城市邊界且不含跨水長直線", 
     }
   }
 });
+
+test("Task 11 受版控的原始道路稽核摘要不含禁止類型、權限禁制或非法逆向", async () => {
+  const auditFixture = JSON.parse(await fs.readFile(
+    path.join(root, "tests", "fixtures", "task11-raw-audit.json"),
+    "utf8"
+  ));
+  const { parseBundleSource } = await import(`${pathToFileURL(validatorPath).href}?task11-audit=${Date.now()}`);
+  const { cacheFingerprint } = await import(`${pathToFileURL(generatorPath).href}?task11-fingerprint=${Date.now()}`);
+  const bundles = new Map();
+
+  assert.equal(auditFixture.schemaVersion, 1);
+  assert.deepEqual(Object.keys(auditFixture.routes).sort(), Object.keys(routeSpecs).sort());
+  assert.deepEqual(auditFixture.forbiddenPolicy.highway, ["service", "track", "footway", "path", "steps", "pedestrian"]);
+  assert.deepEqual(auditFixture.forbiddenPolicy.access, ["no", "private", "destination"]);
+  assert.deepEqual(auditFixture.forbiddenPolicy.bicycle, ["no"]);
+  assert.deepEqual(auditFixture.forbiddenPolicy.route, ["ferry"]);
+  assert.deepEqual(auditFixture.routeTuple, [
+    "cacheFingerprint",
+    "generatedAt",
+    "messageRows",
+    "forbiddenHighway",
+    "forbiddenAccess",
+    "bicycleNo",
+    "ferry",
+    "unsafeReverseOneway"
+  ]);
+
+  for (const [routeId, tuple] of Object.entries(auditFixture.routes)) {
+    const [fingerprint, generatedAt, messageRows, ...violations] = tuple;
+    const bundleId = routeSpecs[routeId].bundle;
+    if (!bundles.has(bundleId)) {
+      const source = await fs.readFile(path.join(root, "js", "data", "tracks", `${bundleId}.js`), "utf8");
+      bundles.set(bundleId, parseBundleSource(bundleId, source));
+    }
+
+    assert.match(fingerprint, /^[a-f0-9]{64}$/);
+    assert.equal(fingerprint, cacheFingerprint(await loadSeed(routeId)), `${routeId} audit 必須綁定目前 seed`);
+    assert.ok(messageRows > 0, `${routeId} 必須有原始道路訊息`);
+    assert.deepEqual(violations, [0, 0, 0, 0, 0], `${routeId} 原始道路稽核不得有違規計數`);
+    assert.equal(bundles.get(bundleId)[routeId].source.generatedAt, generatedAt);
+  }
+});

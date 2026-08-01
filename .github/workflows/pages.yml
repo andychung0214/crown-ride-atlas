@@ -27,7 +27,7 @@ jobs:
           node-version: 22
 
       - name: 執行測試
-        run: npm test
+        run: npm run verify
 
       - name: 設定 GitHub Pages
         uses: actions/configure-pages@v5
