@@ -61,5 +61,16 @@
   ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-29T13:50:00.000Z",
-  "reviewerNote": "2026-07-29 重新稽核：舊萡子寮漁港 waypoint 使 BRouter 在23.620167,120.140201逆行421公尺 `highway=residential oneway=yes`；改至萡子寮市街雲131，避免作業港區與單行支路。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、motorroad、footway、path、track、private、access禁制或bicycle=no；service合計3185公尺，精確分組為1674公尺 `highway=service` 與1511公尺 `reversedirection=yes highway=service`，皆未標surface，不據此宣稱鋪面。Leaflet明確未進台61、港區、潮間帶、魚塭便道或未鋪面海堤。500／200海拔分析後為45.5公里、爬升43公尺、最大0.9%。官方路廊：https://tour.yunlin.gov.tw/mainssl/modules/MySpace/BlogInfo.php?xmlid=1038118；黑森林：https://tour.yunlin.gov.tw/mainssl/modules/MySpace/BlogInfo.php?xmlid=1037509；椬梧滯洪池：https://tour.yunlin.gov.tw/main/modules/MySpace/index.php?xmlid=1037029。"
+  "reviewerNote": "2026-07-29 重新稽核：舊萡子寮漁港 waypoint 使 BRouter 在23.620167,120.140201逆行421公尺 `highway=residential oneway=yes`；改至萡子寮市街雲131，避免作業港區與單行支路。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、motorroad、footway、path、track、private、access禁制或bicycle=no；service合計3185公尺，精確分組為1674公尺 `highway=service` 與1511公尺 `reversedirection=yes highway=service`，皆未標surface，不據此宣稱鋪面。Leaflet明確未進台61、港區、潮間帶、魚塭便道或未鋪面海堤。500／200海拔分析後為45.5公里、爬升43公尺、最大0.9%。官方路廊：https://tour.yunlin.gov.tw/mainssl/modules/MySpace/BlogInfo.php?xmlid=1038118；黑森林：https://tour.yunlin.gov.tw/mainssl/modules/MySpace/BlogInfo.php?xmlid=1037509；椬梧滯洪池：https://tour.yunlin.gov.tw/main/modules/MySpace/index.php?xmlid=1037029。",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 3186,
+      "segmentSha256": "8d627ea1997a7bebf93d96ba24c901a1a7b3f2fdc4814b3763f03ab803ceb0cb",
+      "reason": "yunlin-kouhu-coast 的 3185 公尺 service 路段已依受版控座標、way tags 與人工審查記錄逐段核對；指紋變更即失效，騎乘前仍須查核即時通阻。",
+      "referenceLabel": "路線人工審查記錄所列公開道路來源",
+      "referenceUrl": "https://tour.yunlin.gov.tw/mainssl/modules/MySpace/BlogInfo.php?xmlid=1038118"
+    }
+  ]
 }

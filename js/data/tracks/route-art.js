@@ -12,6 +12,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-08-01T05:24:13.518Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "46867c6f181fa2ca7b3438f7cd0c1f69a8034983e52efb972f4a1b359b4bda1b",
+      "roadPolicyAuditSha256": "b107306edc26410a1b63f2bdc1171ee98f7af70d83dce10552d8f0e59571f460",
       "elevationAnalysis": {
         "smoothingWindowM": 500,
         "gradeWindowM": 200,
@@ -5085,6 +5087,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-08-01T05:29:16.290Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "795043cc2e4506e7edff4c6b5505a440d8a2b2fba3191bcc784cf50bc3f88649",
+      "roadPolicyAuditSha256": "46c7261073fcf91a9976b1ccbd539873ceab8caf11e6c418d7e0f16bb0b45a64",
       "elevationAnalysis": {
         "smoothingWindowM": 500,
         "gradeWindowM": 200,
@@ -5893,6 +5897,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-08-01T05:24:15.778Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "986a1d21e270e2d723d7c3bbe281e105ae0390838db5cbfd84665ed31cbcd4e0",
+      "roadPolicyAuditSha256": "2181b482b91a0262149452e3cbb9ec2f62563ef7c901aaf390603c22a21d584b",
       "elevationAnalysis": {
         "smoothingWindowM": 500,
         "gradeWindowM": 200,
@@ -7843,6 +7849,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-08-01T05:22:06.175Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "fa0b795ac75adb8c9f2ad2259b36681372f68c54c8705432bc2ad6254d5ecebd",
+      "roadPolicyAuditSha256": "14b76b971a3210e5485e80da896360af1f0cdae58163b82c1058c1121e2d5720",
       "elevationAnalysis": {
         "smoothingWindowM": 500,
         "gradeWindowM": 200,
@@ -9197,6 +9205,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-08-01T05:25:51.045Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "834fc482d249fa6680fae2f03c5cf79136d8829b9b4f1c6c3ae1022b6f5cfe18",
+      "roadPolicyAuditSha256": "92837051923c99526412491a41b6e9b26d4a3b77026489de6250886f035c16e2",
       "elevationAnalysis": {
         "smoothingWindowM": 500,
         "gradeWindowM": 200,
@@ -10509,6 +10519,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-08-01T05:22:08.347Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "a5596ef1f8a451cf99e2691fe53a84b8a1dafe7bab46b99825c414e56396b098",
+      "roadPolicyAuditSha256": "8a3e82e85269442555e33478d822384e7c6e718983cab47593a11c664b53c40a",
       "elevationAnalysis": {
         "smoothingWindowM": 500,
         "gradeWindowM": 200,

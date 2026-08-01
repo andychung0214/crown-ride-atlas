@@ -30,5 +30,16 @@
   ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-29T13:50:00.000Z",
-  "reviewerNote": "2026-07-29 重新稽核：舊基隆車站起終點使回程在25.131567,121.739871逆行16公尺 `highway=tertiary oneway=yes`，附近替代點又會導入車站footway；為保留路線本義且不使用市區單行系統，改由外木山漁港雙向道路起騎，經萬里至野柳港東路後原路返回。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、footway、path、track、steps、private、access禁制或bicycle=no；Leaflet與海拔剖面為21.5公里、爬升309公尺且連續。"
+  "reviewerNote": "2026-07-29 重新稽核：舊基隆車站起終點使回程在25.131567,121.739871逆行16公尺 `highway=tertiary oneway=yes`，附近替代點又會導入車站footway；為保留路線本義且不使用市區單行系統，改由外木山漁港雙向道路起騎，經萬里至野柳港東路後原路返回。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、footway、path、track、steps、private、access禁制或bicycle=no；Leaflet與海拔剖面為21.5公里、爬升309公尺且連續。",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 167,
+      "segmentSha256": "4134d36d81841ac654c0226e972e69de4f1544514ae1b08df1b612c75d08d376",
+      "reason": "精確段落範圍 25.174841,121.689830–25.205260,121.705614、合計 166 公尺，已由受版控座標、way tags 與 segmentSha256 鎖定；官方資料將對應路廊列為公開自行車路線或一般鋪面道路。實騎前仍須查核即時通阻與現場標誌。",
+      "referenceLabel": "交通部觀光署外木山濱海與湖海灣自行車道",
+      "referenceUrl": "https://www.northguan-nsa.gov.tw/USER/article.aspx?Lang=1&SNo=04007030"
+    }
+  ]
 }

@@ -91,7 +91,7 @@ test("buildTrack 拒絕沒有自行車例外的單行道逆向段並列出段落
   const { buildTrack } = await loadGenerator();
 
   for (const wayTags of [
-    "reversedirection=yes highway=service oneway=yes",
+    "reversedirection=yes highway=primary oneway=yes",
     "reversedirection=yes highway=primary oneway=yes route_bicycle_ncn=yes",
     "reversedirection=yes highway=primary oneway=yes cycleway:right=shared_lane"
   ]) {
@@ -125,6 +125,104 @@ test("buildTrack 放行明確允許自行車逆向的單行道路段", async () 
       `reversedirection=yes highway=residential oneway=yes ${exceptionTag}`
     )));
   }
+});
+
+test("buildTrack 拒絕明確禁行與未證明適合公路車的道路類別", async () => {
+  const { buildTrack } = await loadGenerator();
+
+  for (const wayTags of [
+    "highway=motorway",
+    "highway=motorway_link",
+    "highway=steps",
+    "highway=footway",
+    "highway=pedestrian",
+    "highway=path",
+    "highway=track",
+    "highway=service",
+    "highway=construction",
+    "highway=residential access=no",
+    "highway=residential access=private",
+    "highway=residential access=destination",
+    "highway=residential bicycle=no",
+    "highway=residential bicycle=private",
+    "route=ferry bicycle=yes"
+  ]) {
+    assert.throws(
+      () => buildTrack(brouterPayloadWithWayTags(wayTags)),
+      error => /道路政策/.test(error.message) && error.message.includes(wayTags),
+      wayTags
+    );
+  }
+});
+
+test("buildTrack 放行有自行車權限或鋪面證據的條件式道路", async () => {
+  const { buildTrack } = await loadGenerator();
+
+  for (const wayTags of [
+    "highway=footway bicycle=yes",
+    "highway=pedestrian bicycle=designated",
+    "highway=path bicycle=permissive",
+    "highway=track surface=asphalt",
+    "highway=track surface=paved",
+    "highway=track surface=concrete",
+    "highway=track tracktype=grade1",
+    "highway=residential access=no bicycle=yes"
+  ]) {
+    assert.doesNotThrow(() => buildTrack(brouterPayloadWithWayTags(wayTags)), wayTags);
+  }
+});
+
+test("正式 seed 的道路政策例外必須綁定精確路段、距離、理由與 HTTPS 來源", async () => {
+  const { auditBrouterRoadPolicy, buildTrack, validateTrackSeed } = await loadGenerator();
+  const seed = formalSeed("policy-exception");
+  const payload = brouterPayloadWithWayTags("highway=track");
+  const segment = auditBrouterRoadPolicy(payload).violations[0].segment;
+  seed.roadPolicyExceptions = [{
+    rule: "conditional-highway",
+    value: "track",
+    maximumDistanceM: 40,
+    segmentSha256: createHash("sha256").update(JSON.stringify([segment])).digest("hex"),
+    reason: "OSM 尚未補上已鋪面道路標籤。",
+    referenceUrl: "https://example.com/official-road",
+    referenceLabel: "官方道路資料"
+  }];
+
+  assert.doesNotThrow(() => validateTrackSeed(seed, seed.id));
+  assert.doesNotThrow(() => buildTrack(
+    payload,
+    { routeId: seed.id, seed, generatedAt: "2026-07-25T00:00:00.000Z" }
+  ));
+
+  const invalidSeed = structuredClone(seed);
+  invalidSeed.roadPolicyExceptions[0].referenceUrl = "http://example.com/not-secure";
+  assert.throws(() => validateTrackSeed(invalidSeed, invalidSeed.id), /HTTPS/);
+
+  const movedPayload = structuredClone(payload);
+  movedPayload.features[0].properties.messages[1][0] = "120501185";
+  assert.throws(
+    () => buildTrack(movedPayload, {
+      routeId: seed.id,
+      seed,
+      generatedAt: "2026-07-25T00:00:00.000Z"
+    }),
+    /道路政策/
+  );
+});
+
+test("正式軌跡缺少 BRouter raw messages 時不得產生空稽核", async () => {
+  const { buildTrack } = await loadGenerator();
+  const payload = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  delete payload.features[0].properties.messages;
+  const seed = formalSeed("missing-road-messages");
+
+  assert.throws(
+    () => buildTrack(payload, {
+      routeId: seed.id,
+      seed,
+      generatedAt: "2026-07-25T00:00:00.000Z"
+    }),
+    /缺少可稽核的道路訊息/
+  );
 });
 
 test("建構軌跡時會產生分析摘要與爬坡陣列", async () => {
@@ -168,6 +266,8 @@ test("正式軌跡保留路線識別、BRouter SRTM 來源與具名人工地標"
     elevation: "SRTM",
     samplingNote: "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
     generatedAt: "2026-07-25T00:00:00.000Z",
+    rawGeometrySha256: "1d4cbde6383691d2f621ccb6cf27a6253230f04d8ce7f414a180c01a7db0c3b9",
+    roadPolicyAuditSha256: "3feef7cc824f82f5d6448c4d6cd5e9a3f7ade0bda38c025c885c099561633165",
     reviewedAt: "2026-07-26T00:00:00.000Z",
     reviewStatus: "approved",
     reviewerNote: "沿至善路與萬溪產業道路檢查。"
@@ -497,11 +597,23 @@ test("整批驗證失敗時不替換正式 bundle", async t => {
 });
 
 test("CLI 以注入 fetch 產生 staging，後續執行只讀取快取", async t => {
-  const { runCli } = await loadGenerator();
+  const { runCli, serializeBundle } = await loadGenerator();
   const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "crown-cli-"));
   t.after(() => fs.rm(temporaryRoot, { recursive: true, force: true }));
   const seedDirectory = path.join(temporaryRoot, "tools", "route-data", "seeds");
+  const stagingDirectory = path.join(temporaryRoot, "tools", "route-data", ".staging");
   await fs.mkdir(seedDirectory, { recursive: true });
+  await fs.mkdir(stagingDirectory, { recursive: true });
+  await fs.writeFile(
+    path.join(stagingDirectory, "taipei.js"),
+    serializeBundle("taipei", {
+      "taipei-retired-route": {
+        routeId: "taipei-retired-route",
+        coordinates: [{ lat: 25.021, lng: 121.541, ele: 12 }]
+      }
+    }),
+    "utf8"
+  );
   await fs.writeFile(
     path.join(seedDirectory, "taipei-fengguizui.json"),
     JSON.stringify(formalSeed("taipei-fengguizui")),
@@ -561,7 +673,9 @@ test("CLI 以注入 fetch 產生 staging，後續執行只讀取快取", async t
   );
   assert.match(stagingSource, /taipei-fengguizui/);
   const { parseBundleSource } = await loadValidator();
-  const stagedTrack = parseBundleSource("taipei", stagingSource)["taipei-fengguizui"];
+  const stagedTracks = parseBundleSource("taipei", stagingSource);
+  assert.deepEqual(Object.keys(stagedTracks), ["taipei-fengguizui"]);
+  const stagedTrack = stagedTracks["taipei-fengguizui"];
   assert.equal(stagedTrack.source.generatedAt, "1970-01-01T00:00:00.000Z");
   assert.equal(stagedTrack.routeId, "taipei-fengguizui");
 });
@@ -708,6 +822,16 @@ test("正式 validator 要求已審查來源、正確 routeId 與貼近軌跡的
     /審查/
   );
 
+  const missingAuditDigest = JSON.parse(JSON.stringify(track));
+  delete missingAuditDigest.source.roadPolicyAuditSha256;
+  assert.throws(
+    () => validateBundleSources(
+      new Map([["taipei", serializeBundle("taipei", { [seed.id]: missingAuditDigest })]]),
+      { manifest, requireComplete: true, requireReviewMetadata: true }
+    ),
+    /道路稽核指紋/
+  );
+
   const farWaypoint = JSON.parse(JSON.stringify(track));
   farWaypoint.waypoints[1].lat = 24.5;
   assert.throws(
@@ -746,6 +870,8 @@ test("正式 validator 以軌跡線段而非取樣頂點判斷地標貼近程度
       profile: "fastbike",
       elevation: "SRTM",
       generatedAt: "2026-07-25T00:00:00.000Z",
+      rawGeometrySha256: "0000000000000000000000000000000000000000000000000000000000000000",
+      roadPolicyAuditSha256: "1111111111111111111111111111111111111111111111111111111111111111",
       reviewStatus: "approved",
       reviewedAt: "2026-07-26T00:00:00.000Z",
       reviewerNote: "測試線段距離。"

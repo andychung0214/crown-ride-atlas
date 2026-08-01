@@ -46,6 +46,26 @@
       "role": "finish"
     }
   ],
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 3371,
+      "segmentSha256": "22192873c9c7d1a2d3eb794df36c56271d18ed32f8c92edfbc4ab22f7e039d66",
+      "reason": "精確段落範圍 24.387417,120.782044–24.388343,120.812852、合計 3370 公尺，已由受版控座標、way tags 與 segmentSha256 鎖定；官方資料將對應路廊列為公開自行車路線或一般鋪面道路。實騎前仍須查核即時通阻與現場標誌。",
+      "referenceLabel": "苗栗縣政府薑麻園與苗130公開道路資料",
+      "referenceUrl": "https://miaolitravel.net/article.aspx?sNo=04004558"
+    },
+    {
+      "rule": "conditional-highway",
+      "value": "track",
+      "maximumDistanceM": 1300,
+      "reason": "OSM 將苗 130 與台 3 交界附近的既有聯絡道路標為未註明鋪面的 track；官方資料確認苗 130 為串聯三義與大湖薑麻園的道路。",
+      "referenceUrl": "https://www.moa.gov.tw/ws.php?id=10535",
+      "referenceLabel": "農業部薑麻園與苗 130 道路介紹",
+      "segmentSha256": "bbb7bbfec5a3a3e993cee6b406e09e0cb0f0463a60cb907c4cf85b90b14c6d8a"
+    }
+  ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-28T04:38:44.415Z",
   "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查三義、勝興周邊公路與縣道130越過關刀山至薑麻園、大湖台3路口後原路折返；地標停在遊客服務中心外道路，不進私人停車場或登山步道。苗130連續彎坡且可能起霧，須開啟車燈並控制下坡速度。"

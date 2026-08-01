@@ -12,6 +12,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-26T08:41:56.994Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "ccd53b1851b362d2f0ba64ed766ce08a0e5059da794e1efb9643d9a26d2c3751",
+      "roadPolicyAuditSha256": "94cb1b94f0192efc49038c5a8ddeaa982c090ee806a79a9f6ab7300c80ccd519",
       "reviewedAt": "2026-07-28T04:38:44.415Z",
       "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查大湖公園成功路、五指山道路至風櫃嘴折返點；BRouter 訊息無 footway、path、steps、私人或未鋪面路段。"
     },
@@ -5091,6 +5093,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-26T08:41:58.623Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "fd8d22c87a875d8e3b578f478220cd80c39d1c48bb218b4141b368c1fae0008d",
+      "roadPolicyAuditSha256": "389a54f06571aa240154fcff0db3030478fec7b9ef737439b7c550fd2cd8af95",
       "reviewedAt": "2026-07-28T04:38:44.415Z",
       "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查中社路一、二段起坡至道路終點前折返；BRouter 訊息無 footway、path、steps、私人或未鋪面路段。"
     },
@@ -7484,6 +7488,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-29T13:30:26.601Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "fbe01aa3d3940fc45da9bc74e5b1820b4b3ac439f49adc8db0e46471a5915eeb",
+      "roadPolicyAuditSha256": "484433ab24df372188793bd2166d2fcf2836526a26099258b479e7227b4144a4",
       "reviewedAt": "2026-07-29T13:50:00.000Z",
       "reviewerNote": "2026-07-29 重新稽核：舊管理處 waypoint 使 BRouter 在25.155210,121.546045逆行8公尺 `highway=service oneway=yes`；移除該支點後又發現原格致路座標會導入242公尺track捷徑，故將去回程地標都修正至OSM `primary 格致路` 節點25.141291,121.549904。最終 raw messages 無未授權單行道逆向段，也無 footway、path、track、steps、private、access禁制或bicycle=no；Leaflet顯示仰德大道、格致路、菁山路101巷、冷水坑、中湖戰備道路與陽金公路環線連續，海拔為31.4公里、爬升964公尺、最大持續坡度22.7%。"
     },

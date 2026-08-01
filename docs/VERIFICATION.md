@@ -93,9 +93,11 @@ Task 11 另驗證澎湖、金門、馬祖 9 條與路線美學 6 條：raw 禁�
 | `taoyuan-north-cross-baling` | 92.6 km | 1,707 m | 2,695 | 台 7 北橫至下巴陵，禁止類別 0 |
 | `taoyuan-shimen-loop` | 49.0 km | 928 m | 1,144 | 移除康莊路錯置地標，排除 27 m 未授權單行道逆向段 |
 | `hsinchu-city-coast-17k` | 29.0 km | 65 m | 609 | 官方十七公里自行車道；OSM 有一段約 514 m 尚標 footway，已記錄官方證據與現地查核提醒 |
-| `hsinchu-city-18-peaks` | 13.8 km | 177 m | 316 | 十八尖山外圍公共道路，禁止類別 0 |
-| `hsinchu-city-nanliao-baoshan` | 44.0 km | 472 m | 951 | 南寮、寶山公共道路，排除 34 m 未授權單行道逆向段 |
-| `hsinchu-county-five-fingers` | 36.9 km | 1,053 m | 950 | 竹 37-4、五指山路與縣道 122，禁止類別 0 |
+| `hsinchu-city-gangnan-morning` | 9.2 km | 26 m | 196 | 原十八尖山 service 方案撤回；改為官方 17 公里自行車道路廊的港南晨光短線 |
+| `hsinchu-city-nanliao-xiangshan` | 19.1 km | 61 m | 413 | 原寶山內陸 service 方案撤回；改為官方 17 公里自行車道路廊的南寮香山線 |
+| `hsinchu-county-five-fingers` | 29.3 km | 593 m | 725 | 無佐證寺廟 service 支線撤回；只走竹東、北埔與南清公路一般道路 |
+
+前兩條完全改線的路線 ID 已同步更新為 `hsinchu-city-gangnan-morning` 與 `hsinchu-city-nanliao-xiangshan`，避免舊名稱誤導使用者；五指山路線仍由原入口進入北埔與南清公路，因此保留原路線 ID。公開名稱、地標、bundle、摘要與 GPX 內容均與實際路線語意一致。
 | `hsinchu-county-yulao` | 34.8 km | 1,401 m | 1,154 | 竹東至宇老單向 GPX，排除 452 m 未授權單行道逆向；禁止反轉 GPX，回程另依管制安排 |
 | `hsinchu-county-smangus` | 55.9 km | 2,624 m | 2,391 | 內灣至司馬庫斯單向 GPX，排除 452 m 未授權單行道逆向；禁止反轉 GPX，回程另依管制安排 |
 | `miaoli-xianshan` | 59.8 km | 1,424 m | 1,493 | 汶水與獅潭地標改置正式公路，排除 34 m 未授權單行道逆向段 |
@@ -112,7 +114,6 @@ Task 11 另驗證澎湖、金門、馬祖 9 條與路線美學 6 條：raw 禁�
 | `keelung-waimushan-wanli` | `25.131567,121.739871` · 16 m · tertiary | 起終點改至外木山漁港雙向道路 |
 | `taipei-lengshuikeng` | `25.155210,121.546045` · 8 m · service | 移除管理處支點，格致路地標改至台 2 甲主線 |
 | `taoyuan-shimen-loop` | `24.827953,121.267477` · 27 m · primary、`cycleway:right=shared_lane` | 移除康莊路冗餘地標 |
-| `hsinchu-city-nanliao-baoshan` | `24.801590,120.970039` · 34 m · residential | 移除信義街站前支點 |
 | `hsinchu-county-yulao` | `24.667996,121.281100` · 452 m · unclassified | 改為竹東至宇老單向 point-to-point |
 | `hsinchu-county-smangus` | `24.667996,121.281100` · 452 m · unclassified | 改為內灣至司馬庫斯單向 point-to-point |
 | `miaoli-xianshan` | `24.452780,120.874988` · 34 m · residential | 汶水、獅潭地標移至台 3／縣道 124 |
@@ -159,16 +160,16 @@ Task 11 另驗證澎湖、金門、馬祖 9 條與路線美學 6 條：raw 禁�
 | `taoyuan-north-cross-baling` | 2,695 | 0.288% | 4.93 m | 38.90% | 0.00% | 74.92 m |
 | `taoyuan-shimen-loop` | 1,144 | 0.224% | 4.96 m | 18.02% | 0.00% | 74.69 m |
 | `hsinchu-city-coast-17k` | 609 | 0.040% | 4.49 m | 3.29% | 0.00% | 73.46 m |
-| `hsinchu-city-18-peaks` | 316 | 0.204% | 4.88 m | 13.02% | 0.00% | 72.86 m |
-| `hsinchu-city-nanliao-baoshan` | 951 | 0.167% | 4.95 m | 7.79% | 0.00% | 74.61 m |
-| `hsinchu-county-five-fingers` | 950 | 0.338% | 4.91 m | 26.87% | 0.00% | 74.97 m |
+| `hsinchu-city-gangnan-morning` | 196 | 0.020% | 4.87 m | 4.62% | 0.00% | 66.89 m |
+| `hsinchu-city-nanliao-xiangshan` | 413 | 0.019% | 2.99 m | 7.77% | 0.00% | 73.46 m |
+| `hsinchu-county-five-fingers` | 725 | 0.209% | 4.35 m | 21.69% | 0.00% | 74.82 m |
 | `hsinchu-county-yulao` | 1,154 | 0.198% | 2.97 m | 49.09% | 0.00% | 73.74 m |
 | `hsinchu-county-smangus` | 2,391 | 0.306% | 3.54 m | 66.15% | 0.00% | 74.32 m |
 | `miaoli-xianshan` | 1,493 | 0.258% | 4.82 m | 22.65% | 0.00% | 74.21 m |
 | `miaoli-jiangmayuan` | 1,015 | 0.311% | 4.99 m | 29.88% | 0.00% | 74.82 m |
 | `miaoli-coast` | 681 | 0.022% | 4.36 m | 11.18% | 0.00% | 74.79 m |
 
-量測結果：21/21 通過；最接近幾何上限為 `miaoli-jiangmayuan` 4.99 公尺，最高必要短段比例為 `hsinchu-county-smangus` 66.15%，非必要短段最差值仍為 0.00%，最大相鄰距離為 `hsinchu-county-five-fingers` 74.97 公尺。
+量測結果：21/21 通過；最接近幾何上限為 `miaoli-jiangmayuan` 4.99 公尺，最高必要短段比例為 `hsinchu-county-smangus` 66.15%，非必要短段最差值仍為 0.00%，最大相鄰距離為 `taipei-lengshuikeng`／`new-taipei-yangjin-3p` 的 74.95 公尺。
 
 發布後 7 個北部 bundle 大小：`keelung` 375.5 KiB、`taipei` 396.8 KiB、`new-taipei` 1,146.5 KiB、`taoyuan` 1,446.8 KiB、`hsinchu-city` 473.8 KiB、`hsinchu-county` 1,101.4 KiB、`miaoli` 784.7 KiB；最大為 `taoyuan`。
 
@@ -311,10 +312,12 @@ Task 11 另驗證澎湖、金門、馬祖 9 條與路線美學 6 條：raw 禁�
 
 驗證日期：2026-08-01
 
-- `npm run verify`：通過；206 項 Node.js 測試零失敗，正式 validator 為 23 個 bundle、72 條路線。
+- `npm run verify`：通過；最終 212 項 Node.js 測試零失敗，正式 validator 為 23 個 bundle、72 條路線。
 - `tests/track-data.test.js`：66 條地區路線加 6 條路線美學，全部人工核准；逐點經緯度、海拔與累積距離有限且距離不倒退。
 - 64 個 `.js`／`.mjs` 檔案逐一通過 `node --check`；`git diff --check` 通過。
 - 受版控檔名與憑證指派掃描通過；沒有 `.env`、私人金鑰或憑證型檔案納入版本控制。
 - 實際 HTTP／Chrome 驗證涵蓋 1440×900 桌機、768×1024 平板及 390×844 CSS viewport。390px 結果為 `innerWidth=390`、`scrollWidth=390`、無水平溢位；手機顯示選單並隱藏會擠壓頁首的完整主題切換器。
 - 手機截圖發現座標戳記與右下圖說重疊，修正為分置左右兩側；重驗兩者不重疊。頁首 cascade 回歸與圖說位置均有 CSS 測試保護。
 - GitHub Pages workflow 改為執行 `npm run verify`，測試與全部正式軌跡 validator 通過後才部署。
+- 最終 release review 後補上三項閘門：路線美學總覽會 lazy-load 六張真實預覽；72 條正式路線以受版控 BRouter 原始幾何與 waytags 完整重建，幾何與道路稽核 SHA-256 同時綁定 bundle；施工／服務道路預設拒絕，精確例外綁定路段 SHA-256；Pages build/deploy job 明確限制 `refs/heads/main`。
+- 33 筆精確道路例外均具有路段 SHA-256、距離上限、座標範圍與 HTTPS 來源；通用 OSM tag 說明與即時路況首頁引用均為 0。北橫施工標籤另以公路局 2026-07-12 羅浮至巴陵解除封閉公告核對，並保留出發前重新查核要求。

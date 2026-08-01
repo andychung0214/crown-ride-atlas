@@ -106,6 +106,12 @@ function validateReviewMetadata(routeId, track) {
     throw new Error(`${routeId} 來源必須如實標示 BRouter、fastbike 與 SRTM。`);
   }
   if (!isIsoTimestamp(source.generatedAt)) throw new Error(`${routeId} 資料產生時間無效。`);
+  if (!/^[a-f0-9]{64}$/.test(source.rawGeometrySha256 || "")) {
+    throw new Error(`${routeId} 原始路由幾何指紋無效。`);
+  }
+  if (!/^[a-f0-9]{64}$/.test(source.roadPolicyAuditSha256 || "")) {
+    throw new Error(`${routeId} 道路稽核指紋無效。`);
+  }
   validateElevationAnalysis(source.elevationAnalysis, routeId);
   if (source.reviewStatus !== "approved" || !isIsoTimestamp(source.reviewedAt)
     || typeof source.reviewerNote !== "string" || !source.reviewerNote.trim()) {

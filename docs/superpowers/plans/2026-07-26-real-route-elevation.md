@@ -357,7 +357,7 @@ git commit -m "feat: 顯示詳細海拔坡度與道路地標"
 - Taipei: `taipei-fengguizui`, `taipei-zhongsha-road`, `taipei-lengshuikeng`
 - New Taipei: `new-taipei-yangjin-3p`, `new-taipei-north-coast`, `new-taipei-buyanting`
 - Taoyuan: `taoyuan-roman-road`, `taoyuan-north-cross-baling`, `taoyuan-shimen-loop`
-- Hsinchu City: `hsinchu-city-coast-17k`, `hsinchu-city-18-peaks`, `hsinchu-city-nanliao-baoshan`
+- Hsinchu City: `hsinchu-city-coast-17k`, `hsinchu-city-gangnan-morning`, `hsinchu-city-nanliao-xiangshan`
 - Hsinchu County: `hsinchu-county-five-fingers`, `hsinchu-county-yulao`, `hsinchu-county-smangus`
 - Miaoli: `miaoli-xianshan`, `miaoli-jiangmayuan`, `miaoli-coast`
 

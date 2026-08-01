@@ -10,10 +10,12 @@
       "profile": "fastbike",
       "elevation": "SRTM",
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
-      "generatedAt": "2026-07-28T04:05:57.344Z",
+      "generatedAt": "2026-08-01T07:07:53.147Z",
       "reviewStatus": "approved",
-      "reviewedAt": "2026-07-28T04:38:44.415Z",
-      "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查竹東、北埔、竹37-4、五指山玉皇宮與觀音寺，再由五指山路銜接縣道122南清公路返回竹東；山腰道路狹窄且彎多，騎士應降低下坡速度並在出發前查核施工與臨時管制。"
+      "rawGeometrySha256": "489596a17d8c460c03a3c82320dc2ba7601de40237d7af9991cc5f01caac4788",
+      "roadPolicyAuditSha256": "2a7b370e0122f2eabe0d576c79617339ce33ca718324efd8165a511c668f54cf",
+      "reviewedAt": "2026-08-01T07:08:00.722Z",
+      "reviewerNote": "原五指山寺廟支線含 676 公尺 service 且缺乏公開自行車與鋪面證據，已撤回。新版由竹東、北埔一般道路接至南清公路五指山入口後返回；BRouter raw messages 的 service、track、footway、path、steps、私人、權限禁制與 bicycle=no 均為 0。山區道路狹窄彎多，仍須降低下坡速度並查核即時通阻。"
     },
     "waypoints": [
       {
@@ -29,21 +31,9 @@
         "role": "via"
       },
       {
-        "name": "五指山玉皇宮",
-        "lat": 24.642111,
-        "lng": 121.089241,
-        "role": "via"
-      },
-      {
-        "name": "五指山觀音寺",
-        "lat": 24.648319,
-        "lng": 121.094101,
-        "role": "via"
-      },
-      {
         "name": "南清公路五指山入口",
-        "lat": 24.660484,
-        "lng": 121.116697,
+        "lat": 24.663697,
+        "lng": 121.120208,
         "role": "via"
       },
       {
@@ -1301,4237 +1291,2527 @@
         "lng": 121.057267,
         "ele": 141.75,
         "distanceKm": 6.5218658441540684,
-        "gradePct": -0.20707979258762138,
-        "smoothedEle": 141.6876459224337,
+        "gradePct": 0.020790361908154937,
+        "smoothedEle": 141.91551607692946,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.698712,
+        "lng": 121.057322,
+        "ele": 141.75,
+        "distanceKm": 6.531794541317601,
+        "gradePct": 0.06888273322078954,
+        "smoothedEle": 141.97006134406544,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.698674,
+        "lng": 121.057421,
+        "ele": 141.75,
+        "distanceKm": 6.542651753768314,
+        "gradePct": 0.22468456004600137,
+        "smoothedEle": 142.13291953082614,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.698665,
+        "lng": 121.057618,
+        "ele": 142.25,
+        "distanceKm": 6.5625783752094025,
+        "gradePct": 0.5431522467068267,
+        "smoothedEle": 142.46433800147736,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.698651,
+        "lng": 121.057951,
+        "ele": 143.5,
+        "distanceKm": 6.596254943549456,
+        "gradePct": 1.3540525895007296,
+        "smoothedEle": 143.27831144141692,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.698294,
+        "lng": 121.058007,
+        "ele": 144.25,
+        "distanceKm": 6.636352678485834,
+        "gradePct": 1.6797794818582532,
+        "smoothedEle": 143.7182128834472,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.69796,
+        "lng": 121.05811,
+        "ele": 143.25,
+        "distanceKm": 6.674921953972988,
+        "gradePct": 0.9224493950332862,
+        "smoothedEle": 143.6851356476123,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.697611,
+        "lng": 121.058403,
+        "ele": 143.75,
+        "distanceKm": 6.723729143953761,
+        "gradePct": 0.35257609744781016,
+        "smoothedEle": 143.9322995860953,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.69737,
+        "lng": 121.058825,
+        "ele": 145,
+        "distanceKm": 6.774084086170822,
+        "gradePct": 0.37334487184370024,
+        "smoothedEle": 144.05919907977483,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.696893,
+        "lng": 121.059179,
+        "ele": 141.5,
+        "distanceKm": 6.838054411366148,
+        "gradePct": -3.342560879168599,
+        "smoothedEle": 140.62583981441324,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.69849,
-        "lng": 121.05693,
-        "ele": 141.25,
-        "distanceKm": 6.569219341686175,
-        "gradePct": -0.9657544039684786,
-        "smoothedEle": 140.9597474724578,
+        "lat": 24.696493,
+        "lng": 121.059532,
+        "ele": 134.5,
+        "distanceKm": 6.895063568661331,
+        "gradePct": -7.9100623011630375,
+        "smoothedEle": 135.02314436929788,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.698124,
-        "lng": 121.056613,
-        "ele": 139.5,
-        "distanceKm": 6.621005766404811,
-        "gradePct": -2.7407190265065067,
-        "smoothedEle": 138.95161576625088,
+        "lat": 24.69643,
+        "lng": 121.059604,
+        "ele": 133,
+        "distanceKm": 6.905162169603415,
+        "gradePct": -8.224739238499213,
+        "smoothedEle": 134.1664641670756,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.697822,
-        "lng": 121.05627,
-        "ele": 135.75,
-        "distanceKm": 6.669258938806888,
-        "gradePct": -5.330148705113875,
-        "smoothedEle": 135.6280633025187,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.697631,
-        "lng": 121.055963,
+        "lat": 24.696397,
+        "lng": 121.059696,
         "ele": 132.25,
-        "distanceKm": 6.706848097953041,
-        "gradePct": -7.67869588133945,
-        "smoothedEle": 131.82191439570133,
+        "distanceKm": 6.915154567323388,
+        "gradePct": -8.362922866030148,
+        "smoothedEle": 133.4919773209774,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.697455,
-        "lng": 121.055565,
-        "ele": 126.75,
-        "distanceKm": 6.751565359071549,
-        "gradePct": -8.57647553467058,
-        "smoothedEle": 128.27027531924108,
+        "lat": 24.696384,
+        "lng": 121.059774,
+        "ele": 132,
+        "distanceKm": 6.9231659750505745,
+        "gradePct": -7.993176419747386,
+        "smoothedEle": 133.43174250853215,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.697685,
-        "lng": 121.055144,
-        "ele": 126.75,
-        "distanceKm": 6.801193523920116,
-        "gradePct": -5.3137198550001346,
-        "smoothedEle": 127.08075724928041,
+        "lat": 24.696393,
+        "lng": 121.059894,
+        "ele": 132,
+        "distanceKm": 6.9353301595659955,
+        "gradePct": -7.2490795785924975,
+        "smoothedEle": 133.5229738923978,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.697839,
-        "lng": 121.054998,
-        "ele": 128.25,
-        "distanceKm": 6.823793929794543,
-        "gradePct": -3.5082476184661844,
-        "smoothedEle": 126.96775521990828,
+        "lat": 24.696409,
+        "lng": 121.05993,
+        "ele": 132.25,
+        "distanceKm": 6.9393788875695,
+        "gradePct": -6.942334763288098,
+        "smoothedEle": 133.55333935242408,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.697898,
-        "lng": 121.05471,
-        "ele": 126.25,
-        "distanceKm": 6.8536191473795505,
-        "gradePct": -2.712598029710899,
-        "smoothedEle": 125.5084508409662,
+        "lat": 24.696547,
+        "lng": 121.06013,
+        "ele": 134.75,
+        "distanceKm": 6.96475022084369,
+        "gradePct": -4.004629185105458,
+        "smoothedEle": 133.99762352050246,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.697854,
-        "lng": 121.054194,
-        "ele": 120.75,
-        "distanceKm": 6.905976300433477,
-        "gradePct": -7.0763010880515615,
-        "smoothedEle": 119.98054227866207,
+        "lat": 24.696584,
+        "lng": 121.060216,
+        "ele": 135.25,
+        "distanceKm": 6.974363226632896,
+        "gradePct": -2.859158521534862,
+        "smoothedEle": 134.19835571915982,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.697673,
-        "lng": 121.053822,
-        "ele": 113.5,
-        "distanceKm": 6.948607031127135,
-        "gradePct": -10.6665617093284,
-        "smoothedEle": 115.08712466677082,
+        "lat": 24.696635,
+        "lng": 121.060436,
+        "ele": 135.25,
+        "distanceKm": 6.997300675043866,
+        "gradePct": -0.20112780738597352,
+        "smoothedEle": 134.63223930868895,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.697037,
-        "lng": 121.053948,
-        "ele": 110,
-        "distanceKm": 7.0204635256651855,
-        "gradePct": -8.523481349181624,
-        "smoothedEle": 109.79412806525852,
-        "gradeBand": "descent"
+        "lat": 24.696673,
+        "lng": 121.06081,
+        "ele": 134,
+        "distanceKm": 7.035319320040554,
+        "gradePct": 1.767692481301203,
+        "smoothedEle": 135.29058507725819,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.696602,
+        "lng": 121.061196,
+        "ele": 137,
+        "distanceKm": 7.075105879474722,
+        "gradePct": 1.669570196826817,
+        "smoothedEle": 135.88197389878806,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.696361,
+        "lng": 121.061789,
+        "ele": 135.75,
+        "distanceKm": 7.1407339606388085,
+        "gradePct": 1.743082455219656,
+        "smoothedEle": 137.11415094114523,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.696365,
+        "lng": 121.06221,
+        "ele": 139.75,
+        "distanceKm": 7.18326763821777,
+        "gradePct": 4.384071046645447,
+        "smoothedEle": 140.41928318690054,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.69652,
+        "lng": 121.062587,
+        "ele": 146,
+        "distanceKm": 7.225072129887488,
+        "gradePct": 7.626681663004005,
+        "smoothedEle": 144.4467793886543,
+        "gradeBand": "steep"
+      },
+      {
+        "lat": 24.696714,
+        "lng": 121.063115,
+        "ele": 147.25,
+        "distanceKm": 7.282609886051399,
+        "gradePct": 6.697570027828414,
+        "smoothedEle": 147.06574176567187,
+        "gradeBand": "steep"
+      },
+      {
+        "lat": 24.696751,
+        "lng": 121.06346,
+        "ele": 147.5,
+        "distanceKm": 7.317705254333462,
+        "gradePct": 4.648532181118486,
+        "smoothedEle": 148.3855777079896,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.696733,
+        "lng": 121.06378,
+        "ele": 150.25,
+        "distanceKm": 7.350094925053863,
+        "gradePct": 4.1362143023410605,
+        "smoothedEle": 149.72196336026545,
+        "gradeBand": "hard"
       },
       {
         "lat": 24.696723,
-        "lng": 121.053905,
-        "ele": 107.75,
-        "distanceKm": 7.0556479785197626,
-        "gradePct": -5.1644580466468755,
-        "smoothedEle": 109.40402580887657,
-        "gradeBand": "descent"
+        "lng": 121.063834,
+        "ele": 150.5,
+        "distanceKm": 7.355662407579026,
+        "gradePct": 4.1056535339972,
+        "smoothedEle": 149.94481927411837,
+        "gradeBand": "hard"
       },
       {
-        "lat": 24.696543,
-        "lng": 121.053739,
-        "ele": 109.5,
-        "distanceKm": 7.081760029946562,
-        "gradePct": -2.5657458076002038,
-        "smoothedEle": 110.07930718270931,
-        "gradeBand": "descent"
+        "lat": 24.696569,
+        "lng": 121.064103,
+        "ele": 151.5,
+        "distanceKm": 7.387783171756144,
+        "gradePct": 4.014559505056937,
+        "smoothedEle": 151.27485367884503,
+        "gradeBand": "hard"
       },
       {
-        "lat": 24.696336,
-        "lng": 121.05373,
-        "ele": 111.75,
-        "distanceKm": 7.104795362339625,
-        "gradePct": 0.7321349985800393,
-        "smoothedEle": 111.68039026928153,
+        "lat": 24.696323,
+        "lng": 121.064381,
+        "ele": 152,
+        "distanceKm": 7.426987734012067,
+        "gradePct": 3.4192591451718055,
+        "smoothedEle": 152.18782847932252,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.696124,
+        "lng": 121.064776,
+        "ele": 153.25,
+        "distanceKm": 7.472617002222831,
+        "gradePct": 2.3197497077579015,
+        "smoothedEle": 152.96661311974643,
         "gradeBand": "moderate"
       },
       {
-        "lat": 24.69597359180125,
-        "lng": 121.053624522718,
-        "ele": 115.31549462850386,
-        "distanceKm": 7.146478403750757,
-        "gradePct": 5.333758585009538,
-        "smoothedEle": 114.83945065603422,
-        "gradeBand": "hard"
+        "lat": 24.69605,
+        "lng": 121.064918,
+        "ele": 153.75,
+        "distanceKm": 7.4891548739103735,
+        "gradePct": 1.618471298256117,
+        "smoothedEle": 152.9252684405276,
+        "gradeBand": "moderate"
       },
       {
-        "lat": 24.695613,
-        "lng": 121.05351,
-        "ele": 117.25,
-        "distanceKm": 7.18821027497416,
-        "gradePct": 6.0874203910311095,
-        "smoothedEle": 116.61505530097755,
-        "gradeBand": "steep"
+        "lat": 24.696008,
+        "lng": 121.064967,
+        "ele": 154,
+        "distanceKm": 7.495960413244702,
+        "gradePct": 1.4429737031731287,
+        "smoothedEle": 152.90825459219175,
+        "gradeBand": "moderate"
       },
       {
-        "lat": 24.695227,
-        "lng": 121.053515,
-        "ele": 117,
-        "distanceKm": 7.2311345481776135,
-        "gradePct": 4.092366209528123,
-        "smoothedEle": 117.76894187659315,
-        "gradeBand": "hard"
+        "lat": 24.695919,
+        "lng": 121.065001,
+        "ele": 153.5,
+        "distanceKm": 7.506435915991423,
+        "gradePct": 0.7761617335713736,
+        "smoothedEle": 152.48539050721774,
+        "gradeBand": "moderate"
       },
       {
-        "lat": 24.6951,
-        "lng": 121.053659,
-        "ele": 118.75,
-        "distanceKm": 7.2514091518236174,
-        "gradePct": 3.966452991766118,
-        "smoothedEle": 119.01569676094275,
-        "gradeBand": "hard"
+        "lat": 24.695752,
+        "lng": 121.065014,
+        "ele": 151.75,
+        "distanceKm": 7.525051878632371,
+        "gradePct": -1.1466338224817079,
+        "smoothedEle": 150.9961134959419,
+        "gradeBand": "descent"
       },
       {
-        "lat": 24.694921,
-        "lng": 121.054279,
-        "ele": 124.25,
-        "distanceKm": 7.3171314852905445,
-        "gradePct": 5.781322863245456,
-        "smoothedEle": 123.17383562230167,
-        "gradeBand": "hard"
+        "lat": 24.695356,
+        "lng": 121.065308,
+        "ele": 145.25,
+        "distanceKm": 7.578165923206397,
+        "gradePct": -6.797546587991999,
+        "smoothedEle": 146.15519422929555,
+        "gradeBand": "descent"
       },
       {
-        "lat": 24.694761,
-        "lng": 121.054479,
-        "ele": 124,
-        "distanceKm": 7.344053148149806,
-        "gradePct": 5.403288497402774,
-        "smoothedEle": 123.9666393743151,
-        "gradeBand": "hard"
+        "lat": 24.695309,
+        "lng": 121.065409,
+        "ele": 144,
+        "distanceKm": 7.589630025327795,
+        "gradePct": -7.481814909061056,
+        "smoothedEle": 145.442265652923,
+        "gradeBand": "descent"
       },
       {
-        "lat": 24.694654,
-        "lng": 121.054514,
-        "ele": 123.75,
-        "distanceKm": 7.356465321140936,
-        "gradePct": 4.537956190204584,
-        "smoothedEle": 123.87354807688162,
-        "gradeBand": "hard"
+        "lat": 24.695331,
+        "lng": 121.065654,
+        "ele": 143.75,
+        "distanceKm": 7.614501852839172,
+        "gradePct": -6.430321994586728,
+        "smoothedEle": 145.40979356481105,
+        "gradeBand": "descent"
       },
       {
-        "lat": 24.69409,
-        "lng": 121.054573,
+        "lat": 24.695503,
+        "lng": 121.066015,
+        "ele": 148.25,
+        "distanceKm": 7.655682660334674,
+        "gradePct": -1.650469749856717,
+        "smoothedEle": 146.55389360759864,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695549,
+        "lng": 121.066581,
+        "ele": 146.5,
+        "distanceKm": 7.713091281928942,
+        "gradePct": 0.38720883772256937,
+        "smoothedEle": 145.79884401159367,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.695715,
+        "lng": 121.067156,
+        "ele": 141,
+        "distanceKm": 7.774042898312342,
+        "gradePct": -2.9242951995851847,
+        "smoothedEle": 143.38812091068615,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.696103,
+        "lng": 121.067447,
+        "ele": 146.5,
+        "distanceKm": 7.826250521540356,
+        "gradePct": 0.17732833909482856,
+        "smoothedEle": 145.4557057116733,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.696369,
+        "lng": 121.067927,
+        "ele": 147.75,
+        "distanceKm": 7.883051149875893,
+        "gradePct": 1.671737064712892,
+        "smoothedEle": 145.416612848819,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.696411,
+        "lng": 121.068131,
+        "ele": 145,
+        "distanceKm": 7.904182691906961,
+        "gradePct": -1.2881101935733785,
+        "smoothedEle": 143.29364059888232,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.696369,
+        "lng": 121.068309,
+        "ele": 140,
+        "distanceKm": 7.922761616596614,
+        "gradePct": -5.966063288442022,
+        "smoothedEle": 139.35147089984545,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695988,
+        "lng": 121.068603,
+        "ele": 126.5,
+        "distanceKm": 7.974501218803717,
+        "gradePct": -17.190617749078516,
+        "smoothedEle": 128.23187956427225,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695914,
+        "lng": 121.068662,
+        "ele": 124.5,
+        "distanceKm": 7.984661650195912,
+        "gradePct": -18.7141624829768,
+        "smoothedEle": 126.54065207005821,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695837,
+        "lng": 121.068777,
+        "ele": 122.5,
+        "distanceKm": 7.999093669599261,
+        "gradePct": -19.583134394584008,
+        "smoothedEle": 124.22177287488358,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695837,
+        "lng": 121.068859,
+        "ele": 122.25,
+        "distanceKm": 8.00737772086806,
+        "gradePct": -18.665354837648064,
+        "smoothedEle": 123.95034844417269,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695905,
+        "lng": 121.069027,
+        "ele": 123.25,
+        "distanceKm": 8.025958039463864,
+        "gradePct": -15.457377540316998,
+        "smoothedEle": 123.20713570034056,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695922,
+        "lng": 121.069113,
         "ele": 123.5,
-        "distanceKm": 7.41946196447889,
-        "gradePct": 0.5938146668264771,
-        "smoothedEle": 123.83627950620765,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.693617999999997,
-        "lng": 121.0546805,
-        "ele": 124.75000000000001,
-        "distanceKm": 7.473057914818076,
-        "gradePct": 0.8862679852983777,
-        "smoothedEle": 124.74999994790223,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.693146,
-        "lng": 121.054788,
-        "ele": 126,
-        "distanceKm": 7.52665387349291,
-        "gradePct": 2.999594001256849,
-        "smoothedEle": 126.95848341062565,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.692818,
-        "lng": 121.054996,
-        "ele": 130.25,
-        "distanceKm": 7.568746399319017,
-        "gradePct": 4.044677185387229,
-        "smoothedEle": 128.7211730752171,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.692749,
-        "lng": 121.055035,
-        "ele": 130.75,
-        "distanceKm": 7.577371410581716,
-        "gradePct": 3.729751411024835,
-        "smoothedEle": 128.6574939405706,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.692684,
-        "lng": 121.055048,
-        "ele": 130.75,
-        "distanceKm": 7.5847174483414905,
-        "gradePct": 3.298493768397745,
-        "smoothedEle": 128.5289382797745,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.692572,
-        "lng": 121.054974,
-        "ele": 129.5,
-        "distanceKm": 7.599242928837956,
-        "gradePct": 2.380189958286786,
-        "smoothedEle": 128.20917369272664,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.692557,
-        "lng": 121.05494,
-        "ele": 129,
-        "distanceKm": 7.603061409647276,
-        "gradePct": 1.9937361917781757,
-        "smoothedEle": 127.98006484416742,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.692543,
-        "lng": 121.054908,
-        "ele": 128.25,
-        "distanceKm": 7.606649579408686,
-        "gradePct": 1.630591321235761,
-        "smoothedEle": 127.76477465848279,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.692467,
-        "lng": 121.054638,
-        "ele": 124.25,
-        "distanceKm": 7.635206147351881,
-        "gradePct": -1.6446277660774826,
-        "smoothedEle": 125.67199534854795,
+        "distanceKm": 8.034849449745076,
+        "gradePct": -13.796780549178797,
+        "smoothedEle": 122.9568395939973,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.6921955,
-        "lng": 121.054199,
-        "ele": 122.875,
-        "distanceKm": 7.6888571987939756,
-        "gradePct": -5.562805076215048,
-        "smoothedEle": 122.87500054917035,
+        "lat": 24.695755,
+        "lng": 121.069469,
+        "ele": 122.5,
+        "distanceKm": 8.075325413461671,
+        "gradePct": -5.547014545164237,
+        "smoothedEle": 122.54767589668677,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.691924,
-        "lng": 121.05376,
-        "ele": 121.5,
-        "distanceKm": 7.7425083301153945,
-        "gradePct": -2.858762819118748,
-        "smoothedEle": 122.4325472182439,
+        "lat": 24.695802,
+        "lng": 121.069654,
+        "ele": 122,
+        "distanceKm": 8.094731993727976,
+        "gradePct": -2.7018329510524763,
+        "smoothedEle": 122.22075656988345,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.691511,
-        "lng": 121.053543,
-        "ele": 124,
-        "distanceKm": 7.793396430429102,
-        "gradePct": 1.437292488903571,
-        "smoothedEle": 124.27485863347998,
+        "lat": 24.695766,
+        "lng": 121.069974,
+        "ele": 121.75,
+        "distanceKm": 8.127306907164167,
+        "gradePct": -0.8957724856938857,
+        "smoothedEle": 122.27339214788897,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695748,
+        "lng": 121.070329,
+        "ele": 123,
+        "distanceKm": 8.163226617959218,
+        "gradePct": 0.12767232365803285,
+        "smoothedEle": 122.79765260660845,
         "gradeBand": "moderate"
       },
       {
-        "lat": 24.691041,
-        "lng": 121.0534035,
-        "ele": 127.875,
-        "distanceKm": 7.84752508180672,
-        "gradePct": 5.260830113658163,
-        "smoothedEle": 127.87499973186112,
+        "lat": 24.695493,
+        "lng": 121.070702,
+        "ele": 123.75,
+        "distanceKm": 8.210385440855381,
+        "gradePct": 1.9657585832096414,
+        "smoothedEle": 124.21180848929623,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.695389,
+        "lng": 121.071155,
+        "ele": 126.25,
+        "distanceKm": 8.257588408580535,
+        "gradePct": 3.632519947392664,
+        "smoothedEle": 126.34788096061689,
         "gradeBand": "hard"
       },
       {
-        "lat": 24.690571,
-        "lng": 121.053264,
-        "ele": 131.75,
-        "distanceKm": 7.901653747023763,
-        "gradePct": 6.404194692715473,
-        "smoothedEle": 131.22825424065013,
+        "lat": 24.695396,
+        "lng": 121.07136,
+        "ele": 127.75,
+        "distanceKm": 8.27831323239371,
+        "gradePct": 4.242591641767093,
+        "smoothedEle": 127.49264791840258,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.695495,
+        "lng": 121.071592,
+        "ele": 128.75,
+        "distanceKm": 8.304207576237108,
+        "gradePct": 4.837919254212951,
+        "smoothedEle": 128.86447155907013,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.695528,
+        "lng": 121.071972,
+        "ele": 131,
+        "distanceKm": 8.342772153694588,
+        "gradePct": 5.019292048673268,
+        "smoothedEle": 130.6966941026625,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.695619,
+        "lng": 121.072334,
+        "ele": 132.25,
+        "distanceKm": 8.380717336692058,
+        "gradePct": 5.242256331996249,
+        "smoothedEle": 132.86226824660778,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.69580858166089,
+        "lng": 121.07269652756732,
+        "ele": 135.71406499144584,
+        "distanceKm": 8.42297529921047,
+        "gradePct": 6.916163686936552,
+        "smoothedEle": 136.67229923899623,
         "gradeBand": "steep"
       },
       {
-        "lat": 24.689912,
-        "lng": 121.053243,
-        "ele": 134.5,
-        "distanceKm": 7.974962012327771,
-        "gradePct": 4.8016329376286135,
-        "smoothedEle": 134.37634225235377,
+        "lat": 24.695982,
+        "lng": 121.073069,
+        "ele": 142.5,
+        "distanceKm": 8.46525753156444,
+        "gradePct": 9.102203061997164,
+        "smoothedEle": 141.08216289393647,
+        "gradeBand": "extreme"
+      },
+      {
+        "lat": 24.696244,
+        "lng": 121.073314,
+        "ele": 144.25,
+        "distanceKm": 8.503485189351814,
+        "gradePct": 8.227705021412788,
+        "smoothedEle": 143.14275146872077,
+        "gradeBand": "steep"
+      },
+      {
+        "lat": 24.696608,
+        "lng": 121.073467,
+        "ele": 142.25,
+        "distanceKm": 8.54681113565994,
+        "gradePct": 4.47514352276845,
+        "smoothedEle": 143.63342287661897,
         "gradeBand": "hard"
       },
       {
-        "lat": 24.689456,
-        "lng": 121.053322,
-        "ele": 135.5,
-        "distanceKm": 8.02629129144304,
-        "gradePct": 3.752607718176008,
-        "smoothedEle": 136.03887578445003,
-        "gradeBand": "hard"
+        "lat": 24.696857,
+        "lng": 121.073761,
+        "ele": 145,
+        "distanceKm": 8.587416056409015,
+        "gradePct": 1.163912189486386,
+        "smoothedEle": 143.44048786651229,
+        "gradeBand": "moderate"
       },
       {
-        "lat": 24.688934,
-        "lng": 121.053374,
-        "ele": 139.25,
-        "distanceKm": 8.084572390703114,
-        "gradePct": 4.760924753588074,
-        "smoothedEle": 139.44854307645238,
-        "gradeBand": "hard"
+        "lat": 24.696917,
+        "lng": 121.073815,
+        "ele": 145,
+        "distanceKm": 8.596034176634848,
+        "gradePct": 0.591642444902677,
+        "smoothedEle": 143.33276136368937,
+        "gradeBand": "moderate"
       },
       {
-        "lat": 24.688318,
-        "lng": 121.053414,
+        "lat": 24.696981,
+        "lng": 121.073844,
+        "ele": 144.75,
+        "distanceKm": 8.603730117036568,
+        "gradePct": 0.08977076982762387,
+        "smoothedEle": 143.23529607321683,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.697066,
+        "lng": 121.073852,
+        "ele": 143.75,
+        "distanceKm": 8.613216189664103,
+        "gradePct": -0.420818198524303,
+        "smoothedEle": 142.83213798654663,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.697265,
+        "lng": 121.073829,
+        "ele": 141,
+        "distanceKm": 8.635465669389028,
+        "gradePct": -2.157891712909625,
+        "smoothedEle": 141.34704243160368,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.697585,
+        "lng": 121.073907,
+        "ele": 138,
+        "distanceKm": 8.671910162320705,
+        "gradePct": -4.63978105517329,
+        "smoothedEle": 138.87438334554847,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.697633,
+        "lng": 121.073955,
+        "ele": 137.75,
+        "distanceKm": 8.679121371084193,
+        "gradePct": -4.870671206394593,
+        "smoothedEle": 138.60922900639136,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.697652,
+        "lng": 121.073997,
+        "ele": 137.5,
+        "distanceKm": 8.683861253560197,
+        "gradePct": -4.978496337782946,
+        "smoothedEle": 138.47888223830128,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.697655,
+        "lng": 121.074076,
+        "ele": 137.5,
+        "distanceKm": 8.691849082002193,
+        "gradePct": -5.125858090451222,
+        "smoothedEle": 138.25921695614636,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.69764,
+        "lng": 121.074193,
+        "ele": 137.75,
+        "distanceKm": 8.703785940346517,
+        "gradePct": -5.299029496117062,
+        "smoothedEle": 137.93389408642693,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.697579,
+        "lng": 121.074501,
+        "ele": 138.25,
+        "distanceKm": 8.735631933279514,
+        "gradePct": -3.0570621549860952,
+        "smoothedEle": 138.27869972676154,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.69753062238648,
+        "lng": 121.07492870424738,
+        "ele": 139.06316340114145,
+        "distanceKm": 8.779173738322893,
+        "gradePct": 0.560752322833084,
+        "smoothedEle": 139.1685412301602,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.697494,
+        "lng": 121.075358,
+        "ele": 140.25,
+        "distanceKm": 8.822733531051385,
+        "gradePct": 2.714628299827818,
+        "smoothedEle": 140.85367335013066,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.697347,
+        "lng": 121.075973,
         "ele": 145.5,
-        "distanceKm": 8.153187671812681,
-        "gradePct": 7.104706732252364,
-        "smoothedEle": 144.71712367470937,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.687704,
-        "lng": 121.053443,
-        "ele": 146.75,
-        "distanceKm": 8.221524289407004,
-        "gradePct": 5.1807493660239645,
-        "smoothedEle": 147.46662041711795,
+        "distanceKm": 8.886977345591744,
+        "gradePct": 5.76315920861085,
+        "smoothedEle": 145.2335868444833,
         "gradeBand": "hard"
       },
       {
-        "lat": 24.68718,
-        "lng": 121.053331,
-        "ele": 151.25,
-        "distanceKm": 8.280879109089073,
-        "gradePct": 5.549281367874036,
-        "smoothedEle": 151.38055905348335,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.686644,
-        "lng": 121.053414,
-        "ele": 156.5,
-        "distanceKm": 8.341066704874335,
-        "gradePct": 7.23334069152443,
-        "smoothedEle": 155.98861492572402,
+        "lat": 24.697116,
+        "lng": 121.076579,
+        "ele": 149.5,
+        "distanceKm": 8.953368009951795,
+        "gradePct": 6.198362039658769,
+        "smoothedEle": 149.14058459080357,
         "gradeBand": "steep"
       },
       {
-        "lat": 24.686129,
-        "lng": 121.053393,
+        "lat": 24.696984,
+        "lng": 121.07692,
+        "ele": 150.5,
+        "distanceKm": 8.99081374923128,
+        "gradePct": 4.572434302306322,
+        "smoothedEle": 150.03178813553913,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.696726,
+        "lng": 121.077164,
+        "ele": 150,
+        "distanceKm": 9.028637524887955,
+        "gradePct": 4.177661307530727,
+        "smoothedEle": 151.86289143937262,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.69636,
+        "lng": 121.077304,
+        "ele": 156,
+        "distanceKm": 9.071722495604146,
+        "gradePct": 5.8270830379068945,
+        "smoothedEle": 155.40450191186036,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.696231,
+        "lng": 121.077376,
+        "ele": 158,
+        "distanceKm": 9.087805495101287,
+        "gradePct": 6.891779773649912,
+        "smoothedEle": 156.8519718666031,
+        "gradeBand": "steep"
+      },
+      {
+        "lat": 24.696162,
+        "lng": 121.077427,
+        "ele": 158.75,
+        "distanceKm": 9.097047380368348,
+        "gradePct": 7.28878875533064,
+        "smoothedEle": 157.6223559272508,
+        "gradeBand": "steep"
+      },
+      {
+        "lat": 24.696124,
+        "lng": 121.077481,
         "ele": 159,
-        "distanceKm": 8.398371461965464,
-        "gradePct": 6.172208449724104,
-        "smoothedEle": 158.8920092246902,
+        "distanceKm": 9.103947729779037,
+        "gradePct": 7.246195963573824,
+        "smoothedEle": 157.9138189610733,
         "gradeBand": "steep"
       },
       {
-        "lat": 24.685614,
-        "lng": 121.053436,
-        "ele": 161,
-        "distanceKm": 8.455801485860356,
-        "gradePct": 4.0007986157863655,
-        "smoothedEle": 160.7359637632188,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.685507,
-        "lng": 121.053436,
-        "ele": 161.25,
-        "distanceKm": 8.467699359445328,
-        "gradePct": 3.69542956210715,
-        "smoothedEle": 161.0334106028431,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.68524,
-        "lng": 121.053619,
-        "ele": 161.5,
-        "distanceKm": 8.502674919274506,
-        "gradePct": 2.8346308723460925,
-        "smoothedEle": 161.86481485473612,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.684792149471132,
-        "lng": 121.05396873273827,
-        "ele": 163.90779854229686,
-        "distanceKm": 8.563736099837536,
-        "gradePct": 2.9606981155606995,
-        "smoothedEle": 163.895027228209,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.684344,
-        "lng": 121.054318,
-        "ele": 166.25,
-        "distanceKm": 8.624797276039281,
-        "gradePct": 3.9182723062692015,
-        "smoothedEle": 166.51862948134854,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.683785,
-        "lng": 121.054709,
-        "ele": 171.75,
-        "distanceKm": 8.698446645833608,
-        "gradePct": 5.536324147878295,
-        "smoothedEle": 170.92275184276212,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.683332,
-        "lng": 121.055227,
-        "ele": 171,
-        "distanceKm": 8.771085092078447,
-        "gradePct": 0.6862666759603566,
-        "smoothedEle": 169.97283845265216,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.683205,
-        "lng": 121.055345,
-        "ele": 168,
-        "distanceKm": 8.789566496036553,
-        "gradePct": -0.6655782526263204,
-        "smoothedEle": 169.7261538895854,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.683139,
-        "lng": 121.055361,
-        "ele": 168,
-        "distanceKm": 8.797081306176263,
-        "gradePct": -0.8895083758130258,
-        "smoothedEle": 169.9515981937767,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.683042,
-        "lng": 121.055355,
-        "ele": 168.5,
-        "distanceKm": 8.807884251301155,
-        "gradePct": -0.5236470743425362,
-        "smoothedEle": 170.27568654752343,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.682588,
-        "lng": 121.05524,
-        "ele": 174,
-        "distanceKm": 8.85968669122767,
-        "gradePct": 4.072223639401855,
-        "smoothedEle": 174.19412218562343,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.682206,
-        "lng": 121.05487,
-        "ele": 181,
-        "distanceKm": 8.91627083158069,
-        "gradePct": 8.710714888768708,
-        "smoothedEle": 179.62077840957235,
+        "lat": 24.69608,
+        "lng": 121.077588,
+        "ele": 159,
+        "distanceKm": 9.11581305682584,
+        "gradePct": 6.849758345396761,
+        "smoothedEle": 158.09179886677532,
         "gradeBand": "steep"
       },
       {
-        "lat": 24.681847,
-        "lng": 121.05469,
-        "ele": 181.5,
-        "distanceKm": 8.960137432693967,
-        "gradePct": 6.4838929330762145,
-        "smoothedEle": 180.72124311453402,
+        "lat": 24.695968,
+        "lng": 121.078111,
+        "ele": 157.5,
+        "distanceKm": 9.170096955459158,
+        "gradePct": 2.2999551890062917,
+        "smoothedEle": 157.57083672454428,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.696015167805488,
+        "lng": 121.07848711937024,
+        "ele": 156.61737891188608,
+        "distanceKm": 9.208454640456885,
+        "gradePct": -0.5178288541782782,
+        "smoothedEle": 157.46359376706275,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.696087,
+        "lng": 121.078865,
+        "ele": 158.5,
+        "distanceKm": 9.247456617743131,
+        "gradePct": -0.6201596220552141,
+        "smoothedEle": 157.16795624297689,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.696321,
+        "lng": 121.079227,
+        "ele": 155.75,
+        "distanceKm": 9.292339313193876,
+        "gradePct": -1.1372454926617235,
+        "smoothedEle": 156.37140457424212,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.696355,
+        "lng": 121.079675,
+        "ele": 155.25,
+        "distanceKm": 9.337755967869816,
+        "gradePct": -1.5712887291913717,
+        "smoothedEle": 155.67019907064795,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.696243,
+        "lng": 121.080085,
+        "ele": 156.25,
+        "distanceKm": 9.381007826402254,
+        "gradePct": -0.6062498414212336,
+        "smoothedEle": 155.9662592926622,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.69598,
+        "lng": 121.080434,
+        "ele": 156.25,
+        "distanceKm": 9.42681537506602,
+        "gradePct": -0.5022568208147522,
+        "smoothedEle": 155.3368583433091,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695865,
+        "lng": 121.0808,
+        "ele": 153.25,
+        "distanceKm": 9.465939264619962,
+        "gradePct": -1.6345341311004007,
+        "smoothedEle": 154.22858042054784,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695836,
+        "lng": 121.081032,
+        "ele": 153.25,
+        "distanceKm": 9.489597855720232,
+        "gradePct": -1.9745297549035072,
+        "smoothedEle": 153.87370155404378,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695912,
+        "lng": 121.081459,
+        "ele": 154.75,
+        "distanceKm": 9.533555505005435,
+        "gradePct": 0.2520223801442407,
+        "smoothedEle": 155.39795039179253,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.696053,
+        "lng": 121.081812,
+        "ele": 158.25,
+        "distanceKm": 9.572511618025235,
+        "gradePct": 4.48054275573948,
+        "smoothedEle": 158.6105378752082,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.696204,
+        "lng": 121.082207,
+        "ele": 163.25,
+        "distanceKm": 9.615804937778353,
+        "gradePct": 8.018563408319181,
+        "smoothedEle": 162.80100587588865,
         "gradeBand": "steep"
       },
       {
-        "lat": 24.68146,
-        "lng": 121.054647,
-        "ele": 179.25,
-        "distanceKm": 9.00338868707182,
-        "gradePct": 2.300880034470034,
-        "smoothedEle": 180.68620679202945,
-        "gradeBand": "moderate"
+        "lat": 24.696209,
+        "lng": 121.082322,
+        "ele": 164.5,
+        "distanceKm": 9.627436075681775,
+        "gradePct": 8.48758445380844,
+        "smoothedEle": 163.67334121864525,
+        "gradeBand": "steep"
       },
       {
-        "lat": 24.681109,
-        "lng": 121.054494,
-        "ele": 182,
-        "distanceKm": 9.045368075887803,
-        "gradePct": 0.2584161551054942,
-        "smoothedEle": 180.6091460439123,
-        "gradeBand": "moderate"
+        "lat": 24.696173,
+        "lng": 121.082437,
+        "ele": 165.5,
+        "distanceKm": 9.639724219808336,
+        "gradePct": 8.462134081328829,
+        "smoothedEle": 164.36879888090866,
+        "gradeBand": "steep"
       },
       {
-        "lat": 24.680601,
-        "lng": 121.054559,
-        "ele": 179.25,
-        "distanceKm": 9.102235672083623,
-        "gradePct": -1.8055210022868446,
-        "smoothedEle": 178.88161980669912,
-        "gradeBand": "descent"
+        "lat": 24.696119,
+        "lng": 121.082488,
+        "ele": 166,
+        "distanceKm": 9.64763625157554,
+        "gradePct": 7.7544356277044795,
+        "smoothedEle": 164.31358067372946,
+        "gradeBand": "steep"
       },
       {
-        "lat": 24.680263,
-        "lng": 121.054717,
-        "ele": 176,
-        "distanceKm": 9.14306947235388,
-        "gradePct": -3.8645558341239195,
-        "smoothedEle": 176.7488097116188,
-        "gradeBand": "descent"
+        "lat": 24.696046,
+        "lng": 121.082496,
+        "ele": 166,
+        "distanceKm": 9.655793627624206,
+        "gradePct": 6.796214452304379,
+        "smoothedEle": 164.0280725120261,
+        "gradeBand": "steep"
       },
       {
-        "lat": 24.679878,
-        "lng": 121.054781,
-        "ele": 175.25,
-        "distanceKm": 9.186365196623335,
-        "gradePct": -3.1891244285935842,
-        "smoothedEle": 176.17460935141798,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.679461,
-        "lng": 121.05465,
-        "ele": 178,
-        "distanceKm": 9.234585682628543,
-        "gradePct": -0.9616767651800193,
-        "smoothedEle": 176.23025389650903,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.679086,
-        "lng": 121.054867,
-        "ele": 174,
-        "distanceKm": 9.281696793325416,
-        "gradePct": -0.42925130535130207,
-        "smoothedEle": 175.8072717546478,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.678572,
-        "lng": 121.054881,
-        "ele": 177.5,
-        "distanceKm": 9.338868566549115,
-        "gradePct": 0.8676794475385949,
-        "smoothedEle": 177.0594799221845,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.678121,
-        "lng": 121.054945,
-        "ele": 178.75,
-        "distanceKm": 9.389432744025946,
-        "gradePct": 2.0284771148209657,
-        "smoothedEle": 178.00518599035289,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.677694,
-        "lng": 121.055106,
-        "ele": 177,
-        "distanceKm": 9.439622444725686,
-        "gradePct": -0.9062762216823079,
-        "smoothedEle": 176.16730354750493,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.677369,
-        "lng": 121.055318,
-        "ele": 172.62499999999991,
-        "distanceKm": 9.481632201462952,
-        "gradePct": -5.243105459554262,
-        "smoothedEle": 172.6161863265429,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.677044,
-        "lng": 121.05553,
-        "ele": 168.25,
-        "distanceKm": 9.52364198666619,
-        "gradePct": -6.355720535481646,
-        "smoothedEle": 170.3967668821548,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.676966,
-        "lng": 121.055551,
-        "ele": 168,
-        "distanceKm": 9.532570979339605,
-        "gradePct": -5.995268557756667,
-        "smoothedEle": 170.4302506046801,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.676905,
-        "lng": 121.055546,
-        "ele": 168.25,
-        "distanceKm": 9.539372667344026,
-        "gradePct": -5.617944121414544,
-        "smoothedEle": 170.55850595332552,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.676836,
-        "lng": 121.055506,
-        "ele": 169.5,
-        "distanceKm": 9.548044536052915,
-        "gradePct": -4.625875804770561,
-        "smoothedEle": 170.8295018504783,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.6767,
-        "lng": 121.055358,
-        "ele": 173,
-        "distanceKm": 9.56931218172367,
-        "gradePct": -1.46915639842644,
-        "smoothedEle": 172.18845072310867,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.676532,
-        "lng": 121.055093,
-        "ele": 175.75,
-        "distanceKm": 9.601960497064102,
-        "gradePct": 3.630393582357341,
-        "smoothedEle": 175.17261549060598,
+        "lat": 24.695992,
+        "lng": 121.082464,
+        "ele": 165.75,
+        "distanceKm": 9.662613114486122,
+        "gradePct": 5.995150890018486,
+        "smoothedEle": 163.78939047185906,
         "gradeBand": "hard"
       },
       {
-        "lat": 24.676488,
-        "lng": 121.05505,
-        "ele": 175.5,
-        "distanceKm": 9.608503754650169,
-        "gradePct": 4.712196977442761,
-        "smoothedEle": 175.9087319690385,
-        "gradeBand": "hard"
+        "lat": 24.695924,
+        "lng": 121.082008,
+        "ele": 159.75,
+        "distanceKm": 9.709296886889597,
+        "gradePct": -0.7532705975959031,
+        "smoothedEle": 161.41780486058275,
+        "gradeBand": "descent"
       },
       {
-        "lat": 24.676037,
-        "lng": 121.05472,
-        "ele": 180.75,
-        "distanceKm": 9.668725915800351,
-        "gradePct": 9.603792551145323,
-        "smoothedEle": 181.75478236165978,
+        "lat": 24.695897,
+        "lng": 121.081944,
+        "ele": 158.75,
+        "distanceKm": 9.716425530167875,
+        "gradePct": -1.5607800492092905,
+        "smoothedEle": 161.28677025589352,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695793,
+        "lng": 121.081912,
+        "ele": 158.5,
+        "distanceKm": 9.728433184501759,
+        "gradePct": -2.496927080996935,
+        "smoothedEle": 161.23284633455503,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695715,
+        "lng": 121.081947,
+        "ele": 159.5,
+        "distanceKm": 9.737799459789057,
+        "gradePct": -2.8461045532025464,
+        "smoothedEle": 161.41376094528167,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695656,
+        "lng": 121.081995,
+        "ele": 160.75,
+        "distanceKm": 9.745957590273365,
+        "gradePct": -2.2429588330375134,
+        "smoothedEle": 162.08233724708748,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695619,
+        "lng": 121.082086,
+        "ele": 162.5,
+        "distanceKm": 9.756029501276013,
+        "gradePct": -0.93028858686063,
+        "smoothedEle": 163.08952834735226,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695607,
+        "lng": 121.082177,
+        "ele": 164.25,
+        "distanceKm": 9.765319124562048,
+        "gradePct": 0.39114757296636216,
+        "smoothedEle": 164.04306983628885,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.695619,
+        "lng": 121.082325,
+        "ele": 166.5,
+        "distanceKm": 9.780330276115272,
+        "gradePct": 2.9450163844497115,
+        "smoothedEle": 165.83435608000897,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.695673,
+        "lng": 121.082555,
+        "ele": 169.75,
+        "distanceKm": 9.804329366332071,
+        "gradePct": 9.197846064004867,
+        "smoothedEle": 170.86800628644923,
         "gradeBand": "extreme"
       },
       {
-        "lat": 24.675732,
-        "lng": 121.054484,
-        "ele": 187.75,
-        "distanceKm": 9.710184469186995,
-        "gradePct": 10.323614706527346,
-        "smoothedEle": 186.39550159545314,
+        "lat": 24.695678,
+        "lng": 121.083049,
+        "ele": 181.25,
+        "distanceKm": 9.854238885447792,
+        "gradePct": 16.760882118719255,
+        "smoothedEle": 179.67134888324944,
         "gradeBand": "extreme"
       },
       {
-        "lat": 24.675306,
-        "lng": 121.054342,
-        "ele": 190.5,
-        "distanceKm": 9.759678852683678,
-        "gradePct": 6.323812949798076,
-        "smoothedEle": 187.2003540481893,
-        "gradeBand": "steep"
+        "lat": 24.695785,
+        "lng": 121.083374,
+        "ele": 185.25,
+        "distanceKm": 9.889161308743018,
+        "gradePct": 16.129460894236075,
+        "smoothedEle": 183.81606757242062,
+        "gradeBand": "extreme"
       },
       {
-        "lat": 24.675216,
-        "lng": 121.054336,
-        "ele": 189.75,
-        "distanceKm": 9.769704756173338,
-        "gradePct": 4.533931586613635,
-        "smoothedEle": 186.39828176901648,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.675143,
-        "lng": 121.054355,
-        "ele": 188,
-        "distanceKm": 9.778045931503538,
-        "gradePct": 2.932956820633517,
-        "smoothedEle": 185.7309877426005,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.675079,
-        "lng": 121.054419,
+        "lat": 24.696019,
+        "lng": 121.083762,
         "ele": 184.75,
-        "distanceKm": 9.787661661355202,
-        "gradePct": 1.0209346137308764,
-        "smoothedEle": 184.89531525908095,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.675004,
-        "lng": 121.054521,
-        "ele": 179.75,
-        "distanceKm": 9.80091943881537,
-        "gradePct": -1.822014823172146,
-        "smoothedEle": 183.53639306941366,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.674394,
-        "lng": 121.054693,
-        "ele": 180.25,
-        "distanceKm": 9.870939517431104,
-        "gradePct": -6.871674695802366,
-        "smoothedEle": 179.42782617259283,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.674277,
-        "lng": 121.054755,
-        "ele": 180,
-        "distanceKm": 9.885379085901773,
-        "gradePct": -6.857124854669645,
-        "smoothedEle": 178.23656177376267,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.674221,
-        "lng": 121.054808,
-        "ele": 179.5,
-        "distanceKm": 9.893592083230901,
-        "gradePct": -6.865852446207921,
-        "smoothedEle": 177.4215945706138,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.674185,
-        "lng": 121.054857,
-        "ele": 178.75,
-        "distanceKm": 9.899958984703783,
-        "gradePct": -6.914664731184185,
-        "smoothedEle": 176.72017488466713,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.674082,
-        "lng": 121.05517,
-        "ele": 171.5,
-        "distanceKm": 9.933595251696834,
-        "gradePct": -8.756671525731466,
-        "smoothedEle": 172.86240345741933,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.674029,
-        "lng": 121.055251,
-        "ele": 169.5,
-        "distanceKm": 9.943680724969223,
-        "gradePct": -9.253312749402602,
-        "smoothedEle": 171.77397709947107,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.673953,
-        "lng": 121.055286,
-        "ele": 168.5,
-        "distanceKm": 9.952841688915964,
-        "gradePct": -9.267763598289267,
-        "smoothedEle": 171.22198853342323,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.673868,
-        "lng": 121.055286,
-        "ele": 168.5,
-        "distanceKm": 9.96229327073605,
-        "gradePct": -9.256639256042211,
-        "smoothedEle": 170.6785225787683,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.67378,
-        "lng": 121.055256,
-        "ele": 169,
-        "distanceKm": 9.972537204913742,
-        "gradePct": -8.788914305000308,
-        "smoothedEle": 170.5071026502749,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.673463,
-        "lng": 121.055023,
-        "ele": 173,
-        "distanceKm": 10.01492534860592,
-        "gradePct": -2.0780269367897763,
-        "smoothedEle": 172.92564322862927,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.673202,
-        "lng": 121.054905,
-        "ele": 176.25,
-        "distanceKm": 10.04630100822197,
-        "gradePct": 2.7898025502295054,
-        "smoothedEle": 174.40589600298694,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.673046,
-        "lng": 121.054918,
-        "ele": 176,
-        "distanceKm": 10.063697104702957,
-        "gradePct": 3.5334136926779376,
-        "smoothedEle": 174.18844479697464,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.6728,
-        "lng": 121.055146,
-        "ele": 171.75,
-        "distanceKm": 10.09946003708804,
-        "gradePct": -0.35465815379043997,
-        "smoothedEle": 171.68858069934865,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.672617,
-        "lng": 121.055514,
-        "ele": 166.75,
-        "distanceKm": 10.141847855651864,
-        "gradePct": -6.795695290856198,
-        "smoothedEle": 167.40010819050087,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.672464,
-        "lng": 121.055951,
-        "ele": 163.75,
-        "distanceKm": 10.189168099291628,
-        "gradePct": -5.728030156119693,
-        "smoothedEle": 166.67996710323627,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.67214,
-        "lng": 121.056511,
-        "ele": 176.75,
-        "distanceKm": 10.256248549171126,
-        "gradePct": 8.377086498300343,
-        "smoothedEle": 175.55803835547218,
+        "distanceKm": 9.936208951349476,
+        "gradePct": 8.552348426864656,
+        "smoothedEle": 185.04346857464614,
         "gradeBand": "steep"
       },
       {
-        "lat": 24.671999,
-        "lng": 121.057008,
-        "ele": 180.75,
-        "distanceKm": 10.308858093505883,
-        "gradePct": 10.264491085493498,
-        "smoothedEle": 179.55042120633465,
-        "gradeBand": "extreme"
+        "lat": 24.696078,
+        "lng": 121.084108,
+        "ele": 185.25,
+        "distanceKm": 9.971773878884557,
+        "gradePct": 1.8729912145189538,
+        "smoothedEle": 183.6254561302228,
+        "gradeBand": "moderate"
       },
       {
-        "lat": 24.671875,
-        "lng": 121.05748,
+        "lat": 24.696302,
+        "lng": 121.0845,
         "ele": 179.75,
-        "distanceKm": 10.358504157433787,
-        "gradePct": 3.746248953873404,
-        "smoothedEle": 179.47545875475504,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.671652,
-        "lng": 121.057946,
-        "ele": 177.5,
-        "distanceKm": 10.411720964046637,
-        "gradePct": -1.5197875252616253,
-        "smoothedEle": 178.0263109256054,
+        "distanceKm": 10.01855729020765,
+        "gradePct": -4.289546702897824,
+        "smoothedEle": 180.293417043533,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.671423,
-        "lng": 121.058296,
-        "ele": 177.5,
-        "distanceKm": 10.455299946793682,
-        "gradePct": -2.3781334030807186,
-        "smoothedEle": 177.10216350934397,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.671463,
-        "lng": 121.058653,
-        "ele": 176.25,
-        "distanceKm": 10.491646108288716,
-        "gradePct": -1.7176583325579093,
-        "smoothedEle": 176.85531135545168,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.671464,
-        "lng": 121.059232,
-        "ele": 177.25,
-        "distanceKm": 10.550151135329589,
-        "gradePct": -0.5286201605702577,
-        "smoothedEle": 176.68273040435457,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.671538,
-        "lng": 121.059809,
-        "ele": 175.5,
-        "distanceKm": 10.609031737518182,
-        "gradePct": -0.7921061044210688,
-        "smoothedEle": 176.0119202832321,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.671715,
-        "lng": 121.060364,
-        "ele": 176.25,
-        "distanceKm": 10.668464923549584,
-        "gradePct": 0.3833423237259424,
-        "smoothedEle": 176.8574288956904,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.67186,
-        "lng": 121.060718,
-        "ele": 178.75,
-        "distanceKm": 10.707700567703778,
-        "gradePct": 1.7994909635928658,
-        "smoothedEle": 177.82657688968936,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.6720795,
-        "lng": 121.061122,
-        "ele": 178.125,
-        "distanceKm": 10.75526259578759,
-        "gradePct": 1.4553899160034456,
-        "smoothedEle": 178.12499980731866,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.672299,
-        "lng": 121.061526,
-        "ele": 177.5,
-        "distanceKm": 10.802824562213386,
-        "gradePct": -0.7084878355617857,
-        "smoothedEle": 176.99764829059202,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.672516619369134,
-        "lng": 121.0618296065328,
-        "ele": 175.31306686478442,
-        "distanceKm": 10.841897179149,
-        "gradePct": -1.168063276431586,
-        "smoothedEle": 176.87307663699042,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.672765,
-        "lng": 121.062104,
+        "lat": 24.696351,
+        "lng": 121.084647,
         "ele": 178.25,
-        "distanceKm": 10.881031700315894,
-        "gradePct": 0.011613281681775375,
-        "smoothedEle": 177.52581329963522,
+        "distanceKm": 10.03437587664802,
+        "gradePct": -6.165448662899302,
+        "smoothedEle": 178.83019779779866,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.696329,
+        "lng": 121.085069,
+        "ele": 176,
+        "distanceKm": 10.077078388799741,
+        "gradePct": -6.671816280404495,
+        "smoothedEle": 176.57583853364102,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.696201,
+        "lng": 121.0854915,
+        "ele": 175.75,
+        "distanceKm": 10.122071825078043,
+        "gradePct": -4.218322516023123,
+        "smoothedEle": 175.75000005199843,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.696073,
+        "lng": 121.085914,
+        "ele": 175.5,
+        "distanceKm": 10.167065302955086,
+        "gradePct": -1.665000613869103,
+        "smoothedEle": 175.43945068045687,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695871,
+        "lng": 121.086337,
+        "ele": 175,
+        "distanceKm": 10.215342314076349,
+        "gradePct": -0.08119757392486833,
+        "smoothedEle": 175.7923202532766,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695619,
+        "lng": 121.08671,
+        "ele": 177.5,
+        "distanceKm": 10.262301291589967,
+        "gradePct": 1.7975992562792338,
+        "smoothedEle": 177.26993160770843,
         "gradeBand": "moderate"
       },
       {
-        "lat": 24.673043,
-        "lng": 121.062682,
-        "ele": 179.25,
-        "distanceKm": 10.947111198813134,
-        "gradePct": 2.126262872937254,
-        "smoothedEle": 179.0863057405867,
+        "lat": 24.695593,
+        "lng": 121.086793,
+        "ele": 178.25,
+        "distanceKm": 10.271170793425298,
+        "gradePct": 2.1109053647464084,
+        "smoothedEle": 177.580364171945,
         "gradeBand": "moderate"
       },
       {
-        "lat": 24.673141779666192,
-        "lng": 121.06312427636385,
-        "ele": 179.2718901644809,
-        "distanceKm": 10.993130351792495,
-        "gradePct": 1.4749734497083917,
-        "smoothedEle": 179.2865009966412,
+        "lat": 24.695595,
+        "lng": 121.086885,
+        "ele": 178.5,
+        "distanceKm": 10.280467773218101,
+        "gradePct": 2.368345548244443,
+        "smoothedEle": 177.9057584646931,
         "gradeBand": "moderate"
       },
       {
-        "lat": 24.673227853110795,
-        "lng": 121.06356985090923,
-        "ele": 179.3479267763206,
-        "distanceKm": 11.039158772143328,
-        "gradePct": 0.44942062185626397,
-        "smoothedEle": 179.34792678787488,
+        "lat": 24.695739,
+        "lng": 121.087276,
+        "ele": 178.5,
+        "distanceKm": 10.323090572717623,
+        "gradePct": 2.851314377189861,
+        "smoothedEle": 178.88744136459098,
         "gradeBand": "moderate"
       },
       {
-        "lat": 24.673313926555398,
-        "lng": 121.06401542545461,
-        "ele": 179.4239633881603,
-        "distanceKm": 11.085187162102718,
-        "gradePct": 0.17201733924420698,
-        "smoothedEle": 179.42396339971464,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.6734,
-        "lng": 121.064461,
+        "lat": 24.695958,
+        "lng": 121.08752,
         "ele": 179.5,
-        "distanceKm": 11.131215521670569,
-        "gradePct": 1.4738318563452475,
-        "smoothedEle": 180.81115822731385,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.673383,
-        "lng": 121.06483,
-        "ele": 183.75,
-        "distanceKm": 11.168548353167825,
-        "gradePct": 4.38989159437783,
-        "smoothedEle": 183.78636850895634,
+        "distanceKm": 10.357740737162322,
+        "gradePct": 3.164061216611043,
+        "smoothedEle": 180.29049040238453,
         "gradeBand": "hard"
       },
       {
-        "lat": 24.673111,
-        "lng": 121.065396,
-        "ele": 191.5,
-        "distanceKm": 11.233243944402933,
-        "gradePct": 9.344273397636247,
-        "smoothedEle": 190.3170851595685,
-        "gradeBand": "extreme"
+        "lat": 24.696071,
+        "lng": 121.087538,
+        "ele": 180.25,
+        "distanceKm": 10.370436684719687,
+        "gradePct": 3.561056626364645,
+        "smoothedEle": 181.11572699361324,
+        "gradeBand": "hard"
       },
       {
-        "lat": 24.673081,
-        "lng": 121.065896,
-        "ele": 192.25,
-        "distanceKm": 11.283875677947433,
-        "gradePct": 8.374096501778865,
-        "smoothedEle": 193.70768659471867,
+        "lat": 24.696378,
+        "lng": 121.087769,
+        "ele": 185,
+        "distanceKm": 10.41178797345754,
+        "gradePct": 6.578604605759773,
+        "smoothedEle": 185.20572594096961,
         "gradeBand": "steep"
       },
       {
-        "lat": 24.672936,
-        "lng": 121.066289,
-        "ele": 198,
-        "distanceKm": 11.326734196419547,
-        "gradePct": 5.654946846625129,
-        "smoothedEle": 195.3149034641283,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.672656,
-        "lng": 121.066563,
-        "ele": 194.5,
-        "distanceKm": 11.36839806212781,
-        "gradePct": 2.5280628986249187,
-        "smoothedEle": 195.19927646078202,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.672574,
-        "lng": 121.066678,
-        "ele": 192.25,
-        "distanceKm": 11.383168411436657,
-        "gradePct": 1.5250415006852105,
-        "smoothedEle": 195.18536533140994,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.672551,
-        "lng": 121.066737,
-        "ele": 192.5,
-        "distanceKm": 11.389655420042933,
-        "gradePct": 1.7798960722291843,
-        "smoothedEle": 195.70432601991206,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.672542,
-        "lng": 121.066938,
-        "ele": 195.5,
-        "distanceKm": 11.409989883213882,
-        "gradePct": 3.0789315044261056,
-        "smoothedEle": 197.76591446149502,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.672625,
-        "lng": 121.067319,
-        "ele": 206,
-        "distanceKm": 11.449578413881353,
-        "gradePct": 9.096050378217488,
-        "smoothedEle": 204.34755577872403,
+        "lat": 24.696616,
+        "lng": 121.088045,
+        "ele": 190.25,
+        "distanceKm": 10.450230321473864,
+        "gradePct": 9.875686772640087,
+        "smoothedEle": 189.86206659794672,
         "gradeBand": "extreme"
       },
       {
-        "lat": 24.672563,
-        "lng": 121.067754,
-        "ele": 211.5,
-        "distanceKm": 11.494069866568859,
-        "gradePct": 14.30613743209562,
-        "smoothedEle": 210.45801753087986,
+        "lat": 24.696862,
+        "lng": 121.088439,
+        "ele": 195,
+        "distanceKm": 10.498526954630991,
+        "gradePct": 11.764203295523954,
+        "smoothedEle": 195.65830015075215,
         "gradeBand": "extreme"
       },
       {
-        "lat": 24.672439,
-        "lng": 121.068061,
+        "lat": 24.696977,
+        "lng": 121.088931,
+        "ele": 202.75,
+        "distanceKm": 10.549849403320787,
+        "gradePct": 11.809738568817279,
+        "smoothedEle": 201.62566634396364,
+        "gradeBand": "extreme"
+      },
+      {
+        "lat": 24.697233,
+        "lng": 121.0895,
+        "ele": 207,
+        "distanceKm": 10.613994275921536,
+        "gradePct": 9.716503023439351,
+        "smoothedEle": 207.17322029038596,
+        "gradeBand": "extreme"
+      },
+      {
+        "lat": 24.697504,
+        "lng": 121.089796,
+        "ele": 210.25,
+        "distanceKm": 10.65644709145261,
+        "gradePct": 7.920653926439826,
+        "smoothedEle": 210.11691974856873,
+        "gradeBand": "steep"
+      },
+      {
+        "lat": 24.697784499999997,
+        "lng": 121.0900695,
         "ele": 213,
-        "distanceKm": 11.528016659366639,
-        "gradePct": 11.561082613397344,
-        "smoothedEle": 212.3239705099512,
+        "distanceKm": 10.698115346275248,
+        "gradePct": 7.200065704802141,
+        "smoothedEle": 213.00000056717715,
+        "gradeBand": "steep"
+      },
+      {
+        "lat": 24.698065,
+        "lng": 121.090343,
+        "ele": 215.75,
+        "distanceKm": 10.73978355984864,
+        "gradePct": 5.749137389404175,
+        "smoothedEle": 214.71059952366895,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.698228,
+        "lng": 121.090659,
+        "ele": 215,
+        "distanceKm": 10.776493316391258,
+        "gradePct": 2.3088067363189935,
+        "smoothedEle": 213.81275089596835,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.698212924867384,
+        "lng": 121.09105711404261,
+        "ele": 210.23121684545524,
+        "distanceKm": 10.816746942071884,
+        "gradePct": -3.8951746944288033,
+        "smoothedEle": 209.8697059958515,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.69819,
+        "lng": 121.091455,
+        "ele": 204.25,
+        "distanceKm": 10.857023363651294,
+        "gradePct": -9.354906179955154,
+        "smoothedEle": 204.93404156380973,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.698195,
+        "lng": 121.09196,
+        "ele": 199.75,
+        "distanceKm": 10.908043061305035,
+        "gradePct": -9.870238049061902,
+        "smoothedEle": 200.85205680279088,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.698389,
+        "lng": 121.092334,
+        "ele": 199.75,
+        "distanceKm": 10.951550189859487,
+        "gradePct": -6.096904226907206,
+        "smoothedEle": 199.507846107823,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.698582,
+        "lng": 121.092613,
+        "ele": 199,
+        "distanceKm": 10.986975818612281,
+        "gradePct": -3.4383647645632447,
+        "smoothedEle": 199.09924031826924,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.698925,
+        "lng": 121.092806,
+        "ele": 198.5,
+        "distanceKm": 11.029810389049164,
+        "gradePct": -1.7670584629179933,
+        "smoothedEle": 198.41246775174392,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.699169,
+        "lng": 121.092928,
+        "ele": 197.75,
+        "distanceKm": 11.059610099985546,
+        "gradePct": -1.3261494221154966,
+        "smoothedEle": 198.0887321835452,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.69926,
+        "lng": 121.093026,
+        "ele": 198,
+        "distanceKm": 11.073766468653018,
+        "gradePct": -1.304430920153526,
+        "smoothedEle": 197.9471684968705,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.699289,
+        "lng": 121.09309,
+        "ele": 198,
+        "distanceKm": 11.080991432612292,
+        "gradePct": -1.2933464819327913,
+        "smoothedEle": 197.87491885727775,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.699372,
+        "lng": 121.093521,
+        "ele": 197.5,
+        "distanceKm": 11.1254993915152,
+        "gradePct": -1.0612893759238526,
+        "smoothedEle": 197.42029719294575,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.69961201598117,
+        "lng": 121.09404305256439,
+        "ele": 196.4316796090355,
+        "distanceKm": 11.184606619712955,
+        "gradePct": -1.3783759989179365,
+        "smoothedEle": 196.45961592625403,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.699854,
+        "lng": 121.094564,
+        "ele": 195.5,
+        "distanceKm": 11.24371346487066,
+        "gradePct": -1.2159149631771173,
+        "smoothedEle": 195.9083453558317,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.70006422668082,
+        "lng": 121.09496893047977,
+        "ele": 196.3238559062354,
+        "distanceKm": 11.290828303374724,
+        "gradePct": 0.3449602330899223,
+        "smoothedEle": 196.74654851310333,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.70025,
+        "lng": 121.095389,
+        "ele": 198.75,
+        "distanceKm": 11.338025061245176,
+        "gradePct": 0.6333557477281908,
+        "smoothedEle": 196.5947550180946,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.700466,
+        "lng": 121.096059,
+        "ele": 188,
+        "distanceKm": 11.409844528932911,
+        "gradePct": -10.03895749901654,
+        "smoothedEle": 186.64643131859938,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.700542,
+        "lng": 121.096198,
+        "ele": 183.5,
+        "distanceKm": 11.426233331590579,
+        "gradePct": -13.909169143289397,
+        "smoothedEle": 182.72351025642024,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.700583,
+        "lng": 121.096244,
+        "ele": 181.75,
+        "distanceKm": 11.432743234575229,
+        "gradePct": -14.91354181237943,
+        "smoothedEle": 181.69820053633785,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.70065,
+        "lng": 121.096287,
+        "ele": 179.75,
+        "distanceKm": 11.44136721822987,
+        "gradePct": -15.79188139256871,
+        "smoothedEle": 180.33992311073203,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.700983,
+        "lng": 121.096474,
+        "ele": 172.25,
+        "distanceKm": 11.48293567878763,
+        "gradePct": -17.10986537344508,
+        "smoothedEle": 173.2639390411287,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.70066,
+        "lng": 121.096664,
+        "ele": 168,
+        "distanceKm": 11.523658754540405,
+        "gradePct": -13.286153041016593,
+        "smoothedEle": 170.05362325675512,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.700349,
+        "lng": 121.096779,
+        "ele": 170.5,
+        "distanceKm": 11.560139665220275,
+        "gradePct": -6.327391173056663,
+        "smoothedEle": 170.8169953681407,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.699983,
+        "lng": 121.096759,
+        "ele": 174.25,
+        "distanceKm": 11.600887186039353,
+        "gradePct": 1.500908365928785,
+        "smoothedEle": 173.34967907759804,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.699761,
+        "lng": 121.096644,
+        "ele": 174,
+        "distanceKm": 11.628169611512604,
+        "gradePct": 5.26872248478178,
+        "smoothedEle": 175.4167365433796,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.699633,
+        "lng": 121.096487,
+        "ele": 176.5,
+        "distanceKm": 11.649479958134199,
+        "gradePct": 6.775346550786902,
+        "smoothedEle": 177.3692849021646,
+        "gradeBand": "steep"
+      },
+      {
+        "lat": 24.699377,
+        "lng": 121.096153,
+        "ele": 183,
+        "distanceKm": 11.693625051432962,
+        "gradePct": 9.052329308112778,
+        "smoothedEle": 181.9506265680253,
         "gradeBand": "extreme"
       },
       {
-        "lat": 24.672268,
-        "lng": 121.068261,
-        "ele": 212.5,
-        "distanceKm": 11.5557644849538,
-        "gradePct": 6.048513571657985,
-        "smoothedEle": 211.24566513566234,
+        "lat": 24.699008,
+        "lng": 121.095823,
+        "ele": 186.25,
+        "distanceKm": 11.746492064613546,
+        "gradePct": 6.7309637168573,
+        "smoothedEle": 183.8264845787851,
         "gradeBand": "steep"
       },
       {
-        "lat": 24.671804,
-        "lng": 121.06867,
-        "ele": 204.5,
-        "distanceKm": 11.621869894199786,
-        "gradePct": -6.794209080218732,
-        "smoothedEle": 205.19189225772962,
+        "lat": 24.698884,
+        "lng": 121.095757,
+        "ele": 184.5,
+        "distanceKm": 11.761807727621628,
+        "gradePct": 3.876002489318793,
+        "smoothedEle": 182.5246532230982,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.698426,
+        "lng": 121.095724,
+        "ele": 174.5,
+        "distanceKm": 11.812844072871064,
+        "gradePct": -6.216515113194299,
+        "smoothedEle": 176.41605191552023,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.671487,
-        "lng": 121.068877,
-        "ele": 202.25,
-        "distanceKm": 11.662857327761476,
-        "gradePct": -7.980299774320201,
-        "smoothedEle": 202.61582003810287,
+        "lat": 24.698008,
+        "lng": 121.095671,
+        "ele": 172.5,
+        "distanceKm": 11.859630990670263,
+        "gradePct": -10.13650509374066,
+        "smoothedEle": 172.57317077022353,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.671239,
-        "lng": 121.069169,
-        "ele": 201.25,
-        "distanceKm": 11.703243060895849,
-        "gradePct": -4.853487813007621,
-        "smoothedEle": 202.04420461362415,
+        "lat": 24.697581,
+        "lng": 121.095646,
+        "ele": 170.75,
+        "distanceKm": 11.907178413323471,
+        "gradePct": -5.313185385999239,
+        "smoothedEle": 171.78099610858007,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.670878,
-        "lng": 121.06955400000001,
-        "ele": 203.50000000000003,
-        "distanceKm": 11.759142324958427,
-        "gradePct": 0.650690064773047,
-        "smoothedEle": 203.49999911853638,
+        "lat": 24.697278,
+        "lng": 121.095725,
+        "ele": 172.5,
+        "distanceKm": 11.941802863975395,
+        "gradePct": -1.9417106889983202,
+        "smoothedEle": 172.09578761452642,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.697068,
+        "lng": 121.095954,
+        "ele": 173,
+        "distanceKm": 11.974673395446562,
+        "gradePct": 0.5214271851455995,
+        "smoothedEle": 172.84398054544386,
         "gradeBand": "moderate"
       },
       {
-        "lat": 24.670517,
-        "lng": 121.069939,
-        "ele": 205.75,
-        "distanceKm": 11.815041667373329,
-        "gradePct": 3.232046817522826,
-        "smoothedEle": 205.58352464419517,
+        "lat": 24.696807039541703,
+        "lng": 121.09625310394159,
+        "ele": 173.04062959843597,
+        "distanceKm": 12.016566905496656,
+        "gradePct": 1.078036333858112,
+        "smoothedEle": 172.94438881731537,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.696544,
+        "lng": 121.09655,
+        "ele": 172.75,
+        "distanceKm": 12.058460941885881,
+        "gradePct": 0.18796233045174016,
+        "smoothedEle": 172.66291801976973,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.696192,
+        "lng": 121.096922,
+        "ele": 172,
+        "distanceKm": 12.112722663329897,
+        "gradePct": -0.6667997809093743,
+        "smoothedEle": 172.26837534884058,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.695718,
+        "lng": 121.097231,
+        "ele": 172.5,
+        "distanceKm": 12.173979941627636,
+        "gradePct": 0.5486515062065698,
+        "smoothedEle": 173.09872925026596,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.695265396851557,
+        "lng": 121.09747176526268,
+        "ele": 175.65436028386873,
+        "distanceKm": 12.229876796018127,
+        "gradePct": 3.2507656322071457,
+        "smoothedEle": 175.7516684683776,
         "gradeBand": "hard"
       },
       {
-        "lat": 24.670103,
-        "lng": 121.07047,
-        "ele": 208,
-        "distanceKm": 11.885738819193108,
-        "gradePct": 4.292962439017871,
-        "smoothedEle": 208.7842876132293,
+        "lat": 24.694813,
+        "lng": 121.097713,
+        "ele": 179.25,
+        "distanceKm": 12.285773698843334,
+        "gradePct": 5.350653053699365,
+        "smoothedEle": 179.00912974212773,
         "gradeBand": "hard"
       },
       {
-        "lat": 24.669847,
-        "lng": 121.070987,
-        "ele": 213.5,
-        "distanceKm": 11.945231740820134,
-        "gradePct": 7.075065185911253,
-        "smoothedEle": 214.02542380620895,
-        "gradeBand": "steep"
+        "lat": 24.694369,
+        "lng": 121.098147,
+        "ele": 182.5,
+        "distanceKm": 12.351802992310526,
+        "gradePct": 4.759569549293604,
+        "smoothedEle": 181.78901427526603,
+        "gradeBand": "hard"
       },
       {
-        "lat": 24.669398,
-        "lng": 121.07121,
-        "ele": 220.75,
-        "distanceKm": 12.000007783262458,
-        "gradePct": 10.026587059668863,
-        "smoothedEle": 220.0679247886925,
+        "lat": 24.694205,
+        "lng": 121.098459,
+        "ele": 182,
+        "distanceKm": 12.388218294880197,
+        "gradePct": 3.1763303803606786,
+        "smoothedEle": 182.28837951410696,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.69396936343565,
+        "lng": 121.09894854388072,
+        "ele": 182.5878458671353,
+        "distanceKm": 12.444187103111569,
+        "gradePct": 1.2552180564283093,
+        "smoothedEle": 182.7235974819394,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.693754681717824,
+        "lng": 121.09945027194037,
+        "ele": 183.79392293356764,
+        "distanceKm": 12.500214890602853,
+        "gradePct": 1.4122564469199455,
+        "smoothedEle": 183.7939224571363,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.69354,
+        "lng": 121.099952,
+        "ele": 185,
+        "distanceKm": 12.556242757099263,
+        "gradePct": 1.939711525341586,
+        "smoothedEle": 184.8936137923373,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.693342,
+        "lng": 121.10024,
+        "ele": 185.5,
+        "distanceKm": 12.592729676602767,
+        "gradePct": 3.4498745193087768,
+        "smoothedEle": 187.10080343970702,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.693004,
+        "lng": 121.100773,
+        "ele": 195.75,
+        "distanceKm": 12.658396288486705,
+        "gradePct": 10.795790597852385,
+        "smoothedEle": 195.8196771632362,
         "gradeBand": "extreme"
       },
       {
-        "lat": 24.66896,
-        "lng": 121.071258,
-        "ele": 224.5,
-        "distanceKm": 12.048952143254018,
-        "gradePct": 8.971351407823736,
-        "smoothedEle": 223.40718338445961,
+        "lat": 24.692788,
+        "lng": 121.101159,
+        "ele": 202.5,
+        "distanceKm": 12.704195894288647,
+        "gradePct": 11.837284147209983,
+        "smoothedEle": 200.46051277715497,
+        "gradeBand": "extreme"
+      },
+      {
+        "lat": 24.692671089539093,
+        "lng": 121.10152564349137,
+        "ele": 201.80783567152108,
+        "distanceKm": 12.74345196108928,
+        "gradePct": 7.785407721020363,
+        "smoothedEle": 201.62085424218355,
         "gradeBand": "steep"
       },
       {
-        "lat": 24.668559677238292,
-        "lng": 121.07121340506804,
-        "ele": 224.00949383158638,
-        "distanceKm": 12.093693565845939,
-        "gradePct": 4.01296353685224,
-        "smoothedEle": 223.38434904958115,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.668163,
-        "lng": 121.071132,
-        "ele": 221.25,
-        "distanceKm": 12.138562574888075,
-        "gradePct": 1.403044376289136,
-        "smoothedEle": 224.1013931681978,
+        "lat": 24.692556,
+        "lng": 121.101893,
+        "ele": 200.5,
+        "distanceKm": 12.782709567125348,
+        "gradePct": 1.7427872834743203,
+        "smoothedEle": 200.02610856376455,
         "gradeBand": "moderate"
       },
       {
-        "lat": 24.667863,
-        "lng": 121.071253,
-        "ele": 227.25,
-        "distanceKm": 12.174091220690759,
-        "gradePct": 2.1053366530985973,
-        "smoothedEle": 225.49969000043663,
+        "lat": 24.692413,
+        "lng": 121.102277,
+        "ele": 197.5,
+        "distanceKm": 12.824636448176445,
+        "gradePct": -2.249243298392437,
+        "smoothedEle": 198.8154569121246,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.692167,
+        "lng": 121.102576,
+        "ele": 199,
+        "distanceKm": 12.865388431124304,
+        "gradePct": -1.103185450242084,
+        "smoothedEle": 199.6265525390558,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.69180524553714,
+        "lng": 121.10277536616637,
+        "ele": 202.89325232351663,
+        "distanceKm": 12.910374649434472,
+        "gradePct": 2.89879945234831,
+        "smoothedEle": 202.12607021204445,
         "gradeBand": "moderate"
       },
       {
-        "lat": 24.667768,
-        "lng": 121.071285,
+        "lat": 24.691426,
+        "lng": 121.102934,
+        "ele": 204,
+        "distanceKm": 12.95548760301395,
+        "gradePct": 2.5360201638125464,
+        "smoothedEle": 201.96551435619648,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.690979,
+        "lng": 121.103139,
+        "ele": 196.5,
+        "distanceKm": 13.00933413399185,
+        "gradePct": -5.529741368522698,
+        "smoothedEle": 196.53851587689456,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.690842,
+        "lng": 121.103196,
+        "ele": 193.75,
+        "distanceKm": 13.025619971345693,
+        "gradePct": -7.487597104184627,
+        "smoothedEle": 194.58421539443344,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.690765,
+        "lng": 121.103205,
+        "ele": 191.75,
+        "distanceKm": 13.034230137650663,
+        "gradePct": -7.181556938547598,
+        "smoothedEle": 194.85961219690313,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.690658,
+        "lng": 121.103164,
+        "ele": 192,
+        "distanceKm": 13.046828438473902,
+        "gradePct": -5.782402567436569,
+        "smoothedEle": 196.2139295354013,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.690333,
+        "lng": 121.102697,
+        "ele": 207.25,
+        "distanceKm": 13.106259094886653,
+        "gradePct": 9.540937102143607,
+        "smoothedEle": 206.38937512712496,
+        "gradeBand": "extreme"
+      },
+      {
+        "lat": 24.690155,
+        "lng": 121.102479,
+        "ele": 210.25,
+        "distanceKm": 13.135870376104307,
+        "gradePct": 20.276426140102544,
+        "smoothedEle": 215.31236397077237,
+        "gradeBand": "extreme"
+      },
+      {
+        "lat": 24.690113,
+        "lng": 121.102288,
+        "ele": 221.5,
+        "distanceKm": 13.155724137332687,
+        "gradePct": 21.40150957076499,
+        "smoothedEle": 219.1385200411852,
+        "gradeBand": "extreme"
+      },
+      {
+        "lat": 24.690085,
+        "lng": 121.102212,
+        "ele": 225.75,
+        "distanceKm": 13.164009621199414,
+        "gradePct": 21.37072540772191,
+        "smoothedEle": 220.5263385888619,
+        "gradeBand": "extreme"
+      },
+      {
+        "lat": 24.690004,
+        "lng": 121.102124,
         "ele": 229,
-        "distanceKm": 12.185138569669297,
-        "gradePct": 2.5384678197054407,
-        "smoothedEle": 225.92718301672366,
+        "distanceKm": 13.176665272179788,
+        "gradePct": 21.155688079529728,
+        "smoothedEle": 222.4781440275454,
+        "gradeBand": "extreme"
+      },
+      {
+        "lat": 24.68967,
+        "lng": 121.102026,
+        "ele": 224,
+        "distanceKm": 13.2151015226152,
+        "gradePct": 13.667548789516948,
+        "smoothedEle": 222.7214788000538,
+        "gradeBand": "extreme"
+      },
+      {
+        "lat": 24.689098,
+        "lng": 121.101947,
+        "ele": 209.25,
+        "distanceKm": 13.279203930660719,
+        "gradePct": -10.348488667926157,
+        "smoothedEle": 212.1457272676992,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.688611,
+        "lng": 121.101685,
+        "ele": 210.5,
+        "distanceKm": 13.339479152891759,
+        "gradePct": -7.572794374382196,
+        "smoothedEle": 211.12681116672286,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.68814,
+        "lng": 121.101482,
+        "ele": 214.5,
+        "distanceKm": 13.395724601502817,
+        "gradePct": 2.6615872054915237,
+        "smoothedEle": 214.5280425452429,
         "gradeBand": "moderate"
       },
       {
-        "lat": 24.667665,
-        "lng": 121.071274,
-        "ele": 228.5,
-        "distanceKm": 12.196645473467656,
-        "gradePct": 2.8696343992867344,
-        "smoothedEle": 226.30115739017032,
+        "lat": 24.687708,
+        "lng": 121.101424,
+        "ele": 218,
+        "distanceKm": 13.444116968758719,
+        "gradePct": 5.004978729917372,
+        "smoothedEle": 216.4122443199587,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.687547,
+        "lng": 121.101469,
+        "ele": 216.75,
+        "distanceKm": 13.462587653404972,
+        "gradePct": 2.456555676896281,
+        "smoothedEle": 214.98076625987406,
         "gradeBand": "moderate"
       },
       {
-        "lat": 24.667563,
-        "lng": 121.071234,
-        "ele": 226.5,
-        "distanceKm": 12.208686060466832,
-        "gradePct": 2.926985111898897,
-        "smoothedEle": 226.55092670699864,
+        "lat": 24.687136,
+        "lng": 121.101847,
+        "ele": 206.75,
+        "distanceKm": 13.522145006391295,
+        "gradePct": -6.727078080345189,
+        "smoothedEle": 208.82966747329436,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.686662,
+        "lng": 121.101962,
+        "ele": 207,
+        "distanceKm": 13.576116908302893,
+        "gradePct": -7.436496594111615,
+        "smoothedEle": 206.14696472836803,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.68629,
+        "lng": 121.102035,
+        "ele": 204.25,
+        "distanceKm": 13.618133855722675,
+        "gradePct": -3.211202145223166,
+        "smoothedEle": 206.0327380042964,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.686161,
+        "lng": 121.101977,
+        "ele": 205,
+        "distanceKm": 13.633628807828037,
+        "gradePct": -1.9549592096175912,
+        "smoothedEle": 206.30389966614024,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.685962,
+        "lng": 121.10173,
+        "ele": 208.75,
+        "distanceKm": 13.666981458192593,
+        "gradePct": 1.565013400842366,
+        "smoothedEle": 208.1660606465762,
         "gradeBand": "moderate"
       },
       {
-        "lat": 24.667253,
-        "lng": 121.071084,
-        "ele": 224.5,
-        "distanceKm": 12.246341798363138,
-        "gradePct": 0.24234065657617607,
-        "smoothedEle": 224.64989982960486,
+        "lat": 24.685703,
+        "lng": 121.101535,
+        "ele": 211,
+        "distanceKm": 13.701875013382681,
+        "gradePct": 4.24346853218593,
+        "smoothedEle": 210.32040761275613,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.685184,
+        "lng": 121.101543,
+        "ele": 211.25,
+        "distanceKm": 13.759590919888577,
+        "gradePct": 3.17555023074392,
+        "smoothedEle": 210.92897884047363,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.684767666666666,
+        "lng": 121.10156866666667,
+        "ele": 210.25,
+        "distanceKm": 13.80595771135683,
+        "gradePct": -0.11345661829469164,
+        "smoothedEle": 210.25000000242034,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.684351333333336,
+        "lng": 121.10159433333334,
+        "ele": 209.25,
+        "distanceKm": 13.852324503309154,
+        "gradePct": -1.6023598897123805,
+        "smoothedEle": 209.25000000242343,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.683935,
+        "lng": 121.10162,
+        "ele": 208.25,
+        "distanceKm": 13.89869129574617,
+        "gradePct": -2.078769457069179,
+        "smoothedEle": 208.2776373566035,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.683474,
+        "lng": 121.10154,
+        "ele": 207.25,
+        "distanceKm": 13.950585559503882,
+        "gradePct": -1.5725795644765468,
+        "smoothedEle": 207.71492451644892,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.68301,
+        "lng": 121.101348,
+        "ele": 208.25,
+        "distanceKm": 14.005706392456384,
+        "gradePct": 0.12214116637449066,
+        "smoothedEle": 208.3237106744737,
         "gradeBand": "moderate"
       },
       {
-        "lat": 24.666754,
-        "lng": 121.070695,
+        "lat": 24.68257,
+        "lng": 121.101165,
+        "ele": 209.5,
+        "distanceKm": 14.058009350902596,
+        "gradePct": 2.6733020190490704,
+        "smoothedEle": 210.47021915428687,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.682193,
+        "lng": 121.10083,
+        "ele": 215,
+        "distanceKm": 14.111888417666307,
+        "gradePct": 5.521372617420203,
+        "smoothedEle": 214.0987930232309,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.681833,
+        "lng": 121.100731,
+        "ele": 216.25,
+        "distanceKm": 14.15314942770969,
+        "gradePct": 6.220788347288669,
+        "smoothedEle": 216.49155671227572,
+        "gradeBand": "steep"
+      },
+      {
+        "lat": 24.681376,
+        "lng": 121.100661,
+        "ele": 218.75,
+        "distanceKm": 14.204455395749324,
+        "gradePct": 4.712965671736657,
+        "smoothedEle": 218.31116967746405,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.680884,
+        "lng": 121.100661,
+        "ele": 219.5,
+        "distanceKm": 14.259163375224363,
+        "gradePct": 1.5806680028423215,
+        "smoothedEle": 218.2855148505114,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.680487,
+        "lng": 121.100696,
+        "ele": 215.75,
+        "distanceKm": 14.303449238023296,
+        "gradePct": -0.8490399603763055,
+        "smoothedEle": 217.42644541537277,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.680052,
+        "lng": 121.100594,
+        "ele": 218.25,
+        "distanceKm": 14.352904810595076,
+        "gradePct": -1.4438983053200383,
+        "smoothedEle": 216.84455144415998,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.679716499999998,
+        "lng": 121.100517,
+        "ele": 215.75,
+        "distanceKm": 14.391013353556094,
+        "gradePct": -1.9176800939826604,
+        "smoothedEle": 215.75000005341266,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.679381,
+        "lng": 121.10044,
+        "ele": 213.25,
+        "distanceKm": 14.429121900790125,
+        "gradePct": -2.0702593362068247,
+        "smoothedEle": 215.0541216825337,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.679015,
+        "lng": 121.100249,
+        "ele": 217,
+        "distanceKm": 14.474163046232308,
+        "gradePct": -0.04751387357180209,
+        "smoothedEle": 216.1864597427933,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.67864013673257,
+        "lng": 121.10018863257947,
+        "ele": 217.74970267283098,
+        "distanceKm": 14.516289899019629,
+        "gradePct": 1.5227796288975863,
+        "smoothedEle": 216.81121915179216,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.678261068366286,
+        "lng": 121.10015681628974,
+        "ele": 215.24985133641542,
+        "distanceKm": 14.558562845832462,
+        "gradePct": -0.5444180900483976,
+        "smoothedEle": 215.24985134570449,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.677882,
+        "lng": 121.100125,
+        "ele": 212.75,
+        "distanceKm": 14.600835793388462,
+        "gradePct": -3.192861219347958,
+        "smoothedEle": 213.3891668758638,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.677506954491673,
+        "lng": 121.0999617428971,
+        "ele": 212.4512730096408,
+        "distanceKm": 14.645682845853026,
+        "gradePct": -2.8408026939498927,
+        "smoothedEle": 212.8847764830634,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.677137977245835,
+        "lng": 121.09978137144856,
+        "ele": 213.72563650482041,
+        "distanceKm": 14.690576888311517,
+        "gradePct": -0.11508609058390147,
+        "smoothedEle": 213.72563636533388,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.676769,
+        "lng": 121.099601,
+        "ele": 215,
+        "distanceKm": 14.735470952661178,
+        "gradePct": 2.6023816790261756,
+        "smoothedEle": 215.6020103214894,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.6763205,
+        "lng": 121.099315,
+        "ele": 219.49999999999994,
+        "distanceKm": 14.793109384425982,
+        "gradePct": 5.668515290225591,
+        "smoothedEle": 219.49999882760957,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.675872,
+        "lng": 121.099029,
+        "ele": 224,
+        "distanceKm": 14.850747868297026,
+        "gradePct": 6.887054548266685,
+        "smoothedEle": 223.52221653148925,
+        "gradeBand": "steep"
+      },
+      {
+        "lat": 24.675551,
+        "lng": 121.098948,
+        "ele": 225.5,
+        "distanceKm": 14.887367782378247,
+        "gradePct": 5.912945249134814,
+        "smoothedEle": 225.02464935560914,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.675021,
+        "lng": 121.098909,
+        "ele": 225.5,
+        "distanceKm": 14.94643277439115,
+        "gradePct": 0.841384350052269,
+        "smoothedEle": 224.06247833395776,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.674555,
+        "lng": 121.098961,
+        "ele": 219.5,
+        "distanceKm": 14.998515385523074,
+        "gradePct": -3.548400391066265,
+        "smoothedEle": 221.29465407489184,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.674175,
+        "lng": 121.09889,
         "ele": 220.75,
-        "distanceKm": 12.31434061630905,
-        "gradePct": -4.603877090830837,
-        "smoothedEle": 221.66158282581088,
+        "distanceKm": 15.041374200107162,
+        "gradePct": -1.4884274932894126,
+        "smoothedEle": 222.656455212887,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.666352,
-        "lng": 121.07047,
+        "lat": 24.673849,
+        "lng": 121.098863,
+        "ele": 227.5,
+        "distanceKm": 15.077726312018555,
+        "gradePct": 2.7773477630208374,
+        "smoothedEle": 225.17679479507763,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.673742,
+        "lng": 121.098865,
+        "ele": 229,
+        "distanceKm": 15.089625901696303,
+        "gradePct": 3.64771900659177,
+        "smoothedEle": 225.41478658863258,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.673679,
+        "lng": 121.098889,
+        "ele": 228.75,
+        "distanceKm": 15.097039056422853,
+        "gradePct": 4.189939106012148,
+        "smoothedEle": 225.56304968316357,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.673605,
+        "lng": 121.098926,
+        "ele": 228.25,
+        "distanceKm": 15.106076988811118,
+        "gradePct": 4.208890962181287,
+        "smoothedEle": 225.74380833092889,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.673479,
+        "lng": 121.099078,
+        "ele": 222.75,
+        "distanceKm": 15.126865961409871,
+        "gradePct": 1.9682972337942954,
+        "smoothedEle": 224.16376592243873,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.673135,
+        "lng": 121.099518,
+        "ele": 218.75,
+        "distanceKm": 15.185515373932772,
+        "gradePct": -4.902748572799414,
+        "smoothedEle": 220.42982746056256,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.672876,
+        "lng": 121.099763,
+        "ele": 221.5,
+        "distanceKm": 15.223492413131277,
+        "gradePct": -3.0731687782401704,
+        "smoothedEle": 221.34699987511502,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.672597,
+        "lng": 121.100072,
+        "ele": 224,
+        "distanceKm": 15.267507166240435,
+        "gradePct": 2.4627539743108944,
+        "smoothedEle": 224.03908122812567,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.67229,
+        "lng": 121.100381,
+        "ele": 226.75,
+        "distanceKm": 15.313769216112348,
+        "gradePct": 5.669222718114375,
+        "smoothedEle": 226.78140049347573,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.671879,
+        "lng": 121.100749,
+        "ele": 230.5,
+        "distanceKm": 15.372686693033044,
+        "gradePct": 5.061334549255481,
+        "smoothedEle": 229.4074474836738,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.671712,
+        "lng": 121.101049,
+        "ele": 229.5,
+        "distanceKm": 15.408235651315206,
+        "gradePct": 2.3910819946880593,
+        "smoothedEle": 228.84446413637693,
+        "gradeBand": "moderate"
+      },
+      {
+        "lat": 24.671561,
+        "lng": 121.101607,
+        "ele": 224.75,
+        "distanceKm": 15.467065500906267,
+        "gradePct": -3.589444716062657,
+        "smoothedEle": 225.5674571665883,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.671489,
+        "lng": 121.101953,
+        "ele": 224.25,
+        "distanceKm": 15.502931938656666,
+        "gradePct": -4.226693455719116,
+        "smoothedEle": 224.7017647567122,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.671349,
+        "lng": 121.102336,
+        "ele": 225.25,
+        "distanceKm": 15.544645768439022,
+        "gradePct": -2.138278159789174,
+        "smoothedEle": 224.6780283590695,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.671056,
+        "lng": 121.102926,
+        "ele": 223.5,
+        "distanceKm": 15.612583963885614,
+        "gradePct": -2.5545386280475477,
+        "smoothedEle": 222.14173384205165,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.670904,
+        "lng": 121.103175,
+        "ele": 219,
+        "distanceKm": 15.642894090549701,
+        "gradePct": -3.8406942034677485,
+        "smoothedEle": 220.8383309119087,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.670815,
+        "lng": 121.103224,
+        "ele": 218.5,
+        "distanceKm": 15.653959918128471,
+        "gradePct": -3.6579654868915403,
+        "smoothedEle": 220.67234349822718,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.670371,
+        "lng": 121.103282,
         "ele": 222,
-        "distanceKm": 12.364490910341573,
-        "gradePct": -0.9631254844631802,
-        "smoothedEle": 222.88918254035386,
+        "distanceKm": 15.703677166233575,
+        "gradePct": -1.0258061419820912,
+        "smoothedEle": 221.44843965303733,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.665864499999998,
-        "lng": 121.070447,
-        "ele": 227.25000000000009,
-        "distanceKm": 12.418748312145361,
-        "gradePct": 5.480523755687832,
-        "smoothedEle": 227.24999998979933,
+        "lat": 24.669819,
+        "lng": 121.103397,
+        "ele": 223.75,
+        "distanceKm": 15.766147130668084,
+        "gradePct": 3.1565449137358534,
+        "smoothedEle": 224.01913322941255,
         "gradeBand": "hard"
       },
       {
-        "lat": 24.665377,
-        "lng": 121.070424,
-        "ele": 232.5,
-        "distanceKm": 12.473005714337749,
-        "gradePct": 7.245785263136238,
-        "smoothedEle": 230.81932615111998,
+        "lat": 24.66919,
+        "lng": 121.103447,
+        "ele": 227.75,
+        "distanceKm": 15.836271078637557,
+        "gradePct": 4.409388537578864,
+        "smoothedEle": 227.19909614241234,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.668635,
+        "lng": 121.103557,
+        "ele": 228,
+        "distanceKm": 15.89897733221924,
+        "gradePct": 3.9472851073137605,
+        "smoothedEle": 229.4551939459437,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.668136,
+        "lng": 121.10357,
+        "ele": 234.75,
+        "distanceKm": 15.954479224694303,
+        "gradePct": 6.689750590523199,
+        "smoothedEle": 234.54395457272207,
         "gradeBand": "steep"
       },
       {
-        "lat": 24.66484,
-        "lng": 121.070274,
-        "ele": 230,
-        "distanceKm": 12.534611261823335,
-        "gradePct": 3.2490817218601484,
-        "smoothedEle": 231.5426267210674,
-        "gradeBand": "hard"
+        "lat": 24.667807789818838,
+        "lng": 121.10365513574793,
+        "ele": 238.89615713699112,
+        "distanceKm": 15.991974806319606,
+        "gradePct": 8.741948499223811,
+        "smoothedEle": 237.94519973771878,
+        "gradeBand": "steep"
       },
       {
-        "lat": 24.664728,
-        "lng": 121.07025,
-        "ele": 230,
-        "distanceKm": 12.547299050066602,
-        "gradePct": 2.822619366446797,
-        "smoothedEle": 231.95083120697115,
+        "lat": 24.667489,
+        "lng": 121.103777,
+        "ele": 240,
+        "distanceKm": 16.029500641930582,
+        "gradePct": 8.636491531443655,
+        "smoothedEle": 240.89025341320738,
+        "gradeBand": "steep"
+      },
+      {
+        "lat": 24.666908,
+        "lng": 121.104067,
+        "ele": 248.5,
+        "distanceKm": 16.10044036626885,
+        "gradePct": 7.728880959535164,
+        "smoothedEle": 246.33846372930813,
+        "gradeBand": "steep"
+      },
+      {
+        "lat": 24.66662325385228,
+        "lng": 121.10435579637577,
+        "ele": 245.24581432892725,
+        "distanceKm": 16.143499881077492,
+        "gradePct": 2.0832234746270886,
+        "smoothedEle": 244.04862624666288,
         "gradeBand": "moderate"
       },
       {
-        "lat": 24.664662,
-        "lng": 121.070258,
-        "ele": 230.75,
-        "distanceKm": 12.554682315226072,
-        "gradePct": 2.9494177567938884,
-        "smoothedEle": 232.563338098367,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.664589,
-        "lng": 121.070293,
-        "ele": 232.25,
-        "distanceKm": 12.56353659531641,
-        "gradePct": 3.2966378678042196,
-        "smoothedEle": 233.49303750785245,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.664509,
-        "lng": 121.070395,
-        "ele": 235.25,
-        "distanceKm": 12.577151620161706,
-        "gradePct": 4.054612569160454,
-        "smoothedEle": 234.9226151166085,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.664338,
-        "lng": 121.070721,
-        "ele": 240.5,
-        "distanceKm": 12.615187801525257,
-        "gradePct": 8.574951598229122,
-        "smoothedEle": 239.88953067622933,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.664193,
-        "lng": 121.071428,
-        "ele": 249.25,
-        "distanceKm": 12.688427342054396,
-        "gradePct": 14.595052043695114,
-        "smoothedEle": 250.99009568774852,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.664042,
-        "lng": 121.07192,
-        "ele": 261.5,
-        "distanceKm": 12.740903002632376,
-        "gradePct": 16.1739400408562,
-        "smoothedEle": 259.9610001064225,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.663772,
-        "lng": 121.072214,
-        "ele": 266.25,
-        "distanceKm": 12.783140228063058,
-        "gradePct": 14.14460667543414,
-        "smoothedEle": 264.33335991673715,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.663362,
-        "lng": 121.072654,
-        "ele": 263.25,
-        "distanceKm": 12.846821948913622,
-        "gradePct": 4.5462259576863335,
-        "smoothedEle": 265.11995009073803,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.663067,
-        "lng": 121.072987,
-        "ele": 268.25,
-        "distanceKm": 12.893814912773763,
-        "gradePct": -0.3596647498720826,
-        "smoothedEle": 264.10554779257694,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.662592,
-        "lng": 121.073304,
-        "ele": 253.5,
-        "distanceKm": 12.955587437466285,
-        "gradePct": -7.158603555382424,
-        "smoothedEle": 257.7721324274992,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.66233,
-        "lng": 121.073558,
-        "ele": 258.25,
-        "distanceKm": 12.994414548052704,
-        "gradePct": -5.537868464069467,
-        "smoothedEle": 258.5061999036662,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.66219789390685,
-        "lng": 121.07403715754802,
-        "ele": 265.16913452303976,
-        "distanceKm": 13.045013686671915,
-        "gradePct": 4.930256423814303,
-        "smoothedEle": 263.78649470712725,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.662115,
-        "lng": 121.074533,
-        "ele": 266.5,
-        "distanceKm": 13.095960462739525,
-        "gradePct": 7.373267958755347,
-        "smoothedEle": 266.04079245232896,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.662088,
-        "lng": 121.074996,
-        "ele": 266,
-        "distanceKm": 13.142843928201541,
-        "gradePct": 4.091405159651416,
-        "smoothedEle": 267.65147379138443,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.661975,
-        "lng": 121.075364,
-        "ele": 271,
-        "distanceKm": 13.182096629999963,
-        "gradePct": 3.485522140331069,
-        "smoothedEle": 268.9128664160144,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.661663,
-        "lng": 121.075713,
-        "ele": 268.75,
-        "distanceKm": 13.231567640760309,
-        "gradePct": 2.710270870003181,
-        "smoothedEle": 269.9743478344586,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.661054,
-        "lng": 121.075966,
-        "ele": 273.5,
-        "distanceKm": 13.303950937370313,
-        "gradePct": 5.243614025287305,
-        "smoothedEle": 274.62540033661116,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.66071,
-        "lng": 121.07624,
-        "ele": 280.25,
-        "distanceKm": 13.35117176575184,
-        "gradePct": 8.774887975088948,
-        "smoothedEle": 280.0089161344938,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.660497,
-        "lng": 121.076539,
-        "ele": 285.25,
-        "distanceKm": 13.389563238687145,
-        "gradePct": 9.18862428388977,
-        "smoothedEle": 282.88953036430377,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.660175,
-        "lng": 121.076723,
-        "ele": 282.5,
-        "distanceKm": 13.429908223481412,
-        "gradePct": 5.175346342966823,
-        "smoothedEle": 282.7600649431248,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.659830240317945,
-        "lng": 121.07684177598655,
-        "ele": 280.627367823409,
-        "distanceKm": 13.470078906976365,
-        "gradePct": -0.05394875610880964,
-        "smoothedEle": 281.37362042533044,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.659499,
-        "lng": 121.077002,
-        "ele": 281.25,
-        "distanceKm": 13.510312935038906,
-        "gradePct": -2.3574250262807452,
-        "smoothedEle": 280.465520403335,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.65911,
-        "lng": 121.077179,
-        "ele": 279,
-        "distanceKm": 13.557120178532461,
-        "gradePct": -0.5161786887044874,
-        "smoothedEle": 281.30469720866427,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.65881,
-        "lng": 121.077564,
-        "ele": 286,
-        "distanceKm": 13.608369358590553,
-        "gradePct": 5.542261253739545,
-        "smoothedEle": 286.05164904745254,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.658534,
-        "lng": 121.077839,
-        "ele": 292,
-        "distanceKm": 13.649771767076572,
-        "gradePct": 8.85481437552048,
-        "smoothedEle": 290.02776666631433,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.658035,
-        "lng": 121.077974,
-        "ele": 291,
-        "distanceKm": 13.70691064942331,
-        "gradePct": 4.667989741854017,
-        "smoothedEle": 290.5845259512895,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.657552,
-        "lng": 121.078046,
-        "ele": 288.25,
-        "distanceKm": 13.761108494006816,
-        "gradePct": -0.7243921370348997,
-        "smoothedEle": 289.4138392027279,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.65721,
-        "lng": 121.07813,
-        "ele": 290,
-        "distanceKm": 13.800073115063839,
-        "gradePct": 0.4079938857667017,
-        "smoothedEle": 290.9258951397464,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.656788,
-        "lng": 121.078336,
-        "ele": 296,
-        "distanceKm": 13.851407958213928,
-        "gradePct": 6.511609153450787,
-        "smoothedEle": 296.13498231078427,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.656388,
-        "lng": 121.078316,
-        "ele": 301.75,
-        "distanceKm": 13.895931888082396,
-        "gradePct": 10.654414900248108,
-        "smoothedEle": 301.4196061328612,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.655745,
-        "lng": 121.078241,
-        "ele": 310.75,
-        "distanceKm": 13.967830929212557,
-        "gradePct": 10.676710692410248,
-        "smoothedEle": 308.7609644180275,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.655412,
-        "lng": 121.078044,
-        "ele": 308.25,
-        "distanceKm": 14.009871534586193,
-        "gradePct": 5.881208088979938,
-        "smoothedEle": 308.7241425130721,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.654833,
-        "lng": 121.077664,
-        "ele": 306.25,
-        "distanceKm": 14.084836542610443,
-        "gradePct": -1.1173899149993116,
-        "smoothedEle": 307.6286798773519,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.654617,
-        "lng": 121.077405,
-        "ele": 309.75,
-        "distanceKm": 14.120360545033625,
-        "gradePct": 0.8515514625449357,
-        "smoothedEle": 309.4224182095806,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.654442,
-        "lng": 121.077106,
-        "ele": 312.25,
-        "distanceKm": 14.15630069165963,
-        "gradePct": 3.035344594670118,
-        "smoothedEle": 311.08101847120867,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.654149,
-        "lng": 121.076719,
-        "ele": 310.75,
-        "distanceKm": 14.207202910110789,
-        "gradePct": 3.3905797019107364,
-        "smoothedEle": 312.14862023688676,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.653835,
-        "lng": 121.076278,
-        "ele": 315.5,
-        "distanceKm": 14.263818199573087,
-        "gradePct": 4.8473179652023815,
-        "smoothedEle": 316.08600549222257,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.653453,
-        "lng": 121.076051,
-        "ele": 321.75,
-        "distanceKm": 14.312093643813311,
-        "gradePct": 6.031645457893966,
-        "smoothedEle": 318.52039824467977,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.653293,
-        "lng": 121.075654,
-        "ele": 316,
-        "distanceKm": 14.355982012932369,
-        "gradePct": 3.932607777304284,
-        "smoothedEle": 319.47363529572755,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.652956,
-        "lng": 121.075257,
-        "ele": 324.25,
-        "distanceKm": 14.410880778801449,
-        "gradePct": 5.516828011363108,
-        "smoothedEle": 323.97606493808803,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.652671,
-        "lng": 121.075077,
-        "ele": 329.25,
-        "distanceKm": 14.447421144961906,
-        "gradePct": 8.433027727249312,
-        "smoothedEle": 327.72072454537164,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.652388,
-        "lng": 121.07464,
-        "ele": 329.5,
-        "distanceKm": 14.501648831873732,
-        "gradePct": 5.737411888577831,
-        "smoothedEle": 328.95633427808514,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.652165,
-        "lng": 121.074195,
-        "ele": 327.5,
-        "distanceKm": 14.553003798818272,
-        "gradePct": 1.5088399650804318,
-        "smoothedEle": 329.3567685612262,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.652116,
-        "lng": 121.074147,
-        "ele": 328.5,
-        "distanceKm": 14.560298867377092,
-        "gradePct": 1.4713133965406708,
-        "smoothedEle": 329.48546441937316,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.65199,
-        "lng": 121.074121,
-        "ele": 330.75,
-        "distanceKm": 14.574553708420158,
-        "gradePct": 2.322532847436841,
-        "smoothedEle": 330.6614888054261,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.651926,
-        "lng": 121.074143,
-        "ele": 331,
-        "distanceKm": 14.582009415477263,
-        "gradePct": 2.8614080129459682,
-        "smoothedEle": 331.3702466402624,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.651883,
-        "lng": 121.074185,
-        "ele": 331.25,
-        "distanceKm": 14.588402993679525,
-        "gradePct": 3.3710683398507064,
-        "smoothedEle": 332.0255884059942,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.651696,
-        "lng": 121.074566,
-        "ele": 337.75,
-        "distanceKm": 14.632162982355657,
-        "gradePct": 9.09461692968799,
-        "smoothedEle": 338.28888168852063,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.651533,
-        "lng": 121.074698,
-        "ele": 342.5,
-        "distanceKm": 14.654667753807802,
-        "gradePct": 12.514143115283947,
-        "smoothedEle": 341.9002663170551,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.651444,
-        "lng": 121.074894,
-        "ele": 345.75,
-        "distanceKm": 14.676810307267106,
-        "gradePct": 13.66332780850876,
-        "smoothedEle": 344.5393344457926,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.65141,
-        "lng": 121.075105,
-        "ele": 347.75,
-        "distanceKm": 14.698466729106823,
-        "gradePct": 13.486312609207566,
-        "smoothedEle": 346.9523064724659,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.651515,
-        "lng": 121.0756,
-        "ele": 350,
-        "distanceKm": 14.749836324612215,
-        "gradePct": 9.508514882411111,
-        "smoothedEle": 350.63347232028485,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.651532,
-        "lng": 121.075966,
-        "ele": 353.75,
-        "distanceKm": 14.78687289150026,
-        "gradePct": 8.519299698696246,
-        "smoothedEle": 354.1798135549357,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.651468,
-        "lng": 121.076311,
-        "ele": 358.75,
-        "distanceKm": 14.822457774468862,
-        "gradePct": 9.066744481622354,
-        "smoothedEle": 357.73825890134464,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.651308,
-        "lng": 121.076667,
-        "ele": 360.75,
-        "distanceKm": 14.862594091755902,
-        "gradePct": 9.652955950862951,
-        "smoothedEle": 361.50801546146425,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.651371,
-        "lng": 121.077018,
-        "ele": 365,
-        "distanceKm": 14.89875163111619,
-        "gradePct": 8.582529464534021,
-        "smoothedEle": 363.95020264359175,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.651271,
-        "lng": 121.077651,
-        "ele": 366.75,
-        "distanceKm": 14.96368249600925,
-        "gradePct": 4.397435844323313,
-        "smoothedEle": 365.9789653491525,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.651185,
-        "lng": 121.077929,
-        "ele": 365,
-        "distanceKm": 14.993360363085516,
-        "gradePct": 2.7842021666337575,
-        "smoothedEle": 366.37026261712083,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.651218,
-        "lng": 121.078179,
-        "ele": 367,
-        "distanceKm": 15.018890734490896,
-        "gradePct": 2.005019197867803,
-        "smoothedEle": 366.5844674539634,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.651098637366072,
-        "lng": 121.07860922437378,
-        "ele": 367.5890196657986,
-        "distanceKm": 15.06435042429489,
-        "gradePct": 1.5521868804525578,
-        "smoothedEle": 367.53995874230685,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.65096,
-        "lng": 121.079035,
-        "ele": 368,
-        "distanceKm": 15.110057971033815,
-        "gradePct": 2.2257687872643794,
-        "smoothedEle": 368.7361276187894,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.650798,
-        "lng": 121.07937,
-        "ele": 370.75,
-        "distanceKm": 15.148407551272461,
-        "gradePct": 5.82881272287286,
-        "smoothedEle": 373.0336773114409,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.650438,
-        "lng": 121.079779,
-        "ele": 385.5,
-        "distanceKm": 15.205948289127925,
-        "gradePct": 15.131693860567164,
-        "smoothedEle": 383.7602708900381,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.650207,
-        "lng": 121.080302,
-        "ele": 392.25,
-        "distanceKm": 15.26471446769984,
-        "gradePct": 15.537698282733341,
-        "smoothedEle": 391.61126822599994,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.650137,
-        "lng": 121.080743,
-        "ele": 395,
-        "distanceKm": 15.30995739866727,
-        "gradePct": 10.822074148397672,
-        "smoothedEle": 395.11795087631526,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.649922,
-        "lng": 121.081084,
-        "ele": 398,
-        "distanceKm": 15.351900026966396,
-        "gradePct": 7.994677132754447,
-        "smoothedEle": 397.893971864732,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.649387,
-        "lng": 121.081367,
-        "ele": 402.5,
-        "distanceKm": 15.417907474066615,
-        "gradePct": 4.995833940588017,
-        "smoothedEle": 400.63996968091993,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.649319,
-        "lng": 121.081409,
-        "ele": 401.75,
-        "distanceKm": 15.426578669969736,
-        "gradePct": 4.573666816757014,
-        "smoothedEle": 400.79171560922447,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.649268,
-        "lng": 121.081453,
-        "ele": 401,
-        "distanceKm": 15.433785148703212,
-        "gradePct": 4.222811129277447,
-        "smoothedEle": 400.9178289870604,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.649222,
-        "lng": 121.081532,
-        "ele": 399.25,
-        "distanceKm": 15.443267054758799,
-        "gradePct": 3.384824960378706,
-        "smoothedEle": 400.70741365212996,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.649172,
-        "lng": 121.081839,
-        "ele": 399.75,
-        "distanceKm": 15.474787538223431,
-        "gradePct": 3.473638512754418,
-        "smoothedEle": 402.31976136484957,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.648879,
-        "lng": 121.08224,
-        "ele": 410,
-        "distanceKm": 15.526786025804746,
-        "gradePct": 8.846549633703692,
-        "smoothedEle": 409.6418939700408,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.648764,
-        "lng": 121.082406,
-        "ele": 413.75,
-        "distanceKm": 15.547880304467524,
-        "gradePct": 12.759150263518665,
-        "smoothedEle": 413.70254261262556,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.648685,
-        "lng": 121.082732,
-        "ele": 419,
-        "distanceKm": 15.581977872611468,
-        "gradePct": 15.588481473907562,
-        "smoothedEle": 418.9207450155279,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.648707,
-        "lng": 121.083178,
-        "ele": 425.75,
-        "distanceKm": 15.627118396421112,
-        "gradePct": 15.919367072187809,
-        "smoothedEle": 425.62524238587906,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.64894,
-        "lng": 121.083693,
-        "ele": 434,
-        "distanceKm": 15.685257797456181,
-        "gradePct": 13.86306474805422,
-        "smoothedEle": 433.27096067900044,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.649047,
-        "lng": 121.083844,
-        "ele": 435,
-        "distanceKm": 15.704608313913768,
-        "gradePct": 13.83879877382514,
-        "smoothedEle": 436.1207306209676,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.649322,
-        "lng": 121.08401,
-        "ele": 439.5,
-        "distanceKm": 15.739486704616734,
-        "gradePct": 12.45873987841752,
-        "smoothedEle": 439.7104971327451,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.649384,
-        "lng": 121.084053,
-        "ele": 441,
-        "distanceKm": 15.747636159201972,
-        "gradePct": 12.378683134297988,
-        "smoothedEle": 440.7021479207299,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.64944,
-        "lng": 121.084133,
-        "ele": 442.25,
-        "distanceKm": 15.757841156788349,
-        "gradePct": 12.210232735413728,
-        "smoothedEle": 441.87572264316316,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.64947,
-        "lng": 121.084212,
-        "ele": 443.25,
-        "distanceKm": 15.766493976181973,
-        "gradePct": 12.067403610174537,
-        "smoothedEle": 442.8707968734299,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.649491,
-        "lng": 121.084478,
-        "ele": 446.5,
-        "distanceKm": 15.793477845487518,
-        "gradePct": 11.882141728884037,
-        "smoothedEle": 446.36367711541607,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.649498,
-        "lng": 121.084957,
-        "ele": 451.75,
-        "distanceKm": 15.841893068274164,
-        "gradePct": 11.280065340165702,
-        "smoothedEle": 451.2833762302131,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.649791,
-        "lng": 121.0856,
-        "ele": 458.25,
-        "distanceKm": 15.914586094979901,
-        "gradePct": 9.253080881671256,
-        "smoothedEle": 457.7616667750603,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.649852,
-        "lng": 121.086058,
-        "ele": 459.75,
-        "distanceKm": 15.961366974030062,
-        "gradePct": 7.373881920426155,
-        "smoothedEle": 460.3927426289561,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.649796,
-        "lng": 121.086528,
-        "ele": 463.75,
-        "distanceKm": 16.00927267222606,
-        "gradePct": 6.258603751570966,
-        "smoothedEle": 463.54674647698175,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.649793,
-        "lng": 121.08667,
-        "ele": 464.75,
-        "distanceKm": 16.023627397624978,
-        "gradePct": 6.397878169664034,
-        "smoothedEle": 464.6680508462855,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.649809,
-        "lng": 121.086739,
-        "ele": 465.5,
-        "distanceKm": 16.03082407584168,
-        "gradePct": 6.802744946163525,
-        "smoothedEle": 465.4776771456643,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.64985,
-        "lng": 121.086844,
-        "ele": 466.25,
-        "distanceKm": 16.042373502247525,
-        "gradePct": 7.170339078488181,
-        "smoothedEle": 466.49484045154355,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.650075,
-        "lng": 121.087324,
-        "ele": 471,
-        "distanceKm": 16.096955094334046,
-        "gradePct": 9.448822851109162,
-        "smoothedEle": 472.18460759425244,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.65032,
-        "lng": 121.087609,
-        "ele": 478.5,
-        "distanceKm": 16.136600566808777,
-        "gradePct": 12.019543704469982,
-        "smoothedEle": 478.00595907158413,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.65057,
-        "lng": 121.087872,
-        "ele": 484.25,
-        "distanceKm": 16.175061302329414,
-        "gradePct": 13.49988795300036,
-        "smoothedEle": 483.4022136713451,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.650655,
-        "lng": 121.088242,
-        "ele": 487.25,
-        "distanceKm": 16.213630133987625,
-        "gradePct": 14.248786625576395,
-        "smoothedEle": 488.881877253643,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.650895,
-        "lng": 121.088591,
-        "ele": 496.25,
-        "distanceKm": 16.25785899855218,
-        "gradePct": 13.965939353681875,
-        "smoothedEle": 494.95457435504613,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.650909,
-        "lng": 121.088654,
-        "ele": 498,
-        "distanceKm": 16.264413419803113,
-        "gradePct": 13.832848233918671,
-        "smoothedEle": 495.74110490515807,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.65089,
-        "lng": 121.088736,
-        "ele": 498.75,
-        "distanceKm": 16.272965525014754,
-        "gradePct": 13.659193045248946,
-        "smoothedEle": 496.767357530555,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.65086,
-        "lng": 121.088792,
-        "ele": 499,
-        "distanceKm": 16.279534937495942,
-        "gradePct": 13.56325028870149,
-        "smoothedEle": 497.6010553079969,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.650614,
-        "lng": 121.089047,
-        "ele": 499.25,
-        "distanceKm": 16.3171164425922,
-        "gradePct": 10.47983604718339,
-        "smoothedEle": 499.8403893049708,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.650525,
-        "lng": 121.089215,
-        "ele": 501,
-        "distanceKm": 16.336768486148333,
-        "gradePct": 10.09633240290472,
-        "smoothedEle": 502.1551441196174,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.650394,
-        "lng": 121.089928,
-        "ele": 515.25,
-        "distanceKm": 16.410283128278287,
-        "gradePct": 15.337325678348131,
-        "smoothedEle": 514.7705446739884,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.65041,
-        "lng": 121.09036,
-        "ele": 520.25,
-        "distanceKm": 16.453978071389113,
-        "gradePct": 15.176051371534824,
-        "smoothedEle": 520.2844277302922,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.650509,
-        "lng": 121.090841,
-        "ele": 526,
-        "distanceKm": 16.50381966608402,
-        "gradePct": 12.29418804125765,
-        "smoothedEle": 525.9555772846234,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.650638,
-        "lng": 121.091209,
-        "ele": 530.75,
-        "distanceKm": 16.543680715451302,
-        "gradePct": 8.90734846031272,
-        "smoothedEle": 527.8923485592148,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.650592,
-        "lng": 121.09127,
-        "ele": 530.25,
-        "distanceKm": 16.551691160563752,
-        "gradePct": 7.841982759077953,
-        "smoothedEle": 527.8378242605415,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.650534,
-        "lng": 121.091299,
-        "ele": 529.25,
-        "distanceKm": 16.558775169622944,
-        "gradePct": 6.8835958926245135,
-        "smoothedEle": 527.7138541020056,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.650325,
-        "lng": 121.091304,
-        "ele": 525.75,
-        "distanceKm": 16.582020434281965,
-        "gradePct": 3.43904033902738,
-        "smoothedEle": 526.9142254035435,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.650104,
-        "lng": 121.091547,
-        "ele": 524.25,
-        "distanceKm": 16.61676212872659,
-        "gradePct": -1.6491100923599098,
-        "smoothedEle": 524.9353164139093,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.650022,
-        "lng": 121.091984,
-        "ele": 524.5,
-        "distanceKm": 16.661857681255498,
-        "gradePct": -0.6116284595827806,
-        "smoothedEle": 526.9961883569417,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.64951,
-        "lng": 121.092164,
-        "ele": 537.25,
-        "distanceKm": 16.721625227666784,
-        "gradePct": 11.476019214066419,
-        "smoothedEle": 536.6335798094971,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.6489,
-        "lng": 121.092017,
-        "ele": 550,
-        "distanceKm": 16.791062110399686,
-        "gradePct": 18.2488320752021,
-        "smoothedEle": 549.9541733539343,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.648557,
-        "lng": 121.092103,
-        "ele": 556.25,
-        "distanceKm": 16.830179803848907,
-        "gradePct": 19.175041535169907,
-        "smoothedEle": 557.4497093051577,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.648237,
-        "lng": 121.092364,
-        "ele": 567.25,
-        "distanceKm": 16.874472971141003,
-        "gradePct": 19.889060378549235,
-        "smoothedEle": 566.6608157923378,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.648202,
-        "lng": 121.092437,
-        "ele": 569.75,
-        "distanceKm": 16.88281418968202,
-        "gradePct": 19.665203460138233,
-        "smoothedEle": 568.0371168516056,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.648116,
-        "lng": 121.092463,
-        "ele": 573.75,
-        "distanceKm": 16.89273141060678,
-        "gradePct": 18.052025391294336,
-        "smoothedEle": 568.3260616668982,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.648066,
-        "lng": 121.092375,
-        "ele": 574.25,
-        "distanceKm": 16.903219836448283,
-        "gradePct": 16.1275539767297,
-        "smoothedEle": 568.4113297342586,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.648072,
-        "lng": 121.092313,
-        "ele": 572.75,
-        "distanceKm": 16.90952120518089,
-        "gradePct": 14.337240740868562,
-        "smoothedEle": 567.8284531264924,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.648332,
-        "lng": 121.091932,
-        "ele": 558,
-        "distanceKm": 16.957671831120226,
-        "gradePct": -0.14461842961929755,
-        "smoothedEle": 563.0222704367696,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.648296,
-        "lng": 121.091826,
-        "ele": 557.75,
-        "distanceKm": 16.969108038077724,
-        "gradePct": -2.6944091630181974,
-        "smoothedEle": 562.8507273324072,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.647778,
-        "lng": 121.091865,
-        "ele": 571.25,
-        "distanceKm": 17.026841789479782,
-        "gradePct": 4.851677369411095,
-        "smoothedEle": 570.9512663158597,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.647363,
-        "lng": 121.091892,
-        "ele": 580.75,
-        "distanceKm": 17.073068355875133,
-        "gradePct": 18.92077020692018,
-        "smoothedEle": 582.3271639896394,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.647007,
-        "lng": 121.092137,
-        "ele": 596.25,
-        "distanceKm": 17.11975994186404,
-        "gradePct": 25.93537568980159,
-        "smoothedEle": 595.8929982306936,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.646653,
-        "lng": 121.09228,
-        "ele": 609.25,
-        "distanceKm": 17.1616922446863,
-        "gradePct": 28.205048878521723,
-        "smoothedEle": 607.732665185928,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.646367,
-        "lng": 121.092481,
-        "ele": 616.5,
-        "distanceKm": 17.19942836875579,
-        "gradePct": 26.225326622614688,
-        "smoothedEle": 616.2111631066089,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.646037,
-        "lng": 121.092717,
-        "ele": 623.5,
-        "distanceKm": 17.24319326563894,
-        "gradePct": 20.825074298254027,
-        "smoothedEle": 623.3345169041826,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.645716,
-        "lng": 121.092824,
-        "ele": 629.25,
-        "distanceKm": 17.28048907387295,
-        "gradePct": 18.069085515091814,
-        "smoothedEle": 630.0249951678053,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.64537385609944,
-        "lng": 121.0928423843491,
-        "ele": 637.5773890790571,
-        "distanceKm": 17.318579136517908,
-        "gradePct": 18.229975951289102,
-        "smoothedEle": 637.5581964253348,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.645031,
-        "lng": 121.092838,
-        "ele": 645.25,
-        "distanceKm": 17.356705623011635,
-        "gradePct": 19.01434881786868,
-        "smoothedEle": 644.7728414333453,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.644944,
-        "lng": 121.092803,
-        "ele": 648,
-        "distanceKm": 17.367006028196663,
-        "gradePct": 18.42039201125382,
-        "smoothedEle": 646.0266696797995,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.644877,
-        "lng": 121.092711,
-        "ele": 649.75,
-        "distanceKm": 17.378920647408677,
-        "gradePct": 17.85126337239112,
-        "smoothedEle": 647.5948992222412,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.644847,
-        "lng": 121.092647,
-        "ele": 650.5,
-        "distanceKm": 17.38619842782727,
-        "gradePct": 17.67233616570886,
-        "smoothedEle": 648.8264896861604,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.644829,
-        "lng": 121.092529,
-        "ele": 649.75,
-        "distanceKm": 17.398291044931188,
-        "gradePct": 16.51009404264061,
-        "smoothedEle": 650.0558455823227,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.644973,
-        "lng": 121.091995,
-        "ele": 654.5,
-        "distanceKm": 17.454585647652426,
-        "gradePct": 7.835309838908532,
-        "smoothedEle": 652.2069900048775,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.645147,
-        "lng": 121.091638,
-        "ele": 650.25,
-        "distanceKm": 17.495526503664106,
-        "gradePct": -1.2842535019676506,
-        "smoothedEle": 648.4905441419586,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.645326,
-        "lng": 121.091298,
-        "ele": 640.25,
-        "distanceKm": 17.535237250308246,
-        "gradePct": -3.3976079535856996,
-        "smoothedEle": 648.0700359147107,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.645012,
-        "lng": 121.090783,
-        "ele": 666,
-        "distanceKm": 17.597912409555487,
-        "gradePct": 12.525705603251303,
-        "smoothedEle": 660.9909847189501,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.644925,
-        "lng": 121.090204,
-        "ele": 665,
-        "distanceKm": 17.657224002729077,
-        "gradePct": 12.939064590673228,
-        "smoothedEle": 665.5418325448887,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.644896,
-        "lng": 121.090115,
-        "ele": 664.75,
-        "distanceKm": 17.66677945159956,
-        "gradePct": 11.01691519838171,
-        "smoothedEle": 665.5896097892411,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.644844,
-        "lng": 121.090064,
-        "ele": 665.25,
-        "distanceKm": 17.674525472417052,
-        "gradePct": 9.458745675544018,
-        "smoothedEle": 665.6283398933285,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.644779,
-        "lng": 121.090021,
-        "ele": 665.75,
-        "distanceKm": 17.682959083715147,
-        "gradePct": 8.317856381052929,
-        "smoothedEle": 666.2261021017027,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.644649,
-        "lng": 121.089986,
-        "ele": 666.5,
-        "distanceKm": 17.697840955676387,
-        "gradePct": 6.514807246452868,
-        "smoothedEle": 667.4910612184082,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.644148,
-        "lng": 121.090032,
-        "ele": 673.5,
-        "distanceKm": 17.753743343863764,
-        "gradePct": 7.360322148676356,
-        "smoothedEle": 672.6350914099388,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.643984,
-        "lng": 121.09008,
-        "ele": 675,
-        "distanceKm": 17.77261357758746,
-        "gradePct": 9.563792543457089,
-        "smoothedEle": 675.1825729626378,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.643624,
-        "lng": 121.090515,
-        "ele": 680,
-        "distanceKm": 17.832071727087733,
-        "gradePct": 7.988299717868018,
-        "smoothedEle": 678.6292106534141,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.643531,
-        "lng": 121.090521,
-        "ele": 679.75,
-        "distanceKm": 17.842430634043843,
-        "gradePct": 7.629795950083468,
-        "smoothedEle": 679.2239135707337,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.64343,
-        "lng": 121.09044,
-        "ele": 679,
-        "distanceKm": 17.856328362054867,
-        "gradePct": 7.0134001799041386,
-        "smoothedEle": 679.9974690456418,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.643025,
-        "lng": 121.090045,
-        "ele": 682,
-        "distanceKm": 17.916509796761144,
-        "gradePct": 2.8835236350319793,
-        "smoothedEle": 680.6106487702176,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.642862,
-        "lng": 121.08973,
-        "ele": 679.5,
-        "distanceKm": 17.953143976731035,
-        "gradePct": 0.3099160257238465,
-        "smoothedEle": 680.1301403663667,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.64261729829255,
-        "lng": 121.08941229829254,
-        "ele": 678.9407659256367,
-        "distanceKm": 17.99523177451269,
-        "gradePct": -0.9132340974428969,
-        "smoothedEle": 679.4806160556346,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.642336,
-        "lng": 121.089131,
-        "ele": 680.25,
-        "distanceKm": 18.037500654709355,
-        "gradePct": 0.5400755248991723,
-        "smoothedEle": 680.8753998943401,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.642141,
-        "lng": 121.088849,
-        "ele": 683,
-        "distanceKm": 18.073312359638184,
-        "gradePct": 3.5814947936340276,
-        "smoothedEle": 683.4003844959888,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.642061,
-        "lng": 121.088832,
-        "ele": 684.25,
-        "distanceKm": 18.082372376484525,
-        "gradePct": 4.225845181056851,
-        "smoothedEle": 683.9049152324079,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.641931,
-        "lng": 121.088944,
-        "ele": 686.5,
-        "distanceKm": 18.100732462035666,
-        "gradePct": 4.885391091916675,
-        "smoothedEle": 684.547518226698,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.642292,
-        "lng": 121.089369,
-        "ele": 683.75,
-        "distanceKm": 18.159523540644155,
-        "gradePct": 1.5272624446527983,
-        "smoothedEle": 683.9554353214506,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.642572,
-        "lng": 121.089651,
-        "ele": 682.5,
-        "distanceKm": 18.20173356501493,
-        "gradePct": -1.7478858976591916,
-        "smoothedEle": 682.7895502557984,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.642868,
-        "lng": 121.08992,
-        "ele": 682.25,
-        "distanceKm": 18.24442389150748,
-        "gradePct": -2.1447872173019653,
-        "smoothedEle": 681.9627161447538,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.643154990273384,
-        "lng": 121.09017178063701,
-        "ele": 681.0371090860364,
-        "distanceKm": 18.285239517546337,
-        "gradePct": -2.435028289457443,
-        "smoothedEle": 680.8101048261582,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.64343,
-        "lng": 121.09044,
-        "ele": 679,
-        "distanceKm": 18.326104890672173,
-        "gradePct": -2.3653510914544658,
-        "smoothedEle": 679.9521708375448,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.643531,
-        "lng": 121.090521,
-        "ele": 679.75,
-        "distanceKm": 18.340002618683197,
-        "gradePct": -2.7614767344485536,
-        "smoothedEle": 679.2868714371765,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.643624,
-        "lng": 121.090515,
-        "ele": 680,
-        "distanceKm": 18.350361525639308,
-        "gradePct": -3.0040612905330164,
-        "smoothedEle": 678.7909792610666,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.643906,
-        "lng": 121.090145,
-        "ele": 676.25,
-        "distanceKm": 18.399163553986916,
-        "gradePct": -4.600925560522503,
-        "smoothedEle": 675.9168558826024,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.644468,
-        "lng": 121.089994,
-        "ele": 669,
-        "distanceKm": 18.463491661962642,
-        "gradePct": -8.8231406251375,
-        "smoothedEle": 669.1945586505046,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.644844,
-        "lng": 121.090064,
-        "ele": 665.25,
-        "distanceKm": 18.50589534670289,
-        "gradePct": -8.810842611243732,
-        "smoothedEle": 666.4025398914372,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.644896,
-        "lng": 121.090115,
-        "ele": 664.75,
-        "distanceKm": 18.513641367520382,
-        "gradePct": -8.15630265420816,
-        "smoothedEle": 666.2476194750874,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.644925,
-        "lng": 121.090204,
-        "ele": 665,
-        "distanceKm": 18.523196816390865,
-        "gradePct": -7.348865746858688,
-        "smoothedEle": 666.0565104976778,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.644948,
-        "lng": 121.090643,
-        "ele": 667,
-        "distanceKm": 18.567638547874424,
-        "gradePct": -6.0937732001016505,
-        "smoothedEle": 662.8277388194715,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.645305,
-        "lng": 121.091212,
-        "ele": 643,
-        "distanceKm": 18.637515821748078,
-        "gradePct": -18.354292962620285,
-        "smoothedEle": 646.6619160568272,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.645326,
-        "lng": 121.091298,
-        "ele": 640.25,
-        "distanceKm": 18.646515700618764,
-        "gradePct": -19.207915295835118,
-        "smoothedEle": 645.1544363459873,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.645315,
-        "lng": 121.091397,
-        "ele": 639.75,
-        "distanceKm": 18.65659571406927,
-        "gradePct": -19.199539430433628,
-        "smoothedEle": 644.4304811149514,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.645272,
-        "lng": 121.091478,
-        "ele": 642,
-        "distanceKm": 18.66607610865057,
-        "gradePct": -17.47467349585495,
-        "smoothedEle": 645.4665793417811,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.645147,
-        "lng": 121.091638,
-        "ele": 650.25,
-        "distanceKm": 18.68739933665214,
-        "gradePct": -10.337410241914508,
-        "smoothedEle": 647.9187505619611,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.644973,
-        "lng": 121.091995,
-        "ele": 654.5,
-        "distanceKm": 18.72834019266382,
-        "gradePct": 3.42232952358797,
-        "smoothedEle": 652.2069900048775,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.644829,
-        "lng": 121.092529,
-        "ele": 649.75,
-        "distanceKm": 18.784634795385056,
-        "gradePct": 2.4550172660761627,
-        "smoothedEle": 650.0558455823227,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.644847,
-        "lng": 121.092647,
-        "ele": 650.5,
-        "distanceKm": 18.796727412488973,
-        "gradePct": 0.041483815903233655,
-        "smoothedEle": 648.9372785002104,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.644877,
-        "lng": 121.092711,
-        "ele": 649.75,
-        "distanceKm": 18.804005192907567,
-        "gradePct": -1.9229283845699865,
-        "smoothedEle": 647.7351577632813,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.644944,
-        "lng": 121.092803,
-        "ele": 648,
-        "distanceKm": 18.81591981211958,
-        "gradePct": -4.867489359006912,
-        "smoothedEle": 646.038561414638,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.645031,
-        "lng": 121.092838,
-        "ele": 645.25,
-        "distanceKm": 18.82622021730461,
-        "gradePct": -7.311181181138304,
-        "smoothedEle": 644.6737577276217,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.645422,
-        "lng": 121.092843,
-        "ele": 636.5,
-        "distanceKm": 18.869700430265745,
-        "gradePct": -14.569514833025456,
-        "smoothedEle": 636.0570067053899,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.645866,
-        "lng": 121.092784,
-        "ele": 624.75,
-        "distanceKm": 18.919429833672808,
-        "gradePct": -18.963213212487474,
-        "smoothedEle": 626.6102703463479,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.646174,
-        "lng": 121.092632,
-        "ele": 621.25,
-        "distanceKm": 18.956965422044966,
-        "gradePct": -18.649440386344242,
-        "smoothedEle": 619.9313440936073,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.646529,
-        "lng": 121.092341,
-        "ele": 611.75,
-        "distanceKm": 19.00619104078434,
-        "gradePct": -18.29510081825239,
-        "smoothedEle": 610.8300475994369,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.647007,
-        "lng": 121.092137,
-        "ele": 596.25,
-        "distanceKm": 19.063200905165726,
-        "gradePct": -23.32813576120692,
-        "smoothedEle": 595.4503334245826,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.647363,
-        "lng": 121.091892,
-        "ele": 580.75,
-        "distanceKm": 19.109892491154632,
-        "gradePct": -27.504332756446793,
-        "smoothedEle": 582.3271639896385,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.647778,
-        "lng": 121.091865,
-        "ele": 571.25,
-        "distanceKm": 19.156119057549983,
-        "gradePct": -26.409557395655693,
-        "smoothedEle": 570.9512663158598,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.648296,
-        "lng": 121.091826,
-        "ele": 557.75,
-        "distanceKm": 19.21385280895204,
-        "gradePct": -18.595887615364823,
-        "smoothedEle": 562.7566816004882,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.648332,
-        "lng": 121.091867,
-        "ele": 557.25,
-        "distanceKm": 19.219614201750012,
-        "gradePct": -17.250083628707085,
-        "smoothedEle": 562.6846641905136,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.648332,
-        "lng": 121.091932,
-        "ele": 558,
-        "distanceKm": 19.22618332921511,
-        "gradePct": -15.555453609128456,
-        "smoothedEle": 562.7626973551614,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.64815,
-        "lng": 121.09216,
-        "ele": 567,
-        "distanceKm": 19.256851116111033,
-        "gradePct": -4.3079798842484776,
-        "smoothedEle": 566.5393798648381,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.648103,
-        "lng": 121.092235,
-        "ele": 570,
-        "distanceKm": 19.26605795205282,
-        "gradePct": -1.5280907971557336,
-        "smoothedEle": 568.0124736155238,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.648072,
-        "lng": 121.092313,
-        "ele": 572.75,
-        "distanceKm": 19.274661633071112,
-        "gradePct": 1.3102725156215724,
-        "smoothedEle": 569.6296518977728,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.648066,
-        "lng": 121.092375,
-        "ele": 574.25,
-        "distanceKm": 19.28096300180372,
-        "gradePct": 3.3541002575792143,
-        "smoothedEle": 570.7790790742355,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.648094,
-        "lng": 121.092442,
-        "ele": 574.5,
-        "distanceKm": 19.288415767681837,
-        "gradePct": 5.771379788800946,
-        "smoothedEle": 572.138531600128,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.648116,
-        "lng": 121.092463,
-        "ele": 573.75,
-        "distanceKm": 19.291654387636378,
-        "gradePct": 6.809470424290582,
-        "smoothedEle": 572.7169405947425,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.64804824717152,
-        "lng": 121.09294025889473,
-        "ele": 576.2409128117653,
-        "distanceKm": 19.340472757740468,
-        "gradePct": 11.213084567918667,
-        "smoothedEle": 575.735499211065,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.648004,
-        "lng": 121.093414,
-        "ele": 576.75,
-        "distanceKm": 19.38860294426855,
-        "gradePct": 0.02118474200199186,
-        "smoothedEle": 572.193145587566,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.648353,
-        "lng": 121.093449,
-        "ele": 562.25,
-        "distanceKm": 19.427570901165645,
-        "gradePct": -10.12097843595913,
-        "smoothedEle": 564.8167675881915,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.648784,
-        "lng": 121.093361,
-        "ele": 555,
-        "distanceKm": 19.47631419670305,
-        "gradePct": -16.63515348206953,
-        "smoothedEle": 556.46243675047,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.64879,
-        "lng": 121.093539,
-        "ele": 553.5,
-        "distanceKm": 19.49431580154653,
-        "gradePct": -16.09973547017057,
-        "smoothedEle": 555.012003800658,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.648759,
-        "lng": 121.093595,
-        "ele": 553.75,
-        "distanceKm": 19.500942451010356,
-        "gradePct": -15.425186129552806,
-        "smoothedEle": 554.4321719725732,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.648691,
-        "lng": 121.093679,
-        "ele": 554.5,
-        "distanceKm": 19.51231087537883,
-        "gradePct": -13.516251616863691,
-        "smoothedEle": 554.1891385075568,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.648582,
-        "lng": 121.094189,
-        "ele": 553.5,
-        "distanceKm": 19.56525901282576,
-        "gradePct": -4.353892208380836,
-        "smoothedEle": 554.0033418175805,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.648664,
-        "lng": 121.093739,
-        "ele": 554.5,
-        "distanceKm": 19.611642511862733,
-        "gradePct": -0.10498717242091822,
-        "smoothedEle": 554.0984395685747,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.648759,
-        "lng": 121.093595,
-        "ele": 553.75,
-        "distanceKm": 19.629625307309198,
-        "gradePct": -0.10583618728048654,
-        "smoothedEle": 554.0225454306745,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.64879,
-        "lng": 121.093539,
-        "ele": 553.5,
-        "distanceKm": 19.636251956773023,
-        "gradePct": -0.21511605387160823,
-        "smoothedEle": 553.8900124413981,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.648784,
-        "lng": 121.093361,
-        "ele": 555,
-        "distanceKm": 19.654253561616503,
-        "gradePct": -0.6700079423626353,
-        "smoothedEle": 553.3719523518059,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.649009,
-        "lng": 121.09318,
-        "ele": 551.5,
-        "distanceKm": 19.685246420453495,
-        "gradePct": -2.8003298411876645,
-        "smoothedEle": 551.2439911511653,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.649212,
-        "lng": 121.092834,
-        "ele": 547,
-        "distanceKm": 19.7268669209838,
-        "gradePct": -7.892904496412827,
-        "smoothedEle": 546.1412823585766,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.649405,
-        "lng": 121.092585,
-        "ele": 541.25,
-        "distanceKm": 19.759939830521837,
-        "gradePct": -11.171947623436905,
-        "smoothedEle": 541.8095870624608,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.6495,
-        "lng": 121.092494,
-        "ele": 538.75,
-        "distanceKm": 19.773945809148945,
-        "gradePct": -11.575883882450235,
-        "smoothedEle": 540.4440041463178,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.64951,
-        "lng": 121.092164,
-        "ele": 537.25,
-        "distanceKm": 19.807314982406773,
-        "gradePct": -13.112758450824385,
-        "smoothedEle": 535.4256082200013,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.650022,
-        "lng": 121.091984,
-        "ele": 524.5,
-        "distanceKm": 19.86708252881806,
-        "gradePct": -13.0385582660803,
-        "smoothedEle": 528.0746157124987,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.65036,
-        "lng": 121.092176,
-        "ele": 528,
-        "distanceKm": 19.909379854748448,
-        "gradePct": -7.790432227886643,
-        "smoothedEle": 527.3812110558908,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.650574,
-        "lng": 121.092462,
-        "ele": 529.25,
-        "distanceKm": 19.946818598410992,
-        "gradePct": -3.6963056531895444,
-        "smoothedEle": 526.8706325577074,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.65071,
-        "lng": 121.09284,
-        "ele": 522.5,
-        "distanceKm": 19.987904240183333,
-        "gradePct": -5.309356755873902,
-        "smoothedEle": 522.4239165359954,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.650837,
-        "lng": 121.093055,
-        "ele": 517,
-        "distanceKm": 20.013818336830713,
-        "gradePct": -7.834239178667647,
-        "smoothedEle": 519.4864411730894,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.650901,
-        "lng": 121.093096,
-        "ele": 516.75,
-        "distanceKm": 20.022053208580804,
-        "gradePct": -8.333751704444348,
-        "smoothedEle": 518.8746239052307,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.651017,
-        "lng": 121.093133,
-        "ele": 517,
-        "distanceKm": 20.0354829064236,
-        "gradePct": -8.925654385853123,
-        "smoothedEle": 518.0995709819912,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.651185,
-        "lng": 121.093149,
-        "ele": 518.25,
-        "distanceKm": 20.054233531014155,
-        "gradePct": -9.505116308808034,
-        "smoothedEle": 516.562995022893,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.651276,
-        "lng": 121.093178,
-        "ele": 518.25,
-        "distanceKm": 20.064768168223242,
-        "gradePct": -8.759997056839769,
-        "smoothedEle": 516.1679461275522,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.651316,
-        "lng": 121.09321,
-        "ele": 517.75,
-        "distanceKm": 20.070267388140586,
-        "gradePct": -8.36520591638884,
-        "smoothedEle": 515.9675544192389,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.651378,
-        "lng": 121.093259,
-        "ele": 516.5,
-        "distanceKm": 20.078755660593554,
-        "gradePct": -8.718392131122062,
-        "smoothedEle": 514.6956789621076,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.651461,
-        "lng": 121.093366,
-        "ele": 513.25,
-        "distanceKm": 20.092972212415862,
-        "gradePct": -10.210288567887089,
-        "smoothedEle": 511.63915131258307,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.651756,
-        "lng": 121.09387,
-        "ele": 495.5,
-        "distanceKm": 20.153555605432913,
-        "gradePct": -20.702042195824326,
-        "smoothedEle": 495.9165074644707,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.651875,
-        "lng": 121.093999,
-        "ele": 490,
-        "distanceKm": 20.17213113714075,
-        "gradePct": -24.880055624275474,
-        "smoothedEle": 490.8082362448161,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.65198,
-        "lng": 121.09405,
-        "ele": 487.25,
-        "distanceKm": 20.184893643062424,
-        "gradePct": -23.888717570229463,
-        "smoothedEle": 489.48730854195446,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.652131,
-        "lng": 121.094058,
-        "ele": 485.75,
-        "distanceKm": 20.20170355372076,
-        "gradePct": -21.35674624904497,
-        "smoothedEle": 488.0164413593502,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.652473,
-        "lng": 121.093894,
-        "ele": 486.75,
-        "distanceKm": 20.24318700918461,
-        "gradePct": -10.837836853710844,
-        "smoothedEle": 487.76953584458875,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.652607,
-        "lng": 121.093508,
-        "ele": 491.25,
-        "distanceKm": 20.28494502122173,
-        "gradePct": 1.166870083632131,
-        "smoothedEle": 490.6496830366474,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.652716,
-        "lng": 121.093272,
-        "ele": 493.5,
-        "distanceKm": 20.311698168117747,
-        "gradePct": 3.3652547154524743,
-        "smoothedEle": 491.32220909656195,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.65288,
-        "lng": 121.093122,
-        "ele": 492.5,
-        "distanceKm": 20.335412008004177,
-        "gradePct": 0.6274002653167283,
-        "smoothedEle": 488.44321216495587,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.652938,
-        "lng": 121.093092,
-        "ele": 491.5,
-        "distanceKm": 20.342538397930237,
-        "gradePct": -1.0227017585264517,
-        "smoothedEle": 486.7506945575165,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.653021,
-        "lng": 121.093098,
-        "ele": 488.5,
-        "distanceKm": 20.35178748703272,
-        "gradePct": -3.8866774833562676,
-        "smoothedEle": 484.47605331750987,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.653126,
-        "lng": 121.093141,
-        "ele": 483,
-        "distanceKm": 20.36424545043867,
-        "gradePct": -7.985002674096507,
-        "smoothedEle": 481.2369828319629,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.653326,
-        "lng": 121.093326,
-        "ele": 467.5,
-        "distanceKm": 20.393299104152657,
-        "gradePct": -19.15402456950717,
-        "smoothedEle": 471.70566510671665,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.653696,
-        "lng": 121.093567,
-        "ele": 459,
-        "distanceKm": 20.441109764567223,
-        "gradePct": -29.294404677014978,
-        "smoothedEle": 457.7955903042174,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.654018,
-        "lng": 121.093991,
-        "ele": 443.5,
-        "distanceKm": 20.49694903388124,
-        "gradePct": -24.719340357564693,
-        "smoothedEle": 445.92441104396113,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.654101,
-        "lng": 121.094071,
-        "ele": 440.5,
-        "distanceKm": 20.50921852854425,
-        "gradePct": -22.879838066471695,
-        "smoothedEle": 444.1942159689972,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.654177,
-        "lng": 121.094101,
-        "ele": 439.25,
-        "distanceKm": 20.518196727388347,
-        "gradePct": -21.55656494321037,
-        "smoothedEle": 442.9053641722049,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.65424,
-        "lng": 121.094094,
-        "ele": 440.25,
-        "distanceKm": 20.525237644896396,
-        "gradePct": -19.60193387399835,
-        "smoothedEle": 442.81150462518264,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.654411,
-        "lng": 121.094011,
-        "ele": 444.5,
-        "distanceKm": 20.546019900870785,
-        "gradePct": -14.447278143628886,
-        "smoothedEle": 442.3044391126787,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.654531,
-        "lng": 121.094018,
-        "ele": 445.25,
-        "distanceKm": 20.55938204923843,
-        "gradePct": -12.48152840372557,
-        "smoothedEle": 441.42945578921757,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.65459,
-        "lng": 121.094078,
-        "ele": 444,
-        "distanceKm": 20.56831549262165,
-        "gradePct": -11.351063444802955,
-        "smoothedEle": 440.66071058446164,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.654663,
-        "lng": 121.094199,
-        "ele": 441,
-        "distanceKm": 20.58299252296153,
-        "gradePct": -9.517708142203594,
-        "smoothedEle": 439.37379478907974,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.654856,
-        "lng": 121.094507,
-        "ele": 431.25,
-        "distanceKm": 20.62079972618116,
-        "gradePct": -6.333653813729166,
-        "smoothedEle": 436.53701086266227,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.655197,
-        "lng": 121.094478,
-        "ele": 437.75,
-        "distanceKm": 20.658830337700916,
-        "gradePct": -6.61189238263747,
-        "smoothedEle": 434.8536907104689,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.655274,
-        "lng": 121.094491,
-        "ele": 439,
-        "distanceKm": 20.66749256334966,
-        "gradePct": -6.256235544448227,
-        "smoothedEle": 434.4752901674573,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.655329,
-        "lng": 121.094542,
-        "ele": 438.25,
-        "distanceKm": 20.675490397715972,
-        "gradePct": -6.25611873429963,
-        "smoothedEle": 433.7754796604052,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.655356,
-        "lng": 121.094613,
-        "ele": 436.5,
-        "distanceKm": 20.683268298957334,
-        "gradePct": -6.258189215833081,
-        "smoothedEle": 433.094913301786,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.655364,
-        "lng": 121.094718,
-        "ele": 433.25,
-        "distanceKm": 20.693916591153236,
-        "gradePct": -6.657543936716043,
-        "smoothedEle": 431.8965863858519,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.655368,
-        "lng": 121.095083,
-        "ele": 422.5,
-        "distanceKm": 20.73080537171378,
-        "gradePct": -10.66154620333551,
-        "smoothedEle": 425.432592349687,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.655518,
-        "lng": 121.095475,
-        "ele": 420,
-        "distanceKm": 20.773788125411173,
-        "gradePct": -15.265893556995488,
-        "smoothedEle": 418.65853493007955,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.655535,
-        "lng": 121.095956,
-        "ele": 412,
-        "distanceKm": 20.82243360919359,
-        "gradePct": -14.40874152945545,
-        "smoothedEle": 412.4908286433092,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.65563,
-        "lng": 121.09637,
-        "ele": 406.5,
-        "distanceKm": 20.865584445361076,
-        "gradePct": -13.407721382393028,
-        "smoothedEle": 406.543708835473,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.65579,
-        "lng": 121.096802,
-        "ele": 400.75,
-        "distanceKm": 20.912727291624687,
-        "gradePct": -11.837459574497986,
-        "smoothedEle": 401.88402217854053,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.655837,
-        "lng": 121.096847,
-        "ele": 400.25,
-        "distanceKm": 20.91965501627801,
-        "gradePct": -11.045697699876952,
-        "smoothedEle": 401.7974256203741,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.65589,
-        "lng": 121.096868,
-        "ele": 398.75,
-        "distanceKm": 20.925918817324913,
-        "gradePct": -10.291363371018146,
-        "smoothedEle": 401.7191281072878,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.655946,
-        "lng": 121.096857,
-        "ele": 398.25,
-        "distanceKm": 20.932244187828072,
-        "gradePct": -9.467481833060425,
-        "smoothedEle": 401.67123659164275,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.655999,
-        "lng": 121.096822,
-        "ele": 398.75,
-        "distanceKm": 20.939117459178046,
-        "gradePct": -8.571745711161034,
-        "smoothedEle": 401.6196870565179,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.656047,
-        "lng": 121.096747,
-        "ele": 400.75,
-        "distanceKm": 20.948387473931977,
-        "gradePct": -6.746817854693877,
-        "smoothedEle": 402.1670061049412,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.656142,
-        "lng": 121.096531,
-        "ele": 405.25,
-        "distanceKm": 20.97263753498079,
-        "gradePct": -2.131701506111055,
-        "smoothedEle": 403.7148668256394,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.65618,
-        "lng": 121.096479,
-        "ele": 405.75,
-        "distanceKm": 20.97938059441763,
-        "gradePct": -0.927009714501808,
-        "smoothedEle": 404.2530620737636,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.656348,
-        "lng": 121.096326,
-        "ele": 407,
-        "distanceKm": 21.003630058033526,
-        "gradePct": 2.7042450728329936,
-        "smoothedEle": 405.4874547493601,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.656509,
-        "lng": 121.096236,
-        "ele": 407,
-        "distanceKm": 21.023710334662656,
-        "gradePct": 3.5613848755003863,
-        "smoothedEle": 405.3081190160665,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.656586,
-        "lng": 121.096237,
-        "ele": 405.75,
-        "distanceKm": 21.032272952202916,
-        "gradePct": 3.327493649658048,
-        "smoothedEle": 404.9985145084895,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.65666,
-        "lng": 121.096267,
-        "ele": 404,
-        "distanceKm": 21.041042124621516,
-        "gradePct": 2.936347630559241,
-        "smoothedEle": 404.669670542792,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.65694,
-        "lng": 121.096539,
-        "ele": 402,
-        "distanceKm": 21.082574308257986,
-        "gradePct": -2.9246470338271857,
-        "smoothedEle": 401.4909875831863,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.657277,
-        "lng": 121.096996,
-        "ele": 396.25,
-        "distanceKm": 21.14204745232241,
-        "gradePct": -9.17618984014011,
-        "smoothedEle": 395.41653752866375,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.657477204037352,
-        "lng": 121.09733499880514,
-        "ele": 389.4915809829941,
-        "distanceKm": 21.1829031591244,
-        "gradePct": -12.598719403713963,
-        "smoothedEle": 388.85868010884235,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.657683,
-        "lng": 121.09767,
-        "ele": 381,
-        "distanceKm": 21.22376561185448,
-        "gradePct": -15.562276969890782,
-        "smoothedEle": 381.72152566765794,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.657739,
-        "lng": 121.097741,
-        "ele": 378.25,
-        "distanceKm": 21.233265863140144,
-        "gradePct": -15.802425379995785,
-        "smoothedEle": 380.51104345650697,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.657803,
-        "lng": 121.097784,
-        "ele": 376.75,
-        "distanceKm": 21.24160414104734,
-        "gradePct": -15.850449723846227,
-        "smoothedEle": 379.6113665981514,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.657934,
-        "lng": 121.097809,
-        "ele": 376.75,
-        "distanceKm": 21.256388159734474,
-        "gradePct": -14.684189542476437,
-        "smoothedEle": 378.43048315825797,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.658465,
-        "lng": 121.097888,
-        "ele": 379.75,
-        "distanceKm": 21.315970017441746,
-        "gradePct": -3.9180409681575283,
-        "smoothedEle": 379.16508581659537,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.658593,
-        "lng": 121.097926,
-        "ele": 380.75,
-        "distanceKm": 21.330711923876244,
-        "gradePct": -1.4502412829605553,
-        "smoothedEle": 379.38621441311284,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.658689,
-        "lng": 121.098002,
-        "ele": 380.25,
-        "distanceKm": 21.343862405088352,
-        "gradePct": -0.9594170343662403,
-        "smoothedEle": 378.4715692040622,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.65879,
-        "lng": 121.098142,
-        "ele": 378.25,
-        "distanceKm": 21.361925804590747,
-        "gradePct": -2.827016167379855,
-        "smoothedEle": 375.671742281191,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.658825,
-        "lng": 121.098648,
-        "ele": 364.25,
-        "distanceKm": 21.413207535125597,
-        "gradePct": -14.433963866347845,
-        "smoothedEle": 364.69706247423994,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.658846,
-        "lng": 121.098867,
-        "ele": 358,
-        "distanceKm": 21.43546142906519,
-        "gradePct": -19.806810242838484,
-        "smoothedEle": 359.2490655236222,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.65896,
-        "lng": 121.099019,
-        "ele": 355,
-        "distanceKm": 21.455376936257135,
-        "gradePct": -20.32150099524949,
-        "smoothedEle": 356.36531587765126,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.659358,
-        "lng": 121.099126,
-        "ele": 351.25,
-        "distanceKm": 21.5009343693579,
-        "gradePct": -18.77141768494933,
-        "smoothedEle": 348.55219547534006,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.659687,
-        "lng": 121.099298,
-        "ele": 338.75,
-        "distanceKm": 21.54143672689357,
-        "gradePct": -15.712695920122318,
-        "smoothedEle": 342.67115121708946,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660194,
-        "lng": 121.098929,
-        "ele": 340,
-        "distanceKm": 21.60902895680261,
-        "gradePct": -7.414618963041514,
-        "smoothedEle": 339.96222204132243,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660274,
-        "lng": 121.098846,
-        "ele": 338.75,
-        "distanceKm": 21.62125521864635,
-        "gradePct": -4.90575925931448,
-        "smoothedEle": 340.6957977519468,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.6603,
-        "lng": 121.098797,
-        "ele": 339,
-        "distanceKm": 21.626989066319695,
-        "gradePct": -3.7627620637035792,
-        "smoothedEle": 341.0062258333449,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660389,
-        "lng": 121.09839,
-        "ele": 344.75,
-        "distanceKm": 21.6692918235614,
-        "gradePct": -1.9986368995210742,
-        "smoothedEle": 339.55615102908325,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660413,
-        "lng": 121.098336,
-        "ele": 344.5,
-        "distanceKm": 21.675366330591977,
-        "gradePct": -2.122766593972896,
-        "smoothedEle": 339.1885701369764,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.66045,
-        "lng": 121.098309,
-        "ele": 342.5,
-        "distanceKm": 21.68030305308489,
-        "gradePct": -2.2334601385561226,
-        "smoothedEle": 338.8800249811693,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660497,
-        "lng": 121.098315,
-        "ele": 339.75,
-        "distanceKm": 21.685564275985914,
-        "gradePct": -2.3514297859472557,
-        "smoothedEle": 338.5511985498553,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660558,
-        "lng": 121.098395,
-        "ele": 335,
-        "distanceKm": 21.696117165526875,
-        "gradePct": -2.588051704752863,
-        "smoothedEle": 337.8916429535453,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660555,
-        "lng": 121.098451,
-        "ele": 334,
-        "distanceKm": 21.701785990811565,
-        "gradePct": -2.9247796946376794,
-        "smoothedEle": 337.3277224856687,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.66046,
-        "lng": 121.098745,
-        "ele": 332.75,
-        "distanceKm": 21.733317858988674,
-        "gradePct": -9.57662051911783,
-        "smoothedEle": 331.2126638335985,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660444,
-        "lng": 121.099157,
-        "ele": 324.25,
-        "distanceKm": 21.77498997390475,
-        "gradePct": -13.100786822787297,
-        "smoothedEle": 326.11055743003834,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660208,
-        "lng": 121.099449,
-        "ele": 322.25,
-        "distanceKm": 21.81447857168254,
-        "gradePct": -14.780157501292212,
-        "smoothedEle": 320.0860591821769,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660091,
-        "lng": 121.099602,
-        "ele": 319,
-        "distanceKm": 21.83468515066195,
-        "gradePct": -14.002162975197024,
-        "smoothedEle": 317.0430971253341,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660069,
-        "lng": 121.099661,
-        "ele": 316.75,
-        "distanceKm": 21.841129683028512,
-        "gradePct": -14.727594697225715,
-        "smoothedEle": 315.52863201919223,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660063,
-        "lng": 121.099715,
-        "ele": 314.75,
-        "distanceKm": 21.84662723237153,
-        "gradePct": -15.308569652197784,
-        "smoothedEle": 314.2745671151404,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660086,
-        "lng": 121.099782,
-        "ele": 311.5,
-        "distanceKm": 21.853864773456877,
-        "gradePct": -15.978515940251329,
-        "smoothedEle": 312.71849578179126,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660472,
-        "lng": 121.100089,
-        "ele": 300.75,
-        "distanceKm": 21.90682416531879,
-        "gradePct": -19.836791247670817,
-        "smoothedEle": 301.41704699787834,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660752,
-        "lng": 121.100435,
-        "ele": 293.75,
-        "distanceKm": 21.953641717046107,
-        "gradePct": -19.29809155011572,
-        "smoothedEle": 293.4683613599911,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.661008,
-        "lng": 121.100776,
-        "ele": 286,
-        "distanceKm": 21.998337863380236,
-        "gradePct": -16.050456932294026,
-        "smoothedEle": 287.1775532083154,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.661383,
-        "lng": 121.101336,
-        "ele": 279.5,
-        "distanceKm": 22.068631059649867,
-        "gradePct": -13.187882205114802,
-        "smoothedEle": 278.1707876853907,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.661759,
-        "lng": 121.101709,
-        "ele": 269,
-        "distanceKm": 22.124922803728982,
-        "gradePct": -12.921395988591073,
-        "smoothedEle": 270.8497916414167,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.662159,
-        "lng": 121.10217,
-        "ele": 266.5,
-        "distanceKm": 22.189331460174586,
-        "gradePct": -9.305887687004978,
-        "smoothedEle": 266.17271923850114,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.662417,
-        "lng": 121.10242,
-        "ele": 264,
-        "distanceKm": 22.227557655700288,
-        "gradePct": -7.736430789897388,
-        "smoothedEle": 262.92202952866876,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.662558,
-        "lng": 121.102817,
-        "ele": 257.5,
-        "distanceKm": 22.270630177938443,
-        "gradePct": -9.607237622254479,
-        "smoothedEle": 257.923486205578,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.662797,
-        "lng": 121.103214,
-        "ele": 252,
-        "distanceKm": 22.3187517480591,
-        "gradePct": -10.72999922002926,
-        "smoothedEle": 252.94086950022728,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.663194,
-        "lng": 121.103568,
-        "ele": 249.75,
-        "distanceKm": 22.375570652818684,
-        "gradePct": -7.0814404988715145,
-        "smoothedEle": 250.33049771255477,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.66376,
-        "lng": 121.103967,
-        "ele": 250.5,
-        "distanceKm": 22.450314548525323,
-        "gradePct": -2.7590424634036483,
-        "smoothedEle": 248.7317701547774,
+        "lat": 24.666379,
+        "lng": 121.10469,
+        "ele": 237.75,
+        "distanceKm": 16.18683725459975,
+        "gradePct": -6.877907335228558,
+        "smoothedEle": 238.4158298460419,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.663982,
-        "lng": 121.104402,
-        "ele": 243.75,
-        "distanceKm": 22.500728786921695,
-        "gradePct": -5.112561679324825,
-        "smoothedEle": 244.67981847978308,
+        "lat": 24.666046,
+        "lng": 121.105012,
+        "ele": 232,
+        "distanceKm": 16.236130027076605,
+        "gradePct": -12.20312598954916,
+        "smoothedEle": 232.23741753736746,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.664396,
-        "lng": 121.104743,
-        "ele": 240.25,
-        "distanceKm": 22.558231588388015,
-        "gradePct": -8.362933295680415,
-        "smoothedEle": 239.73251934339018,
+        "lat": 24.66565,
+        "lng": 121.105429,
+        "ele": 225.75,
+        "distanceKm": 16.297076738951066,
+        "gradePct": -10.66700456289654,
+        "smoothedEle": 226.46539663890857,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.664667,
-        "lng": 121.105013,
-        "ele": 236,
-        "distanceKm": 22.598881864578637,
-        "gradePct": -8.64868619139175,
-        "smoothedEle": 236.1795752743331,
+        "lat": 24.665315,
+        "lng": 121.105627,
+        "ele": 224,
+        "distanceKm": 16.339360325806535,
+        "gradePct": -6.866045123117788,
+        "smoothedEle": 225.06544365773493,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.66486081693191,
-        "lng": 121.10534792925952,
-        "ele": 232.38718438329428,
-        "distanceKm": 22.639005775048087,
-        "gradePct": -9.765207256740982,
-        "smoothedEle": 231.62142018760468,
+        "lat": 24.665167,
+        "lng": 121.105641,
+        "ele": 225.5,
+        "distanceKm": 16.35587789222639,
+        "gradePct": -5.157835403980142,
+        "smoothedEle": 225.20934029689118,
         "gradeBand": "descent"
       },
       {
         "lat": 24.665083,
         "lng": 121.105659,
         "ele": 226.25,
-        "distanceKm": 22.678986367366242,
-        "gradePct": -9.835892394434556,
-        "smoothedEle": 228.08260313938808,
+        "distanceKm": 16.365393732458646,
+        "gradePct": -3.989083744088959,
+        "smoothedEle": 225.4768845413582,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.665037,
+        "lng": 121.105727,
+        "ele": 225.5,
+        "distanceKm": 16.37395988986175,
+        "gradePct": -2.884604718149704,
+        "smoothedEle": 225.77009683887968,
         "gradeBand": "descent"
       },
       {
         "lat": 24.664996,
         "lng": 121.105827,
         "ele": 224,
-        "distanceKm": 22.698525654311478,
-        "gradePct": -9.256285440486788,
-        "smoothedEle": 226.95442357449062,
+        "distanceKm": 16.385045712907658,
+        "gradePct": -1.6114986612414042,
+        "smoothedEle": 225.99330864670378,
         "gradeBand": "descent"
       },
       {
         "lat": 24.664983,
         "lng": 121.105888,
         "ele": 225.25,
-        "distanceKm": 22.70485693353898,
-        "gradePct": -8.999683977363603,
-        "smoothedEle": 226.50111171999183,
+        "distanceKm": 16.39137699213516,
+        "gradePct": -0.9336673467794734,
+        "smoothedEle": 226.07152966405243,
         "gradeBand": "descent"
       },
       {
         "lat": 24.664983,
         "lng": 121.106012,
         "ele": 228,
-        "distanceKm": 22.717387135811947,
-        "gradePct": -8.01820791763106,
-        "smoothedEle": 226.05913217532253,
+        "distanceKm": 16.403907194408127,
+        "gradePct": -0.16806449832386977,
+        "smoothedEle": 226.07118490022475,
         "gradeBand": "descent"
       },
       {
         "lat": 24.665016,
         "lng": 121.106062,
         "ele": 228.75,
-        "distanceKm": 22.723631535814608,
-        "gradePct": -7.402497804957172,
-        "smoothedEle": 225.96546617528261,
+        "distanceKm": 16.410151594410788,
+        "gradePct": -0.008153769879015612,
+        "smoothedEle": 226.02435190020478,
         "gradeBand": "descent"
+      },
+      {
+        "lat": 24.665083,
+        "lng": 121.106091,
+        "ele": 228,
+        "distanceKm": 16.418157284872443,
+        "gradePct": 0.14045020646579842,
+        "smoothedEle": 225.9078981777679,
+        "gradeBand": "moderate"
       },
       {
         "lat": 24.665225,
         "lng": 121.106125,
         "ele": 225.5,
-        "distanceKm": 22.7477274853303,
-        "gradePct": -5.016360882079326,
-        "smoothedEle": 225.83307131718612,
-        "gradeBand": "descent"
+        "distanceKm": 16.4343164518219,
+        "gradePct": 0.6422593674629319,
+        "smoothedEle": 225.87469894362818,
+        "gradeBand": "moderate"
       },
       {
         "lat": 24.665296,
         "lng": 121.10618,
         "ele": 224.75,
-        "distanceKm": 22.757382387006466,
-        "gradePct": -4.124293996221864,
-        "smoothedEle": 225.8705502975275,
-        "gradeBand": "descent"
+        "distanceKm": 16.443971353498064,
+        "gradePct": 0.8057028724516213,
+        "smoothedEle": 225.91131657527686,
+        "gradeBand": "moderate"
       },
       {
         "lat": 24.665353,
         "lng": 121.106287,
         "ele": 224.75,
-        "distanceKm": 22.769915466224138,
-        "gradePct": -3.2724346073572796,
-        "smoothedEle": 225.61306458091687,
-        "gradeBand": "descent"
+        "distanceKm": 16.456504432715736,
+        "gradePct": 0.42497998764641765,
+        "smoothedEle": 225.65193589154222,
+        "gradeBand": "moderate"
       },
       {
         "lat": 24.665509,
         "lng": 121.106656,
         "ele": 225.12500000000003,
-        "distanceKm": 22.811040193193055,
-        "gradePct": -1.1580086742394378,
+        "distanceKm": 16.497629159684653,
+        "gradePct": -0.9463575587410141,
         "smoothedEle": 225.12500007926036,
         "gradeBand": "descent"
       },
@@ -5539,8 +3819,8 @@
         "lat": 24.665665,
         "lng": 121.107025,
         "ele": 225.5,
-        "distanceKm": 22.852164877889788,
-        "gradePct": -0.37912816975349445,
+        "distanceKm": 16.538753844381386,
+        "gradePct": -0.4203599203587711,
         "smoothedEle": 225.47116848582363,
         "gradeBand": "descent"
       },
@@ -5548,7 +3828,7 @@
         "lat": 24.665933,
         "lng": 121.107623,
         "ele": 226,
-        "distanceKm": 22.9195409970829,
+        "distanceKm": 16.6061299635745,
         "gradePct": 0.7218844181429245,
         "smoothedEle": 225.9184402979828,
         "gradeBand": "moderate"
@@ -5557,7 +3837,7 @@
         "lat": 24.666182,
         "lng": 121.1080955,
         "ele": 226,
-        "distanceKm": 22.974733893565357,
+        "distanceKm": 16.661322860056956,
         "gradePct": 0.3790086294399035,
         "smoothedEle": 226,
         "gradeBand": "moderate"
@@ -5566,7 +3846,7 @@
         "lat": 24.666431,
         "lng": 121.108568,
         "ele": 226,
-        "distanceKm": 23.029926707615843,
+        "distanceKm": 16.71651567410744,
         "gradePct": 0.06621251949394397,
         "smoothedEle": 226,
         "gradeBand": "moderate"
@@ -5575,7 +3855,7 @@
         "lat": 24.66668,
         "lng": 121.1090405,
         "ele": 226,
-        "distanceKm": 23.085119439233623,
+        "distanceKm": 16.77170840572522,
         "gradePct": 0,
         "smoothedEle": 226,
         "gradeBand": "moderate"
@@ -5584,7 +3864,7 @@
         "lat": 24.666929,
         "lng": 121.109513,
         "ele": 226,
-        "distanceKm": 23.140312088417954,
+        "distanceKm": 16.826901054909552,
         "gradePct": -0.16753081186126667,
         "smoothedEle": 225.83246918813873,
         "gradeBand": "descent"
@@ -5593,7 +3873,7 @@
         "lat": 24.667196,
         "lng": 121.109975,
         "ele": 225.25,
-        "distanceKm": 23.19563720525495,
+        "distanceKm": 16.88222617174655,
         "gradePct": 0.41340599521239463,
         "smoothedEle": 226.38148055031058,
         "gradeBand": "moderate"
@@ -5602,7 +3882,7 @@
         "lat": 24.667468500000002,
         "lng": 121.1104085,
         "ele": 229.37500000000014,
-        "distanceKm": 23.248900248239227,
+        "distanceKm": 16.935489214730826,
         "gradePct": 3.4573089849336687,
         "smoothedEle": 229.3750016229554,
         "gradeBand": "hard"
@@ -5611,7 +3891,7 @@
         "lat": 24.667741,
         "lng": 121.110842,
         "ele": 233.5,
-        "distanceKm": 23.302163212534758,
+        "distanceKm": 16.988752179026356,
         "gradePct": 5.739535161535716,
         "smoothedEle": 232.48779423627465,
         "gradeBand": "hard"
@@ -5620,7 +3900,7 @@
         "lat": 24.668011,
         "lng": 121.111372,
         "ele": 233.25,
-        "distanceKm": 23.36355969067826,
+        "distanceKm": 17.05014865716986,
         "gradePct": 2.889685379062273,
         "smoothedEle": 233.12141371152663,
         "gradeBand": "moderate"
@@ -5629,7 +3909,7 @@
         "lat": 24.668131,
         "lng": 121.111878,
         "ele": 232.5,
-        "distanceKm": 23.416402173133193,
+        "distanceKm": 17.10299113962479,
         "gradePct": -0.2491125124970459,
         "smoothedEle": 232.38562961094183,
         "gradeBand": "descent"
@@ -5638,7 +3918,7 @@
         "lat": 24.668178,
         "lng": 121.112288,
         "ele": 231.5,
-        "distanceKm": 23.458159957162756,
+        "distanceKm": 17.144748923654355,
         "gradePct": 1.248004366395616,
         "smoothedEle": 234.31369214021296,
         "gradeBand": "moderate"
@@ -5647,7 +3927,7 @@
         "lat": 24.667993,
         "lng": 121.112842,
         "ele": 244,
-        "distanceKm": 23.517800260196985,
+        "distanceKm": 17.204389226688583,
         "gradePct": 9.201506701396493,
         "smoothedEle": 241.65168952901408,
         "gradeBand": "extreme"
@@ -5656,7 +3936,7 @@
         "lat": 24.667962,
         "lng": 121.113486,
         "ele": 245,
-        "distanceKm": 23.58296614232202,
+        "distanceKm": 17.26955510881362,
         "gradePct": 5.084825025525688,
         "smoothedEle": 242.4506096713775,
         "gradeBand": "hard"
@@ -5665,7 +3945,7 @@
         "lat": 24.668007,
         "lng": 121.113855,
         "ele": 237.75,
-        "distanceKm": 23.620586952201343,
+        "distanceKm": 17.30717591869294,
         "gradePct": -2.3883047709949157,
         "smoothedEle": 239.29754902159146,
         "gradeBand": "descent"
@@ -5674,7 +3954,7 @@
         "lat": 24.668014,
         "lng": 121.113987,
         "ele": 235.75,
-        "distanceKm": 23.633947922705392,
+        "distanceKm": 17.32053688919699,
         "gradePct": -3.1305231965126676,
         "smoothedEle": 238.7191333116838,
         "gradeBand": "descent"
@@ -5683,7 +3963,7 @@
         "lat": 24.667992,
         "lng": 121.114081,
         "ele": 235.5,
-        "distanceKm": 23.64375635325849,
+        "distanceKm": 17.330345319750087,
         "gradePct": -3.6185886579739925,
         "smoothedEle": 238.3513171659427,
         "gradeBand": "descent"
@@ -5692,7 +3972,7 @@
         "lat": 24.667949,
         "lng": 121.114135,
         "ele": 236.5,
-        "distanceKm": 23.651011409099237,
+        "distanceKm": 17.337600375590835,
         "gradePct": -3.9795987255555763,
         "smoothedEle": 238.07925257191465,
         "gradeBand": "descent"
@@ -5701,7 +3981,7 @@
         "lat": 24.667633,
         "lng": 121.11437000000001,
         "ele": 241.2500000000002,
-        "distanceKm": 23.69342057176685,
+        "distanceKm": 17.38000953825845,
         "gradePct": -0.36404100074747187,
         "smoothedEle": 241.21036610603375,
         "gradeBand": "descent"
@@ -5710,35 +3990,44 @@
         "lat": 24.667317,
         "lng": 121.114605,
         "ele": 246,
-        "distanceKm": 23.735829768112197,
-        "gradePct": 7.142170168251438,
-        "smoothedEle": 245.79073427718023,
+        "distanceKm": 17.422418734603795,
+        "gradePct": 7.134273205664994,
+        "smoothedEle": 245.7828373145938,
         "gradeBand": "steep"
       },
       {
         "lat": 24.666972,
         "lng": 121.114776,
         "ele": 250,
-        "distanceKm": 23.77790397491329,
-        "gradePct": 8.370519501418352,
-        "smoothedEle": 248.43527877733294,
+        "distanceKm": 17.464492941404888,
+        "gradePct": 8.396157857687934,
+        "smoothedEle": 248.46091713360252,
+        "gradeBand": "steep"
+      },
+      {
+        "lat": 24.666909,
+        "lng": 121.11484,
+        "ele": 249.75,
+        "distanceKm": 17.474026957733546,
+        "gradePct": 7.201468345354879,
+        "smoothedEle": 247.97013417550025,
         "gradeBand": "steep"
       },
       {
         "lat": 24.666861,
         "lng": 121.114919,
         "ele": 249,
-        "distanceKm": 23.796907699402198,
-        "gradePct": 5.850592964317373,
-        "smoothedEle": 247.4375832416653,
+        "distanceKm": 17.48362971898817,
+        "gradePct": 5.865302758416307,
+        "smoothedEle": 247.46598920963254,
         "gradeBand": "hard"
       },
       {
         "lat": 24.666706,
         "lng": 121.115508,
         "ele": 240.75,
-        "distanceKm": 23.858870578154484,
-        "gradePct": -4.440300383342383,
+        "distanceKm": 17.545592597740455,
+        "gradePct": -4.459237146313819,
         "smoothedEle": 242.79864770721875,
         "gradeBand": "descent"
       },
@@ -5746,8 +4035,8 @@
         "lat": 24.666414,
         "lng": 121.115819,
         "ele": 242.5,
-        "distanceKm": 23.904057268925836,
-        "gradePct": -4.522508832151054,
+        "distanceKm": 17.590779288511808,
+        "gradePct": -4.547637185408369,
         "smoothedEle": 242.3798121236577,
         "gradeBand": "descent"
       },
@@ -5755,8 +4044,8 @@
         "lat": 24.666214,
         "lng": 121.116285,
         "ele": 244,
-        "distanceKm": 23.956133458338055,
-        "gradePct": 0.5021719359792414,
+        "distanceKm": 17.642855477924027,
+        "gradePct": 0.5009171437650295,
         "smoothedEle": 243.50573785607247,
         "gradeBand": "moderate"
       },
@@ -5764,7 +4053,7 @@
         "lat": 24.666096,
         "lng": 121.116722,
         "ele": 243.5,
-        "distanceKm": 24.002200032530403,
+        "distanceKm": 17.688922052116375,
         "gradePct": 1.54577146532015,
         "smoothedEle": 243.9427983191609,
         "gradeBand": "moderate"
@@ -5773,7 +4062,7 @@
         "lat": 24.665892,
         "lng": 121.117171,
         "ele": 244.75,
-        "distanceKm": 24.05292567178772,
+        "distanceKm": 17.73964769137369,
         "gradePct": 1.0360478908450967,
         "smoothedEle": 244.47243102911114,
         "gradeBand": "moderate"
@@ -5782,7 +4071,7 @@
         "lat": 24.665599,
         "lng": 121.117564,
         "ele": 244.875,
-        "distanceKm": 24.104292417783068,
+        "distanceKm": 17.79101443736904,
         "gradePct": 0.9103547810524488,
         "smoothedEle": 244.87499995493718,
         "gradeBand": "moderate"
@@ -5791,7 +4080,7 @@
         "lat": 24.665306,
         "lng": 121.117957,
         "ele": 245,
-        "distanceKm": 24.155659235878925,
+        "distanceKm": 17.842381255464897,
         "gradePct": 0.9288868908884507,
         "smoothedEle": 245.42274127354378,
         "gradeBand": "moderate"
@@ -5800,7 +4089,7 @@
         "lat": 24.665102,
         "lng": 121.118278,
         "ele": 246.5,
-        "distanceKm": 24.19524096758107,
+        "distanceKm": 17.881962987167043,
         "gradePct": 1.3889476124780715,
         "smoothedEle": 246.19300998874684,
         "gradeBand": "moderate"
@@ -5809,7 +4098,7 @@
         "lat": 24.664892,
         "lng": 121.118618,
         "ele": 247,
-        "distanceKm": 24.236782167188764,
+        "distanceKm": 17.923504186774736,
         "gradePct": 2.0198236448601103,
         "smoothedEle": 247.2412725105993,
         "gradeBand": "moderate"
@@ -5818,7 +4107,7 @@
         "lat": 24.664504,
         "lng": 121.118967,
         "ele": 248.75,
-        "distanceKm": 24.29250565157962,
+        "distanceKm": 17.979227671165592,
         "gradePct": 2.6840384252819733,
         "smoothedEle": 248.82381859685037,
         "gradeBand": "moderate"
@@ -5827,7 +4116,7 @@
         "lat": 24.664417,
         "lng": 121.119055,
         "ele": 249.5,
-        "distanceKm": 24.305645712560906,
+        "distanceKm": 17.992367732146878,
         "gradePct": 2.7994654571540307,
         "smoothedEle": 249.25503175902605,
         "gradeBand": "moderate"
@@ -5836,7 +4125,7 @@
         "lat": 24.664368,
         "lng": 121.11913,
         "ele": 249.75,
-        "distanceKm": 24.31497977975975,
+        "distanceKm": 18.00170179934572,
         "gradePct": 2.9314118900118027,
         "smoothedEle": 249.62251671540753,
         "gradeBand": "moderate"
@@ -5845,7 +4134,7 @@
         "lat": 24.664341,
         "lng": 121.119235,
         "ele": 250,
-        "distanceKm": 24.326006664549947,
+        "distanceKm": 18.01272868413592,
         "gradePct": 2.901261230607064,
         "smoothedEle": 249.87062162318696,
         "gradeBand": "moderate"
@@ -5854,530 +4143,89 @@
         "lat": 24.664307,
         "lng": 121.119747,
         "ele": 251,
-        "distanceKm": 24.37788249402444,
-        "gradePct": 3.2515204292849478,
-        "smoothedEle": 251.66004157999464,
+        "distanceKm": 18.064604513610412,
+        "gradePct": 3.238184260548888,
+        "smoothedEle": 251.64670541125858,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.664278,
+        "lng": 121.119865,
+        "ele": 251.75,
+        "distanceKm": 18.076956818306552,
+        "gradePct": 3.3974180304457007,
+        "smoothedEle": 252.15674444157204,
         "gradeBand": "hard"
       },
       {
         "lat": 24.664233,
         "lng": 121.11995,
         "ele": 252.5,
-        "distanceKm": 24.399984562764665,
-        "gradePct": 3.764183799983275,
-        "smoothedEle": 252.83343542384372,
+        "distanceKm": 18.086897336552816,
+        "gradePct": 3.7522178799293364,
+        "smoothedEle": 252.82772942319485,
         "gradeBand": "hard"
       },
       {
         "lat": 24.664132,
         "lng": 121.120026,
         "ele": 254,
-        "distanceKm": 24.413590032194367,
-        "gradePct": 4.067548134101229,
-        "smoothedEle": 253.63535008127687,
+        "distanceKm": 18.10050280598252,
+        "gradePct": 4.0524245426839505,
+        "smoothedEle": 253.6277365386062,
         "gradeBand": "hard"
       },
       {
         "lat": 24.663697,
         "lng": 121.120208,
         "ele": 256.75,
-        "distanceKm": 24.46533828648114,
-        "gradePct": 5.815646721264758,
-        "smoothedEle": 257.04298475612654,
+        "distanceKm": 18.15225106026929,
+        "gradePct": 4.19931938657123,
+        "smoothedEle": 255.4230769928862,
         "gradeBand": "hard"
-      },
-      {
-        "lat": 24.663182,
-        "lng": 121.119935,
-        "ele": 262,
-        "distanceKm": 24.5289022384932,
-        "gradePct": 7.963730201453559,
-        "smoothedEle": 262.607392656771,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.662747,
-        "lng": 121.119705,
-        "ele": 268.75,
-        "distanceKm": 24.582566270598257,
-        "gradePct": 10.381139914922494,
-        "smoothedEle": 268.9322676970724,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.662232,
-        "lng": 121.119568,
-        "ele": 277.25,
-        "distanceKm": 24.641481409103513,
-        "gradePct": 12.885669652822388,
-        "smoothedEle": 276.975650909442,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.662073,
-        "lng": 121.119505,
-        "ele": 279.75,
-        "distanceKm": 24.660272703554046,
-        "gradePct": 13.677523519895066,
-        "smoothedEle": 279.98225802152723,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.662015,
-        "lng": 121.119504,
-        "ele": 280.5,
-        "distanceKm": 24.666722809838944,
-        "gradePct": 13.610195160971534,
-        "smoothedEle": 280.67514306156664,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.661701,
-        "lng": 121.11965,
-        "ele": 284.75,
-        "distanceKm": 24.7046272408129,
-        "gradePct": 12.411705012545719,
-        "smoothedEle": 284.35584439446905,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.661604,
-        "lng": 121.119531,
-        "ele": 286.25,
-        "distanceKm": 24.720780981072906,
-        "gradePct": 12.211294988753533,
-        "smoothedEle": 286.3608220947966,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.661564,
-        "lng": 121.119494,
-        "ele": 286.75,
-        "distanceKm": 24.726591550697986,
-        "gradePct": 12.115275924562694,
-        "smoothedEle": 287.05809044980623,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.661158,
-        "lng": 121.11931,
-        "ele": 292.5,
-        "distanceKm": 24.775415895007395,
-        "gradePct": 10.104388056094448,
-        "smoothedEle": 291.6236712180239,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.66108,
-        "lng": 121.119263,
-        "ele": 293.5,
-        "distanceKm": 24.785304393926122,
-        "gradePct": 9.61387126822749,
-        "smoothedEle": 292.0933749166634,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.661051,
-        "lng": 121.119221,
-        "ele": 294,
-        "distanceKm": 24.790634678838344,
-        "gradePct": 9.347603583284789,
-        "smoothedEle": 292.34470336169943,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.66108,
-        "lng": 121.119103,
-        "ele": 294.25,
-        "distanceKm": 24.80298728120755,
-        "gradePct": 8.633318810209678,
-        "smoothedEle": 292.8299152922257,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.661137,
-        "lng": 121.119058,
-        "ele": 293.75,
-        "distanceKm": 24.810787956428783,
-        "gradePct": 7.650907170706494,
-        "smoothedEle": 292.77141022806643,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.661378,
-        "lng": 121.119005,
-        "ele": 291.5,
-        "distanceKm": 24.838115932615455,
-        "gradePct": 5.301300030273904,
-        "smoothedEle": 293.4370392881124,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.661408,
-        "lng": 121.118993,
-        "ele": 291.25,
-        "distanceKm": 24.841665354425572,
-        "gradePct": 5.093622172874957,
-        "smoothedEle": 293.56126905146647,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.661413,
-        "lng": 121.118941,
-        "ele": 291.75,
-        "distanceKm": 24.84694943626293,
-        "gradePct": 4.784102636434842,
-        "smoothedEle": 293.7458657751739,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.660981,
-        "lng": 121.11883,
-        "ele": 297.5,
-        "distanceKm": 24.89627795091237,
-        "gradePct": 5.04349540031437,
-        "smoothedEle": 297.60986727004814,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.660608,
-        "lng": 121.118523,
-        "ele": 304,
-        "distanceKm": 24.948072644023856,
-        "gradePct": 10.043875822392948,
-        "smoothedEle": 303.87772471439337,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.660515,
-        "lng": 121.118149,
-        "ele": 308.75,
-        "distanceKm": 24.98725592030722,
-        "gradePct": 10.980152243419198,
-        "smoothedEle": 307.8833057599144,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.660674,
-        "lng": 121.117809,
-        "ele": 310.5,
-        "distanceKm": 25.025896183440192,
-        "gradePct": 10.044660917676225,
-        "smoothedEle": 311.2387343695868,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.660693,
-        "lng": 121.117741,
-        "ele": 311,
-        "distanceKm": 25.033085268068074,
-        "gradePct": 9.685528984165762,
-        "smoothedEle": 311.74957877720277,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.660684,
-        "lng": 121.117663,
-        "ele": 312,
-        "distanceKm": 25.04103071697987,
-        "gradePct": 9.419249128446303,
-        "smoothedEle": 312.44480555698476,
-        "gradeBand": "extreme"
-      },
-      {
-        "lat": 24.660616,
-        "lng": 121.117327,
-        "ele": 315.75,
-        "distanceKm": 25.07581643018954,
-        "gradePct": 8.924081028549026,
-        "smoothedEle": 315.6379642916198,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.660542,
-        "lng": 121.117219,
-        "ele": 317.5,
-        "distanceKm": 25.089484564956415,
-        "gradePct": 8.155139312771608,
-        "smoothedEle": 316.23197527694384,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.66045,
-        "lng": 121.117212,
-        "ele": 324,
-        "distanceKm": 25.099738939808866,
-        "gradePct": 7.521033144658083,
-        "smoothedEle": 316.48833464825515,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.660542,
-        "lng": 121.117219,
-        "ele": 317.5,
-        "distanceKm": 25.109993314661317,
-        "gradePct": 6.6641983160508484,
-        "smoothedEle": 316.5219653590727,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.660576,
-        "lng": 121.117253,
-        "ele": 316.5,
-        "distanceKm": 25.115101940661443,
-        "gradePct": 6.013752730445019,
-        "smoothedEle": 316.3151407130539,
-        "gradeBand": "steep"
-      },
-      {
-        "lat": 24.660616,
-        "lng": 121.117327,
-        "ele": 315.75,
-        "distanceKm": 25.12380268216783,
-        "gradePct": 4.831622837348607,
-        "smoothedEle": 315.88856253231074,
-        "gradeBand": "hard"
-      },
-      {
-        "lat": 24.660626,
-        "lng": 121.117559,
-        "ele": 314.5,
-        "distanceKm": 25.14727346060883,
-        "gradePct": 1.1533176289008062,
-        "smoothedEle": 314.1711765893546,
-        "gradeBand": "moderate"
-      },
-      {
-        "lat": 24.660684,
-        "lng": 121.117663,
-        "ele": 312,
-        "distanceKm": 25.159604099104147,
-        "gradePct": -1.5510290162671716,
-        "smoothedEle": 312.59872239030733,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660693,
-        "lng": 121.117741,
-        "ele": 311,
-        "distanceKm": 25.16754954801594,
-        "gradePct": -2.925590032531276,
-        "smoothedEle": 311.95351481407096,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660674,
-        "lng": 121.117809,
-        "ele": 310.5,
-        "distanceKm": 25.174738632643823,
-        "gradePct": -4.10301957144179,
-        "smoothedEle": 311.43600816462896,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660515,
-        "lng": 121.118149,
-        "ele": 308.75,
-        "distanceKm": 25.213378895776795,
-        "gradePct": -8.501593073685733,
-        "smoothedEle": 307.8833057599142,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660608,
-        "lng": 121.118523,
-        "ele": 304,
-        "distanceKm": 25.25256217206016,
-        "gradePct": -9.619013439972582,
-        "smoothedEle": 303.8777247143934,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.660981,
-        "lng": 121.11883,
-        "ele": 297.5,
-        "distanceKm": 25.304356865171645,
-        "gradePct": -11.102951211247456,
-        "smoothedEle": 297.6098672700482,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.661413,
-        "lng": 121.118941,
-        "ele": 291.75,
-        "distanceKm": 25.353685379821087,
-        "gradePct": -10.011863431836304,
-        "smoothedEle": 293.72993797260096,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.66142,
-        "lng": 121.118969,
-        "ele": 291.25,
-        "distanceKm": 25.35661996971602,
-        "gradePct": -9.759449064106409,
-        "smoothedEle": 293.6272273262783,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.661408,
-        "lng": 121.118993,
-        "ele": 291.25,
-        "distanceKm": 25.3593880736586,
-        "gradePct": -9.521354736962941,
-        "smoothedEle": 293.530343688288,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.661137,
-        "lng": 121.119058,
-        "ele": 293.75,
-        "distanceKm": 25.39022951354747,
-        "gradePct": -6.552906341585377,
-        "smoothedEle": 292.76656128956296,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.66108,
-        "lng": 121.119103,
-        "ele": 294.25,
-        "distanceKm": 25.398030188768704,
-        "gradePct": -5.55041421390431,
-        "smoothedEle": 292.8250663537222,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.661052,
-        "lng": 121.119178,
-        "ele": 294,
-        "distanceKm": 25.406223767088584,
-        "gradePct": -4.917436832087945,
-        "smoothedEle": 292.54558945775915,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.661051,
-        "lng": 121.119221,
-        "ele": 294,
-        "distanceKm": 25.4105704772775,
-        "gradePct": -4.7711487432334145,
-        "smoothedEle": 292.34998749925796,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.66108,
-        "lng": 121.119263,
-        "ele": 293.5,
-        "distanceKm": 25.41590076218972,
-        "gradePct": -4.591758547207056,
-        "smoothedEle": 292.11012467820797,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.661158,
-        "lng": 121.11931,
-        "ele": 292.5,
-        "distanceKm": 25.42578926110845,
-        "gradePct": -4.283473810514462,
-        "smoothedEle": 291.64063053922996,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.661564,
-        "lng": 121.119494,
-        "ele": 286.75,
-        "distanceKm": 25.474613605417858,
-        "gradePct": -6.100608256807076,
-        "smoothedEle": 287.05267803043694,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.661701,
-        "lng": 121.11965,
-        "ele": 284.75,
-        "distanceKm": 25.496535677249017,
-        "gradePct": -8.391828106626571,
-        "smoothedEle": 284.42202941069786,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.662015,
-        "lng": 121.119504,
-        "ele": 280.5,
-        "distanceKm": 25.534440108222974,
-        "gradePct": -10.621495978242839,
-        "smoothedEle": 280.20622705995135,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.662535,
-        "lng": 121.119625,
-        "ele": 272.5,
-        "distanceKm": 25.59354024712144,
-        "gradePct": -12.437775843313483,
-        "smoothedEle": 272.3437051826938,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.662982,
-        "lng": 121.119783,
-        "ele": 265,
-        "distanceKm": 25.645745866818306,
-        "gradePct": -13.21680180554817,
-        "smoothedEle": 265.4853378537372,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.663337206963117,
-        "lng": 121.11999903643932,
-        "ele": 260.2362845100279,
-        "distanceKm": 25.690874772590224,
-        "gradePct": -12.109658830326792,
-        "smoothedEle": 260.5886538407006,
-        "gradeBand": "descent"
-      },
-      {
-        "lat": 24.663697,
-        "lng": 121.120208,
-        "ele": 256.75,
-        "distanceKm": 25.73611262829525,
-        "gradePct": -9.709757058280251,
-        "smoothedEle": 257.0411205734005,
-        "gradeBand": "descent"
       },
       {
         "lat": 24.664132,
         "lng": 121.120026,
         "ele": 254,
-        "distanceKm": 25.78786088258202,
-        "gradePct": -7.28032403097232,
-        "smoothedEle": 253.63535008127687,
+        "distanceKm": 18.20399931455606,
+        "gradePct": -0.1213069576420463,
+        "smoothedEle": 253.6277365386062,
         "gradeBand": "descent"
       },
       {
         "lat": 24.664233,
         "lng": 121.11995,
         "ele": 252.5,
-        "distanceKm": 25.801466352011722,
-        "gradePct": -6.924631295397818,
-        "smoothedEle": 252.83343542384372,
+        "distanceKm": 18.217604783985763,
+        "gradePct": -1.3933386853475527,
+        "smoothedEle": 252.82772942319485,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.664278,
+        "lng": 121.119865,
+        "ele": 251.75,
+        "distanceKm": 18.227545302232027,
+        "gradePct": -2.4091974175924746,
+        "smoothedEle": 252.15674444157204,
         "gradeBand": "descent"
       },
       {
         "lat": 24.664307,
         "lng": 121.119747,
         "ele": 251,
-        "distanceKm": 25.823568420751947,
-        "gradePct": -6.364790375792177,
-        "smoothedEle": 251.66004157999464,
+        "distanceKm": 18.239897606928167,
+        "gradePct": -3.347784089371809,
+        "smoothedEle": 251.64670541125858,
         "gradeBand": "descent"
       },
       {
         "lat": 24.664341,
         "lng": 121.119235,
         "ele": 250,
-        "distanceKm": 25.87544425022644,
-        "gradePct": -4.58191931159839,
+        "distanceKm": 18.29177343640266,
+        "gradePct": -4.181276347344206,
         "smoothedEle": 249.87062162318702,
         "gradeBand": "descent"
       },
@@ -6385,8 +4233,8 @@
         "lat": 24.664368,
         "lng": 121.11913,
         "ele": 249.75,
-        "distanceKm": 25.886471135016638,
-        "gradePct": -4.24084282813126,
+        "distanceKm": 18.30280032119286,
+        "gradePct": -4.183361710295427,
         "smoothedEle": 249.48597239172693,
         "gradeBand": "descent"
       },
@@ -6394,8 +4242,8 @@
         "lat": 24.664417,
         "lng": 121.119055,
         "ele": 249.5,
-        "distanceKm": 25.89580520221548,
-        "gradePct": -4.007827002169847,
+        "distanceKm": 18.3121343883917,
+        "gradePct": -3.990110860966041,
         "smoothedEle": 249.15928003976742,
         "gradeBand": "descent"
       },
@@ -6403,8 +4251,8 @@
         "lat": 24.664504,
         "lng": 121.118967,
         "ele": 248.75,
-        "distanceKm": 25.908945263196767,
-        "gradePct": -3.642614533551585,
+        "distanceKm": 18.325274449372987,
+        "gradePct": -3.516259827059151,
         "smoothedEle": 248.79376718249813,
         "gradeBand": "descent"
       },
@@ -6412,8 +4260,8 @@
         "lat": 24.664743,
         "lng": 121.11877,
         "ele": 247.5,
-        "distanceKm": 25.94214991504761,
-        "gradePct": -3.2061278386153558,
+        "distanceKm": 18.358479101223832,
+        "gradePct": -3.1975685755366046,
         "smoothedEle": 247.81295827027077,
         "gradeBand": "descent"
       },
@@ -6421,7 +4269,7 @@
         "lat": 24.665102,
         "lng": 121.118278,
         "ele": 246.5,
-        "distanceKm": 26.005909407427545,
+        "distanceKm": 18.422238593603765,
         "gradePct": -2.650149081803183,
         "smoothedEle": 246.2280655258664,
         "gradeBand": "descent"
@@ -6430,7 +4278,7 @@
         "lat": 24.665306,
         "lng": 121.117957,
         "ele": 245,
-        "distanceKm": 26.04549113912969,
+        "distanceKm": 18.46182032530591,
         "gradePct": -2.3071629822194053,
         "smoothedEle": 245.4227412735438,
         "gradeBand": "descent"
@@ -6439,7 +4287,7 @@
         "lat": 24.665599,
         "lng": 121.117564,
         "ele": 244.875,
-        "distanceKm": 26.09685795722555,
+        "distanceKm": 18.51318714340177,
         "gradePct": -1.5780607397426312,
         "smoothedEle": 244.8749999549372,
         "gradeBand": "descent"
@@ -6448,7 +4296,7 @@
         "lat": 24.665892,
         "lng": 121.117171,
         "ele": 244.75,
-        "distanceKm": 26.148224703220897,
+        "distanceKm": 18.564553889397118,
         "gradePct": -0.9211613491863643,
         "smoothedEle": 244.47243102911114,
         "gradeBand": "descent"
@@ -6457,7 +4305,7 @@
         "lat": 24.666096,
         "lng": 121.116722,
         "ele": 243.5,
-        "distanceKm": 26.198950342478213,
+        "distanceKm": 18.615279528654433,
         "gradePct": -0.9158032973716257,
         "smoothedEle": 243.9427983191609,
         "gradeBand": "descent"
@@ -6466,7 +4314,7 @@
         "lat": 24.666214,
         "lng": 121.116285,
         "ele": 244,
-        "distanceKm": 26.24501691667056,
+        "distanceKm": 18.66134610284678,
         "gradePct": -0.9918330794279913,
         "smoothedEle": 243.50573785607247,
         "gradeBand": "descent"
@@ -6475,7 +4323,7 @@
         "lat": 24.666414,
         "lng": 121.115819,
         "ele": 242.5,
-        "distanceKm": 26.29709310608278,
+        "distanceKm": 18.713422292259,
         "gradePct": -1.5823778317552581,
         "smoothedEle": 242.37981212365767,
         "gradeBand": "descent"
@@ -6484,7 +4332,7 @@
         "lat": 24.666706,
         "lng": 121.115508,
         "ele": 240.75,
-        "distanceKm": 26.342279796854132,
+        "distanceKm": 18.758608983030353,
         "gradePct": -0.7330588012979329,
         "smoothedEle": 242.79864770721875,
         "gradeBand": "descent"
@@ -6493,35 +4341,44 @@
         "lat": 24.666861,
         "lng": 121.114919,
         "ele": 249,
-        "distanceKm": 26.40424267560642,
-        "gradePct": 4.991501734865622,
-        "smoothedEle": 247.4375832416653,
+        "distanceKm": 18.82057186178264,
+        "gradePct": 5.0199077028328665,
+        "smoothedEle": 247.46598920963254,
+        "gradeBand": "hard"
+      },
+      {
+        "lat": 24.666909,
+        "lng": 121.11484,
+        "ele": 249.75,
+        "distanceKm": 18.830174623037262,
+        "gradePct": 5.4350446434342325,
+        "smoothedEle": 247.97013417550025,
         "gradeBand": "hard"
       },
       {
         "lat": 24.666972,
         "lng": 121.114776,
         "ele": 250,
-        "distanceKm": 26.423246400095326,
-        "gradePct": 5.813051686506728,
-        "smoothedEle": 248.43527877733294,
+        "distanceKm": 18.83970863936592,
+        "gradePct": 5.837456773212297,
+        "smoothedEle": 248.46091713360252,
         "gradeBand": "hard"
       },
       {
         "lat": 24.667317,
         "lng": 121.114605,
         "ele": 246,
-        "distanceKm": 26.46532060689642,
-        "gradePct": 1.2671048615600105,
-        "smoothedEle": 245.79073427718023,
+        "distanceKm": 18.881782846167013,
+        "gradePct": 1.238622981566959,
+        "smoothedEle": 245.78283731459382,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.667633,
         "lng": 121.11437000000001,
         "ele": 241.2500000000002,
-        "distanceKm": 26.507729803241766,
-        "gradePct": -6.410291336487115,
+        "distanceKm": 18.92419204251236,
+        "gradePct": -6.445682591908956,
         "smoothedEle": 241.21036610603375,
         "gradeBand": "descent"
       },
@@ -6529,8 +4386,8 @@
         "lat": 24.667949,
         "lng": 121.114135,
         "ele": 236.5,
-        "distanceKm": 26.55013896590938,
-        "gradePct": -8.665713008195883,
+        "distanceKm": 18.966601205179973,
+        "gradePct": -8.669916598655297,
         "smoothedEle": 238.0792525719147,
         "gradeBand": "descent"
       },
@@ -6538,8 +4395,8 @@
         "lat": 24.667992,
         "lng": 121.114081,
         "ele": 235.5,
-        "distanceKm": 26.557394021750127,
-        "gradePct": -7.937637012392572,
+        "distanceKm": 18.97385626102072,
+        "gradePct": -7.936057948122767,
         "smoothedEle": 238.3513171659427,
         "gradeBand": "descent"
       },
@@ -6547,8 +4404,8 @@
         "lat": 24.668014,
         "lng": 121.113987,
         "ele": 235.75,
-        "distanceKm": 26.567202452303224,
-        "gradePct": -6.8683538977106355,
+        "distanceKm": 18.983664691573818,
+        "gradePct": -6.860807351167226,
         "smoothedEle": 238.7191333116838,
         "gradeBand": "descent"
       },
@@ -6556,8 +4413,8 @@
         "lat": 24.668007,
         "lng": 121.113855,
         "ele": 237.75,
-        "distanceKm": 26.580563422807273,
-        "gradePct": -4.846898250568034,
+        "distanceKm": 18.997025662077867,
+        "gradePct": -4.841839633372063,
         "smoothedEle": 239.29754902159146,
         "gradeBand": "descent"
       },
@@ -6565,7 +4422,7 @@
         "lat": 24.667962,
         "lng": 121.113486,
         "ele": 245,
-        "distanceKm": 26.618184232686595,
+        "distanceKm": 19.03464647195719,
         "gradePct": 2.7193034236791687,
         "smoothedEle": 243.1578078972929,
         "gradeBand": "moderate"
@@ -6574,7 +4431,7 @@
         "lat": 24.667952,
         "lng": 121.113024,
         "ele": 247,
-        "distanceKm": 26.664881469032537,
+        "distanceKm": 19.08134370830313,
         "gradePct": 5.041802925885108,
         "smoothedEle": 243.67389936491816,
         "gradeBand": "hard"
@@ -6583,7 +4440,7 @@
         "lat": 24.668147,
         "lng": 121.112502,
         "ele": 234,
-        "distanceKm": 26.721911115208826,
+        "distanceKm": 19.13837335447942,
         "gradePct": -6.857408745864251,
         "smoothedEle": 236.3415881472037,
         "gradeBand": "descent"
@@ -6592,7 +4449,7 @@
         "lat": 24.668147,
         "lng": 121.112023,
         "ele": 232.25,
-        "distanceKm": 26.770312846484536,
+        "distanceKm": 19.18677508575513,
         "gradePct": -10.144710713870067,
         "smoothedEle": 232.8308755369209,
         "gradeBand": "descent"
@@ -6601,7 +4458,7 @@
         "lat": 24.668076,
         "lng": 121.111552,
         "ele": 232.75,
-        "distanceKm": 26.81855657225119,
+        "distanceKm": 19.235018811521783,
         "gradePct": -3.9778836521975904,
         "smoothedEle": 232.79499864827085,
         "gradeBand": "descent"
@@ -6610,7 +4467,7 @@
         "lat": 24.667919035355542,
         "lng": 121.11119147680903,
         "ele": 233.3351524485712,
-        "distanceKm": 26.858951819923806,
+        "distanceKm": 19.2754140591944,
         "gradePct": -0.44510424573857044,
         "smoothedEle": 233.2098182449022,
         "gradeBand": "descent"
@@ -6619,7 +4476,7 @@
         "lat": 24.667741,
         "lng": 121.110842,
         "ele": 233.5,
-        "distanceKm": 26.89943606763016,
+        "distanceKm": 19.315898306900753,
         "gradePct": -0.32222427829409633,
         "smoothedEle": 232.4869935084102,
         "gradeBand": "descent"
@@ -6628,7 +4485,7 @@
         "lat": 24.667468500000002,
         "lng": 121.1104085,
         "ele": 229.37500000000014,
-        "distanceKm": 26.95269903192569,
+        "distanceKm": 19.369161271196283,
         "gradePct": -3.7706066184278235,
         "smoothedEle": 229.37500162295555,
         "gradeBand": "descent"
@@ -6637,7 +4494,7 @@
         "lat": 24.667196,
         "lng": 121.109975,
         "ele": 225.25,
-        "distanceKm": 27.005962074909966,
+        "distanceKm": 19.42242431418056,
         "gradePct": -5.7242183386996475,
         "smoothedEle": 226.38148055031058,
         "gradeBand": "descent"
@@ -6646,7 +4503,7 @@
         "lat": 24.666929,
         "lng": 121.109513,
         "ele": 226,
-        "distanceKm": 27.061287191746963,
+        "distanceKm": 19.477749431017557,
         "gradePct": -3.059855592492723,
         "smoothedEle": 225.83246918813873,
         "gradeBand": "descent"
@@ -6655,7 +4512,7 @@
         "lat": 24.66668,
         "lng": 121.1090405,
         "ele": 226,
-        "distanceKm": 27.116479840931294,
+        "distanceKm": 19.532942080201888,
         "gradePct": -0.2771089126078397,
         "smoothedEle": 226,
         "gradeBand": "descent"
@@ -6664,7 +4521,7 @@
         "lat": 24.666431,
         "lng": 121.108568,
         "ele": 226,
-        "distanceKm": 27.171672572549074,
+        "distanceKm": 19.588134811819668,
         "gradePct": 0.13600720676205733,
         "smoothedEle": 226,
         "gradeBand": "moderate"
@@ -6673,7 +4530,7 @@
         "lat": 24.666182,
         "lng": 121.1080955,
         "ele": 226,
-        "distanceKm": 27.22686538659956,
+        "distanceKm": 19.643327625870153,
         "gradePct": 0,
         "smoothedEle": 226,
         "gradeBand": "moderate"
@@ -6682,7 +4539,7 @@
         "lat": 24.665933,
         "lng": 121.107623,
         "ele": 226,
-        "distanceKm": 27.282058283082016,
+        "distanceKm": 19.69852052235261,
         "gradePct": -0.08155970201718671,
         "smoothedEle": 225.9184402979828,
         "gradeBand": "descent"
@@ -6691,7 +4548,7 @@
         "lat": 24.665665,
         "lng": 121.107025,
         "ele": 225.5,
-        "distanceKm": 27.34943440227513,
+        "distanceKm": 19.765896641545723,
         "gradePct": -0.4954808058310434,
         "smoothedEle": 225.47116848582363,
         "gradeBand": "descent"
@@ -6700,7 +4557,7 @@
         "lat": 24.665509,
         "lng": 121.106656,
         "ele": 225.12500000000003,
-        "distanceKm": 27.390559086971862,
+        "distanceKm": 19.807021326242456,
         "gradePct": -0.737008206814455,
         "smoothedEle": 225.12500007926033,
         "gradeBand": "descent"
@@ -6709,7 +4566,7 @@
         "lat": 24.665353,
         "lng": 121.106287,
         "ele": 224.75,
-        "distanceKm": 27.43168381394078,
+        "distanceKm": 19.848146053211373,
         "gradePct": 0.06293132512683906,
         "smoothedEle": 225.6519358915422,
         "gradeBand": "moderate"
@@ -6718,7 +4575,7 @@
         "lat": 24.665296,
         "lng": 121.10618,
         "ele": 224.75,
-        "distanceKm": 27.44421689315845,
+        "distanceKm": 19.860679132429045,
         "gradePct": 0.4055120079227037,
         "smoothedEle": 225.91131657527674,
         "gradeBand": "moderate"
@@ -6727,7 +4584,7 @@
         "lat": 24.665225,
         "lng": 121.106125,
         "ele": 225.5,
-        "distanceKm": 27.453871794834615,
+        "distanceKm": 19.87033403410521,
         "gradePct": 0.44088235783575497,
         "smoothedEle": 225.87469894362806,
         "gradeBand": "moderate"
@@ -6736,7 +4593,7 @@
         "lat": 24.665083,
         "lng": 121.106091,
         "ele": 228,
-        "distanceKm": 27.470030961784072,
+        "distanceKm": 19.886493201054666,
         "gradePct": 0.6101019193175914,
         "smoothedEle": 225.90789817776795,
         "gradeBand": "moderate"
@@ -6745,7 +4602,7 @@
         "lat": 24.665016,
         "lng": 121.106062,
         "ele": 228.75,
-        "distanceKm": 27.478036652245727,
+        "distanceKm": 19.89449889151632,
         "gradePct": 0.7975754430085431,
         "smoothedEle": 226.0279835346927,
         "gradeBand": "moderate"
@@ -6754,7 +4611,7 @@
         "lat": 24.664983,
         "lng": 121.106012,
         "ele": 228,
-        "distanceKm": 27.484281052248388,
+        "distanceKm": 19.90074329151898,
         "gradePct": 0.9438038885676443,
         "smoothedEle": 226.12164953473265,
         "gradeBand": "moderate"
@@ -6763,7 +4620,7 @@
         "lat": 24.664983,
         "lng": 121.105888,
         "ele": 225.25,
-        "distanceKm": 27.496811254521354,
+        "distanceKm": 19.913273493791948,
         "gradePct": 1.0000581352102103,
         "smoothedEle": 226.20516794963555,
         "gradeBand": "moderate"
@@ -6772,7 +4629,7 @@
         "lat": 24.664996,
         "lng": 121.105827,
         "ele": 224,
-        "distanceKm": 27.503142533748857,
+        "distanceKm": 19.91960477301945,
         "gradePct": 0.7932291215461079,
         "smoothedEle": 226.0794623380806,
         "gradeBand": "moderate"
@@ -6781,7 +4638,7 @@
         "lat": 24.665037,
         "lng": 121.105727,
         "ele": 225.5,
-        "distanceKm": 27.514228356794764,
+        "distanceKm": 19.930690596065357,
         "gradePct": 0.34482972710486104,
         "smoothedEle": 225.77310685741224,
         "gradeBand": "moderate"
@@ -6790,7 +4647,7 @@
         "lat": 24.665083,
         "lng": 121.105659,
         "ele": 226.25,
-        "distanceKm": 27.52279451419787,
+        "distanceKm": 19.939256753468463,
         "gradePct": -0.17182190035117384,
         "smoothedEle": 225.36621438076472,
         "gradeBand": "descent"
@@ -6799,7 +4656,7 @@
         "lat": 24.665447,
         "lng": 121.10559,
         "ele": 223.25,
-        "distanceKm": 27.563865686898733,
+        "distanceKm": 19.980327926169327,
         "gradePct": -0.627248768659646,
         "smoothedEle": 225.26798276576613,
         "gradeBand": "descent"
@@ -6808,7 +4665,7 @@
         "lat": 24.665757063307694,
         "lng": 121.10531625909266,
         "ele": 227.43976180075126,
-        "distanceKm": 27.608068077089445,
+        "distanceKm": 20.02453031636004,
         "gradePct": 1.5936949785151513,
         "smoothedEle": 227.5370404769701,
         "gradeBand": "moderate"
@@ -6817,7 +4674,7 @@
         "lat": 24.666046,
         "lng": 121.105012,
         "ele": 232,
-        "distanceKm": 27.652537111746962,
+        "distanceKm": 20.068999351017556,
         "gradePct": 6.89658285886013,
         "smoothedEle": 232.19166064431076,
         "gradeBand": "steep"
@@ -6826,7 +4683,7 @@
         "lat": 24.666379,
         "lng": 121.10469,
         "ele": 237.75,
-        "distanceKm": 27.701829884223816,
+        "distanceKm": 20.11829212349441,
         "gradePct": 11.16323801271214,
         "smoothedEle": 238.38005101861884,
         "gradeBand": "extreme"
@@ -6835,125 +4692,134 @@
         "lat": 24.666713,
         "lng": 121.104233,
         "ele": 248,
-        "distanceKm": 27.7610906879329,
-        "gradePct": 12.107572166418604,
-        "smoothedEle": 245.3730792566727,
+        "distanceKm": 20.177552927203493,
+        "gradePct": 12.828074288822894,
+        "smoothedEle": 246.093581379077,
         "gradeBand": "extreme"
       },
       {
-        "lat": 24.667086239272827,
-        "lng": 121.10397803375366,
-        "ele": 245.8923686419621,
-        "distanceKm": 27.809939718731204,
-        "gradePct": 5.597014798681334,
-        "smoothedEle": 244.9340609669865,
-        "gradeBand": "hard"
+        "lat": 24.666908,
+        "lng": 121.104067,
+        "ele": 248.5,
+        "distanceKm": 20.20496685160881,
+        "gradePct": 10.376324210863794,
+        "smoothedEle": 247.0834730953896,
+        "gradeBand": "extreme"
       },
       {
         "lat": 24.667489,
         "lng": 121.103777,
         "ele": 240,
-        "distanceKm": 27.859116537108452,
-        "gradePct": -4.002185540354134,
-        "smoothedEle": 241.13793547752516,
+        "distanceKm": 20.275906575947076,
+        "gradePct": -5.00363571009818,
+        "smoothedEle": 240.87565258475556,
         "gradeBand": "descent"
       },
       {
         "lat": 24.66785,
         "lng": 121.103639,
         "ele": 238.75,
-        "distanceKm": 27.90161107616955,
-        "gradePct": -7.8262095450361375,
-        "smoothedEle": 237.1827029871312,
+        "distanceKm": 20.318401115008175,
+        "gradePct": -8.725159452116106,
+        "smoothedEle": 237.18270298713145,
         "gradeBand": "descent"
       },
       {
         "lat": 24.668323,
         "lng": 121.103554,
         "ele": 230.5,
-        "distanceKm": 27.9549030484426,
-        "gradePct": -9.389522747191117,
-        "smoothedEle": 232.07366621870125,
+        "distanceKm": 20.371693087281223,
+        "gradePct": -9.17070194262551,
+        "smoothedEle": 232.07366621870153,
         "gradeBand": "descent"
       },
       {
         "lat": 24.668937,
         "lng": 121.103486,
         "ele": 228.25,
-        "distanceKm": 28.023521721772784,
-        "gradePct": -6.954419442355388,
-        "smoothedEle": 228.12773651616513,
+        "distanceKm": 20.440311760611408,
+        "gradePct": -6.954419442355758,
+        "smoothedEle": 228.12773651616504,
         "gradeBand": "descent"
       },
       {
         "lat": 24.669523,
         "lng": 121.103427,
         "ele": 225.5,
-        "distanceKm": 28.08895420112767,
-        "gradePct": -4.705451246676706,
-        "smoothedEle": 225.4100970390375,
+        "distanceKm": 20.505744239966294,
+        "gradePct": -4.705451246677019,
+        "smoothedEle": 225.4100970390373,
         "gradeBand": "descent"
       },
       {
         "lat": 24.669948967571358,
         "lng": 121.10336992342263,
         "ele": 223.33796512703304,
-        "distanceKm": 28.136669533854263,
-        "gradePct": -4.027956875600721,
-        "smoothedEle": 223.55370506868874,
+        "distanceKm": 20.553459572692887,
+        "gradePct": -4.0279568756006645,
+        "smoothedEle": 223.55370506868869,
         "gradeBand": "descent"
       },
       {
         "lat": 24.670371,
         "lng": 121.103282,
         "ele": 222,
-        "distanceKm": 28.184431038079385,
-        "gradePct": -4.141813074331763,
-        "smoothedEle": 221.45614672923335,
+        "distanceKm": 20.60122107691801,
+        "gradePct": -4.192445336373308,
+        "smoothedEle": 221.40551446719164,
         "gradeBand": "descent"
       },
       {
         "lat": 24.670688,
         "lng": 121.10325,
         "ele": 219.25,
-        "distanceKm": 28.219827874025214,
-        "gradePct": -3.833459402029464,
-        "smoothedEle": 220.37547995483115,
+        "distanceKm": 20.636617912863837,
+        "gradePct": -3.914840009258428,
+        "smoothedEle": 220.2940993476021,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.670815,
+        "lng": 121.103224,
+        "ele": 218.5,
+        "distanceKm": 20.6509819862413,
+        "gradePct": -3.3499916576405533,
+        "smoothedEle": 220.30010531133985,
         "gradeBand": "descent"
       },
       {
         "lat": 24.670904,
         "lng": 121.103175,
         "ele": 219,
-        "distanceKm": 28.245013247574363,
-        "gradePct": -2.566357438424311,
-        "smoothedEle": 220.62091389708195,
+        "distanceKm": 20.66204781382007,
+        "gradePct": -2.6309511975346904,
+        "smoothedEle": 220.53647669726422,
         "gradeBand": "descent"
       },
       {
         "lat": 24.670971,
         "lng": 121.103084,
         "ele": 220.75,
-        "distanceKm": 28.256847673944648,
-        "gradePct": -1.6640808653214711,
-        "smoothedEle": 221.00345391396877,
+        "distanceKm": 20.673882240190355,
+        "gradePct": -1.7094043731353037,
+        "smoothedEle": 220.92574121784574,
         "gradeBand": "descent"
       },
       {
         "lat": 24.67116249260383,
         "lng": 121.10271156096839,
         "ele": 224.1360479751001,
-        "distanceKm": 28.30008708028753,
-        "gradePct": 2.498259382911975,
-        "smoothedEle": 223.4764265362626,
+        "distanceKm": 20.717121646533236,
+        "gradePct": 2.5701695029129814,
+        "smoothedEle": 223.47642653626244,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.671349,
         "lng": 121.102336,
         "ele": 225.25,
-        "distanceKm": 28.34333271772128,
-        "gradePct": 4.037923995017507,
+        "distanceKm": 20.76036728396699,
+        "gradePct": 4.141881190032363,
         "smoothedEle": 224.64246096339892,
         "gradeBand": "hard"
       },
@@ -6961,8 +4827,8 @@
         "lat": 24.671489,
         "lng": 121.101953,
         "ele": 224.25,
-        "distanceKm": 28.385046547503638,
-        "gradePct": 2.0855448917514807,
+        "distanceKm": 20.802081113749345,
+        "gradePct": 2.1125767234213964,
         "smoothedEle": 224.70176475671224,
         "gradeBand": "moderate"
       },
@@ -6970,107 +4836,107 @@
         "lat": 24.671561,
         "lng": 121.101607,
         "ele": 224.75,
-        "distanceKm": 28.420912985254034,
-        "gradePct": 1.5295006446845671,
-        "smoothedEle": 225.56745716658824,
+        "distanceKm": 20.83794755149974,
+        "gradePct": 1.529500644684823,
+        "smoothedEle": 225.5674571665884,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.671712,
         "lng": 121.101049,
         "ele": 229.5,
-        "distanceKm": 28.479742834845094,
-        "gradePct": 3.8279843629237886,
-        "smoothedEle": 228.52220892778755,
+        "distanceKm": 20.8967774010908,
+        "gradePct": 3.827984362924016,
+        "smoothedEle": 228.52220892778777,
         "gradeBand": "hard"
       },
       {
         "lat": 24.671879,
         "lng": 121.100749,
         "ele": 229.5,
-        "distanceKm": 28.515291793127258,
-        "gradePct": 3.143862302522349,
-        "smoothedEle": 228.5756432307155,
+        "distanceKm": 20.932326359372965,
+        "gradePct": 3.1438623025223773,
+        "smoothedEle": 228.57564323071568,
         "gradeBand": "hard"
       },
       {
         "lat": 24.67229,
         "lng": 121.100381,
         "ele": 225,
-        "distanceKm": 28.57420927004795,
-        "gradePct": -3.2603408712871373,
-        "smoothedEle": 224.9839426420428,
+        "distanceKm": 20.99124383629366,
+        "gradePct": -3.2603408712872226,
+        "smoothedEle": 224.98394264204293,
         "gradeBand": "descent"
       },
       {
         "lat": 24.672597,
         "lng": 121.100072,
         "ele": 221.5,
-        "distanceKm": 28.620471319919865,
-        "gradePct": -5.819477133051069,
-        "smoothedEle": 222.44041412724155,
+        "distanceKm": 21.037505886165572,
+        "gradePct": -5.819477133051268,
+        "smoothedEle": 222.44041412724152,
         "gradeBand": "descent"
       },
       {
         "lat": 24.672876,
         "lng": 121.099763,
         "ele": 221.5,
-        "distanceKm": 28.66448607302902,
-        "gradePct": -4.92949949341609,
-        "smoothedEle": 220.6471842889794,
+        "distanceKm": 21.08152063927473,
+        "gradePct": -4.929499493416118,
+        "smoothedEle": 220.6471842889795,
         "gradeBand": "descent"
       },
       {
         "lat": 24.673135,
         "lng": 121.099518,
         "ele": 218.75,
-        "distanceKm": 28.702463112227527,
-        "gradePct": -3.0006938904778764,
-        "smoothedEle": 220.4298274605626,
+        "distanceKm": 21.119497678473234,
+        "gradePct": -3.00069389047799,
+        "smoothedEle": 220.42982746056254,
         "gradeBand": "descent"
       },
       {
         "lat": 24.673479,
         "lng": 121.099078,
         "ele": 222.75,
-        "distanceKm": 28.761112524750427,
-        "gradePct": 3.3072404885588567,
-        "smoothedEle": 224.09186840738198,
+        "distanceKm": 21.178147090996134,
+        "gradePct": 3.307240488558515,
+        "smoothedEle": 224.09186840738172,
         "gradeBand": "hard"
       },
       {
         "lat": 24.673605,
         "lng": 121.098926,
         "ele": 228.25,
-        "distanceKm": 28.78190149734918,
-        "gradePct": 5.109018358137446,
-        "smoothedEle": 225.65652764675747,
+        "distanceKm": 21.198936063594886,
+        "gradePct": 5.109018358137332,
+        "smoothedEle": 225.65652764675738,
         "gradeBand": "hard"
       },
       {
         "lat": 24.673679,
         "lng": 121.098889,
         "ele": 228.75,
-        "distanceKm": 28.790939429737442,
-        "gradePct": 4.979987184678223,
-        "smoothedEle": 225.47576899899224,
+        "distanceKm": 21.20797399598315,
+        "gradePct": 4.979987184678138,
+        "smoothedEle": 225.47576899899215,
         "gradeBand": "hard"
       },
       {
         "lat": 24.673849,
         "lng": 121.098863,
         "ele": 227.5,
-        "distanceKm": 28.810024275340044,
+        "distanceKm": 21.22705884158575,
         "gradePct": 4.192129259274648,
-        "smoothedEle": 225.09407208694014,
+        "smoothedEle": 225.09407208694006,
         "gradeBand": "hard"
       },
       {
         "lat": 24.674175,
         "lng": 121.09889,
         "ele": 220.75,
-        "distanceKm": 28.846376387251436,
-        "gradePct": -0.5794489801825395,
+        "distanceKm": 21.263410953497143,
+        "gradePct": -0.5794489801823122,
         "smoothedEle": 222.59230213023247,
         "gradeBand": "descent"
       },
@@ -7078,26 +4944,26 @@
         "lat": 24.674555,
         "lng": 121.098961,
         "ele": 219.5,
-        "distanceKm": 28.889235201835525,
-        "gradePct": -4.215199482138783,
-        "smoothedEle": 221.29465407489175,
+        "distanceKm": 21.306269768081233,
+        "gradePct": -4.2151994821388685,
+        "smoothedEle": 221.29465407489158,
         "gradeBand": "descent"
       },
       {
         "lat": 24.675021,
         "lng": 121.098909,
         "ele": 225.5,
-        "distanceKm": 28.94131781296745,
-        "gradePct": 1.1220426702927977,
-        "smoothedEle": 224.06247833395787,
+        "distanceKm": 21.35835237921316,
+        "gradePct": 1.122042670292599,
+        "smoothedEle": 224.06247833395767,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.675551,
         "lng": 121.098948,
         "ele": 225.5,
-        "distanceKm": 29.000382804980354,
-        "gradePct": 3.1375786229476272,
+        "distanceKm": 21.417417371226062,
+        "gradePct": 3.1375786229477973,
         "smoothedEle": 225.02464935560914,
         "gradeBand": "hard"
       },
@@ -7105,8 +4971,8 @@
         "lat": 24.675872,
         "lng": 121.099029,
         "ele": 224,
-        "distanceKm": 29.037002719061576,
-        "gradePct": -0.3109449281170909,
+        "distanceKm": 21.454037285307283,
+        "gradePct": -0.3109449281168919,
         "smoothedEle": 223.52221653148933,
         "gradeBand": "descent"
       },
@@ -7114,35 +4980,35 @@
         "lat": 24.6763205,
         "lng": 121.099315,
         "ele": 219.5,
-        "distanceKm": 29.09464120293262,
-        "gradePct": -5.43111960689192,
-        "smoothedEle": 219.4999988276095,
+        "distanceKm": 21.51167576917833,
+        "gradePct": -5.431119606891749,
+        "smoothedEle": 219.49999882760963,
         "gradeBand": "descent"
       },
       {
         "lat": 24.676769,
         "lng": 121.099601,
         "ele": 215,
-        "distanceKm": 29.152279634697425,
-        "gradePct": -6.850376112635831,
-        "smoothedEle": 215.60576309682213,
+        "distanceKm": 21.569314200943133,
+        "gradePct": -6.850376112635631,
+        "smoothedEle": 215.60576309682236,
         "gradeBand": "descent"
       },
       {
         "lat": 24.677239500000002,
         "lng": 121.09983100000001,
         "ele": 213.37499999999994,
-        "distanceKm": 29.209526134578084,
-        "gradePct": -5.119325803216453,
-        "smoothedEle": 213.3749997107849,
+        "distanceKm": 21.62656070082379,
+        "gradePct": -5.119325803216567,
+        "smoothedEle": 213.37499971078492,
         "gradeBand": "descent"
       },
       {
         "lat": 24.67771,
         "lng": 121.100061,
         "ele": 211.75,
-        "distanceKm": 29.266772598863042,
-        "gradePct": -2.253000217816602,
+        "distanceKm": 21.68380716510875,
+        "gradePct": -2.253000217816801,
         "smoothedEle": 212.78800566444733,
         "gradeBand": "descent"
       },
@@ -7150,7 +5016,7 @@
         "lat": 24.6782084801849,
         "lng": 121.1001524024136,
         "ele": 214.9030467829127,
-        "distanceKm": 29.322965244623624,
+        "distanceKm": 21.73999981086933,
         "gradePct": 1.7015449743020425,
         "smoothedEle": 214.9387426796122,
         "gradeBand": "moderate"
@@ -7159,7 +5025,7 @@
         "lat": 24.678716,
         "lng": 121.100195,
         "ele": 218.25,
-        "distanceKm": 29.37956284032625,
+        "distanceKm": 21.79659740657196,
         "gradePct": 3.7586089506844225,
         "smoothedEle": 217.03615279891872,
         "gradeBand": "hard"
@@ -7168,53 +5034,53 @@
         "lat": 24.678936,
         "lng": 121.100222,
         "ele": 217.75,
-        "distanceKm": 29.404177400739325,
-        "gradePct": 2.250567301645642,
-        "smoothedEle": 216.47021746069444,
+        "distanceKm": 21.821211966985032,
+        "gradePct": 2.2505673016456704,
+        "smoothedEle": 216.47021746069447,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.679244,
         "lng": 121.100389,
         "ele": 213,
-        "distanceKm": 29.442356510706784,
-        "gradePct": -0.5898410642754387,
-        "smoothedEle": 215.06750877884022,
+        "distanceKm": 21.85939107695249,
+        "gradePct": -0.5898410642753534,
+        "smoothedEle": 215.0675087788403,
         "gradeBand": "descent"
       },
       {
         "lat": 24.679645710196912,
         "lng": 121.10050075315995,
         "ele": 215.2225051930945,
-        "distanceKm": 29.488429739923134,
-        "gradePct": -1.3938808798643352,
-        "smoothedEle": 215.438405112654,
+        "distanceKm": 21.90546430616884,
+        "gradePct": -1.3938808798642783,
+        "smoothedEle": 215.43840511265407,
         "gradeBand": "descent"
       },
       {
         "lat": 24.680052,
         "lng": 121.100594,
         "ele": 218.25,
-        "distanceKm": 29.53457910683418,
-        "gradePct": 1.2802171963899514,
-        "smoothedEle": 216.63346946018018,
+        "distanceKm": 21.951613673079887,
+        "gradePct": 1.2802171963900082,
+        "smoothedEle": 216.6334694601803,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.680364,
         "lng": 121.100685,
         "ele": 215.75,
-        "distanceKm": 29.570469668458752,
-        "gradePct": 2.047439108810436,
-        "smoothedEle": 217.34126298037341,
+        "distanceKm": 21.98750423470446,
+        "gradePct": 2.047439108810465,
+        "smoothedEle": 217.3412629803735,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.680884,
         "lng": 121.100661,
         "ele": 219.5,
-        "distanceKm": 29.62834193508912,
-        "gradePct": 2.068305604865542,
+        "distanceKm": 22.04537650133483,
+        "gradePct": 2.068305604865457,
         "smoothedEle": 218.54025992235083,
         "gradeBand": "moderate"
       },
@@ -7222,44 +5088,44 @@
         "lat": 24.681376,
         "lng": 121.100661,
         "ele": 218.75,
-        "distanceKm": 29.68304991456416,
-        "gradePct": 0.7092693056774136,
-        "smoothedEle": 218.31116967746402,
+        "distanceKm": 22.10008448080987,
+        "gradePct": 0.7092693056773001,
+        "smoothedEle": 218.31116967746397,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.681833,
         "lng": 121.100731,
         "ele": 216.25,
-        "distanceKm": 29.734355882603793,
-        "gradePct": -2.0235197410071635,
-        "smoothedEle": 216.4915567122758,
+        "distanceKm": 22.1513904488495,
+        "gradePct": -2.0235197410072483,
+        "smoothedEle": 216.49155671227572,
         "gradeBand": "descent"
       },
       {
         "lat": 24.682193,
         "lng": 121.10083,
         "ele": 215,
-        "distanceKm": 29.77561689264718,
-        "gradePct": -4.271965900885871,
-        "smoothedEle": 214.07032963477192,
+        "distanceKm": 22.192651458892886,
+        "gradePct": -4.271965900885672,
+        "smoothedEle": 214.07032963477207,
         "gradeBand": "descent"
       },
       {
         "lat": 24.682456,
         "lng": 121.101085,
         "ele": 210.75,
-        "distanceKm": 29.81459152547274,
-        "gradePct": -5.557118665141849,
-        "smoothedEle": 211.63539900466807,
+        "distanceKm": 22.231626091718447,
+        "gradePct": -5.55711866514165,
+        "smoothedEle": 211.63539900466822,
         "gradeBand": "descent"
       },
       {
         "lat": 24.68301,
         "lng": 121.101348,
         "ele": 208.25,
-        "distanceKm": 29.881680321649643,
-        "gradePct": -5.254524181903417,
+        "distanceKm": 22.29871488789535,
+        "gradePct": -5.254524181903559,
         "smoothedEle": 208.43699421255124,
         "gradeBand": "descent"
       },
@@ -7267,8 +5133,8 @@
         "lat": 24.683474,
         "lng": 121.10154,
         "ele": 207.25,
-        "distanceKm": 29.936801154602147,
-        "gradePct": -2.8616481522789052,
+        "distanceKm": 22.353835720847854,
+        "gradePct": -2.86164815227899,
         "smoothedEle": 207.71492451644892,
         "gradeBand": "descent"
       },
@@ -7276,26 +5142,26 @@
         "lat": 24.683935,
         "lng": 121.10162,
         "ele": 208.25,
-        "distanceKm": 29.98869541835986,
-        "gradePct": -0.06746077095857476,
-        "smoothedEle": 208.27763735660355,
+        "distanceKm": 22.405729984605568,
+        "gradePct": -0.06746077095868845,
+        "smoothedEle": 208.27763735660344,
         "gradeBand": "descent"
       },
       {
         "lat": 24.684351333333336,
         "lng": 121.10159433333334,
         "ele": 209.25,
-        "distanceKm": 30.035062210796877,
-        "gradePct": 1.5122957390484897,
-        "smoothedEle": 209.2500000024235,
+        "distanceKm": 22.452096777042584,
+        "gradePct": 1.5122957390484328,
+        "smoothedEle": 209.25000000242343,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.684767666666666,
         "lng": 121.10156866666667,
         "ele": 210.25,
-        "distanceKm": 30.0814290027492,
-        "gradePct": 2.0511556581834034,
+        "distanceKm": 22.498463568994907,
+        "gradePct": 2.051155658183489,
         "smoothedEle": 210.25000000242034,
         "gradeBand": "moderate"
       },
@@ -7303,8 +5169,8 @@
         "lat": 24.685184,
         "lng": 121.101543,
         "ele": 211.25,
-        "distanceKm": 30.12779579421745,
-        "gradePct": 1.8138718947620616,
+        "distanceKm": 22.54483036046316,
+        "gradePct": 1.8138718947621184,
         "smoothedEle": 210.91148714768195,
         "gradeBand": "moderate"
       },
@@ -7312,8 +5178,8 @@
         "lat": 24.685577,
         "lng": 121.101529,
         "ele": 211,
-        "distanceKm": 30.171518346490014,
-        "gradePct": 0.6034075702480861,
+        "distanceKm": 22.58855291273572,
+        "gradePct": 0.6034075702481146,
         "smoothedEle": 210.63966286785154,
         "gradeBand": "moderate"
       },
@@ -7321,7 +5187,7 @@
         "lat": 24.685703,
         "lng": 121.101535,
         "ele": 211,
-        "distanceKm": 30.18554203477355,
+        "distanceKm": 22.60257660101926,
         "gradePct": -0.01960749742346451,
         "smoothedEle": 210.28907066076314,
         "gradeBand": "descent"
@@ -7330,44 +5196,53 @@
         "lat": 24.685849,
         "lng": 121.101611,
         "ele": 209.75,
-        "distanceKm": 30.203500823208866,
-        "gradePct": -1.108293694340331,
-        "smoothedEle": 209.45659170437892,
+        "distanceKm": 22.620535389454574,
+        "gradePct": -1.312667174324626,
+        "smoothedEle": 209.25221822439462,
         "gradeBand": "descent"
       },
       {
         "lat": 24.685962,
         "lng": 121.10173,
         "ele": 208.75,
-        "distanceKm": 30.22089137515663,
-        "gradePct": -2.5302565029158397,
-        "smoothedEle": 208.28272944790493,
+        "distanceKm": 22.637925941402337,
+        "gradePct": -2.670949895162626,
+        "smoothedEle": 208.14203605565814,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.686161,
+        "lng": 121.101977,
+        "ele": 205,
+        "distanceKm": 22.671278591766892,
+        "gradePct": -4.3636373817427865,
+        "smoothedEle": 206.38342040275583,
         "gradeBand": "descent"
       },
       {
         "lat": 24.68629,
         "lng": 121.102035,
         "ele": 204.25,
-        "distanceKm": 30.268638332254923,
-        "gradePct": -4.434607555307815,
-        "smoothedEle": 206.2229604382663,
+        "distanceKm": 22.686773543872256,
+        "gradePct": -4.617987247490268,
+        "smoothedEle": 206.03273800429636,
         "gradeBand": "descent"
       },
       {
         "lat": 24.686662,
         "lng": 121.101962,
         "ele": 207,
-        "distanceKm": 30.310655279674705,
-        "gradePct": -3.228890390890154,
-        "smoothedEle": 205.7447755020447,
+        "distanceKm": 22.728790491292038,
+        "gradePct": -2.9786847546629502,
+        "smoothedEle": 205.7465423260012,
         "gradeBand": "descent"
       },
       {
         "lat": 24.68701,
         "lng": 121.101919,
         "ele": 205.5,
-        "distanceKm": 30.349594276344398,
-        "gradePct": 0.5628691497316174,
+        "distanceKm": 22.76772948796173,
+        "gradePct": 1.036819071862467,
         "smoothedEle": 207.60737631194047,
         "gradeBand": "moderate"
       },
@@ -7375,8 +5250,8 @@
         "lat": 24.687471,
         "lng": 121.101519,
         "ele": 215,
-        "distanceKm": 30.414869670303073,
-        "gradePct": 8.437432520893646,
+        "distanceKm": 22.833004881920406,
+        "gradePct": 8.43585692133842,
         "smoothedEle": 214.3837984096708,
         "gradeBand": "steep"
       },
@@ -7384,8 +5259,8 @@
         "lat": 24.687708,
         "lng": 121.101424,
         "ele": 218,
-        "distanceKm": 30.442916323776952,
-        "gradePct": 9.446439177275302,
+        "distanceKm": 22.861051535394285,
+        "gradePct": 9.446136170839972,
         "smoothedEle": 216.73438353348055,
         "gradeBand": "extreme"
       },
@@ -7393,7 +5268,7 @@
         "lat": 24.687937,
         "lng": 121.101431,
         "ele": 217.5,
-        "distanceKm": 30.468389816325903,
+        "distanceKm": 22.886525027943236,
         "gradePct": 6.076295820458795,
         "smoothedEle": 215.63488996112773,
         "gradeBand": "steep"
@@ -7402,7 +5277,7 @@
         "lat": 24.688373,
         "lng": 121.101567,
         "ele": 210.5,
-        "distanceKm": 30.518780362438005,
+        "distanceKm": 22.936915574055337,
         "gradePct": -2.62459535190151,
         "smoothedEle": 212.08695748183013,
         "gradeBand": "descent"
@@ -7411,7 +5286,7 @@
         "lat": 24.688852,
         "lng": 121.101844,
         "ele": 209.75,
-        "distanceKm": 30.578947454639014,
+        "distanceKm": 22.997082666256347,
         "gradePct": -4.05355000751237,
         "smoothedEle": 210.83799044133917,
         "gradeBand": "descent"
@@ -7420,7 +5295,7 @@
         "lat": 24.689253031717566,
         "lng": 121.10196841172322,
         "ele": 213.24775845122846,
-        "distanceKm": 30.62527782306321,
+        "distanceKm": 23.043413034680544,
         "gradePct": 3.2210033399735605,
         "smoothedEle": 215.1730845319432,
         "gradeBand": "hard"
@@ -7429,107 +5304,125 @@
         "lat": 24.68967,
         "lng": 121.102026,
         "ele": 224,
-        "distanceKm": 30.672006268386603,
-        "gradePct": 11.693072896803363,
-        "smoothedEle": 222.67515062130752,
+        "distanceKm": 23.090141480003936,
+        "gradePct": 11.522905364385345,
+        "smoothedEle": 222.5049830888895,
         "gradeBand": "extreme"
       },
       {
         "lat": 24.690004,
         "lng": 121.102124,
         "ele": 229,
-        "distanceKm": 30.710442518822013,
-        "gradePct": 8.013562738762118,
-        "smoothedEle": 221.79852017533042,
+        "distanceKm": 23.128577730439346,
+        "gradePct": 8.644077164348735,
+        "smoothedEle": 222.42903460091705,
         "gradeBand": "steep"
+      },
+      {
+        "lat": 24.690085,
+        "lng": 121.102212,
+        "ele": 225.75,
+        "distanceKm": 23.14123338141972,
+        "gradePct": 5.719746404328024,
+        "smoothedEle": 220.68888259111563,
+        "gradeBand": "hard"
       },
       {
         "lat": 24.690155,
         "lng": 121.102479,
         "ele": 210.25,
-        "distanceKm": 30.750043733909425,
-        "gradePct": -4.978600622930898,
-        "smoothedEle": 214.17055241815618,
+        "distanceKm": 23.16930884089898,
+        "gradePct": -4.647038941513946,
+        "smoothedEle": 214.58921146145096,
         "gradeBand": "descent"
       },
       {
         "lat": 24.690502,
         "lng": 121.102921,
         "ele": 201.75,
-        "distanceKm": 30.809059412323563,
-        "gradePct": -21.68286105182759,
-        "smoothedEle": 200.14720416894366,
+        "distanceKm": 23.22832451931312,
+        "gradePct": -22.120342058821617,
+        "smoothedEle": 200.3091928771163,
         "gradeBand": "descent"
       },
       {
         "lat": 24.690712,
         "lng": 121.103196,
         "ele": 191.25,
-        "distanceKm": 30.845352183781557,
-        "gradePct": -18.478046946043428,
-        "smoothedEle": 196.59618969057811,
+        "distanceKm": 23.264617290771113,
+        "gradePct": -19.629196283940537,
+        "smoothedEle": 195.97930082408988,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.6910742654966,
-        "lng": 121.10309531000715,
-        "ele": 198.0984143724982,
-        "distanceKm": 30.88689893947553,
-        "gradePct": -7.615614958935373,
-        "smoothedEle": 197.79737681875957,
+        "lat": 24.690842,
+        "lng": 121.103196,
+        "ele": 193.75,
+        "distanceKm": 23.27907265120132,
+        "gradePct": -16.250113059662677,
+        "smoothedEle": 195.9765500702601,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.690911,
+        "lng": 121.103173,
+        "ele": 194.75,
+        "distanceKm": 23.28708926413848,
+        "gradePct": -14.129960131874949,
+        "smoothedEle": 196.15692386134617,
         "gradeBand": "descent"
       },
       {
         "lat": 24.691426,
         "lng": 121.102934,
         "ele": 204,
-        "distanceKm": 30.929269592187588,
-        "gradePct": 3.8382788944449566,
-        "smoothedEle": 202.0080468295485,
+        "distanceKm": 23.349237130668822,
+        "gradePct": 4.143684693527687,
+        "smoothedEle": 201.95790829496102,
         "gradeBand": "hard"
       },
       {
         "lat": 24.69194,
         "lng": 121.102719,
         "ele": 202.5,
-        "distanceKm": 30.990412187911932,
-        "gradePct": 3.315274927272962,
-        "smoothedEle": 201.46178797322597,
+        "distanceKm": 23.410379726393167,
+        "gradePct": 3.1308939253866708,
+        "smoothedEle": 201.4617879732261,
         "gradeBand": "hard"
       },
       {
         "lat": 24.692308,
         "lng": 121.102446,
         "ele": 197.25,
-        "distanceKm": 31.03975913805131,
-        "gradePct": -2.7221212314448064,
-        "smoothedEle": 199.19221012431692,
+        "distanceKm": 23.459726676532544,
+        "gradePct": -2.680584400004723,
+        "smoothedEle": 199.19221012431714,
         "gradeBand": "descent"
       },
       {
         "lat": 24.692556,
         "lng": 121.101893,
         "ele": 200.5,
-        "distanceKm": 31.102062672483576,
-        "gradePct": -0.6733343472857503,
-        "smoothedEle": 200.25262148964455,
+        "distanceKm": 23.52203021096481,
+        "gradePct": -0.6733343472860345,
+        "smoothedEle": 200.25262148964444,
         "gradeBand": "descent"
       },
       {
         "lat": 24.692754,
         "lng": 121.101261,
         "ele": 202.75,
-        "distanceKm": 31.169601423139564,
-        "gradePct": 1.7745758952891921,
-        "smoothedEle": 201.4747042069657,
+        "distanceKm": 23.5895689616208,
+        "gradePct": 1.7745758952890218,
+        "smoothedEle": 201.47470420696558,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.692905,
         "lng": 121.100909,
         "ele": 199.75,
-        "distanceKm": 31.20892764061195,
-        "gradePct": -1.9794667075025247,
+        "distanceKm": 23.628895179093185,
+        "gradePct": -1.979466707502411,
         "smoothedEle": 198.39737323189357,
         "gradeBand": "descent"
       },
@@ -7537,8 +5430,8 @@
         "lat": 24.693127689701434,
         "lng": 121.10057795085542,
         "ele": 191.99905491207875,
-        "distanceKm": 31.2505416378638,
-        "gradePct": -8.764586295918935,
+        "distanceKm": 23.670509176345035,
+        "gradePct": -8.764586295918821,
         "smoothedEle": 192.3652398380126,
         "gradeBand": "descent"
       },
@@ -7546,8 +5439,8 @@
         "lat": 24.693342,
         "lng": 121.10024,
         "ele": 185.5,
-        "distanceKm": 31.292177810946075,
-        "gradePct": -12.470304719103346,
+        "distanceKm": 23.71214534942731,
+        "gradePct": -12.47030471910329,
         "smoothedEle": 187.23776587884558,
         "gradeBand": "descent"
       },
@@ -7555,16 +5448,16 @@
         "lat": 24.69354,
         "lng": 121.099952,
         "ele": 185,
-        "distanceKm": 31.32866473044958,
-        "gradePct": -10.645338667065394,
-        "smoothedEle": 184.89105589010336,
+        "distanceKm": 23.748632268930816,
+        "gradePct": -10.645338667065422,
+        "smoothedEle": 184.89105589010333,
         "gradeBand": "descent"
       },
       {
         "lat": 24.693718,
         "lng": 121.099536,
         "ele": 184.00000000000003,
-        "distanceKm": 31.375119368222002,
+        "distanceKm": 23.795086906703236,
         "gradePct": -5.3385048681365195,
         "smoothedEle": 183.99999972842923,
         "gradeBand": "descent"
@@ -7573,71 +5466,71 @@
         "lat": 24.693896,
         "lng": 121.09912,
         "ele": 182.99999999999997,
-        "distanceKm": 31.421573951680266,
-        "gradePct": -2.3471100459797705,
-        "smoothedEle": 182.99999972842912,
+        "distanceKm": 23.8415414901615,
+        "gradePct": -2.3471100459797136,
+        "smoothedEle": 182.99999972842915,
         "gradeBand": "descent"
       },
       {
         "lat": 24.694074,
         "lng": 121.098704,
         "ele": 182,
-        "distanceKm": 31.468028480824355,
-        "gradePct": -1.735462578522093,
-        "smoothedEle": 182.40054895002845,
+        "distanceKm": 23.88799601930559,
+        "gradePct": -1.7354625785220075,
+        "smoothedEle": 182.40054895002854,
         "gradeBand": "descent"
       },
       {
         "lat": 24.694278,
         "lng": 121.098298,
         "ele": 182.5,
-        "distanceKm": 31.514899842524784,
-        "gradePct": -1.0855341269755587,
-        "smoothedEle": 182.05813515262884,
+        "distanceKm": 23.93486738100602,
+        "gradePct": -1.085534126975502,
+        "smoothedEle": 182.05813515262892,
         "gradeBand": "descent"
       },
       {
         "lat": 24.694666,
         "lng": 121.097821,
         "ele": 180.75,
-        "distanceKm": 31.579580613767963,
-        "gradePct": -2.1166985148066133,
-        "smoothedEle": 180.19945754442918,
+        "distanceKm": 23.999548152249197,
+        "gradePct": -2.1166985148065276,
+        "smoothedEle": 180.19945754442935,
         "gradeBand": "descent"
       },
       {
         "lat": 24.695008559841337,
         "lng": 121.09760872025802,
         "ele": 177.6956949026666,
-        "distanceKm": 31.62329378715438,
-        "gradePct": -4.05342151702743,
-        "smoothedEle": 177.76350381964477,
+        "distanceKm": 24.043261325635616,
+        "gradePct": -4.053421517027544,
+        "smoothedEle": 177.76350381964474,
         "gradeBand": "descent"
       },
       {
         "lat": 24.695363176772226,
         "lng": 121.0974196253917,
         "ele": 174.87720773520198,
-        "distanceKm": 31.66710926381472,
-        "gradePct": -5.556663580331253,
-        "smoothedEle": 175.0011727907041,
+        "distanceKm": 24.087076802295954,
+        "gradePct": -5.556663580331452,
+        "smoothedEle": 175.00117279070406,
         "gradeBand": "descent"
       },
       {
         "lat": 24.695718,
         "lng": 121.097231,
         "ele": 172.5,
-        "distanceKm": 31.710924713779512,
-        "gradePct": -5.381826011516418,
-        "smoothedEle": 173.070954930457,
+        "distanceKm": 24.130892252260747,
+        "gradePct": -5.381826011516361,
+        "smoothedEle": 173.07095493045708,
         "gradeBand": "descent"
       },
       {
         "lat": 24.696192,
         "lng": 121.096922,
         "ele": 172,
-        "distanceKm": 31.77218199207725,
-        "gradePct": -2.5093267094989287,
+        "distanceKm": 24.192149530558485,
+        "gradePct": -2.5093267094989002,
         "smoothedEle": 172.26837534884058,
         "gradeBand": "descent"
       },
@@ -7645,16 +5538,16 @@
         "lat": 24.696544,
         "lng": 121.09655,
         "ele": 172.75,
-        "distanceKm": 31.826443713521268,
-        "gradePct": -0.20471034009912323,
-        "smoothedEle": 172.66291801976973,
+        "distanceKm": 24.246411252002503,
+        "gradePct": -0.20471034009915168,
+        "smoothedEle": 172.66291801976976,
         "gradeBand": "descent"
       },
       {
         "lat": 24.696807039541703,
         "lng": 121.09625310394159,
         "ele": 173.04062959843597,
-        "distanceKm": 31.86833774991049,
+        "distanceKm": 24.288305288391726,
         "gradePct": 0.6256470409160126,
         "smoothedEle": 172.94438881731537,
         "gradeBand": "moderate"
@@ -7663,8 +5556,8 @@
         "lat": 24.697068,
         "lng": 121.095954,
         "ele": 173,
-        "distanceKm": 31.910231259960586,
-        "gradePct": 0.19055405627878214,
+        "distanceKm": 24.33019879844182,
+        "gradePct": 0.19055405627875374,
         "smoothedEle": 172.73558962484861,
         "gradeBand": "moderate"
       },
@@ -7672,8 +5565,8 @@
         "lat": 24.697278,
         "lng": 121.095725,
         "ele": 172.5,
-        "distanceKm": 31.943101791431754,
-        "gradePct": -0.7906391382796187,
+        "distanceKm": 24.36306932991299,
+        "gradePct": -0.7906391382796472,
         "smoothedEle": 171.98419844998142,
         "gradeBand": "descent"
       },
@@ -7681,125 +5574,134 @@
         "lat": 24.697468,
         "lng": 121.095669,
         "ele": 170.75,
-        "distanceKm": 31.96497319470711,
-        "gradePct": -1.0800914465156228,
-        "smoothedEle": 171.84169214776313,
+        "distanceKm": 24.384940733188344,
+        "gradePct": -1.0800914465156513,
+        "smoothedEle": 171.8416921477631,
         "gradeBand": "descent"
       },
       {
         "lat": 24.698008,
         "lng": 121.095671,
         "ele": 172.5,
-        "distanceKm": 32.025018877966865,
-        "gradePct": 0.2849727484098383,
-        "smoothedEle": 172.68253055053086,
+        "distanceKm": 24.4449864164481,
+        "gradePct": 0.28497274840978143,
+        "smoothedEle": 172.6825305505308,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.698426,
         "lng": 121.095724,
         "ele": 174.5,
-        "distanceKm": 32.07180579576606,
-        "gradePct": 4.489969255541631,
-        "smoothedEle": 176.4273404438164,
+        "distanceKm": 24.4917733342473,
+        "gradePct": 4.489969255541688,
+        "smoothedEle": 176.4273404438165,
         "gradeBand": "hard"
       },
       {
         "lat": 24.698789,
         "lng": 121.095734,
         "ele": 182.75,
-        "distanceKm": 32.11218224992789,
-        "gradePct": 8.716402035265038,
-        "smoothedEle": 181.21917728564358,
+        "distanceKm": 24.532149788409125,
+        "gradePct": 8.716402035264611,
+        "smoothedEle": 181.2191772856431,
         "gradeBand": "steep"
       },
       {
         "lat": 24.699191,
         "lng": 121.095966,
         "ele": 186.5,
-        "distanceKm": 32.162654327182935,
-        "gradePct": 8.477092437231185,
-        "smoothedEle": 184.1719522710774,
+        "distanceKm": 24.58262186566417,
+        "gradePct": 8.477092437230874,
+        "smoothedEle": 184.17195227107692,
         "gradeBand": "steep"
       },
       {
         "lat": 24.699633,
         "lng": 121.096487,
         "ele": 176.5,
-        "distanceKm": 32.23466634363383,
-        "gradePct": -5.224206456454464,
-        "smoothedEle": 177.31036090377563,
+        "distanceKm": 24.654633882115068,
+        "gradePct": -5.581167748400026,
+        "smoothedEle": 176.95339961182958,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.699761,
+        "lng": 121.096644,
+        "ele": 174,
+        "distanceKm": 24.67594422873666,
+        "gradePct": -8.79466493920218,
+        "smoothedEle": 174.98662460599306,
         "gradeBand": "descent"
       },
       {
         "lat": 24.699983,
         "lng": 121.096759,
         "ele": 174.25,
-        "distanceKm": 32.28230738597345,
-        "gradePct": -8.571276367145762,
-        "smoothedEle": 173.72805428903706,
+        "distanceKm": 24.70322665420991,
+        "gradePct": -8.756829695566172,
+        "smoothedEle": 173.34967907759813,
         "gradeBand": "descent"
       },
       {
         "lat": 24.700349,
         "lng": 121.096779,
         "ele": 170.5,
-        "distanceKm": 32.323054906792535,
-        "gradePct": -7.5997494243093575,
-        "smoothedEle": 170.81699536814057,
+        "distanceKm": 24.74397417502899,
+        "gradePct": -7.20494336709329,
+        "smoothedEle": 170.8169953681406,
         "gradeBand": "descent"
       },
       {
         "lat": 24.70066,
         "lng": 121.096664,
         "ele": 168,
-        "distanceKm": 32.359535817472405,
-        "gradePct": -5.386709699229366,
-        "smoothedEle": 170.0536232567553,
+        "distanceKm": 24.78045508570886,
+        "gradePct": -4.662349930906022,
+        "smoothedEle": 170.0536232567552,
         "gradeBand": "descent"
       },
       {
         "lat": 24.700983,
         "lng": 121.096474,
         "ele": 172.25,
-        "distanceKm": 32.40025889322518,
-        "gradePct": 0.8064887572034706,
-        "smoothedEle": 173.2520626823261,
+        "distanceKm": 24.82117816146163,
+        "gradePct": 1.0181690332088775,
+        "smoothedEle": 173.25206268232637,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.701378,
         "lng": 121.096275,
         "ele": 181,
-        "distanceKm": 32.44856295442335,
-        "gradePct": 10.231064448229514,
-        "smoothedEle": 180.51429758800577,
+        "distanceKm": 24.869482222659805,
+        "gradePct": 10.231064448229912,
+        "smoothedEle": 180.51429758800614,
         "gradeBand": "extreme"
       },
       {
         "lat": 24.701921,
         "lng": 121.096111,
         "ele": 190.5,
-        "distanceKm": 32.5111735878847,
-        "gradePct": 14.5271722858379,
-        "smoothedEle": 189.4201958848043,
+        "distanceKm": 24.93209285612115,
+        "gradePct": 14.527172285837727,
+        "smoothedEle": 189.4201958848044,
         "gradeBand": "extreme"
       },
       {
         "lat": 24.702566,
         "lng": 121.096033,
         "ele": 195.5,
-        "distanceKm": 32.58332595606908,
-        "gradePct": 9.022079124784412,
-        "smoothedEle": 194.4811558985724,
+        "distanceKm": 25.004245224305535,
+        "gradePct": 9.022079124784213,
+        "smoothedEle": 194.48115589857244,
         "gradeBand": "extreme"
       },
       {
         "lat": 24.703133,
         "lng": 121.096064,
         "ele": 193.75,
-        "distanceKm": 32.64645129252198,
-        "gradePct": 0.7587850797711048,
+        "distanceKm": 25.067370560758434,
+        "gradePct": 0.7587850797710195,
         "smoothedEle": 192.65345348764697,
         "gradeBand": "moderate"
       },
@@ -7807,160 +5709,160 @@
         "lat": 24.703517,
         "lng": 121.096131,
         "ele": 188.75,
-        "distanceKm": 32.689683299786374,
-        "gradePct": -5.269210976031825,
-        "smoothedEle": 189.02787727091155,
+        "distanceKm": 25.110602568022824,
+        "gradePct": -5.269210976031598,
+        "smoothedEle": 189.0278772709119,
         "gradeBand": "descent"
       },
       {
         "lat": 24.703937428261842,
         "lng": 121.09615373780916,
         "ele": 184.45883395741313,
-        "distanceKm": 32.73648924781301,
-        "gradePct": -7.928434308680722,
-        "smoothedEle": 185.01345571103784,
+        "distanceKm": 25.157408516049458,
+        "gradePct": -7.928434308680608,
+        "smoothedEle": 185.01345571103815,
         "gradeBand": "descent"
       },
       {
         "lat": 24.704359,
         "lng": 121.096155,
         "ele": 182.25,
-        "distanceKm": 32.78336612446691,
-        "gradePct": -6.43271857576388,
-        "smoothedEle": 183.12493748740064,
+        "distanceKm": 25.204285392703355,
+        "gradePct": -6.432718575764448,
+        "smoothedEle": 183.1249374874007,
         "gradeBand": "descent"
       },
       {
         "lat": 24.704504,
         "lng": 121.096181,
         "ele": 183.25,
-        "distanceKm": 32.79970193519867,
-        "gradePct": -5.613563459954241,
-        "smoothedEle": 182.55504212230906,
+        "distanceKm": 25.220621203435115,
+        "gradePct": -5.613563459954923,
+        "smoothedEle": 182.55504212230895,
         "gradeBand": "descent"
       },
       {
         "lat": 24.704625,
         "lng": 121.096253,
         "ele": 182.75,
-        "distanceKm": 32.8149966126175,
-        "gradePct": -5.005608222315985,
-        "smoothedEle": 181.851213593779,
+        "distanceKm": 25.235915880853945,
+        "gradePct": -5.005608222316582,
+        "smoothedEle": 181.85121359377885,
         "gradeBand": "descent"
       },
       {
         "lat": 24.7049095,
         "lng": 121.0966785,
-        "ele": 179.12500000000026,
-        "distanceKm": 32.86836623796806,
-        "gradePct": -4.60423598628656,
-        "smoothedEle": 179.1249985666953,
+        "ele": 179.1250000000001,
+        "distanceKm": 25.289285506204504,
+        "gradePct": -4.6042359862867865,
+        "smoothedEle": 179.12499856669535,
         "gradeBand": "descent"
       },
       {
         "lat": 24.705194,
         "lng": 121.097104,
         "ele": 175.5,
-        "distanceKm": 32.92173578423974,
-        "gradePct": -3.325039434129688,
-        "smoothedEle": 178.18192533223151,
+        "distanceKm": 25.342655052476186,
+        "gradePct": -3.325039434129858,
+        "smoothedEle": 178.1819253322314,
         "gradeBand": "descent"
       },
       {
         "lat": 24.705665,
         "lng": 121.097285,
         "ele": 183.75,
-        "distanceKm": 32.97720855130869,
-        "gradePct": 4.043455054681259,
-        "smoothedEle": 183.012204418885,
+        "distanceKm": 25.398127819545138,
+        "gradePct": 4.0434550546812025,
+        "smoothedEle": 183.01220441888492,
         "gradeBand": "hard"
       },
       {
         "lat": 24.706123,
         "lng": 121.097333,
         "ele": 188.25,
-        "distanceKm": 33.02836620565132,
-        "gradePct": 8.926088325845301,
-        "smoothedEle": 187.68535615552634,
+        "distanceKm": 25.449285473887766,
+        "gradePct": 8.926088325845043,
+        "smoothedEle": 187.68535615552653,
         "gradeBand": "steep"
       },
       {
         "lat": 24.706543025947997,
         "lng": 121.09728125280321,
-        "ele": 190.26612455037397,
-        "distanceKm": 33.07536264168813,
-        "gradePct": 7.008579059878301,
-        "smoothedEle": 189.8600513013875,
+        "ele": 190.26612455037406,
+        "distanceKm": 25.49628190992458,
+        "gradePct": 7.0085790598781585,
+        "smoothedEle": 189.86005130138759,
         "gradeBand": "steep"
       },
       {
         "lat": 24.706963,
         "lng": 121.097229,
         "ele": 190.75,
-        "distanceKm": 33.12235904998694,
-        "gradePct": 3.309620370172762,
-        "smoothedEle": 190.44623459673483,
+        "distanceKm": 25.543278318223386,
+        "gradePct": 3.3096203701729032,
+        "smoothedEle": 190.44623459673485,
         "gradeBand": "hard"
       },
       {
         "lat": 24.707438754949838,
         "lng": 121.09715170845094,
         "ele": 189.99544454578137,
-        "distanceKm": 33.175833716838056,
-        "gradePct": 0.07093307532107827,
-        "smoothedEle": 189.93686006793126,
+        "distanceKm": 25.596752985074502,
+        "gradePct": 0.07093307532102143,
+        "smoothedEle": 189.93686006793124,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.70791622569216,
         "lng": 121.09708653078876,
-        "ele": 188.98852178715845,
-        "distanceKm": 33.22933279205919,
-        "gradePct": -1.2707504986503682,
-        "smoothedEle": 189.10905551065744,
+        "ele": 188.98852178715842,
+        "distanceKm": 25.650252060295635,
+        "gradePct": -1.2707504986504536,
+        "smoothedEle": 189.10905551065738,
         "gradeBand": "descent"
       },
       {
         "lat": 24.708394,
         "lng": 121.097024,
         "ele": 188.5,
-        "distanceKm": 33.28283313666164,
-        "gradePct": -1.1417448333067861,
-        "smoothedEle": 188.68681146293716,
+        "distanceKm": 25.703752404898083,
+        "gradePct": -1.1417448333067293,
+        "smoothedEle": 188.6868114629372,
         "gradeBand": "descent"
       },
       {
         "lat": 24.708764,
         "lng": 121.097071,
         "ele": 188.75,
-        "distanceKm": 33.32424834534016,
-        "gradePct": -0.48161903963744407,
-        "smoothedEle": 188.70610938541773,
+        "distanceKm": 25.745167613576605,
+        "gradePct": -0.4816190396373588,
+        "smoothedEle": 188.70610938541776,
         "gradeBand": "descent"
       },
       {
         "lat": 24.709151453190646,
         "lng": 121.09713882521972,
         "ele": 188.85408865108136,
-        "distanceKm": 33.367872603576245,
-        "gradePct": 0.20193150892816616,
-        "smoothedEle": 189.00681690378053,
+        "distanceKm": 25.788791871812688,
+        "gradePct": 0.20193150892810932,
+        "smoothedEle": 189.0068169037805,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.709539,
         "lng": 121.097206,
         "ele": 189.5,
-        "distanceKm": 33.41149687103228,
-        "gradePct": 0.6972796106033072,
-        "smoothedEle": 189.39744729077415,
+        "distanceKm": 25.83241613926872,
+        "gradePct": 0.6972796106032505,
+        "smoothedEle": 189.39744729077412,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.70986,
         "lng": 121.097276,
         "ele": 189.75,
-        "distanceKm": 33.447884136597956,
+        "distanceKm": 25.868803404834402,
         "gradePct": 0.7753336097558933,
         "smoothedEle": 189.64436748767065,
         "gradeBand": "moderate"
@@ -7969,7 +5871,7 @@
         "lat": 24.710206462986207,
         "lng": 121.09741320793322,
         "ele": 189.66155571014318,
-        "distanceKm": 33.488826408103044,
+        "distanceKm": 25.90974567633949,
         "gradePct": 0.3720376248756115,
         "smoothedEle": 189.56648387462835,
         "gradeBand": "moderate"
@@ -7978,7 +5880,7 @@
         "lat": 24.710539,
         "lng": 121.097591,
         "ele": 189.25,
-        "distanceKm": 33.52993356477007,
+        "distanceKm": 25.950852833006515,
         "gradePct": -0.10117482508456843,
         "smoothedEle": 189.42138195048003,
         "gradeBand": "descent"
@@ -7986,144 +5888,171 @@
       {
         "lat": 24.7110193306618,
         "lng": 121.09785518500493,
-        "ele": 189.49913710386556,
-        "distanceKm": 33.589639670444434,
-        "gradePct": -0.3663325872051876,
-        "smoothedEle": 189.19728059676632,
+        "ele": 189.49913710386565,
+        "distanceKm": 26.010558938680877,
+        "gradePct": -0.36633258720527284,
+        "smoothedEle": 189.19728059676626,
         "gradeBand": "descent"
       },
       {
         "lat": 24.711498,
         "lng": 121.098123,
         "ele": 188.25,
-        "distanceKm": 33.64934577706127,
-        "gradePct": -1.1387862634937684,
-        "smoothedEle": 188.2097337408938,
+        "distanceKm": 26.070265045297713,
+        "gradePct": -1.1387862634937116,
+        "smoothedEle": 188.20973374089382,
         "gradeBand": "descent"
       },
       {
         "lat": 24.711664,
         "lng": 121.098216,
         "ele": 187.25,
-        "distanceKm": 33.67005716908965,
-        "gradePct": -1.123194464403424,
+        "distanceKm": 26.090976437326095,
+        "gradePct": -1.1231944644033671,
         "smoothedEle": 188.1475872427291,
         "gradeBand": "descent"
       },
       {
         "lat": 24.712076367208205,
         "lng": 121.09808724042811,
-        "ele": 189.16503501066546,
-        "distanceKm": 33.71771930580464,
-        "gradePct": 0.3451411849539689,
-        "smoothedEle": 189.07798091988388,
+        "ele": 189.1650350106653,
+        "distanceKm": 26.13863857404109,
+        "gradePct": 0.3451411849539121,
+        "smoothedEle": 189.07798091988377,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.712485,
         "lng": 121.097942,
         "ele": 190.75,
-        "distanceKm": 33.76546703337264,
-        "gradePct": 1.770932132735428,
-        "smoothedEle": 189.9322925134807,
+        "distanceKm": 26.186386301609083,
+        "gradePct": 1.7709321327352856,
+        "smoothedEle": 189.93229251348055,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.713032,
         "lng": 121.097741,
         "ele": 188.5,
-        "distanceKm": 33.829589933423314,
-        "gradePct": -1.0574252888558098,
-        "smoothedEle": 188.23294720052127,
+        "distanceKm": 26.25050920165976,
+        "gradePct": -1.0574252888556108,
+        "smoothedEle": 188.23294720052135,
         "gradeBand": "descent"
       },
       {
         "lat": 24.71344489283843,
         "lng": 121.09771793047568,
         "ele": 186.01738107713217,
-        "distanceKm": 33.875560684896215,
-        "gradePct": -3.72156660748033,
-        "smoothedEle": 185.9432302157917,
+        "distanceKm": 26.29647995313266,
+        "gradePct": -3.721566607480132,
+        "smoothedEle": 185.94323021579177,
         "gradeBand": "descent"
       },
       {
         "lat": 24.71386,
         "lng": 121.097729,
         "ele": 183.25,
-        "distanceKm": 33.92173210007256,
-        "gradePct": -4.6934121406329625,
-        "smoothedEle": 183.74777848406382,
+        "distanceKm": 26.342651368309006,
+        "gradePct": -4.693412140632906,
+        "smoothedEle": 183.74777848406393,
         "gradeBand": "descent"
       },
       {
         "lat": 24.714156,
         "lng": 121.097815,
         "ele": 182.5,
-        "distanceKm": 33.955772906139096,
-        "gradePct": -3.6011065427971745,
-        "smoothedEle": 183.32771585190324,
+        "distanceKm": 26.376692174375542,
+        "gradePct": -3.585456885220174,
+        "smoothedEle": 183.34336550948032,
         "gradeBand": "descent"
       },
       {
         "lat": 24.714387,
         "lng": 121.098002,
         "ele": 184.25,
-        "distanceKm": 33.987656502455685,
-        "gradePct": -2.316312755527174,
-        "smoothedEle": 183.0517610890297,
+        "distanceKm": 26.40857577069213,
+        "gradePct": -2.1634961762585454,
+        "smoothedEle": 183.2045776682984,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.714488,
+        "lng": 121.098061,
+        "ele": 184.25,
+        "distanceKm": 26.421289753336925,
+        "gradePct": -1.9485855268500538,
+        "smoothedEle": 182.81493818407856,
         "gradeBand": "descent"
       },
       {
         "lat": 24.714693,
         "lng": 121.098055,
         "ele": 182.5,
-        "distanceKm": 34.02210077752798,
-        "gradePct": -1.73977246372127,
-        "smoothedEle": 182.00345655044927,
+        "distanceKm": 26.444092800116092,
+        "gradePct": -1.6253366290218931,
+        "smoothedEle": 182.1053172980141,
         "gradeBand": "descent"
       },
       {
         "lat": 24.714938,
         "lng": 121.097967,
         "ele": 179.5,
-        "distanceKm": 34.05075704135011,
-        "gradePct": -3.825387418133831,
-        "smoothedEle": 179.56422407048564,
+        "distanceKm": 26.472749063938217,
+        "gradePct": -3.7241257930979867,
+        "smoothedEle": 179.66608481805096,
         "gradeBand": "descent"
       },
       {
         "lat": 24.715377,
         "lng": 121.098033,
         "ele": 175.25,
-        "distanceKm": 34.100024808483646,
-        "gradePct": -7.695586409739552,
-        "smoothedEle": 174.97974778929319,
+        "distanceKm": 26.522016831071756,
+        "gradePct": -7.781681119487817,
+        "smoothedEle": 175.01063072209246,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.715503,
+        "lng": 121.098053,
+        "ele": 173.75,
+        "distanceKm": 26.536172306743694,
+        "gradePct": -8.620301304472227,
+        "smoothedEle": 173.73149829827153,
+        "gradeBand": "descent"
+      },
+      {
+        "lat": 24.715617,
+        "lng": 121.098021,
+        "ele": 172.25,
+        "distanceKm": 26.54925415402214,
+        "gradePct": -9.304860982419635,
+        "smoothedEle": 172.36111983522267,
         "gradeBand": "descent"
       },
       {
         "lat": 24.71573,
         "lng": 121.097953,
         "ele": 170.75,
-        "distanceKm": 34.1400998236339,
-        "gradePct": -9.052959717461318,
-        "smoothedEle": 171.41841092875276,
+        "distanceKm": 26.56357400365113,
+        "gradePct": -9.064472791535975,
+        "smoothedEle": 171.38259677724173,
         "gradeBand": "descent"
       },
       {
         "lat": 24.716054,
         "lng": 121.09774466666667,
-        "ele": 168.41666666666654,
-        "distanceKm": 34.18182257531677,
-        "gradePct": -8.256840084158195,
-        "smoothedEle": 168.41666634437044,
+        "ele": 168.41666666666666,
+        "distanceKm": 26.605296755334,
+        "gradePct": -8.157132936938806,
+        "smoothedEle": 168.4334261969101,
         "gradeBand": "descent"
       },
       {
         "lat": 24.716378000000002,
         "lng": 121.09753633333334,
-        "ele": 166.08333333333346,
-        "distanceKm": 34.22354529937425,
-        "gradePct": -6.806224896300978,
+        "ele": 166.08333333333334,
+        "distanceKm": 26.64701947939148,
+        "gradePct": -6.511878380274133,
         "smoothedEle": 166.08333301102584,
         "gradeBand": "descent"
       },
@@ -8131,107 +6060,107 @@
         "lat": 24.716702,
         "lng": 121.097328,
         "ele": 163.75,
-        "distanceKm": 34.26526799580538,
-        "gradePct": -5.501126480689216,
-        "smoothedEle": 164.1065595685357,
+        "distanceKm": 26.688742175822608,
+        "gradePct": -5.497026239031165,
+        "smoothedEle": 164.10655956853574,
         "gradeBand": "descent"
       },
       {
         "lat": 24.71704954077254,
         "lng": 121.09710065426448,
         "ele": 162.57521774801768,
-        "distanceKm": 34.31022080627068,
-        "gradePct": -4.284326072251356,
-        "smoothedEle": 162.54417601895383,
+        "distanceKm": 26.733694986287905,
+        "gradePct": -4.289678468208986,
+        "smoothedEle": 162.54417601895386,
         "gradeBand": "descent"
       },
       {
         "lat": 24.71739977038627,
         "lng": 121.09687832713225,
-        "ele": 161.28760887400895,
-        "distanceKm": 34.35517551376739,
-        "gradePct": -3.2971211064744455,
-        "smoothedEle": 161.28760867079734,
+        "ele": 161.28760887400878,
+        "distanceKm": 26.778649693784622,
+        "gradePct": -3.297121106474417,
+        "smoothedEle": 161.28760867079728,
         "gradeBand": "descent"
       },
       {
         "lat": 24.71775,
         "lng": 121.096656,
         "ele": 160,
-        "distanceKm": 34.40013018969994,
-        "gradePct": -3.1898570584932715,
-        "smoothedEle": 159.70502925358974,
+        "distanceKm": 26.82360436971717,
+        "gradePct": -3.189857058493101,
+        "smoothedEle": 159.7050292535897,
         "gradeBand": "descent"
       },
       {
         "lat": 24.717987,
         "lng": 121.096427,
         "ele": 158,
-        "distanceKm": 34.43519469118794,
-        "gradePct": -3.6715773996496686,
-        "smoothedEle": 158.17453227450721,
+        "distanceKm": 26.858668871205175,
+        "gradePct": -3.6715773996493555,
+        "smoothedEle": 158.17453227450727,
         "gradeBand": "descent"
       },
       {
         "lat": 24.718346942230912,
         "lng": 121.09638547561478,
         "ele": 156.41082222931277,
-        "distanceKm": 34.47543766219208,
-        "gradePct": -4.333923474206836,
-        "smoothedEle": 156.24037877450817,
+        "distanceKm": 26.898911842209316,
+        "gradePct": -4.333923474206524,
+        "smoothedEle": 156.24037877450823,
         "gradeBand": "descent"
       },
       {
         "lat": 24.718709,
         "lng": 121.096397,
         "ele": 154.25,
-        "distanceKm": 34.515713529714745,
-        "gradePct": -4.839622907627603,
-        "smoothedEle": 154.18522400186575,
+        "distanceKm": 26.939187709731982,
+        "gradePct": -4.839622907627546,
+        "smoothedEle": 154.18522400186572,
         "gradeBand": "descent"
       },
       {
         "lat": 24.719114255347883,
         "lng": 121.0964043296192,
-        "ele": 151.66480960142795,
-        "distanceKm": 34.560782011792995,
+        "ele": 151.66480960142792,
+        "distanceKm": 26.984256191810232,
         "gradePct": -5.252242417335179,
-        "smoothedEle": 151.69251470715201,
+        "smoothedEle": 151.69251470715207,
         "gradeBand": "descent"
       },
       {
         "lat": 24.719519618212676,
         "lng": 121.09639936019705,
-        "ele": 149.18009852126292,
-        "distanceKm": 34.605859162752374,
-        "gradePct": -5.424313502325341,
-        "smoothedEle": 149.26374881289738,
+        "ele": 149.18009852126272,
+        "distanceKm": 27.02933334276961,
+        "gradePct": -5.424313502325483,
+        "smoothedEle": 149.26374881289723,
         "gradeBand": "descent"
       },
       {
         "lat": 24.719925,
         "lng": 121.096397,
         "ele": 147,
-        "distanceKm": 34.65093625350275,
-        "gradePct": -5.030686112106551,
-        "smoothedEle": 147.20639127104124,
+        "distanceKm": 27.074410433519983,
+        "gradePct": -5.030686112106891,
+        "smoothedEle": 147.20639127104116,
         "gradeBand": "descent"
       },
       {
         "lat": 24.720542,
         "lng": 121.096408,
         "ele": 144.5,
-        "distanceKm": 34.71955261389062,
-        "gradePct": -3.7464723239785975,
-        "smoothedEle": 144.89229549515147,
+        "distanceKm": 27.143026793907858,
+        "gradePct": -3.746472323978342,
+        "smoothedEle": 144.89229549515153,
         "gradeBand": "descent"
       },
       {
         "lat": 24.721065,
         "lng": 121.096414,
         "ele": 144.5,
-        "distanceKm": 34.777710798453185,
-        "gradePct": -1.8034162222199965,
+        "distanceKm": 27.20118497847042,
+        "gradePct": -1.803416222220025,
         "smoothedEle": 144.5,
         "gradeBand": "descent"
       },
@@ -8239,53 +6168,53 @@
         "lat": 24.721588,
         "lng": 121.09642,
         "ele": 144.5,
-        "distanceKm": 34.83586898298921,
-        "gradePct": -0.6694624348164571,
-        "smoothedEle": 144.11277394926148,
+        "distanceKm": 27.25934316300644,
+        "gradePct": -0.669462434816514,
+        "smoothedEle": 144.1127739492615,
         "gradeBand": "descent"
       },
       {
         "lat": 24.722023,
         "lng": 121.09642,
         "ele": 143,
-        "distanceKm": 34.884238842890746,
-        "gradePct": -1.3628911592746908,
-        "smoothedEle": 143.0936441265708,
+        "distanceKm": 27.307713022907976,
+        "gradePct": -1.362891159274634,
+        "smoothedEle": 143.0936441265709,
         "gradeBand": "descent"
       },
       {
         "lat": 24.722218,
         "lng": 121.096409,
         "ele": 142.25,
-        "distanceKm": 34.90595032977939,
-        "gradePct": -2.354966144377324,
-        "smoothedEle": 141.95701075487784,
+        "distanceKm": 27.329424509796617,
+        "gradePct": -2.3549661443773804,
+        "smoothedEle": 141.9570107548778,
         "gradeBand": "descent"
       },
       {
         "lat": 24.722665019712135,
         "lng": 121.09613653963827,
         "ele": 139.24831804869393,
-        "distanceKm": 34.96276621319324,
-        "gradePct": -4.027117090342699,
-        "smoothedEle": 139.51894507797698,
+        "distanceKm": 27.38624039321047,
+        "gradePct": -4.027117090342784,
+        "smoothedEle": 139.51894507797695,
         "gradeBand": "descent"
       },
       {
         "lat": 24.723112,
         "lng": 121.095864,
         "ele": 137.5,
-        "distanceKm": 35.01958209258113,
-        "gradePct": -3.460498383801458,
-        "smoothedEle": 137.9115503673969,
+        "distanceKm": 27.443056272598362,
+        "gradePct": -3.4604983838013443,
+        "smoothedEle": 137.91155036739698,
         "gradeBand": "descent"
       },
       {
         "lat": 24.72347,
         "lng": 121.0956455,
         "ele": 137.625,
-        "distanceKm": 35.06509812461097,
-        "gradePct": -1.827972268756272,
+        "distanceKm": 27.488572304628196,
+        "gradePct": -1.827972268756329,
         "smoothedEle": 137.62500001924053,
         "gradeBand": "descent"
       },
@@ -8293,97 +6222,97 @@
         "lat": 24.723828,
         "lng": 121.095427,
         "ele": 137.75,
-        "distanceKm": 35.11061412585596,
-        "gradePct": -0.5111806423273249,
-        "smoothedEle": 137.65408510242537,
+        "distanceKm": 27.534088305873183,
+        "gradePct": -0.5111806423271543,
+        "smoothedEle": 137.65408510242582,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.724224,
+        "lat": 24.724224000000003,
         "lng": 121.095182,
         "ele": 137.5,
-        "distanceKm": 35.16112420717376,
-        "gradePct": -0.1500182286386554,
-        "smoothedEle": 137.49999995177265,
+        "distanceKm": 27.58459838719133,
+        "gradePct": -0.15001822863737643,
+        "smoothedEle": 137.4999999517718,
         "gradeBand": "descent"
       },
       {
         "lat": 24.72462,
         "lng": 121.094937,
         "ele": 137.25,
-        "distanceKm": 35.21163424990968,
-        "gradePct": -0.5943364898675925,
-        "smoothedEle": 137.05663664036527,
+        "distanceKm": 27.635108429926902,
+        "gradePct": -0.5943364898623344,
+        "smoothedEle": 137.05663664037098,
         "gradeBand": "descent"
       },
       {
-        "lat": 24.7250025,
-        "lng": 121.09469700000001,
-        "ele": 136.25000000000009,
-        "distanceKm": 35.26058908866671,
-        "gradePct": -1.2516325592021182,
-        "smoothedEle": 136.24999981551707,
+        "lat": 24.725002500000002,
+        "lng": 121.094697,
+        "ele": 136.24999999999997,
+        "distanceKm": 27.684063268684987,
+        "gradePct": -1.2516325592096784,
+        "smoothedEle": 136.24999981550653,
         "gradeBand": "descent"
       },
       {
         "lat": 24.725385,
         "lng": 121.094457,
         "ele": 135.25,
-        "distanceKm": 35.30954389052716,
-        "gradePct": -1.7759529559018037,
-        "smoothedEle": 135.29903228620017,
+        "distanceKm": 27.733018070544382,
+        "gradePct": -1.7759529559020881,
+        "smoothedEle": 135.29903228620543,
         "gradeBand": "descent"
       },
       {
         "lat": 24.725757211682645,
         "lng": 121.09423367299041,
-        "ele": 134.46991563517506,
-        "distanceKm": 35.35667942770874,
-        "gradePct": -1.844504424535645,
-        "smoothedEle": 134.46991550922598,
+        "ele": 134.46991563517508,
+        "distanceKm": 27.780153607725964,
+        "gradePct": -1.8445044245422957,
+        "smoothedEle": 134.469915509226,
         "gradeBand": "descent"
       },
       {
         "lat": 24.72612942336529,
         "lng": 121.09401034598083,
         "ele": 133.68983127035008,
-        "distanceKm": 35.40381493259919,
-        "gradePct": -1.623915658677339,
-        "smoothedEle": 133.78640403466733,
+        "distanceKm": 27.82728911261641,
+        "gradePct": -1.6239156586831651,
+        "smoothedEle": 133.78640403466738,
         "gradeBand": "descent"
       },
       {
         "lat": 24.72650156665041,
         "lng": 121.09378688009495,
-        "ele": 133.27510650925782,
-        "distanceKm": 35.45095044201961,
-        "gradePct": -1.1265167201022006,
-        "smoothedEle": 133.44417197288118,
+        "ele": 133.27510650925785,
+        "distanceKm": 27.87442462203683,
+        "gradePct": -1.1265167201029112,
+        "smoothedEle": 133.4441719728812,
         "gradeBand": "descent"
       },
       {
         "lat": 24.726874,
         "lng": 121.093564,
         "ele": 133.5,
-        "distanceKm": 35.49808595288052,
-        "gradePct": -0.2821066453197676,
+        "distanceKm": 27.921560132897742,
+        "gradePct": -0.28210664531982443,
         "smoothedEle": 133.58737326568163,
         "gradeBand": "descent"
       },
       {
         "lat": 24.72730840617433,
         "lng": 121.09328232485814,
-        "ele": 134.16824898804,
-        "distanceKm": 35.55414494711672,
-        "gradePct": 0.6404415830019923,
-        "smoothedEle": 134.09431870708252,
+        "ele": 134.16824898803995,
+        "distanceKm": 27.977619127133938,
+        "gradePct": 0.6404415830019354,
+        "smoothedEle": 134.0943187070825,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.727743,
         "lng": 121.093001,
         "ele": 134.5,
-        "distanceKm": 35.61020393136065,
+        "distanceKm": 28.03367811137787,
         "gradePct": 0.7976235460890735,
         "smoothedEle": 134.4945805464273,
         "gradeBand": "moderate"
@@ -8392,35 +6321,35 @@
         "lat": 24.72809537205257,
         "lng": 121.09276190786554,
         "ele": 134.75,
-        "distanceKm": 35.65622958844431,
-        "gradePct": 0.3400406133580938,
+        "distanceKm": 28.079703768461528,
+        "gradePct": 0.34004061335815067,
         "smoothedEle": 134.4492436852469,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.728447541111358,
         "lng": 121.09252245260738,
-        "ele": 133.8855580462874,
-        "distanceKm": 35.70225525619314,
-        "gradePct": -0.5320606222653832,
-        "smoothedEle": 133.90576628536854,
+        "ele": 133.88555804628746,
+        "distanceKm": 28.125729436210356,
+        "gradePct": -0.5320606222653264,
+        "smoothedEle": 133.90576628536857,
         "gradeBand": "descent"
       },
       {
         "lat": 24.728799685259258,
         "lng": 121.09228295247689,
-        "ele": 133.09599717655604,
-        "distanceKm": 35.74828091293598,
-        "gradePct": -1.3290803605770332,
-        "smoothedEle": 133.12799304445926,
+        "ele": 133.09599717655598,
+        "distanceKm": 28.1717550929532,
+        "gradePct": -1.3290803605770616,
+        "smoothedEle": 133.12799304445923,
         "gradeBand": "descent"
       },
       {
         "lat": 24.72915170081629,
         "lng": 121.09204322444694,
-        "ele": 132.42499704242454,
-        "distanceKm": 35.79430647391215,
-        "gradePct": -1.7781118666942208,
+        "ele": 132.42499704242465,
+        "distanceKm": 28.21778065392937,
+        "gradePct": -1.7781118666941924,
         "smoothedEle": 132.22151473048655,
         "gradeBand": "descent"
       },
@@ -8428,17 +6357,17 @@
         "lat": 24.729504,
         "lng": 121.091804,
         "ele": 131,
-        "distanceKm": 35.84033210349423,
-        "gradePct": -1.8034291499370765,
-        "smoothedEle": 131.4588883500194,
+        "distanceKm": 28.263806283511446,
+        "gradePct": -1.803429149936963,
+        "smoothedEle": 131.4588883500195,
         "gradeBand": "descent"
       },
       {
         "lat": 24.729703054906395,
         "lng": 121.09214031982252,
         "ele": 131.25,
-        "distanceKm": 35.88087469632774,
-        "gradePct": -1.3103767761927356,
+        "distanceKm": 28.304348876344953,
+        "gradePct": -1.3103767761927925,
         "smoothedEle": 131.17567824104188,
         "gradeBand": "descent"
       },
@@ -8446,125 +6375,125 @@
         "lat": 24.729903,
         "lng": 121.092476,
         "ele": 131.25,
-        "distanceKm": 35.92141733027605,
-        "gradePct": -0.20944041327245755,
-        "smoothedEle": 131.5628582076703,
+        "distanceKm": 28.344891510293266,
+        "gradePct": -0.20944041327254284,
+        "smoothedEle": 131.56285820767033,
         "gradeBand": "descent"
       },
       {
         "lat": 24.730194,
         "lng": 121.092956,
         "ele": 132.75,
-        "distanceKm": 35.97970290258667,
-        "gradePct": 0.7644012264940618,
+        "distanceKm": 28.403177082603893,
+        "gradePct": 0.7644012264940903,
         "smoothedEle": 131.94826502770644,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.7306795,
         "lng": 121.0929505,
-        "ele": 130.625,
-        "distanceKm": 36.0336909717986,
-        "gradePct": -1.0190162880622462,
-        "smoothedEle": 130.6249999997631,
+        "ele": 130.62500000000009,
+        "distanceKm": 28.45716515181582,
+        "gradePct": -1.0190162880623317,
+        "smoothedEle": 130.62499999976305,
         "gradeBand": "descent"
       },
       {
         "lat": 24.731165,
         "lng": 121.092945,
         "ele": 128.5,
-        "distanceKm": 36.08767904098822,
-        "gradePct": -3.2789646575354077,
-        "smoothedEle": 128.47380263967483,
+        "distanceKm": 28.51115322100544,
+        "gradePct": -3.2789646575353792,
+        "smoothedEle": 128.47380263967486,
         "gradeBand": "descent"
       },
       {
         "lat": 24.731652,
         "lng": 121.092971,
         "ele": 126.25,
-        "distanceKm": 36.141894674305064,
-        "gradePct": -3.810521536629767,
-        "smoothedEle": 126.48759544175924,
+        "distanceKm": 28.565368854322287,
+        "gradePct": -3.8105215366295826,
+        "smoothedEle": 126.48759544175925,
         "gradeBand": "descent"
       },
       {
         "lat": 24.732152,
         "lng": 121.092979,
         "ele": 125,
-        "distanceKm": 36.197498084956855,
-        "gradePct": -2.975659748435746,
-        "smoothedEle": 125.13841905119509,
+        "distanceKm": 28.620972264974082,
+        "gradePct": -2.9756597484355756,
+        "smoothedEle": 125.13841905119506,
         "gradeBand": "descent"
       },
       {
         "lat": 24.732551,
         "lng": 121.092988,
         "ele": 124.5,
-        "distanceKm": 36.241874232064355,
-        "gradePct": -1.4832033546685113,
-        "smoothedEle": 125.0051409951668,
+        "distanceKm": 28.66534841208158,
+        "gradePct": -1.483203354668284,
+        "smoothedEle": 125.00514099516691,
         "gradeBand": "descent"
       },
       {
         "lat": 24.733074,
         "lng": 121.092997,
         "ele": 126.25,
-        "distanceKm": 36.30003636201457,
-        "gradePct": 0.787893629896803,
-        "smoothedEle": 125.91868929208758,
+        "distanceKm": 28.723510542031796,
+        "gradePct": 0.7878936298967746,
+        "smoothedEle": 125.91868929208754,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.733473,
-        "lng": 121.09299800000001,
-        "ele": 126.37500000000001,
-        "distanceKm": 36.34440331397757,
-        "gradePct": 1.3301349012533685,
-        "smoothedEle": 126.37500000000047,
+        "lng": 121.092998,
+        "ele": 126.375,
+        "distanceKm": 28.767877493994792,
+        "gradePct": 1.3301349012533545,
+        "smoothedEle": 126.37500000000045,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.733872,
         "lng": 121.092999,
         "ele": 126.5,
-        "distanceKm": 36.38877026593983,
-        "gradePct": 0.5757135855881532,
-        "smoothedEle": 126.31744713532525,
+        "distanceKm": 28.812244445957056,
+        "gradePct": 0.5757135855881959,
+        "smoothedEle": 126.31744713532527,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.734285208777166,
         "lng": 121.09302285544258,
-        "ele": 125.95255806360797,
-        "distanceKm": 36.43478017134637,
-        "gradePct": -0.4327779759229254,
-        "smoothedEle": 125.84324873805927,
+        "ele": 125.9525580636081,
+        "distanceKm": 28.858254351363595,
+        "gradePct": -0.4327779759229396,
+        "smoothedEle": 125.84324873805932,
         "gradeBand": "descent"
       },
       {
         "lat": 24.734699,
         "lng": 121.093032,
         "ele": 125,
-        "distanceKm": 36.48080098728989,
-        "gradePct": -1.4510848942077892,
-        "smoothedEle": 124.87669999918768,
+        "distanceKm": 28.90427516730712,
+        "gradePct": -1.4510848942079742,
+        "smoothedEle": 124.8766999991875,
         "gradeBand": "descent"
       },
       {
         "lat": 24.735232995201862,
         "lng": 121.09302999842497,
-        "ele": 123.12716567064268,
-        "distanceKm": 36.54017897069723,
-        "gradePct": -2.7051203584450763,
-        "smoothedEle": 123.02474050073788,
+        "ele": 123.12716567064248,
+        "distanceKm": 28.963653150714453,
+        "gradePct": -2.705120358445303,
+        "smoothedEle": 123.02474050073768,
         "gradeBand": "descent"
       },
       {
         "lat": 24.735767,
         "lng": 121.093029,
         "ele": 120.75,
-        "distanceKm": 36.59955776268637,
-        "gradePct": -3.082471334829562,
+        "distanceKm": 29.0230319427036,
+        "gradePct": -3.0824713348294486,
         "smoothedEle": 121.20921741334422,
         "gradeBand": "descent"
       },
@@ -8572,82 +6501,82 @@
         "lat": 24.736156666666666,
         "lng": 121.09304566666667,
         "ele": 120.66666666666667,
-        "distanceKm": 36.64291946051137,
-        "gradePct": -2.2742825955395847,
-        "smoothedEle": 120.66666666658136,
+        "distanceKm": 29.066393640528602,
+        "gradePct": -2.2742825955393005,
+        "smoothedEle": 120.66666666658135,
         "gradeBand": "descent"
       },
       {
         "lat": 24.736546333333333,
         "lng": 121.09306233333334,
         "ele": 120.58333333333333,
-        "distanceKm": 36.68628115813165,
-        "gradePct": -1.0318199586116203,
-        "smoothedEle": 120.58333333324804,
+        "distanceKm": 29.10975533814888,
+        "gradePct": -1.0318199586114782,
+        "smoothedEle": 120.58333333324802,
         "gradeBand": "descent"
       },
       {
         "lat": 24.736936,
         "lng": 121.093079,
         "ele": 120.5,
-        "distanceKm": 36.7296428555472,
-        "gradePct": 0.006502663456828281,
-        "smoothedEle": 120.8392890232029,
+        "distanceKm": 29.15311703556443,
+        "gradePct": 0.006502663456913545,
+        "smoothedEle": 120.83928902320291,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.737111,
         "lng": 121.093389,
         "ele": 121.5,
-        "distanceKm": 36.76650490945532,
-        "gradePct": 0.6419861335927572,
-        "smoothedEle": 121.26332583682796,
+        "distanceKm": 29.189979089472555,
+        "gradePct": 0.6419861335927715,
+        "smoothedEle": 121.26332583682795,
         "gradeBand": "moderate"
       },
       {
         "lat": 24.737329,
         "lng": 121.093663,
         "ele": 121.75,
-        "distanceKm": 36.80329245562545,
-        "gradePct": 0.592798015950541,
-        "smoothedEle": 121.27654573900732,
+        "distanceKm": 29.226766635642687,
+        "gradePct": 0.5927980159486226,
+        "smoothedEle": 121.27654573900541,
         "gradeBand": "moderate"
       },
       {
-        "lat": 24.737594,
+        "lat": 24.737593999999998,
         "lng": 121.093968,
-        "ele": 120.375,
-        "distanceKm": 36.845919554722855,
-        "gradePct": -0.6515257868503191,
-        "smoothedEle": 120.37499967390923,
+        "ele": 120.37500000000006,
+        "distanceKm": 29.269393734739815,
+        "gradePct": -0.6515257868434268,
+        "smoothedEle": 120.37499967391298,
         "gradeBand": "descent"
       },
       {
         "lat": 24.737859,
         "lng": 121.094273,
         "ele": 119,
-        "distanceKm": 36.888546606388864,
-        "gradePct": -1.7875178665451616,
-        "smoothedEle": 119.48372883230442,
+        "distanceKm": 29.312020786406098,
+        "gradePct": -1.7875178665462985,
+        "smoothedEle": 119.48372883230213,
         "gradeBand": "descent"
       },
       {
         "lat": 24.738073,
         "lng": 121.094068,
         "ele": 119,
-        "distanceKm": 36.92008795630534,
-        "gradePct": -1.9213276296374187,
+        "distanceKm": 29.34356213632257,
+        "gradePct": -1.9213276296354715,
         "smoothedEle": 119,
         "gradeBand": "descent"
       }
     ],
     "summary": {
-      "distanceKm": 36.92008795630534,
-      "elevationGainM": 1053.1449444691311,
-      "elevationLossM": 1053.1449444691311,
-      "minimumElevationM": 107.75,
-      "maximumElevationM": 686.5,
-      "maximumSustainedGradePct": 28.205048878521723
+      "distanceKm": 29.34356213632257,
+      "elevationGainM": 592.540368416534,
+      "elevationLossM": 592.5403684165337,
+      "minimumElevationM": 119,
+      "maximumElevationM": 256.75,
+      "maximumSustainedGradePct": 21.40150957076499
     },
     "climbs": [
       {
@@ -8661,44 +6590,44 @@
         "maximumGradePct": 9.803036725941688
       },
       {
-        "startIndex": 149,
-        "endIndex": 216,
-        "startDistanceKm": 7.0204635256651855,
-        "endDistanceKm": 9.759678852683678,
-        "distanceKm": 2.739215327018492,
-        "gainM": 97.98994693074549,
-        "averageGradePct": 3.5772998918417622,
-        "maximumGradePct": 10.323614706527346
+        "startIndex": 183,
+        "endIndex": 274,
+        "startDistanceKm": 7.974501218803717,
+        "endDistanceKm": 10.73978355984864,
+        "distanceKm": 2.765282341044922,
+        "gainM": 115.4434997192662,
+        "averageGradePct": 4.174745486410019,
+        "maximumGradePct": 16.760882118719255
       },
       {
-        "startIndex": 224,
-        "endIndex": 265,
-        "startDistanceKm": 9.899958984703783,
-        "endDistanceKm": 11.528016659366639,
-        "distanceKm": 1.6280576746628554,
-        "gainM": 54.46275898557613,
-        "averageGradePct": 3.345259804561561,
-        "maximumGradePct": 14.30613743209562
+        "startIndex": 304,
+        "endIndex": 337,
+        "startDistanceKm": 11.859630990670263,
+        "endDistanceKm": 13.2151015226152,
+        "distanceKm": 1.3554705319449365,
+        "gainM": 61.96374830761849,
+        "averageGradePct": 4.571382914441378,
+        "maximumGradePct": 21.40150957076499
       },
       {
-        "startIndex": 269,
-        "endIndex": 440,
-        "startDistanceKm": 11.703243060895849,
-        "endDistanceKm": 18.100732462035666,
-        "distanceKm": 6.397489401139817,
-        "gainM": 513.485327429422,
-        "averageGradePct": 8.026356828945058,
-        "maximumGradePct": 28.205048878521723
+        "startIndex": 344,
+        "endIndex": 401,
+        "startDistanceKm": 13.576116908302893,
+        "endDistanceKm": 16.10044036626885,
+        "distanceKm": 2.5243234579659557,
+        "gainM": 68.48235084922581,
+        "averageGradePct": 2.7128991981244504,
+        "maximumGradePct": 8.741948499223811
       },
       {
-        "startIndex": 599,
-        "endIndex": 673,
-        "startDistanceKm": 22.639005775048087,
-        "endDistanceKm": 25.109993314661317,
-        "distanceKm": 2.4709875396132297,
-        "gainM": 102.82308798989709,
-        "averageGradePct": 4.161214346147267,
-        "maximumGradePct": 13.677523519895066
+        "startIndex": 404,
+        "endIndex": 459,
+        "startDistanceKm": 16.236130027076605,
+        "endDistanceKm": 18.15225106026929,
+        "distanceKm": 1.9161210331926846,
+        "gainM": 42.696557573445745,
+        "averageGradePct": 2.2282808253664315,
+        "maximumGradePct": 9.201506701396493
       }
     ]
   },
@@ -8712,6 +6641,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-29T13:23:46.665Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "e42d130754fe452aab49fcee756840b460aac5840e01edf0f9ecb7fb9b4f7344",
+      "roadPolicyAuditSha256": "ca3acb7cd2227300a6d47aac5d10c0000e66d458f4d041de59e56ba48ec1fea3",
       "elevationAnalysis": {
         "smoothingWindowM": 500,
         "gradeWindowM": 100,
@@ -19219,6 +17150,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-29T13:23:46.830Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "c326e9389668ad3fe7ca4bf3bfc490b89ad99236b4754e53d0745a157d479168",
+      "roadPolicyAuditSha256": "2b81e93388f276d3e6208377b9bd0339bce93de2ca625e610a577035cefaf062",
       "elevationAnalysis": {
         "smoothingWindowM": 500,
         "gradeWindowM": 100,

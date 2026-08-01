@@ -13,6 +13,7 @@
 - 依地區、難度、距離與爬升探索台灣公路車路線。
 - Leaflet 互動地圖；離線或直接開啟 HTML 時自動改用 SVG 路線圖。
 - 72 條內建路線皆以 BRouter `fastbike` 吸附至道路，搭配 SRTM 海拔、路線級平滑與持續坡度分析。
+- 受版控的道路稽核可在 CI 由 BRouter 原始幾何與 waytags 完整重建 72 條正式路線；明確禁行、渡輪、階梯、施工道路、服務道路與未證明適合公路車的道路會阻擋發布，例外必須綁定精確路段 SHA-256、距離上限與 HTTPS 佐證。
 - GPX 匯入、下載與可查詢里程／海拔／坡度的詳細剖面。
 - 新增、編輯、刪除、圖片壓縮、JSON 備份與還原，資料只儲存在目前瀏覽器。
 - 鍵盤操作、跳至主要內容、狀態播報、清楚的焦點樣式與減少動態效果支援。
@@ -72,7 +73,7 @@ npm run verify
 
 可直接部署整個專案到 GitHub Pages、Cloudflare Pages、Netlify、Synology Web Station 或任意靜態檔案服務。網站使用 Hash 路由，不需要伺服器 rewrite 規則。Leaflet 與 OpenStreetMap 圖磚需要網路；失敗時仍保留 SVG 路線圖與文字資料。
 
-本版本庫的 `main` 每次推送後會執行 `.github/workflows/pages.yml`：先以 Node.js 22 執行完整測試，通過後再部署 GitHub Pages。也可從 GitHub Actions 頁面手動執行相同流程。
+本版本庫的 `main` 每次推送後會執行 `.github/workflows/pages.yml`：先以 Node.js 22 執行完整測試，通過後再部署 GitHub Pages。也可從 GitHub Actions 頁面手動執行相同流程；build 與 deploy job 都會拒絕非 `main` ref。
 
 ## 已知限制
 

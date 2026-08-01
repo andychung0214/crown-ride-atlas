@@ -58,7 +58,7 @@ Expected: 所有產生器測試通過。
 ### Task 2: 修正 11 條路線並重新審查
 
 **Files:**
-- Modify: `tools/route-data/seeds/{keelung-harbor-coast,keelung-waimushan-wanli,taipei-lengshuikeng,taoyuan-shimen-loop,hsinchu-city-nanliao-baoshan,hsinchu-county-yulao,hsinchu-county-smangus,miaoli-xianshan,changhua-coast,nantou-shanlinxi,yunlin-kouhu-coast}.json`
+- Modify: `tools/route-data/seeds/{keelung-harbor-coast,keelung-waimushan-wanli,taipei-lengshuikeng,taoyuan-shimen-loop,hsinchu-city-nanliao-xiangshan,hsinchu-county-yulao,hsinchu-county-smangus,miaoli-xianshan,changhua-coast,nantou-shanlinxi,yunlin-kouhu-coast}.json`
 - Regenerate ignored cache/staging artifacts under `tools/route-data/cache/` and `tools/route-data/.staging/`
 
 **Interfaces:**

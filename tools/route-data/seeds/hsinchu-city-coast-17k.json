@@ -40,6 +40,26 @@
       "role": "finish"
     }
   ],
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 4197,
+      "segmentSha256": "56a6eb2efc556c8a0c16a158107b98a3a96dc87bbdbed542268eff88cd97bfa8",
+      "reason": "hsinchu-city-coast-17k 的 4196 公尺 service 路段已依受版控座標、way tags 與人工審查記錄逐段核對；指紋變更即失效，騎乘前仍須查核即時通阻。",
+      "referenceLabel": "路線人工審查記錄所列公開道路來源",
+      "referenceUrl": "https://ssw.hccg.gov.tw/viewpoint/14"
+    },
+    {
+      "rule": "conditional-highway",
+      "value": "footway",
+      "maximumDistanceM": 1100,
+      "reason": "OSM 未完整標示此段官方 17 公里海岸自行車道的自行車權限。",
+      "referenceUrl": "https://ssw.hccg.gov.tw/viewpoint/14",
+      "referenceLabel": "新竹市政府 17 公里海岸自行車道",
+      "segmentSha256": "0924ec0782a4db7cf1bd2c7ebc44588d6b00a800cd6ca49bd69602a326269584"
+    }
+  ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-28T04:38:44.415Z",
   "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查新竹漁港南側、港南運河、金城湖、香山濕地至南港賞鳥區官方17公里海岸線並折返。24.774178,120.913828 至 24.778785,120.914415 約514公尺／單向在 OSM 標為 footway，疑為自行車權限標籤缺漏；新竹市官方明列此段屬17公里自行車道（https://ssw.hccg.gov.tw/viewpoint/14），故保留官方自行車走廊而不改走台1。公路車騎士仍須出發前現地確認施工與管制。其餘 BRouter 訊息無 path、steps、私人或未鋪面路段。"

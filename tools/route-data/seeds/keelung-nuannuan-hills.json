@@ -42,5 +42,16 @@
   ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-28T04:38:44.415Z",
-  "reviewerNote": "完整騎乘改為基隆車站、暖暖、東勢街暖東峽谷、七堵再回基隆的 23.8 公里環線；以稽核頁疊加 OpenStreetMap 目視確認道路連續，WayTags 未命中高速公路、樓梯、私人或未鋪裝路段。"
+  "reviewerNote": "完整騎乘改為基隆車站、暖暖、東勢街暖東峽谷、七堵再回基隆的 23.8 公里環線；以稽核頁疊加 OpenStreetMap 目視確認道路連續，WayTags 未命中高速公路、樓梯、私人或未鋪裝路段。",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 370,
+      "segmentSha256": "c2cf9e33dcf952accaa474077a739354a99a951f74a141af2ea7a17a7012991c",
+      "reason": "精確段落範圍 25.123044,121.742139–25.123044,121.742139、合計 369 公尺，已由受版控座標、way tags 與 segmentSha256 鎖定；官方資料將對應路廊列為公開自行車路線或一般鋪面道路。實騎前仍須查核即時通阻與現場標誌。",
+      "referenceLabel": "基隆市政府暖暖自行車道建設與公開路廊公告",
+      "referenceUrl": "https://www.klcg.gov.tw/tw/klcg1/3168-264199.html"
+    }
+  ]
 }

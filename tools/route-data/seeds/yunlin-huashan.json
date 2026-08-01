@@ -48,5 +48,16 @@
   ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-29T12:53:25.072Z",
-  "reviewerNote": "已以Leaflet／OpenStreetMap逐段覆核。古坑綠色隧道定位由公園內步道移至台3旁聯外道路，並移除會迫使軌跡穿越266公尺path及80公尺track的地母廟景點點位；荷苞山桐花公園定位保留在園外正式道路，未進入公園步道。華山休閒農業區只走BRouter可辨識的secondary／tertiary／unclassified正式道路，未使用華山步道群、小天梯、情人橋或咖啡園私人道路；全線無private、access禁制、footway、path或track。道路例外為古坑綠色隧道聯外道路往返各136公尺highway=service、斗六149甲端599公尺一般service，以及雲科大周邊149公尺asphalt service與396公尺校園聯外service，均無bicycle／private／access禁制。官方『挑戰雲東 台3林徑』證實斗六市區、古坑綠色隧道、華山休閒農業區及荷苞公園可組成自行車環線；本軌跡採可確認道路權限的34.3公里內環，不冒充活動50公里原始賽道，也未匯入外部GPX。來源：https://tour.yunlin.gov.tw/main/modules/MySpace/index.php?xmlid=1038173；華山區域來源：https://tour.yunlin.gov.tw/main/modules/MySpace/index.php?xmlid=1036890。預設100／100公尺海拔分析為爬升413.4公尺、最高397.8公尺、最大持續坡度12.6%，坡形連續且無側坡假峰，故不套用自訂視窗。"
+  "reviewerNote": "已以Leaflet／OpenStreetMap逐段覆核。古坑綠色隧道定位由公園內步道移至台3旁聯外道路，並移除會迫使軌跡穿越266公尺path及80公尺track的地母廟景點點位；荷苞山桐花公園定位保留在園外正式道路，未進入公園步道。華山休閒農業區只走BRouter可辨識的secondary／tertiary／unclassified正式道路，未使用華山步道群、小天梯、情人橋或咖啡園私人道路；全線無private、access禁制、footway、path或track。道路例外為古坑綠色隧道聯外道路往返各136公尺highway=service、斗六149甲端599公尺一般service，以及雲科大周邊149公尺asphalt service與396公尺校園聯外service，均無bicycle／private／access禁制。官方『挑戰雲東 台3林徑』證實斗六市區、古坑綠色隧道、華山休閒農業區及荷苞公園可組成自行車環線；本軌跡採可確認道路權限的34.3公里內環，不冒充活動50公里原始賽道，也未匯入外部GPX。來源：https://tour.yunlin.gov.tw/main/modules/MySpace/index.php?xmlid=1038173；華山區域來源：https://tour.yunlin.gov.tw/main/modules/MySpace/index.php?xmlid=1036890。預設100／100公尺海拔分析為爬升413.4公尺、最高397.8公尺、最大持續坡度12.6%，坡形連續且無側坡假峰，故不套用自訂視窗。",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 1417,
+      "segmentSha256": "d1ee7f210ec603ad5b8edbabbcf24cbd1cd561eb031c5dd66d529086a326d911",
+      "reason": "yunlin-huashan 的 1416 公尺 service 路段已依受版控座標、way tags 與人工審查記錄逐段核對；指紋變更即失效，騎乘前仍須查核即時通阻。",
+      "referenceLabel": "路線人工審查記錄所列公開道路來源",
+      "referenceUrl": "https://tour.yunlin.gov.tw/main/modules/MySpace/index.php?xmlid=1038173"
+    }
+  ]
 }

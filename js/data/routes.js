@@ -70,8 +70,8 @@
       character: "強風海岸、河濱與城市丘陵",
       routes: [
         ["hsinchu-city-coast-17k", "十七公里海岸線", "海岸", 29, 65, 1, ["親水", "強風"]],
-        ["hsinchu-city-18-peaks", "十八尖山晨光線", "丘陵", 13.8, 177, 2, ["都會", "晨騎"]],
-        ["hsinchu-city-nanliao-baoshan", "南寮寶山丘陵", "丘陵", 44, 472, 3, ["海風", "水庫"]]
+        ["hsinchu-city-gangnan-morning", "港南晨光短線", "海岸", 9.2, 26, 1, ["海風", "晨騎"]],
+        ["hsinchu-city-nanliao-xiangshan", "南寮香山海風線", "海岸", 19.1, 61, 1, ["海風", "濕地"]]
       ]
     },
     {
@@ -81,7 +81,7 @@
       base: [24.6585, 121.0924],
       character: "竹林、深谷與高山部落",
       routes: [
-        ["hsinchu-county-five-fingers", "五指山環線", "山岳", 36.9, 1053, 4, ["竹林", "展望"]],
+        ["hsinchu-county-five-fingers", "北埔南清公路環線", "丘陵", 29.3, 593, 3, ["山城", "展望"]],
         ["hsinchu-county-yulao", "宇老觀景台", "山岳", 34.8, 1401, 5, ["高山", "長爬坡"]],
         ["hsinchu-county-smangus", "司馬庫斯部落挑戰", "山岳", 55.9, 2624, 5, ["部落", "極限"]]
       ]

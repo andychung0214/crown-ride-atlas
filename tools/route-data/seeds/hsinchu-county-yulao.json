@@ -47,6 +47,26 @@
       "role": "finish"
     }
   ],
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 844,
+      "segmentSha256": "16f5225f680ecb6be1bd2f50a2ffde6b166cdc828e8b47bf95879ad693ee14e1",
+      "reason": "精確段落範圍 24.701798,121.131966–24.723608,121.213968、合計 843 公尺，已由受版控座標、way tags 與 segmentSha256 鎖定；官方資料將對應路廊列為公開自行車路線或一般鋪面道路。實騎前仍須查核即時通阻與現場標誌。",
+      "referenceLabel": "新竹縣政府竹60線宇老自行車主要路線與道路改善公告",
+      "referenceUrl": "https://www.hsinchu.gov.tw/News_Content.aspx?n=139&s=202384"
+    },
+    {
+      "rule": "conditional-highway",
+      "value": "track",
+      "maximumDistanceM": 1600,
+      "reason": "OSM 將竹 60 主線部分路段標為未註明鋪面的 track；公開公路車實騎資料確認此為宇老既有道路。",
+      "referenceUrl": "https://running.biji.co/index.php?act=detail&id=47655&q=review",
+      "referenceLabel": "運動筆記宇老公路車實騎紀錄",
+      "segmentSha256": "fbca096b2a59b0f0fae76e9df44417cecece99eabba1b52eebebfa5a5ca74ae8"
+    }
+  ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-29T13:50:00.000Z",
   "reviewerNote": "2026-07-29 重新稽核：竹60宇老唯一走廊含452公尺 `highway=unclassified oneway=yes`，舊往返軌跡在回程24.667996,121.281100必然逆行；改為竹東至宇老觀景台point-to-point，只依OSM方向合法進入。raw messages 無未授權單行道逆向段；另有合計1571公尺track（240公尺正向、240公尺reverse-direction、744公尺與347公尺），未標surface，沿竹60主線且與運動筆記公開公路車實騎走廊一致，不據此宣稱鋪面。Leaflet與海拔剖面為34.8公里、爬升1401公尺、最大持續坡度23.3%。本站GPX不得反向騎乘；回程須依當日交通管制另行安排，並查核路面、施工與臨時管制。"

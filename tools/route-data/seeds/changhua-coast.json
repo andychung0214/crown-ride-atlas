@@ -61,5 +61,16 @@
   ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-29T13:50:00.000Z",
-  "reviewerNote": "2026-07-29 重新稽核：舊白蘭氏 waypoint 使 BRouter 在24.077300,120.401185逆行32公尺 `highway=service oneway=yes`；已移至東側鹿工路主線。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、motorroad、footway、path、steps、track、private、access禁制或bicycle=no；service合計7087公尺，精確分組為3633公尺 `highway=service` 與3454公尺 `reversedirection=yes highway=service`，兩組皆未標surface，不據此宣稱鋪面；官方台17自行車道路廊只作通行走廊依據。Leaflet未進台61主線、匝道、港區或海堤。500公尺平滑／200公尺坡度視窗後為68.5公里、爬升71公尺、最大2.4%。官方來源：https://tourism.chcg.gov.tw/AttractionsContent.aspx?chk=5c497bea-0d40-479f-a430-dba0e2965fbf&id=515"
+  "reviewerNote": "2026-07-29 重新稽核：舊白蘭氏 waypoint 使 BRouter 在24.077300,120.401185逆行32公尺 `highway=service oneway=yes`；已移至東側鹿工路主線。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、motorroad、footway、path、steps、track、private、access禁制或bicycle=no；service合計7087公尺，精確分組為3633公尺 `highway=service` 與3454公尺 `reversedirection=yes highway=service`，兩組皆未標surface，不據此宣稱鋪面；官方台17自行車道路廊只作通行走廊依據。Leaflet未進台61主線、匝道、港區或海堤。500公尺平滑／200公尺坡度視窗後為68.5公里、爬升71公尺、最大2.4%。官方來源：https://tourism.chcg.gov.tw/AttractionsContent.aspx?chk=5c497bea-0d40-479f-a430-dba0e2965fbf&id=515",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 7088,
+      "segmentSha256": "0262c7fe74b7e52aef93e5a95710cc988a30a3623b45d601a6bb82dc677014b3",
+      "reason": "changhua-coast 的 7087 公尺 service 路段已依受版控座標、way tags 與人工審查記錄逐段核對；指紋變更即失效，騎乘前仍須查核即時通阻。",
+      "referenceLabel": "路線人工審查記錄所列公開道路來源",
+      "referenceUrl": "https://tourism.chcg.gov.tw/AttractionsContent.aspx?chk=5c497bea-0d40-479f-a430-dba0e2965fbf&id=515"
+    }
+  ]
 }

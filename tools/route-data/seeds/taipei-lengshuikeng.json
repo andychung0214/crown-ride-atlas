@@ -60,5 +60,16 @@
   ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-29T13:50:00.000Z",
-  "reviewerNote": "2026-07-29 重新稽核：舊管理處 waypoint 使 BRouter 在25.155210,121.546045逆行8公尺 `highway=service oneway=yes`；移除該支點後又發現原格致路座標會導入242公尺track捷徑，故將去回程地標都修正至OSM `primary 格致路` 節點25.141291,121.549904。最終 raw messages 無未授權單行道逆向段，也無 footway、path、track、steps、private、access禁制或bicycle=no；Leaflet顯示仰德大道、格致路、菁山路101巷、冷水坑、中湖戰備道路與陽金公路環線連續，海拔為31.4公里、爬升964公尺、最大持續坡度22.7%。"
+  "reviewerNote": "2026-07-29 重新稽核：舊管理處 waypoint 使 BRouter 在25.155210,121.546045逆行8公尺 `highway=service oneway=yes`；移除該支點後又發現原格致路座標會導入242公尺track捷徑，故將去回程地標都修正至OSM `primary 格致路` 節點25.141291,121.549904。最終 raw messages 無未授權單行道逆向段，也無 footway、path、track、steps、private、access禁制或bicycle=no；Leaflet顯示仰德大道、格致路、菁山路101巷、冷水坑、中湖戰備道路與陽金公路環線連續，海拔為31.4公里、爬升964公尺、最大持續坡度22.7%。",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 642,
+      "segmentSha256": "3d1910f24cf892d6aba8800fdc7f0e195e56c9a80e8e89d229438c4e9151f610",
+      "reason": "精確段落範圍 25.139271,121.547800–25.180501,121.558598、合計 641 公尺，已由受版控座標、way tags 與 segmentSha256 鎖定；官方資料將對應路廊列為公開自行車路線或一般鋪面道路。實騎前仍須查核即時通阻與現場標誌。",
+      "referenceLabel": "臺北市政府至善路、平菁街、菁山路至冷水坑自行車路線",
+      "referenceUrl": "https://www.travel.taipei/zh-tw/news/details/22618"
+    }
+  ]
 }

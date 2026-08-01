@@ -12,6 +12,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-29T13:20:12.480Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "13dcaaaac91c757a8bf1007fe5f9e5e9744c7682f2a3c4e4e4e86bd96e49b558",
+      "roadPolicyAuditSha256": "cbc1c6bad38e092205bf97085034e3855cdbd9416000b6c666fcd601de404aa4",
       "reviewedAt": "2026-07-29T13:50:00.000Z",
       "reviewerNote": "2026-07-29 重新稽核：舊潮境 waypoint 使 BRouter 在25.142573,121.802562逆行27公尺 `highway=service oneway=yes`；已將地標移至潮境公園入口北寧路並重產。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、footway、path、track、steps、private、access禁制或bicycle=no；Leaflet 疊圖顯示忠一路、正濱路、和一路、北寧路與港區聯外道路連續，海拔剖面為19.6公里、爬升228公尺。"
     },
@@ -4095,6 +4097,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-26T08:28:25.626Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "b42739a720defbe2168943d25c65dc0cabac1bf2fb1f3005c7c5cd8d16252625",
+      "roadPolicyAuditSha256": "10b357115cbdb7e46c5ab92cea6c294a160aaa7b2c292c8527c2a0a4678fa4f7",
       "reviewedAt": "2026-07-28T04:38:44.415Z",
       "reviewerNote": "完整騎乘改為基隆車站、暖暖、東勢街暖東峽谷、七堵再回基隆的 23.8 公里環線；以稽核頁疊加 OpenStreetMap 目視確認道路連續，WayTags 未命中高速公路、樓梯、私人或未鋪裝路段。"
     },
@@ -9194,6 +9198,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-29T13:27:01.364Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "6ca3b6998935b7fb0af08a27fec291b0b8979fd44ad6bbf6b069c2ee82c4a073",
+      "roadPolicyAuditSha256": "965cd8c3a803f662b3f205824b4b1fcbda802a7314cfb218adc398c1527876fc",
       "reviewedAt": "2026-07-29T13:50:00.000Z",
       "reviewerNote": "2026-07-29 重新稽核：舊基隆車站起終點使回程在25.131567,121.739871逆行16公尺 `highway=tertiary oneway=yes`，附近替代點又會導入車站footway；為保留路線本義且不使用市區單行系統，改由外木山漁港雙向道路起騎，經萬里至野柳港東路後原路返回。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、footway、path、track、steps、private、access禁制或bicycle=no；Leaflet與海拔剖面為21.5公里、爬升309公尺且連續。"
     },

@@ -12,6 +12,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-28T05:46:51.256Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "240ca7081a1c29d3d8026d25f6dc2dd7851816d64ad1ade55dec2b06ac2f76d5",
+      "roadPolicyAuditSha256": "adf39921534553656da9c2150850c5cdc28230fc305d72472470ee316e59aee6",
       "reviewedAt": "2026-07-29T13:50:00.000Z",
       "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查八卦山大佛東側道路至橫山縣道139並原路折返；初版大佛、猴探井與橫山研究點分別落入鋪面 footway／steps、遊憩區 footway 與觀日步道 track，均已移至一般道路側，另移除會使路由往銀行山 service 支線折返的冗餘 waypoint。最終 BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段。原始訊息的 highway=service 共1464公尺，順向與 reversedirection=yes 各732公尺；未標示 surface，故不推論鋪面，只依彰化縣官方資料佐證縣道139公開道路走廊，Leaflet 疊圖沿139稜線且海拔剖面連續。彰化縣政府官方資料列139線彰化段約22.2公里且坡度落差大，須具山路經驗。官方來源：https://tourism.chcg.gov.tw/AttractionsContent.aspx?chk=D02F4129-FBDA-498E-8772-03185A0CEB24&id=502"
     },
@@ -11167,6 +11169,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-28T05:48:56.013Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "7df738237a9eda18c8a096836bd35d76233d104f49d8548396aa31a311f9c8f1",
+      "roadPolicyAuditSha256": "8f18d4a6979cd11bd4dd64c1bb715a0e951b89fe9316f0e2c1f59f58fbc167f4",
       "reviewedAt": "2026-07-29T13:50:00.000Z",
       "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查員林運動公園、百果山、縣道139、松柏嶺、139乙、台3與148環線；橫山研究點原導入359公尺觀日步道 track，139乙／台3點原形成137公尺 track 折返，均已移至一般道路側。最終僅百果山自行車道保留約1.78公里 OSM `highway=track tracktype=grade1`，其中412公尺明標 asphalt、foot=yes、bicycle=yes；彰化縣政府將完整8.1公里路段列為全天開放的「百果山自行車道」，描述為產業山路並提醒坡度落差大，因此列為具官方依據的鋪面／硬質自行車路線例外。原始訊息另含4794公尺 highway=service：2210公尺順向、2505公尺 reversedirection=yes，另79公尺同時標示 reversedirection=yes、surface=asphalt；僅該79公尺可由標籤確認鋪面，其餘不推論 surface，官方證據只佐證公開道路／自行車路廊。其餘無 footway、path、steps、私人或未鋪面捷徑；Leaflet 與海拔剖面連續。官方來源：https://tourism.chcg.gov.tw/AttractionsContent.aspx?chk=d7f3b524-5fb2-416c-9d54-0c0766419d7a&id=518&l=TW"
     },
@@ -24064,6 +24068,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-29T13:23:17.116Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "b7cdba9146c51a104c31f801fa5c635fee5128a46f7b208ef2f73e828a55c932",
+      "roadPolicyAuditSha256": "a164f46f7680e1486486209688f97e548cedad04f16e04cff139778e4e8144f8",
       "elevationAnalysis": {
         "smoothingWindowM": 500,
         "gradeWindowM": 200,

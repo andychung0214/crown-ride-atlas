@@ -4,7 +4,11 @@
     {
       "type": "Feature",
       "properties": {
-        "creator": "BRouter fixture"
+        "creator": "BRouter fixture",
+        "messages": [
+          ["Longitude", "Latitude", "Distance", "WayTags"],
+          ["121541000", "25021000", "150", "highway=residential"]
+        ]
       },
       "geometry": {
         "type": "LineString",

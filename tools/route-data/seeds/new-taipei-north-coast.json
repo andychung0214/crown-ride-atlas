@@ -48,5 +48,16 @@
   ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-28T04:38:44.415Z",
-  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查紅樹林沿台2淡金公路經淺水灣、白沙灣至富基村並原路返回；BRouter 訊息無 footway、path、steps、私人或未鋪面路段。"
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查紅樹林沿台2淡金公路經淺水灣、白沙灣至富基村並原路返回；BRouter 訊息無 footway、path、steps、私人或未鋪面路段。",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 1166,
+      "segmentSha256": "06189f9a41fae3bef5655a35e6b01f772a95c105a1298142e0e44a9a69b81347",
+      "reason": "精確段落範圍 25.272982,121.507822–25.289366,121.537058、合計 1165 公尺，已由受版控座標、way tags 與 segmentSha256 鎖定；官方資料將對應路廊列為公開自行車路線或一般鋪面道路。實騎前仍須查核即時通阻與現場標誌。",
+      "referenceLabel": "交通部運輸研究所北臺濱海環線自行車道路規劃",
+      "referenceUrl": "https://www.iot.gov.tw/uploads/asset/data/66196550367376304acd4d21/%E7%92%B0%E5%B3%B6%E8%87%AA%EF%A8%88%EF%A4%82%E9%81%93%E5%8D%87%E7%B4%9A%E6%9A%A8%E5%A4%9A%E5%85%83%E8%B7%AF%E7%B7%9A%E6%95%B4%E5%90%88%E8%A6%8F%E5%8A%83%E5%85%88%E6%9C%9F%E4%BD%9C%E6%A5%AD.pdf"
+    }
+  ]
 }

@@ -61,5 +61,16 @@
   ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-29T13:50:00.000Z",
-  "reviewerNote": "以 OpenStreetMap 疊圖按官方建議順時針逐段檢查向山、水社、文武廟、纜車站、伊達邵、玄光碼頭上方、頭社至向山；將6個景點 waypoint 移至台21／台21甲道路中心線，移除初版13段 footway 與水社 oneway:bicycle=no service。最終 BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段；東北岸保留1270公尺 highway=cycleway，OSM 同段為 access=no、foot=designated、bicycle=designated，屬一般車禁入但自行車指定通行的官方自行車道。原始訊息另含804公尺 highway=service，其中691公尺順向、113公尺 reversedirection=yes；未標 surface，故不推論鋪面，只依官方路線佐證公開環潭道路／自行車路廊。西南岸全程留在台21／台21甲環潭公路，完全避開官方明示「月牙灣自行車道至環潭1號隧道口禁止騎乘、請牽行」段，亦未進水社壩木質鋪面。預設100公尺分析為爬升980公尺、最大25.7%，受湖岸水面、山壁與急彎 SRTM 取樣影響；採500公尺平滑／200公尺坡度視窗後為450公尺、最大10.5%，符合巨大旅遊29公里、總爬升約430公尺資料。環潭路線會因颱風、天然災害或整修暫時封閉，出發前須查景區最新公告。官方路線與禁騎段：https://theme.sunmoonlake.gov.tw/ComeBikeDay/FullPage.aspx?a=323&l=1；公路環潭指引：https://168.motc.gov.tw/theme/bike/post/2108021726616；景區現況：https://www.sunmoonlake.gov.tw/zh-tw/attractions/Attractions?A=20&Id=134&P=1"
+  "reviewerNote": "以 OpenStreetMap 疊圖按官方建議順時針逐段檢查向山、水社、文武廟、纜車站、伊達邵、玄光碼頭上方、頭社至向山；將6個景點 waypoint 移至台21／台21甲道路中心線，移除初版13段 footway 與水社 oneway:bicycle=no service。最終 BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段；東北岸保留1270公尺 highway=cycleway，OSM 同段為 access=no、foot=designated、bicycle=designated，屬一般車禁入但自行車指定通行的官方自行車道。原始訊息另含804公尺 highway=service，其中691公尺順向、113公尺 reversedirection=yes；未標 surface，故不推論鋪面，只依官方路線佐證公開環潭道路／自行車路廊。西南岸全程留在台21／台21甲環潭公路，完全避開官方明示「月牙灣自行車道至環潭1號隧道口禁止騎乘、請牽行」段，亦未進水社壩木質鋪面。預設100公尺分析為爬升980公尺、最大25.7%，受湖岸水面、山壁與急彎 SRTM 取樣影響；採500公尺平滑／200公尺坡度視窗後為450公尺、最大10.5%，符合巨大旅遊29公里、總爬升約430公尺資料。環潭路線會因颱風、天然災害或整修暫時封閉，出發前須查景區最新公告。官方路線與禁騎段：https://theme.sunmoonlake.gov.tw/ComeBikeDay/FullPage.aspx?a=323&l=1；公路環潭指引：https://168.motc.gov.tw/theme/bike/post/2108021726616；景區現況：https://www.sunmoonlake.gov.tw/zh-tw/attractions/Attractions?A=20&Id=134&P=1",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 805,
+      "segmentSha256": "bae19788db0f634b7232889f6f07103a751fdd5a8cab995ce15c74e5b546b5ff",
+      "reason": "nantou-sun-moon-lake 的 804 公尺 service 路段已依受版控座標、way tags 與人工審查記錄逐段核對；指紋變更即失效，騎乘前仍須查核即時通阻。",
+      "referenceLabel": "路線人工審查記錄所列公開道路來源",
+      "referenceUrl": "https://theme.sunmoonlake.gov.tw/ComeBikeDay/FullPage.aspx?a=323&l=1"
+    }
+  ]
 }

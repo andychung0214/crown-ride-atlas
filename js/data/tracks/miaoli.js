@@ -12,6 +12,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-29T13:32:07.346Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "57acd5232458b533e815a462e93eb1de9c28711190be6a268360d6ff34e80547",
+      "roadPolicyAuditSha256": "2a5c59bb4403357a1a716ec86b255a2598b482a448f8a9676db04fbb80959b2e",
       "reviewedAt": "2026-07-29T13:50:00.000Z",
       "reviewerNote": "2026-07-29 重新稽核：舊汶水 waypoint 使 BRouter 在24.452780,120.874988逆行34公尺 `highway=residential oneway=yes`；先移除會導入track捷徑，故改用OSM台3中豐公路節點24.450258,120.873799，並把獅潭點修正至台3／縣道124實際路口24.539619,120.919754。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、footway、path、track、steps、private、access禁制或bicycle=no；Leaflet顯示公館台6、汶水台3、獅潭與縣道124至仙山靈洞宮往返連續，為59.8公里、爬升1424公尺；最大持續坡度28.6%與舊發布資料相同。"
     },
@@ -13619,6 +13621,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-28T04:13:51.679Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "06cb7557c89496818d2f77a3c404bc81f68a7baab81fa37a5f87f1ec28d33ac0",
+      "roadPolicyAuditSha256": "a844d97792fe4d99b654649656f11d388efc31bafd20d9766ab0a564cc3cbfb6",
       "reviewedAt": "2026-07-28T04:38:44.415Z",
       "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查三義、勝興周邊公路與縣道130越過關刀山至薑麻園、大湖台3路口後原路折返；地標停在遊客服務中心外道路，不進私人停車場或登山步道。苗130連續彎坡且可能起霧，須開啟車燈並控制下坡速度。"
     },
@@ -22975,6 +22979,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-28T04:15:37.849Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "748faa2b8764ab8d9dc5c658d7f79cea8895fa1937f5af0946b6e086b14f6909",
+      "roadPolicyAuditSha256": "e89ebf347b4956aedbf72493028163b1ed66d8339e041ffc201d97c0625c232a",
       "reviewedAt": "2026-07-28T04:38:44.415Z",
       "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查苑港漁港、通霄漁港、白沙屯、苗33好望角至後龍車站的綠光海風自行車道與濱海道路；本線為官方68.5公里海線路網的中南段，部分自行車專用或防風林路段須留意海砂、強側風與臨時施工。"
     },

@@ -61,5 +61,16 @@
   ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-29T13:50:00.000Z",
-  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查東勢至大雪山林道50K管制鐵門前並原路折返；初版園區 waypoint 導入短距 footway，50K waypoint 越過 barrier=gate 後導入 track，均已移至一般道路側。最終 BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段。原始訊息另含8878公尺 highway=service，其中3930公尺為順向、4948公尺同時標示 reversedirection=yes；這些標籤未提供 surface，因此不據此推論鋪面，只以官方資料佐證大雪山林道的公開道路走廊與50K管制邊界。原始100公尺分析受陡峭山壁與溪谷 SRTM 短波影響，出現爬升5505公尺、最大持續坡度42.4%與25段主要爬坡；依50公里由約360公尺升至2600公尺、單向爬升約2240公尺的實騎摘要交叉檢核，改採500公尺平滑／200公尺坡度視窗後為爬升2506公尺、最大17.9%與連續單峰折返剖面。林業保育署現行資料列全線通行、50K禁止汽機車但自行車可自由進出，仍保守於鐵門前折返；雨後倒木、落石與臨時施工須出發前再查。官方管制：https://www.forest.gov.tw/0003303；實騎交叉依據：https://topmso-cycling.blogspot.com/2010/08/blog-post.html"
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查東勢至大雪山林道50K管制鐵門前並原路折返；初版園區 waypoint 導入短距 footway，50K waypoint 越過 barrier=gate 後導入 track，均已移至一般道路側。最終 BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段。原始訊息另含8878公尺 highway=service，其中3930公尺為順向、4948公尺同時標示 reversedirection=yes；這些標籤未提供 surface，因此不據此推論鋪面，只以官方資料佐證大雪山林道的公開道路走廊與50K管制邊界。原始100公尺分析受陡峭山壁與溪谷 SRTM 短波影響，出現爬升5505公尺、最大持續坡度42.4%與25段主要爬坡；依50公里由約360公尺升至2600公尺、單向爬升約2240公尺的實騎摘要交叉檢核，改採500公尺平滑／200公尺坡度視窗後為爬升2506公尺、最大17.9%與連續單峰折返剖面。林業保育署現行資料列全線通行、50K禁止汽機車但自行車可自由進出，仍保守於鐵門前折返；雨後倒木、落石與臨時施工須出發前再查。官方管制：https://www.forest.gov.tw/0003303；實騎交叉依據：https://topmso-cycling.blogspot.com/2010/08/blog-post.html",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 8879,
+      "segmentSha256": "d88df0a16ebe33e8dc61da5c5b60c13727ec1ae4642fe388fa4a403463d5184d",
+      "reason": "taichung-daxueshan 的 8878 公尺 service 路段已依受版控座標、way tags 與人工審查記錄逐段核對；指紋變更即失效，騎乘前仍須查核即時通阻。",
+      "referenceLabel": "路線人工審查記錄所列公開道路來源",
+      "referenceUrl": "https://www.forest.gov.tw/0003303"
+    }
+  ]
 }

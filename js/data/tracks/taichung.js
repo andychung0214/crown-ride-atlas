@@ -12,6 +12,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-28T04:22:58.809Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "7d1117998c9e7900713928b3e31f915044b071b2025467541dea2de74cc1ba0c",
+      "roadPolicyAuditSha256": "935495cb59c3ee943491445c5a5c878cd9f8a802c7889f6ae326fc2a6bfe62fa",
       "reviewedAt": "2026-07-28T04:23:33.171Z",
       "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查東門橋至市道136臺中／南投縣界前並原路折返；依臺中市觀光旅遊局「臺中市136線自行車道」官方路線確認主線，微調蝙蝠洞與縣界 waypoint 至市道中心線。BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段；海拔剖面連續且符合單峰折返，山區陡坡、狹彎及雨天風險仍須出發前確認。官方來源：https://travel.taichung.gov.tw/zh-tw/experience/cyclingtrip/12"
     },
@@ -11147,6 +11149,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-28T04:25:05.681Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "f8738fb9165fec597b2904be203af517d87d5e03a3cdcd088ed654139ebc22fc",
+      "roadPolicyAuditSha256": "ba493583aed7a341bcbde9e1212bd9f992176cca2803740ea5ee2136bda36410",
       "elevationAnalysis": {
         "smoothingWindowM": 500,
         "gradeWindowM": 200,
@@ -11154,8 +11158,8 @@
         "referenceUrl": "https://topmso-cycling.blogspot.com/2010/08/blog-post.html",
         "referenceLabel": "勇腳鐵馬社「大雪山林道」50 公里、高程 360 至 2600 公尺、單向爬升 2240 公尺騎乘摘要"
       },
-      "reviewedAt": "2026-07-28T04:29:00.000Z",
-      "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查東勢至大雪山林道50K管制鐵門前並原路折返；初版園區 waypoint 導入短距 footway，50K waypoint 越過 barrier=gate 後導入 track，均已移至一般道路側。最終 BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段。原始100公尺分析受陡峭山壁與溪谷 SRTM 短波影響，出現爬升5505公尺、最大持續坡度42.4%與25段主要爬坡；依50公里由約360公尺升至2600公尺、單向爬升約2240公尺的實騎摘要交叉檢核，改採500公尺平滑／200公尺坡度視窗後為爬升2506公尺、最大17.9%與連續單峰折返剖面。林業保育署現行資料列全線通行、50K禁止汽機車但自行車可自由進出，仍保守於鐵門前折返；雨後倒木、落石與臨時施工須出發前再查。官方管制：https://www.forest.gov.tw/0003303；實騎交叉依據：https://topmso-cycling.blogspot.com/2010/08/blog-post.html"
+      "reviewedAt": "2026-07-29T13:50:00.000Z",
+      "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查東勢至大雪山林道50K管制鐵門前並原路折返；初版園區 waypoint 導入短距 footway，50K waypoint 越過 barrier=gate 後導入 track，均已移至一般道路側。最終 BRouter 訊息無 footway、path、steps、track、私人或未鋪面路段。原始訊息另含8878公尺 highway=service，其中3930公尺為順向、4948公尺同時標示 reversedirection=yes；這些標籤未提供 surface，因此不據此推論鋪面，只以官方資料佐證大雪山林道的公開道路走廊與50K管制邊界。原始100公尺分析受陡峭山壁與溪谷 SRTM 短波影響，出現爬升5505公尺、最大持續坡度42.4%與25段主要爬坡；依50公里由約360公尺升至2600公尺、單向爬升約2240公尺的實騎摘要交叉檢核，改採500公尺平滑／200公尺坡度視窗後為爬升2506公尺、最大17.9%與連續單峰折返剖面。林業保育署現行資料列全線通行、50K禁止汽機車但自行車可自由進出，仍保守於鐵門前折返；雨後倒木、落石與臨時施工須出發前再查。官方管制：https://www.forest.gov.tw/0003303；實騎交叉依據：https://topmso-cycling.blogspot.com/2010/08/blog-post.html"
     },
     "waypoints": [
       {
@@ -45085,6 +45089,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-28T04:28:36.206Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "faf81374cf03a1890aebd04bf107dd009b7383d4712805e760714409f89fa393",
+      "roadPolicyAuditSha256": "38ea94bbfb467d552301df0e4532050361f549862a0a29b2a68236fc428eaebf",
       "reviewedAt": "2026-07-28T04:29:06.218Z",
       "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查大坑圓環、市道129中興嶺、新社區公所、新社花海與協中街後折返；初版東山路 waypoint 使 BRouter 繞入多段 service 道路，中興嶺點亦形成 service 支線，移除冗餘點並改至市道中心線後，最終訊息無 footway、path、steps、service、track、私人或未鋪面路段。海拔剖面連續，34.9公里、爬升588公尺與丘陵農路走向相符。官方路線以臺中觀旅「大坑東山路至中興嶺單車挑戰之旅」交叉核對；新社花海活動期間可能單行或改道，須以當屆公告為準。官方來源：https://travel.taichung.gov.tw/zh-tw/tourist/tour/1135"
     },

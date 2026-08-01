@@ -55,5 +55,16 @@
   ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-28T04:38:44.415Z",
-  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查大溪至下巴陵台7北橫公路並原路折返；折返點保留在雙向柏油 primary，不進上巴陵 service 道路，BRouter 訊息無隧道限制、footway、path、steps、私人或未鋪面路段。"
+  "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查大溪至下巴陵台7北橫公路並原路折返；折返點保留在雙向柏油 primary，不進上巴陵 service 道路，BRouter 訊息無隧道限制、footway、path、steps、私人或未鋪面路段。",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "construction",
+      "maximumDistanceM": 197,
+      "segmentSha256": "d0b57d7680ab0d42a84a3ac3f3f2f652899516fe58ee8f3aaa5053919d03ba29",
+      "reason": "精確段落位於 24.741981,121.344807、合計 196 公尺，已由受版控座標、way tags 與 segmentSha256 鎖定；公路局 2026-07-12 公告台7線羅浮至巴陵 22K+800–46K+400 已解除封閉。路線止於下巴陵、不進 47K 後目前另有管制的巴陵至西村段；實騎前仍須重新查核 168 與現場標誌。",
+      "referenceLabel": "公路局台7線羅浮至巴陵解除封閉公告（2026-07-12）",
+      "referenceUrl": "https://www.thb.gov.tw/News_Content_Table.aspx?n=7839&s=301731&sms=13275"
+    }
+  ]
 }

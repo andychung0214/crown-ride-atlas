@@ -12,6 +12,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-28T06:25:56.011Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "7080f913911ab40b5762d7867bf38cfa0400548ff2e86c66d44ef7491dec4b6d",
+      "roadPolicyAuditSha256": "9d6d8ad5792ad3943c6d4b5c220cd3cd7ddb43e792a2fff2cf975a6b65eb69d8",
       "elevationAnalysis": {
         "smoothingWindowM": 500,
         "gradeWindowM": 200,
@@ -32538,6 +32540,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-29T12:52:54.999Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "2795161886f08ac7f57c2c00bef3711201c4786818c80d4e8c05249711bb9e36",
+      "roadPolicyAuditSha256": "e64b607fede572afb4ed86c65da013060ce2e717adbc25ba8920c732a118f469",
       "reviewedAt": "2026-07-29T12:53:25.072Z",
       "reviewerNote": "已以Leaflet／OpenStreetMap逐段覆核。古坑綠色隧道定位由公園內步道移至台3旁聯外道路，並移除會迫使軌跡穿越266公尺path及80公尺track的地母廟景點點位；荷苞山桐花公園定位保留在園外正式道路，未進入公園步道。華山休閒農業區只走BRouter可辨識的secondary／tertiary／unclassified正式道路，未使用華山步道群、小天梯、情人橋或咖啡園私人道路；全線無private、access禁制、footway、path或track。道路例外為古坑綠色隧道聯外道路往返各136公尺highway=service、斗六149甲端599公尺一般service，以及雲科大周邊149公尺asphalt service與396公尺校園聯外service，均無bicycle／private／access禁制。官方『挑戰雲東 台3林徑』證實斗六市區、古坑綠色隧道、華山休閒農業區及荷苞公園可組成自行車環線；本軌跡採可確認道路權限的34.3公里內環，不冒充活動50公里原始賽道，也未匯入外部GPX。來源：https://tour.yunlin.gov.tw/main/modules/MySpace/index.php?xmlid=1038173；華山區域來源：https://tour.yunlin.gov.tw/main/modules/MySpace/index.php?xmlid=1036890。預設100／100公尺海拔分析為爬升413.4公尺、最高397.8公尺、最大持續坡度12.6%，坡形連續且無側坡假峰，故不套用自訂視窗。"
     },
@@ -39126,6 +39130,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-29T13:24:08.494Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "7eafa8f74409a06ceacd72433a65d3234e4cf48af3163deacfec9431fadf5c71",
+      "roadPolicyAuditSha256": "73624dd5beb61daf9a65be038ed52f55b4581a5a55d3cc21a4b16137aca9effc",
       "elevationAnalysis": {
         "smoothingWindowM": 500,
         "gradeWindowM": 200,

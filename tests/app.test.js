@@ -126,6 +126,63 @@ function bootWithInteractiveTrack(track, onMapMount) {
   vm.runInNewContext(appSource, { window: root, Blob: class Blob {} });
 }
 
+function bootRouteArtPreview(trackByRouteId, onMapMount) {
+  const routes = Object.keys(trackByRouteId).map(id => ({ id, name: id, trackRef: id }));
+  const mapElements = routes.map(route => ({
+    dataset: { routeMap: route.id },
+    setAttribute() {}
+  }));
+  const rootElement = {
+    querySelectorAll(selector) {
+      return selector === "[data-route-map]" ? mapElements : [];
+    },
+    querySelector() { return null; },
+    contains(element) { return mapElements.includes(element); }
+  };
+  const root = {
+    location: { hash: "#/route-art" },
+    history: { replaceState() {} },
+    localStorage: { getItem() { return null; }, setItem() {} },
+    requestAnimationFrame(callback) { callback(); },
+    setTimeout,
+    URL: { createObjectURL() { return "blob:test"; }, revokeObjectURL() {} },
+    document: {
+      readyState: "complete",
+      documentElement: {},
+      baseURI: "http://localhost/",
+      getElementById() { return rootElement; },
+      createElement() { return { className: "", textContent: "" }; },
+      body: { append() {} }
+    },
+    addEventListener() {},
+    CrownRideAtlas: {
+      Data: { routes, regions: [], challenges: [], routeArt: routes.map(route => ({ routeId: route.id })) },
+      Filter: { apply(items) { return items; } },
+      Router: { parseHash() { return { page: "route-art", params: {} }; } },
+      Theme: { loadTheme() { return "yellow"; }, applyTheme(theme) { return theme; } },
+      Geo: {}, Gpx: {}, ImageTools: {}, Editor: {}, TrackRegistry: {}, TrackManifest: {}, TrackAnalysis,
+      Store: { create() { return { list() { return routes; } }; } },
+      TrackLoader: {
+        create() {
+          return {
+            load: async routeId => trackByRouteId[routeId],
+            clear() {}
+          };
+        }
+      },
+      MapView: {
+        mount(element, route) {
+          onMapMount(element, route);
+          return { destroy() {} };
+        }
+      },
+      Render: { pageTitle() { return "測試"; }, mount() { return { main: { focus() {} } }; } }
+    }
+  };
+
+  vm.runInNewContext(appSource, { window: root, Blob: class Blob {} });
+}
+
 for (const coordinates of [[], [{ lat: 25, lng: 121, ele: 12 }]]) {
   test(`app 將 ${coordinates.length} 點 loader 回應轉為 retryable error`, async () => {
     const snapshots = bootWithTrack({ routeId: "r1", coordinates });
@@ -198,4 +255,23 @@ test("已完成分析的內建軌跡經 App 與海拔掛載不會再次分析", 
   } finally {
     TrackAnalysis.analyzeCoordinates = originalAnalyze;
   }
+});
+
+test("路線美學總覽會載入每條 trackRef 並掛載六張真實軌跡預覽", async () => {
+  const tracks = Object.fromEntries(Array.from({ length: 6 }, (_, index) => {
+    const routeId = `art-${index + 1}`;
+    return [routeId, {
+      routeId,
+      coordinates: [
+        { lat: 25 + index * 0.01, lng: 121, ele: 10 },
+        { lat: 25.001 + index * 0.01, lng: 121.001, ele: 20 }
+      ]
+    }];
+  }));
+  const mountedRouteIds = [];
+
+  bootRouteArtPreview(tracks, (_element, route) => mountedRouteIds.push(route.id));
+  await new Promise(resolve => setTimeout(resolve, 0));
+
+  assert.deepEqual(mountedRouteIds.sort(), Object.keys(tracks).sort());
 });

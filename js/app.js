@@ -55,6 +55,7 @@
       routeArt: app.Data.routeArt
     };
     let interactiveHandles = [];
+    let interactiveGeneration = 0;
     let hasRendered = false;
     let trackRequestId = 0;
     const trackLoader = app.TrackLoader.create({
@@ -93,6 +94,7 @@
     }
 
     function clearInteractiveViews() {
+      interactiveGeneration += 1;
       interactiveHandles.forEach(handle => handle.destroy());
       interactiveHandles = [];
     }
@@ -118,12 +120,42 @@
     }
 
     function mountInteractiveViews() {
+      const generation = interactiveGeneration;
       rootElement.querySelectorAll("[data-route-map]").forEach(element => {
         const route = hydratedRoute(state.allRoutes.find(item => item.id === element.dataset.routeMap));
-        if (!route || !Array.isArray(route.coordinates) || route.coordinates.length < 2) return;
-        const handle = app.MapView.mount(element, route);
-        interactiveHandles.push(handle);
-        element.setAttribute("aria-busy", "false");
+        if (!route) return;
+        if (hasUsableCoordinates(route.coordinates)) {
+          const handle = app.MapView.mount(element, route);
+          interactiveHandles.push(handle);
+          element.setAttribute("aria-busy", "false");
+          return;
+        }
+        if (state.routeInfo.page !== "route-art" || !route.trackRef) return;
+        element.setAttribute("aria-busy", "true");
+        trackLoader.load(route.trackRef).then(track => {
+          if (
+            generation !== interactiveGeneration ||
+            (typeof rootElement.contains === "function" && !rootElement.contains(element))
+          ) return;
+          if (!hasUsableCoordinates(track && track.coordinates)) {
+            throw new Error("路線軌跡至少需要兩個有效座標。");
+          }
+          const hydratedTrack = app.TrackAnalysis && typeof app.TrackAnalysis.hydrateTrack === "function"
+            ? app.TrackAnalysis.hydrateTrack(track)
+            : track;
+          const previewRoute = Object.assign({}, route, {
+            coordinates: hydratedTrack.coordinates,
+            waypoints: Array.isArray(hydratedTrack.waypoints) ? hydratedTrack.waypoints : route.waypoints,
+            track: hydratedTrack
+          });
+          const handle = app.MapView.mount(element, previewRoute);
+          interactiveHandles.push(handle);
+          element.setAttribute("aria-busy", "false");
+        }).catch(() => {
+          if (generation !== interactiveGeneration) return;
+          element.setAttribute("aria-busy", "false");
+          element.textContent = "路線預覽暫時無法載入。";
+        });
       });
       rootElement.querySelectorAll("[data-elevation]").forEach(element => {
         const route = hydratedRoute(state.allRoutes.find(item => item.id === element.dataset.elevation));

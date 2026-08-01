@@ -36,5 +36,16 @@
   ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-29T13:50:00.000Z",
-  "reviewerNote": "2026-07-29 重新稽核：舊潮境 waypoint 使 BRouter 在25.142573,121.802562逆行27公尺 `highway=service oneway=yes`；已將地標移至潮境公園入口北寧路並重產。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、footway、path、track、steps、private、access禁制或bicycle=no；Leaflet 疊圖顯示忠一路、正濱路、和一路、北寧路與港區聯外道路連續，海拔剖面為19.6公里、爬升228公尺。"
+  "reviewerNote": "2026-07-29 重新稽核：舊潮境 waypoint 使 BRouter 在25.142573,121.802562逆行27公尺 `highway=service oneway=yes`；已將地標移至潮境公園入口北寧路並重產。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、footway、path、track、steps、private、access禁制或bicycle=no；Leaflet 疊圖顯示忠一路、正濱路、和一路、北寧路與港區聯外道路連續，海拔剖面為19.6公里、爬升228公尺。",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 1924,
+      "segmentSha256": "0d559fee8db97e592cdc35eada42be17d8abf615bb7f9e7b1e0c2fa1a39b87fe",
+      "reason": "精確段落範圍 25.139680,121.752945–25.158765,121.786130、合計 1923 公尺，已由受版控座標、way tags 與 segmentSha256 鎖定；官方資料將對應路廊列為公開自行車路線或一般鋪面道路。實騎前仍須查核即時通阻與現場標誌。",
+      "referenceLabel": "基隆市國土計畫沿海港區自行車路廊",
+      "referenceUrl": "https://www.nlma.gov.tw/uploads/files/502a8cfae3758a2bc377f43b58b204b6.pdf"
+    }
+  ]
 }

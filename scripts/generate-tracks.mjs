@@ -51,6 +51,14 @@ const TEMPORARY_NETWORK_CODES = new Set([
 ]);
 const DEFAULT_PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SAFE_IDENTIFIER = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const BICYCLE_ALLOWED_VALUES = new Set(["yes", "designated", "permissive"]);
+const HARD_FORBIDDEN_HIGHWAYS = new Set(["motorway", "motorway_link", "steps"]);
+const CONDITIONAL_HIGHWAYS = new Set([
+  "construction", "footway", "pedestrian", "path", "service", "track"
+]);
+const ROAD_BIKE_SURFACES = new Set(["asphalt", "paved", "concrete"]);
+const FORBIDDEN_ACCESS_VALUES = new Set(["no", "private", "destination"]);
+const FORBIDDEN_BICYCLE_VALUES = new Set(["no", "private"]);
 
 export function assertSafeIdentifier(value, label) {
   if (typeof value !== "string" || !SAFE_IDENTIFIER.test(value)) {
@@ -147,6 +155,118 @@ export function findUnsafeReverseOnewaySegments(payload) {
       wayTags: wayTagsText
     }];
   });
+}
+
+function roadPolicyViolation(wayTags) {
+  const bicycleAllowed = BICYCLE_ALLOWED_VALUES.has(wayTags.get("bicycle"));
+  const highway = wayTags.get("highway");
+  if (FORBIDDEN_BICYCLE_VALUES.has(wayTags.get("bicycle"))) {
+    return { rule: "bicycle", value: wayTags.get("bicycle") };
+  }
+  if (wayTags.get("route") === "ferry") return { rule: "route", value: "ferry" };
+  if (HARD_FORBIDDEN_HIGHWAYS.has(highway)) return { rule: "highway", value: highway };
+  if (FORBIDDEN_ACCESS_VALUES.has(wayTags.get("access")) && !bicycleAllowed) {
+    return { rule: "access", value: wayTags.get("access") };
+  }
+  if (!CONDITIONAL_HIGHWAYS.has(highway)) return null;
+  if (!new Set(["construction", "service"]).has(highway) && bicycleAllowed) return null;
+  if (highway === "track"
+    && (ROAD_BIKE_SURFACES.has(wayTags.get("surface")) || wayTags.get("tracktype") === "grade1")) {
+    return null;
+  }
+  return { rule: "conditional-highway", value: highway };
+}
+
+export function auditBrouterRoadPolicy(payload, exceptions = []) {
+  const feature = lineStringFeature(payload);
+  const messages = feature && feature.properties && feature.properties.messages;
+  if (!Array.isArray(messages) || !Array.isArray(messages[0])) {
+    const segments = [];
+    return {
+      messageRows: 0,
+      rawGeometrySha256: rawGeometryFingerprint(payload),
+      roadPolicyAuditSha256: roadPolicyAuditFingerprint(segments),
+      segments,
+      violations: []
+    };
+  }
+  const fieldIndexes = new Map(messages[0].map((field, index) => [field, index]));
+  const longitudeIndex = fieldIndexes.get("Longitude");
+  const latitudeIndex = fieldIndexes.get("Latitude");
+  const distanceIndex = fieldIndexes.get("Distance");
+  const wayTagsIndex = fieldIndexes.get("WayTags");
+  if ([longitudeIndex, latitudeIndex, distanceIndex, wayTagsIndex]
+    .some(index => !Number.isInteger(index))) {
+    const segments = [];
+    return {
+      messageRows: 0,
+      rawGeometrySha256: rawGeometryFingerprint(payload),
+      roadPolicyAuditSha256: roadPolicyAuditFingerprint(segments),
+      segments,
+      violations: []
+    };
+  }
+
+  const segments = messages.slice(1).flatMap(message => (
+    Array.isArray(message) ? [[
+      Number(message[longitudeIndex]),
+      Number(message[latitudeIndex]),
+      Number(message[distanceIndex]),
+      String(message[wayTagsIndex] || "")
+    ]] : []
+  ));
+  const candidates = segments.flatMap(segment => {
+    const [longitude, latitude, distanceM, wayTagsText] = segment;
+    const violation = roadPolicyViolation(parseWayTags(wayTagsText));
+    if (!violation) return [];
+    return [{
+      ...violation,
+      segment,
+      lat: latitude / 1_000_000,
+      lng: longitude / 1_000_000,
+      distanceM,
+      wayTags: wayTagsText
+    }];
+  });
+  const exceptionUsage = new Map();
+  const candidateFingerprints = new Map();
+  for (const candidate of candidates) {
+    const key = `${candidate.rule}:${candidate.value}`;
+    if (!candidateFingerprints.has(key)) {
+      candidateFingerprints.set(key, roadPolicyAuditFingerprint(
+        candidates.filter(item => `${item.rule}:${item.value}` === key).map(item => item.segment)
+      ));
+    }
+  }
+  const violations = candidates.filter(candidate => {
+    const exception = exceptions.find(item => (
+      item.rule === candidate.rule
+      && item.value === candidate.value
+      && item.segmentSha256 === candidateFingerprints.get(`${candidate.rule}:${candidate.value}`)
+    ));
+    if (!exception) return true;
+    const key = `${exception.rule}:${exception.value}`;
+    const usedDistanceM = (exceptionUsage.get(key) || 0) + Math.max(0, candidate.distanceM || 0);
+    exceptionUsage.set(key, usedDistanceM);
+    return usedDistanceM > exception.maximumDistanceM;
+  });
+  return {
+    messageRows: segments.length,
+    rawGeometrySha256: rawGeometryFingerprint(payload),
+    roadPolicyAuditSha256: roadPolicyAuditFingerprint(segments),
+    segments,
+    violations
+  };
+}
+
+export function rawGeometryFingerprint(payload) {
+  const feature = lineStringFeature(payload);
+  const coordinates = feature && feature.geometry && feature.geometry.coordinates;
+  return createHash("sha256").update(JSON.stringify(coordinates || null)).digest("hex");
+}
+
+function roadPolicyAuditFingerprint(segments) {
+  return createHash("sha256").update(JSON.stringify(segments)).digest("hex");
 }
 
 export function parseBrouterFeature(payload) {
@@ -598,6 +718,25 @@ export function resampleTrack(points, intervalM = DEFAULT_RESAMPLE_INTERVAL_M, d
 }
 
 export function buildTrack(payload, options = {}) {
+  let seed = null;
+  if (options.routeId || options.seed) {
+    if (!options.routeId || !options.seed) {
+      throw new TypeError("正式軌跡必須同時提供 routeId 與人工 seed。");
+    }
+    seed = validateTrackSeed(options.seed, options.routeId);
+  }
+  const roadAudit = auditBrouterRoadPolicy(payload, seed ? seed.roadPolicyExceptions : []);
+  if (seed && roadAudit.messageRows === 0) {
+    throw new Error(`路線 ${options.routeId} 缺少可稽核的道路訊息。`);
+  }
+  if (roadAudit.violations.length > 0) {
+    const routeLabel = options.routeId ? `路線 ${options.routeId}` : "BRouter 軌跡";
+    const segmentList = roadAudit.violations.map(segment => (
+      `${segment.lat.toFixed(6)},${segment.lng.toFixed(6)}`
+      + ` · ${segment.distanceM}m · ${segment.wayTags}`
+    )).join("\n");
+    throw new Error(`${routeLabel}違反公路車道路政策：\n${segmentList}`);
+  }
   const unsafeReverseOnewaySegments = findUnsafeReverseOnewaySegments(payload);
   if (unsafeReverseOnewaySegments.length > 0) {
     const routeLabel = options.routeId ? `路線 ${options.routeId}` : "BRouter 軌跡";
@@ -622,10 +761,6 @@ export function buildTrack(payload, options = {}) {
   if (!options.routeId && !options.seed) {
     return analyzeCoordinates(coordinates, options.analysis);
   }
-  if (!options.routeId || !options.seed) {
-    throw new TypeError("正式軌跡必須同時提供 routeId 與人工 seed。");
-  }
-  const seed = validateTrackSeed(options.seed, options.routeId);
   const elevationAnalysis = validateElevationAnalysis(seed.elevationAnalysis, options.routeId);
   const analysis = analyzeCoordinates(coordinates, elevationAnalysis || options.analysis);
   const generatedAt = validIsoTimestamp(options.generatedAt, "資料產生時間");
@@ -635,7 +770,9 @@ export function buildTrack(payload, options = {}) {
     elevation: BROUTER_ELEVATION,
     samplingNote: TRACK_SAMPLING_NOTE,
     generatedAt,
-    reviewStatus: seed.reviewStatus
+    reviewStatus: seed.reviewStatus,
+    rawGeometrySha256: roadAudit.rawGeometrySha256,
+    roadPolicyAuditSha256: roadAudit.roadPolicyAuditSha256
   };
   if (elevationAnalysis) source.elevationAnalysis = elevationAnalysis;
   if (seed.reviewedAt) source.reviewedAt = seed.reviewedAt;
@@ -792,6 +929,40 @@ export function validateTrackSeed(seed, routeId) {
     if (typeof seed.reviewerNote !== "string" || !seed.reviewerNote.trim()) {
       throw new TypeError(`${routeId} 已審查路線缺少 reviewerNote。`);
     }
+  }
+  if (seed.roadPolicyExceptions !== undefined) {
+    if (!Array.isArray(seed.roadPolicyExceptions)) {
+      throw new TypeError(`${routeId} 道路政策例外格式無效。`);
+    }
+    const seenExceptions = new Set();
+    seed.roadPolicyExceptions.forEach((exception, index) => {
+      const label = `${routeId} 第 ${index + 1} 個道路政策例外`;
+      const key = `${exception && exception.rule}:${exception && exception.value}`;
+      if (!exception || exception.rule !== "conditional-highway"
+        || !CONDITIONAL_HIGHWAYS.has(exception.value)) {
+        throw new TypeError(`${label}規則無效。`);
+      }
+      if (seenExceptions.has(key)) throw new TypeError(`${label}規則重複。`);
+      seenExceptions.add(key);
+      if (!Number.isFinite(exception.maximumDistanceM) || exception.maximumDistanceM <= 0) {
+        throw new TypeError(`${label}距離上限無效。`);
+      }
+      if (typeof exception.segmentSha256 !== "string"
+        || !/^[a-f0-9]{64}$/.test(exception.segmentSha256)) {
+        throw new TypeError(`${label}路段指紋無效。`);
+      }
+      if (typeof exception.reason !== "string" || !exception.reason.trim()
+        || typeof exception.referenceLabel !== "string" || !exception.referenceLabel.trim()) {
+        throw new TypeError(`${label}缺少理由或來源名稱。`);
+      }
+      let referenceUrl;
+      try {
+        referenceUrl = new URL(exception.referenceUrl);
+      } catch {
+        throw new TypeError(`${label}來源網址無效。`);
+      }
+      if (referenceUrl.protocol !== "https:") throw new TypeError(`${label}來源網址必須使用 HTTPS。`);
+    });
   }
   return seed;
 }
@@ -1054,8 +1225,10 @@ export async function runCli(argv, options = {}) {
   const seedDirectory = path.join(projectRoot, "tools", "route-data", "seeds");
   const stagingDirectory = path.join(projectRoot, "tools", "route-data", ".staging");
   const publishedDirectory = path.join(projectRoot, "js", "data", "tracks");
+  const roadAuditPath = path.join(projectRoot, "tools", "route-data", "road-audit.json");
   const client = createBrouterClient(options);
   const generatedByBundle = new Map();
+  const generatedRoadAudits = {};
 
   for (const route of selectedRoutes) {
     const routeId = route.trackRef || route.id;
@@ -1088,6 +1261,15 @@ export async function runCli(argv, options = {}) {
       ? cacheEntry.generatedAt || new Date(0).toISOString()
       : new Date((options.now || Date.now)()).toISOString();
     const track = buildTrack(payload, { routeId, seed, generatedAt });
+    const roadAudit = auditBrouterRoadPolicy(payload, seed.roadPolicyExceptions || []);
+    generatedRoadAudits[routeId] = {
+      requestFingerprint: fingerprint,
+      rawGeometrySha256: roadAudit.rawGeometrySha256,
+      generatedAt,
+      messageRows: roadAudit.messageRows,
+      rawGeometry: lineStringFeature(payload).geometry.coordinates,
+      segments: roadAudit.segments
+    };
     if (!cacheHit || needsCacheUpgrade) {
       await atomicWrite(cachePath, `${JSON.stringify({
         version: 3,
@@ -1110,8 +1292,11 @@ export async function runCli(argv, options = {}) {
     const existingTracks = existingSource
       ? validator.parseBundleSource(bundleId, existingSource)
       : {};
+    const retainedTracks = Object.fromEntries(Object.entries(existingTracks).filter(
+      ([routeId]) => manifest[routeId] && manifest[routeId].bundleId === bundleId
+    ));
     bundleSources.set(bundleId, serializeBundle(bundleId, {
-      ...existingTracks,
+      ...retainedTracks,
       ...generatedTracks
     }));
   }
@@ -1138,6 +1323,17 @@ export async function runCli(argv, options = {}) {
       publishedDirectory,
       validateBatch
     });
+    const existingRoadAudit = await readJsonIfExists(roadAuditPath);
+    const existingRoutesAudit = (existingRoadAudit && existingRoadAudit.routes) || {};
+    const routesAudit = Object.fromEntries(Object.keys(manifest).flatMap(routeId => {
+      const entry = generatedRoadAudits[routeId] || existingRoutesAudit[routeId];
+      return entry ? [[routeId, entry]] : [];
+    }));
+    await atomicWrite(roadAuditPath, `${JSON.stringify({
+      schemaVersion: 2,
+      policyVersion: 1,
+      routes: routesAudit
+    }, null, 2)}\n`);
   }
 
   return {

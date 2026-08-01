@@ -48,5 +48,16 @@
   ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-29T13:50:00.000Z",
-  "reviewerNote": "2026-07-29 重新稽核：舊康莊路強制 waypoint 使 BRouter 在24.827953,121.267477逆行27公尺 `highway=primary oneway=yes cycleway:right=shared_lane`；shared_lane不是自行車逆向例外，已刪除該冗餘點並依合法方向重產。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、footway、path、track、steps、private、access禁制或bicycle=no；Leaflet依桃園官方環湖騎乘走廊連接龍潭、坪林環湖路、三民、大溪與慈湖路，為49.0公里、爬升928公尺。坪林入口gate仍須依園區開放時間與現場規定。"
+  "reviewerNote": "2026-07-29 重新稽核：舊康莊路強制 waypoint 使 BRouter 在24.827953,121.267477逆行27公尺 `highway=primary oneway=yes cycleway:right=shared_lane`；shared_lane不是自行車逆向例外，已刪除該冗餘點並依合法方向重產。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、footway、path、track、steps、private、access禁制或bicycle=no；Leaflet依桃園官方環湖騎乘走廊連接龍潭、坪林環湖路、三民、大溪與慈湖路，為49.0公里、爬升928公尺。坪林入口gate仍須依園區開放時間與現場規定。",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 983,
+      "segmentSha256": "0f54e769a5c563c527dc54e73fac801678cc8c379e75b12dcabd9eb5b012d1b5",
+      "reason": "精確段落範圍 24.820732,121.239461–24.883853,121.265907、合計 982 公尺，已由受版控座標、way tags 與 segmentSha256 鎖定；官方資料將對應路廊列為公開自行車路線或一般鋪面道路。實騎前仍須查核即時通阻與現場標誌。",
+      "referenceLabel": "桃園市政府石門水庫環湖自行車道",
+      "referenceUrl": "https://travel.tycg.gov.tw/zh-tw/travel/cycling-tours/route6"
+    }
+  ]
 }

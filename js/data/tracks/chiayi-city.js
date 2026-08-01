@@ -12,6 +12,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-29T14:02:07.388Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "ff5feb6e96eae261cc743f9a23db00d6037b50a0a96ce6f310962c34fa887e4a",
+      "roadPolicyAuditSha256": "55c5fd8586f17f0e89f9d1e4017dd2eb137a060a969eba1e372c1fb09c1a4332",
       "reviewedAt": "2026-07-29T14:18:29.613Z",
       "reviewerNote": "將嘉義公園起終點、月影潭心與音樂噴泉人行區、彌陀路停車支線等研究點逐一移到一般道路側後重產；最終 raw messages 無 motorway、trunk、motorroad、footway、path、steps、track、service、private、access 禁制或 bicycle=no。單行道標記共 1405 公尺，精確分組為 1379 公尺 `highway=tertiary surface=asphalt oneway=yes` 與 26 公尺同標記且 estimated_traffic_class=4，皆為順向，無 `reversedirection=yes` 與 `oneway=yes` 同段。Leaflet 疊圖確認公園街、大雅路、小雅路、環潭公路、彌陀路與啟明路連續；9.0 公里、爬升 99 公尺、最大持續坡度 5.1%。嘉義市官方將小雅路與環潭公路列入自行車活動路線，大型活動仍可能實施交通管制：https://website.ncyu.edu.tw/admission/Subject/Detail/242408?nodeId=34504"
     },
@@ -1940,6 +1942,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-29T14:07:39.214Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "8b64b24b826c8c3838cdcb77020d5e80547d6ca968e30b856817698b99217b1c",
+      "roadPolicyAuditSha256": "b17d8d748d5319fb26d8ef7499161859943d5b9c7ca6652e17591c97b904a7a0",
       "reviewedAt": "2026-07-29T14:18:29.613Z",
       "reviewerNote": "將嘉義火車站前廣場、東市場內部、昭和十八停車區、檜意森活村、北門驛與博物館人行區等研究點移到一般道路側，並排除站前 11 公尺逆向單行道後重產；最終 raw messages 無 motorway、trunk、motorroad、pedestrian、footway、path、steps、track、service、private、access 禁制或 bicycle=no。單行道共 815 公尺，精確分組為 403 公尺 residential、248 公尺 secondary 且 route_bicycle_ncn=yes、127 公尺 tertiary 圓環及 37 公尺 tertiary，皆為順向，無 `reversedirection=yes` 與 `oneway=yes` 同段。Leaflet 疊圖確認中山路、民族路、公明路、林森東／西路及共和路外圍道路連續；6.4 公里、爬升 17 公尺、最大持續坡度 3.0%。文化路徒步區於管制時段禁止自行車，本軌跡未進入該徒步區：https://economic.chiayi.gov.tw/News_Content.aspx?n=4&s=917359"
     },
@@ -3320,6 +3324,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-29T14:17:32.469Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "ba296a3216996f142f0447477f379ae39a33812f118bbc518367680c39ea6257",
+      "roadPolicyAuditSha256": "5d3e022c1fde29a124be1c63adf76a37575aa6410bf8eb7cdf7225e2b05f4d5c",
       "reviewedAt": "2026-07-29T14:18:29.613Z",
       "reviewerNote": "研究座標曾導入 2203、1341、6 公尺 track、仁義潭壩體 footway 與番路／吳鳳廟服務道路，均未獲准；改為蘭潭南岸環潭公路、仁義潭南側嘉127潭情路公共道路、潭情路西端折返與台18觸口道路側的清楚雙潭公路串聯。最終 raw messages 無 motorway、trunk、motorroad、footway、path、steps、track、service、private、access 禁制或 bicycle=no；單行道精確為 3842 公尺 `highway=primary surface=asphalt oneway=yes` 與 92 公尺 tertiary 圓環，皆為順向，無 `reversedirection=yes` 與 `oneway=yes` 同段。Leaflet 疊圖確認環潭公路、嘉127潭情路外圍道路及台18連續，未進水庫壩體管理道路、遊客中心人行區或大學校內；29.1 公里、爬升 286 公尺、最大持續坡度 11.4%。仁義潭官方景點資料：https://www.taiwan.net.tw/m1.aspx?id=r37&sno=0001116；蘭潭—仁義潭自行車活動與交管：https://website.ncyu.edu.tw/admission/Subject/Detail/242408?nodeId=34504"
     },

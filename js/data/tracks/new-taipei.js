@@ -12,6 +12,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-26T08:48:49.382Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "5876cc0a657cc29cbe8ddc27ece9a0144105890bfb1465c796321fb2c2605eba",
+      "roadPolicyAuditSha256": "ce3717a00655a825475a7cabb840233d0afe79a7be03ee0ade3d03a93e70aa89",
       "reviewedAt": "2026-07-28T04:38:44.415Z",
       "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查第一峰仰德大道至陽金公路、第二峰金山經大坪產業道路至風櫃嘴、第三峰至善路和平菁街至冷水坑；BRouter 訊息無 footway、path、steps、私人或未鋪面路段。"
     },
@@ -20251,6 +20253,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-26T08:48:49.860Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "1d764f2f4fc67da286540db600eb9bc4419832fffcf1824245fe4bb073a28f02",
+      "roadPolicyAuditSha256": "16cc194d466c62645030e7707a6e5f0b505d7ffe4ddc470bcaedd3f89b5fcec7",
       "reviewedAt": "2026-07-28T04:38:44.415Z",
       "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查紅樹林沿台2淡金公路經淺水灣、白沙灣至富基村並原路返回；BRouter 訊息無 footway、path、steps、私人或未鋪面路段。"
     },
@@ -27735,6 +27739,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-26T08:50:12.235Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "4fc8b82103c3ffe2889c582fafb08896cce15760a7c159c5d45a83ae5b42da34",
+      "roadPolicyAuditSha256": "1b86fdabafa906ff9ff4bbd0ae91db534576d23b6eb309be339ee23f698c56eb",
       "reviewedAt": "2026-07-28T04:38:44.415Z",
       "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查雙溪沿102瑞雙公路經不厭亭、九份、瑞芳，再接106靜安路與台2丙基福公路返回雙溪；BRouter 訊息無 footway、path、steps、私人或未鋪面路段。"
     },

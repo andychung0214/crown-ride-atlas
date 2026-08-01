@@ -1,0 +1,45 @@
+{
+  "id": "hsinchu-city-gangnan-morning",
+  "direction": "loop",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "新竹漁港南側自行車道口",
+      "lat": 24.842868,
+      "lng": 120.923192,
+      "role": "start"
+    },
+    {
+      "name": "港南運河公園",
+      "lat": 24.82231,
+      "lng": 120.91052,
+      "role": "via"
+    },
+    {
+      "name": "金城湖",
+      "lat": 24.811521,
+      "lng": 120.911249,
+      "role": "via"
+    },
+    {
+      "name": "新竹漁港南側自行車道口",
+      "lat": 24.842868,
+      "lng": 120.923192,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T07:06:54.658Z",
+  "reviewerNote": "原十八尖山方案因 3.038 公里分散 service 段缺乏逐段公開騎乘證據而撤回；本 ID 改為港南晨光短線，只走新竹市政府官方 17 公里海岸自行車道路廊，由新竹漁港至港南運河、金城湖後返回。受版控例外範圍完全落在官方路廊內，無 path、steps、私人或權限禁制。",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 3590,
+      "segmentSha256": "5ebdafa244e0fbdddb2f38e3a7f4a1b87fc1e3f96977fcf1475346f91534b669",
+      "reason": "精確段落位於 24.811175–24.830143、120.910513–120.919758，合計 3589 公尺；整段位於新竹市政府明列的 17 公里海岸自行車道新竹漁港—港南—金城湖路廊，並由 segmentSha256 鎖定。",
+      "referenceLabel": "新竹市政府 17 公里海岸自行車道",
+      "referenceUrl": "https://ssw.hccg.gov.tw/viewpoint/14"
+    }
+  ]
+}

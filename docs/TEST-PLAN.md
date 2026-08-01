@@ -9,6 +9,7 @@
 | 路線資料契約 | 執行 `npm test`，檢查地區、路線、挑戰、路線美學與識別碼 | 22 地區、至少 60 條路線、8 項挑戰與 6 組路線美學均有效且可互相參照 |
 | 離島與路線美學軌跡 | 執行 `node --test tests/task11-islands-art.test.js` 與四個 bundle validator | 15 條 seed 均 approved，軌跡留在各自島嶼，重採樣相鄰點不超過 80.5 公尺 |
 | 全站正式軌跡資料 | 執行 `node --test tests/track-data.test.js` | 66 條地區路線加 6 條路線美學共 72 條；全數人工核准，經緯度、海拔與累積距離為有限數值且距離不倒退 |
+| 全站道路政策稽核 | 執行 `node --test tests/road-policy-audit.test.js` | 受版控原始幾何與 waytags 可完整重建 72 條路線；幾何與稽核 SHA-256 同時綁定正式 bundle，未核准違規為 0 |
 | 搜尋、篩選與排序 | 以名稱、地區、標籤、難度、距離與爬升測試純函式 | 結果正確，排序不修改來源陣列 |
 | Hash 路由 | 測試首頁、固定頁、地區、路線與錯誤編碼 | 正確解析參數，未知網址回傳找不到頁 |
 | 地理運算 | 測試 Haversine 距離、總距離與 SVG 座標正規化 | 距離落在合理範圍，無效座標不污染結果 |
@@ -34,7 +35,7 @@
 
 ## Live OpenStreetMap 幾何審查流程
 
-1. 先掃描 BRouter raw messages，將 `service`、`track`、`footway`、`path`、`steps`、施工道路與權限禁制列為拒絕項目；不得以「路由快照過舊」直接核准。
+1. 先掃描 BRouter raw messages，將 `service`、`track`、`footway`、`path`、`steps`、施工道路與權限禁制列為拒絕項目；不得以「路由快照過舊」直接核准。任何例外都必須綁定該批路段座標、距離與 waytags 的 SHA-256，路段一變即失效。
 2. 以風險訊息的座標與長度定位 GPX 的正確出現位置。往返路線可能有重複座標，必須依前後軌跡與方向選對去程或回程，不可只取第一個座標。
 3. 對問題段建立足以涵蓋整段折線的 bbox，請求 live OSM `/api/0.6/map?bbox=<west,south,east,north>`。不可只看 way 頁面的首尾節點，因為端點相接不代表中間幾何沿同一條道路。
 4. XML 解析必須同時納入自閉合 `<node .../>` 與帶 `<tag>` 子節點的非自閉合 `<node ...>...</node>`。漏掉後者會遺失道路共用節點，造成假的偏離或斷線。

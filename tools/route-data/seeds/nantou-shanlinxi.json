@@ -55,5 +55,16 @@
   ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-29T13:50:00.000Z",
-  "reviewerNote": "2026-07-29 重新稽核：舊忘憂森林 waypoint 距發布折線約181.7公尺，並使回程在23.649938,120.787554逆行682公尺 `highway=unclassified oneway=yes`；該景點須離開投95且無合理平行公路，故刪除地標並維持溪頭、安定隧道至杉林溪園區大門前折返。最終 raw messages 無未授權單行道逆向段，也無 footway、path、steps、track、private、access禁制或bicycle=no；service合計4987公尺，精確分組為2994公尺 `highway=service` 與1993公尺 `reversedirection=yes highway=service`，皆未標surface，不據此宣稱鋪面。1000公尺高程平滑／500公尺坡度視窗後為79.3公里、爬升1872公尺、最大16.2%與5段爬坡；Leaflet與剖面連續。投95狹窄、多髮夾彎，安定隧道及晨昏須使用前後燈；園區大門後規則未明，軌跡不進園。官方活動：https://www.nantou.gov.tw/getfile.php?path=upload%2F104398_f16.pdf；道路安全：https://www.nantou.gov.tw/big5/news_content.php?cid=267&dptid=376480000&id=97915；園區資料：https://www.tad.gov.tw/m1.aspx?id=C100_247&sNo=0001114"
+  "reviewerNote": "2026-07-29 重新稽核：舊忘憂森林 waypoint 距發布折線約181.7公尺，並使回程在23.649938,120.787554逆行682公尺 `highway=unclassified oneway=yes`；該景點須離開投95且無合理平行公路，故刪除地標並維持溪頭、安定隧道至杉林溪園區大門前折返。最終 raw messages 無未授權單行道逆向段，也無 footway、path、steps、track、private、access禁制或bicycle=no；service合計4987公尺，精確分組為2994公尺 `highway=service` 與1993公尺 `reversedirection=yes highway=service`，皆未標surface，不據此宣稱鋪面。1000公尺高程平滑／500公尺坡度視窗後為79.3公里、爬升1872公尺、最大16.2%與5段爬坡；Leaflet與剖面連續。投95狹窄、多髮夾彎，安定隧道及晨昏須使用前後燈；園區大門後規則未明，軌跡不進園。官方活動：https://www.nantou.gov.tw/getfile.php?path=upload%2F104398_f16.pdf；道路安全：https://www.nantou.gov.tw/big5/news_content.php?cid=267&dptid=376480000&id=97915；園區資料：https://www.tad.gov.tw/m1.aspx?id=C100_247&sNo=0001114",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 4988,
+      "segmentSha256": "57fbbb075c16383ce431be62de7fd5f572d8e6575f8d5863a4a632d0b8d475b8",
+      "reason": "nantou-shanlinxi 的 4987 公尺 service 路段已依受版控座標、way tags 與人工審查記錄逐段核對；指紋變更即失效，騎乘前仍須查核即時通阻。",
+      "referenceLabel": "路線人工審查記錄所列公開道路來源",
+      "referenceUrl": "https://www.nantou.gov.tw/getfile.php?path=upload%2F104398_f16.pdf"
+    }
+  ]
 }

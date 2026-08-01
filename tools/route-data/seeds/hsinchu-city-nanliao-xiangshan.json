@@ -1,0 +1,60 @@
+{
+  "id": "hsinchu-city-nanliao-xiangshan",
+  "direction": "loop",
+  "profile": "fastbike",
+  "waypoints": [
+    {
+      "name": "新竹漁港南側",
+      "lat": 24.842868,
+      "lng": 120.923192,
+      "role": "start"
+    },
+    {
+      "name": "港南運河公園",
+      "lat": 24.82231,
+      "lng": 120.91052,
+      "role": "via"
+    },
+    {
+      "name": "金城湖",
+      "lat": 24.811521,
+      "lng": 120.911249,
+      "role": "via"
+    },
+    {
+      "name": "香山濕地自行車道",
+      "lat": 24.774178,
+      "lng": 120.913828,
+      "role": "via"
+    },
+    {
+      "name": "新竹漁港南側",
+      "lat": 24.842868,
+      "lng": 120.923192,
+      "role": "finish"
+    }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-01T07:07:33.889Z",
+  "reviewerNote": "原南寮—寶山內陸方案因 3.343 公里分散 service 段無法由海岸自行車資料佐證而撤回；本 ID 改為南寮—香山海風線，只走新竹市政府官方 17 公里海岸自行車道路廊至香山濕地後返回。service 與 OSM 權限缺漏 footway 的精確範圍皆落在官方路廊內。",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 3945,
+      "segmentSha256": "c2491175c8cf26988bf527b7a06c512fee3970a21157603c6180e6aa9fc8d4ba",
+      "reason": "精確段落位於 24.785665–24.822286、120.910513–120.922573，合計 3944 公尺；整段位於新竹市政府明列的 17 公里海岸自行車道新竹漁港—港南—金城湖—香山路廊，並由 segmentSha256 鎖定。",
+      "referenceLabel": "新竹市政府 17 公里海岸自行車道",
+      "referenceUrl": "https://ssw.hccg.gov.tw/viewpoint/14"
+    },
+    {
+      "rule": "conditional-highway",
+      "value": "footway",
+      "maximumDistanceM": 1100,
+      "segmentSha256": "0924ec0782a4db7cf1bd2c7ebc44588d6b00a800cd6ca49bd69602a326269584",
+      "reason": "香山濕地附近 1038 公尺 OSM footway 權限標籤缺漏段，與既有正式 17 公里海岸線相同，官方資料明列為自行車道。",
+      "referenceLabel": "新竹市政府 17 公里海岸自行車道",
+      "referenceUrl": "https://ssw.hccg.gov.tw/viewpoint/14"
+    }
+  ]
+}

@@ -48,5 +48,16 @@
   ],
   "reviewStatus": "approved",
   "reviewedAt": "2026-07-29T13:50:00.000Z",
-  "reviewerNote": "2026-07-29 重新稽核：舊汶水 waypoint 使 BRouter 在24.452780,120.874988逆行34公尺 `highway=residential oneway=yes`；先移除會導入track捷徑，故改用OSM台3中豐公路節點24.450258,120.873799，並把獅潭點修正至台3／縣道124實際路口24.539619,120.919754。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、footway、path、track、steps、private、access禁制或bicycle=no；Leaflet顯示公館台6、汶水台3、獅潭與縣道124至仙山靈洞宮往返連續，為59.8公里、爬升1424公尺；最大持續坡度28.6%與舊發布資料相同。"
+  "reviewerNote": "2026-07-29 重新稽核：舊汶水 waypoint 使 BRouter 在24.452780,120.874988逆行34公尺 `highway=residential oneway=yes`；先移除會導入track捷徑，故改用OSM台3中豐公路節點24.450258,120.873799，並把獅潭點修正至台3／縣道124實際路口24.539619,120.919754。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、footway、path、track、steps、private、access禁制或bicycle=no；Leaflet顯示公館台6、汶水台3、獅潭與縣道124至仙山靈洞宮往返連續，為59.8公里、爬升1424公尺；最大持續坡度28.6%與舊發布資料相同。",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 1187,
+      "segmentSha256": "008d2d031f5d42bf1fbc23c82bce22958041e45d53a0ede6c9aaa51568c9d179",
+      "reason": "精確段落範圍 24.526175,120.915287–24.541803,120.948502、合計 1186 公尺，已由受版控座標、way tags 與 segmentSha256 鎖定；官方資料將對應路廊列為公開自行車路線或一般鋪面道路。實騎前仍須查核即時通阻與現場標誌。",
+      "referenceLabel": "苗栗縣政府文化觀光局仙山與縣道路網官方地圖",
+      "referenceUrl": "https://www.miaolitravel.net/Att/files/10002917.pdf"
+    }
+  ]
 }

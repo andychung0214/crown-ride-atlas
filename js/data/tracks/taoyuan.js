@@ -12,6 +12,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-28T03:31:08.778Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "247984ada555ede2a5c0f2675ac42c293e44ce0b77286743a436cb89b0466bf5",
+      "roadPolicyAuditSha256": "6d850c19fe543efae38ef8ae4dec872451d773fae8d76e824595b4260a00301c",
       "reviewedAt": "2026-07-28T04:38:44.415Z",
       "reviewerNote": "以 OpenStreetMap 疊圖逐段檢查大溪台7、羅浮至關西完整縣道118羅馬公路、關西與龍潭台3返回大溪；BRouter 訊息無 footway、path、steps、私人或未鋪面路段。"
     },
@@ -18242,6 +18244,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-28T03:33:04.971Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "1ede7871bcfa108cd3ea3ace940ba978f32cf73a1e02fbfc966084a1902a434c",
+      "roadPolicyAuditSha256": "8e0b910f3af0a14d29fed7170a7e4a900603458ab978bb620e5cbe8914657455",
       "elevationAnalysis": {
         "smoothingWindowM": 500,
         "gradeWindowM": 100,
@@ -42950,6 +42954,8 @@
       "samplingNote": "一般路段約 30–80m；髮夾彎與局部高曲率道路會加密取樣以貼合真實道路幾何。",
       "generatedAt": "2026-07-29T13:21:08.750Z",
       "reviewStatus": "approved",
+      "rawGeometrySha256": "d33e0b8ed258d97846eacda62ab698c339f15695e19346e7b0b60b1d563695a8",
+      "roadPolicyAuditSha256": "9b69aafe043fb97454c04da7d076171a9a960c7e56a36b12253044e3ea177b29",
       "reviewedAt": "2026-07-29T13:50:00.000Z",
       "reviewerNote": "2026-07-29 重新稽核：舊康莊路強制 waypoint 使 BRouter 在24.827953,121.267477逆行27公尺 `highway=primary oneway=yes cycleway:right=shared_lane`；shared_lane不是自行車逆向例外，已刪除該冗餘點並依合法方向重產。最終 raw messages 無未授權單行道逆向段，也無 motorway、trunk、footway、path、track、steps、private、access禁制或bicycle=no；Leaflet依桃園官方環湖騎乘走廊連接龍潭、坪林環湖路、三民、大溪與慈湖路，為49.0公里、爬升928公尺。坪林入口gate仍須依園區開放時間與現場規定。"
     },
