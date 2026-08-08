@@ -1,0 +1,37 @@
+{
+  "id": "challenge-twin-towers",
+  "direction": "point-to-point",
+  "profile": "fastbike",
+  "elevationAnalysis": {
+    "smoothingWindowM": 750,
+    "gradeWindowM": 300,
+    "reason": "三貂角至鵝鑾鼻跨越東北角、花東、南迴與恆春半島，長距離中包含壽卡爬升與海岸丘陵；採 750/300 公尺視窗降低 SRTM 短波與橋梁接點雜訊，僅供路線規劃。",
+    "referenceUrl": "https://newtaipei.travel/zh-tw/Attractions/Detail/110112",
+    "referenceLabel": "三貂角燈塔官方地標與道路接點參考"
+  },
+  "waypoints": [
+    { "name": "三貂角燈塔道路接點（鹽寮縣道2號）", "lat": 25.020043, "lng": 121.958862, "role": "start" },
+    { "name": "宜蘭市區公共道路節點", "lat": 24.757, "lng": 121.753, "role": "via" },
+    { "name": "南澳北側台9公共道路節點", "lat": 24.466, "lng": 121.795, "role": "via" },
+    { "name": "南澳南溪橋台9丁公共道路節點", "lat": 24.39, "lng": 121.78, "role": "via" },
+    { "name": "花蓮市區公共道路節點", "lat": 23.991, "lng": 121.611, "role": "via" },
+    { "name": "台東市區公共道路節點", "lat": 22.7556, "lng": 121.1442, "role": "via" },
+    { "name": "壽卡台9戊鋪面道路節點", "lat": 22.2459, "lng": 120.8354, "role": "via" },
+    { "name": "車城台26公共道路節點", "lat": 22.0732, "lng": 120.714, "role": "via" },
+    { "name": "鵝鑾鼻燈塔外台26公共道路接點", "lat": 21.9058, "lng": 120.8507, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-09T00:00:00.000Z",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 2020,
+      "segmentSha256": "790217f105ddfcd5b035ffb7d68b2e76a22419ce94a0a8322aeaa00dc245f381",
+      "reason": "東北角、宜蘭、花東與南迴銜接處包含鋪面公共 service 道路；加入南澳南溪橋台9丁公共道路節點後，本次路由稽核逐段鎖定 9 組 service 標籤，未發現 footway、path、track、steps、motorway 或 bicycle=no。",
+      "referenceLabel": "OpenStreetMap 道路標籤與 BRouter 路徑稽核",
+      "referenceUrl": "https://www.openstreetmap.org/copyright"
+    }
+  ],
+  "reviewerNote": "一日雙塔端點採官方地標外最近可騎公共道路：北端為三貂角燈塔外縣道2號接點，南端為鵝鑾鼻燈塔外台26接點，不把塔區階梯、步道或景區服務路當作可騎道路。路線依序串接東北角、宜蘭、南澳北側台9、南澳南溪台9丁、花東、台9戊、台1及台26；新增南澳北側公共道路節點以避開 access=no 短段，service 接駁例外仍以精確路段指紋、距離上限與 HTTPS 來源綁定，不擴大核准其他權限禁制道路；落石、長下坡、大型車、季節風與臨時管制須出發前查核。"
+}

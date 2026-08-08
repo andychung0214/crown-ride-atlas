@@ -172,6 +172,21 @@ test("buildTrack 放行有自行車權限或鋪面證據的條件式道路", asy
   }
 });
 
+test("buildTrack 不以共享車道或自行車網路標籤取代 access=no 的明確自行車權限", async () => {
+  const { buildTrack } = await loadGenerator();
+
+  for (const wayTags of [
+    "highway=primary access=no cycleway=shared_lane route_bicycle_ncn=yes",
+    "highway=primary access=private cycleway:right=shared_lane route_bicycle_ncn=yes"
+  ]) {
+    assert.throws(
+      () => buildTrack(brouterPayloadWithWayTags(wayTags)),
+      error => /道路政策/.test(error.message) && error.message.includes(wayTags),
+      wayTags
+    );
+  }
+});
+
 test("正式 seed 的道路政策例外必須綁定精確路段、距離、理由與 HTTPS 來源", async () => {
   const { auditBrouterRoadPolicy, buildTrack, validateTrackSeed } = await loadGenerator();
   const seed = formalSeed("policy-exception");
@@ -191,6 +206,26 @@ test("正式 seed 的道路政策例外必須綁定精確路段、距離、理�
   assert.doesNotThrow(() => buildTrack(
     payload,
     { routeId: seed.id, seed, generatedAt: "2026-07-25T00:00:00.000Z" }
+  ));
+
+  const accessSeed = formalSeed("access-exception");
+  const accessPayload = brouterPayloadWithWayTags(
+    "highway=primary access=no cycleway=shared_lane route_bicycle_ncn=yes"
+  );
+  const accessSegment = auditBrouterRoadPolicy(accessPayload).violations[0].segment;
+  accessSeed.roadPolicyExceptions = [{
+    rule: "access",
+    value: "no",
+    maximumDistanceM: 40,
+    segmentSha256: createHash("sha256").update(JSON.stringify([accessSegment])).digest("hex"),
+    reason: "OSM 標示 shared lane 與自行車國家網路節點，保留精確短段例外。",
+    referenceUrl: "https://www.openstreetmap.org/copyright",
+    referenceLabel: "OpenStreetMap 自行車道路標籤"
+  }];
+  assert.doesNotThrow(() => validateTrackSeed(accessSeed, accessSeed.id));
+  assert.doesNotThrow(() => buildTrack(
+    accessPayload,
+    { routeId: accessSeed.id, seed: accessSeed, generatedAt: "2026-07-25T00:00:00.000Z" }
   ));
 
   const invalidSeed = structuredClone(seed);

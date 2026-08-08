@@ -12,17 +12,19 @@ const manifest = require("../js/data/track-manifest.js");
 const root = path.join(__dirname, "..");
 const validatorPath = path.join(root, "scripts", "validate-tracks.mjs");
 
-test("正式資料由 66 條地區路線與 6 條路線美學組成", () => {
+test("正式資料由 66 條地區路線、2 條挑戰路線與公開路線美學組成", () => {
   const routeArt = Data.routes.filter(route => route.category === "路線美學");
-  const regularRoutes = Data.routes.filter(route => route.category !== "路線美學");
+  const challengeRoutes = Data.routes.filter(route => route.category === "經典挑戰");
+  const regularRoutes = Data.routes.filter(route => !["路線美學", "經典挑戰"].includes(route.category));
 
   assert.equal(regularRoutes.length, 66);
-  assert.equal(routeArt.length, 6);
-  assert.equal(Data.routes.length, 72);
+  assert.equal(challengeRoutes.length, 2);
+  assert.equal(routeArt.length, Data.routeArt.length);
+  assert.equal(Data.routes.length, 68 + routeArt.length);
   assert.deepEqual(Object.keys(manifest).sort(), Data.routes.map(route => route.id).sort());
 });
 
-test("72 條正式軌跡均已人工核准且海拔與累積距離可用", async () => {
+test("正式軌跡均已人工核准且海拔與累積距離可用", async () => {
   const { parseBundleSource } = await import(
     `${pathToFileURL(validatorPath).href}?track-data=${Date.now()}`
   );

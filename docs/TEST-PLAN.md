@@ -6,10 +6,10 @@
 
 | 測試項目 | 測試方式 | 預期結果 |
 |---|---|---|
-| 路線資料契約 | 執行 `npm test`，檢查地區、路線、挑戰、路線美學與識別碼 | 22 地區、至少 60 條路線、8 項挑戰與 6 組路線美學均有效且可互相參照 |
-| 離島與路線美學軌跡 | 執行 `node --test tests/task11-islands-art.test.js` 與四個 bundle validator | 15 條 seed 均 approved，軌跡留在各自島嶼，重採樣相鄰點不超過 80.5 公尺 |
-| 全站正式軌跡資料 | 執行 `node --test tests/track-data.test.js` | 66 條地區路線加 6 條路線美學共 72 條；全數人工核准，經緯度、海拔與累積距離為有限數值且距離不倒退 |
-| 全站道路政策稽核 | 執行 `node --test tests/road-policy-audit.test.js` | 受版控原始幾何與 waytags 可完整重建 72 條路線；幾何與稽核 SHA-256 同時綁定正式 bundle，未核准違規為 0 |
+| 路線資料契約 | 執行 `npm test`，檢查地區、路線、挑戰、路線美學與識別碼 | 22 地區、66 條地區路線、2 條完整挑戰、至少 1 條公開路線美學均有效且可互相參照 |
+| 離島與路線美學軌跡 | 執行 `node --test tests/task11-islands-art.test.js` 與 bundle validator | 10 份公開 seed 均 approved；路線美學只驗證通過閘門的公開軌跡，重採樣相鄰點不超過 80.5 公尺 |
+| 全站正式軌跡資料 | 執行 `node --test tests/track-data.test.js` | 66 條地區路線、2 條挑戰與公開路線美學共 69 條；全數人工核准，經緯度、海拔與累積距離為有限數值且距離不倒退 |
+| 全站道路政策稽核 | 執行 `node --test tests/road-policy-audit.test.js` | 受版控原始幾何與 waytags 可完整重建 69 條路線；幾何與稽核 SHA-256 同時綁定正式 bundle，未核准違規為 0 |
 | 搜尋、篩選與排序 | 以名稱、地區、標籤、難度、距離與爬升測試純函式 | 結果正確，排序不修改來源陣列 |
 | Hash 路由 | 測試首頁、固定頁、地區、路線與錯誤編碼 | 正確解析參數，未知網址回傳找不到頁 |
 | 地理運算 | 測試 Haversine 距離、總距離與 SVG 座標正規化 | 距離落在合理範圍，無效座標不污染結果 |
@@ -40,7 +40,7 @@
 3. 對問題段建立足以涵蓋整段折線的 bbox，請求 live OSM `/api/0.6/map?bbox=<west,south,east,north>`。不可只看 way 頁面的首尾節點，因為端點相接不代表中間幾何沿同一條道路。
 4. XML 解析必須同時納入自閉合 `<node .../>` 與帶 `<tag>` 子節點的非自閉合 `<node ...>...</node>`。漏掉後者會遺失道路共用節點，造成假的偏離或斷線。
 5. 將 GPX 問題段等距取樣，計算每個取樣點到 live way 完整折線各線段的距離，並記錄最近 way 的 `highway`、`ref`、`surface`、`access` 與 `bicycle`。交叉口共用節點可同時落在多條 way，判斷時須保留所有距離容許值內的候選道路。
-6. 只有 raw 與 live 幾何的禁止道路均為 0 才可核准。若 `service`／`track` 無法降為 0，必須提供該精確段落的官方公開騎乘與鋪面證據；一般景點、相鄰省道或 way 端點資訊不構成證據。
+6. 只有 raw 與 live 幾何的禁止道路均為 0 才可核准。若 `service`／`track` 或權限禁制無法降為 0，必須提供該精確段落的自行車通行／官方公開騎乘與鋪面證據，並綁定路段 SHA-256、距離上限與 HTTPS 來源；一般景點、相鄰省道或 way 端點資訊不構成證據。
 7. reviewer note 應記錄原問題長度、修正控制點、live way／node、取樣結果與最後數值；修改後重新產生 cache，且 `reviewedAt` 必須晚於 `generatedAt`。
 
 ## 瀏覽器端對端與手動功能
@@ -108,7 +108,7 @@
 
 發佈前必須同時通過：
 
-1. `npm run verify` 零失敗，且正式 validator 確認 23 個 bundle、72 條路線。
+1. `npm run verify` 零失敗，且正式 validator 確認 24 個 bundle、69 條路線。
 2. 所有 JavaScript 通過 `node --check`。
 3. `git diff --check` 無空白錯誤。
 4. HTTP 首頁與本機靜態資源可存取。

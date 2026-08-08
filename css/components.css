@@ -754,6 +754,17 @@
   color: var(--color-ink-soft);
 }
 
+.challenge-card__endpoints {
+  padding: 0.65rem 0.8rem;
+  border-left: 0.2rem solid var(--color-accent);
+  background: var(--color-paper-raised);
+  font: 650 0.75rem/1.5 var(--font-data);
+}
+
+.challenge-card__references {
+  font-size: 0.82rem;
+}
+
 .challenge-card__facts {
   display: flex;
   flex-wrap: wrap;

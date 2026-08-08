@@ -519,6 +519,71 @@
     });
   });
 
+  const challengeRouteSpecs = [
+    {
+      id: "challenge-north-south",
+      name: "北高完整挑戰",
+      regionId: "taipei",
+      regionName: "跨區挑戰",
+      area: "台北至高雄",
+      distanceKm: 376.5,
+      elevationGainM: 2249,
+      difficulty: 5,
+      durationMinutes: 1006,
+      startLabel: "台北市區公共道路接點",
+      finishLabel: "高雄市區公共道路接點",
+      endpointNote: "台北與高雄均使用市區公共道路接點；挑戰方向為台北 → 高雄。",
+      summary: "從台北一路向南抵達高雄的完整西部長距離挑戰。",
+      story: "北高不再由短段拼接冒充完整路線；這條 point-to-point 軌跡以城市公共道路串接北部、西部與南部，從台北市區一路騎到高雄市區。",
+      tags: ["北高", "point-to-point", "完整挑戰", "長距離"],
+      cautions: [
+        "長距離挑戰請自行安排補給、夜騎照明與撤退點",
+        "城市路口、大型車、施工與活動管制會改變通行條件",
+        "本軌跡不使用高速公路；出發前仍須依現場標誌確認可騎方向"
+      ],
+      supplies: ["水與電解質", "前後車燈", "備用內胎與基本工具", "行動電源與離線地圖"]
+    },
+    {
+      id: "challenge-twin-towers",
+      name: "一日雙塔",
+      regionId: "new-taipei",
+      regionName: "跨區挑戰",
+      area: "三貂角至鵝鑾鼻",
+      distanceKm: 470.8,
+      elevationGainM: 3443,
+      difficulty: 5,
+      durationMinutes: 1284,
+      startLabel: "三貂角燈塔外鹽寮縣道 2 號道路接點",
+      finishLabel: "鵝鑾鼻燈塔外台 26 道路接點",
+      endpointNote: "北端以三貂角燈塔外鹽寮縣道 2 號道路接點代表，官方燈塔地標與可騎道路接點分開標示；挑戰方向為三貂角燈塔 → 鵝鑾鼻燈塔。",
+      summary: "由三貂角燈塔一路南下至鵝鑾鼻燈塔的東部與南迴超長距離挑戰。",
+      story: "一日雙塔以官方地標作為挑戰名稱，但 GPX 端點固定在塔區外最近公共道路，避開階梯、步道與景區服務路，沿東北角、花東、南迴與恆春半島完成南下。",
+      tags: ["一日雙塔", "三貂角燈塔", "鵝鑾鼻燈塔", "point-to-point", "完整挑戰"],
+      cautions: [
+        "塔區外道路接點不等於可騎入燈塔園區，請依現場標誌停車步行",
+        "東部海岸、南迴與恆春路段大型車、側風、落石與補給間距風險高",
+        "長距離與夜騎需預先安排照明、補給、撤退與住宿；路況會隨季節變動"
+      ],
+      supplies: ["水與電解質", "前後車燈與反光裝備", "備用內胎與基本工具", "保暖／防風層", "離線地圖與行動電源"]
+    }
+  ];
+
+  challengeRouteSpecs.forEach(function (spec) {
+    routes.push({
+      ...spec,
+      slug: spec.id,
+      category: "經典挑戰",
+      challenge: true,
+      direction: "point-to-point",
+      trackRef: spec.id,
+      thumbnail: thumbnails[(routes.length + 1) % thumbnails.length],
+      durationMinutes: spec.durationMinutes,
+      featured: false,
+      createdAt: "2026-08-09T00:00:00.000Z",
+      updatedAt: "2026-08-09T00:00:00.000Z"
+    });
+  });
+
   const artShapes = [
     {
       id: "route-art-little-taiwan",
@@ -570,6 +635,15 @@
     }
   ];
 
+  const artMatchAudit = {
+    "route-art-little-taiwan": { matchStatus: "near-match", shapeScore: 0.1849, maxPointError: 0.4543 },
+    "route-art-elephant": { matchStatus: "rejected", shapeScore: 0.3704, maxPointError: 0.5558 },
+    "route-art-heart-bay": { matchStatus: "rejected", shapeScore: 0.2552, maxPointError: 0.5636 },
+    "route-art-crown": { matchStatus: "rejected", shapeScore: 0.3547, maxPointError: 0.6711 },
+    "route-art-bear": { matchStatus: "rejected", shapeScore: 0.2754, maxPointError: 0.7607 },
+    "route-art-flying-bird": { matchStatus: "rejected", shapeScore: 0.2519, maxPointError: 0.6888 }
+  };
+
   const artMetrics = {
     "route-art-little-taiwan": [26.9, 174, 3, 110],
     "route-art-elephant": [3.3, 11, 1, 20],
@@ -580,11 +654,13 @@
   };
 
   artShapes.forEach(function (art, index) {
+    const match = artMatchAudit[art.id];
+    if (!match || match.matchStatus !== "near-match") return;
     const metrics = artMetrics[art.id];
     routes.push({
       id: art.id,
       slug: art.id,
-      name: art.name,
+      name: `${art.name}道路近似`,
       regionId: art.regionId,
       regionName: art.regionName,
       area: regions.find(region => region.id === art.regionId).area,
@@ -604,6 +680,10 @@
       ],
       supplies: ["水與簡易補給", "前後車燈", "可記錄軌跡的裝置"],
       trackRef: art.id,
+      matchStatus: match.matchStatus,
+      shapeScore: match.shapeScore,
+      maxPointError: match.maxPointError,
+      targetShape: art.shape,
       featured: index === 0,
       createdAt: "2026-07-26T00:00:00.000Z",
       updatedAt: "2026-07-26T00:00:00.000Z"
@@ -614,14 +694,22 @@
     {
       id: "challenge-twin-towers",
       name: "一日雙塔",
-      description: "從台灣北端向南端推進的超長距離耐力挑戰。",
-      routeIds: ["keelung-harbor-coast", "changhua-coast", "pingtung-south-border"]
+      description: "從三貂角燈塔外道路接點一路南下至鵝鑾鼻燈塔外台26道路接點的完整耐力挑戰。",
+      routeIds: ["challenge-twin-towers"],
+      referenceRouteIds: ["keelung-harbor-coast", "taitung-south-link", "pingtung-south-border"],
+      startLabel: "三貂角燈塔",
+      finishLabel: "鵝鑾鼻燈塔",
+      routeMode: "single"
     },
     {
       id: "challenge-north-south",
       name: "北高",
-      description: "以一天完成北部至高雄的西部幹線挑戰。",
-      routeIds: ["taipei-zhongsha-road", "changhua-route-139", "kaohsiung-harbor"]
+      description: "由台北市區公共道路接點一路南下至高雄市岡山公共道路接點的完整 point-to-point 挑戰。",
+      routeIds: ["challenge-north-south"],
+      referenceRouteIds: ["taipei-zhongsha-road", "changhua-route-139", "kaohsiung-qimei"],
+      startLabel: "台北",
+      finishLabel: "高雄",
+      routeMode: "single"
     },
     {
       id: "challenge-taipingshan",
@@ -661,14 +749,20 @@
     }
   ];
 
-  const routeArt = artShapes.map(function (art) {
+  const routeArt = artShapes
+    .filter(art => artMatchAudit[art.id] && artMatchAudit[art.id].matchStatus === "near-match")
+    .map(function (art) {
+      const match = artMatchAudit[art.id];
     return {
       id: art.id.replace("route-", ""),
-      name: art.name,
+      name: `${art.name}道路近似`,
       routeId: art.id,
-      description: `以 GPS 軌跡畫出「${art.name}」，讓騎乘本身成為島嶼線條。`
+      description: `以通過幾何閘門的公共道路軌跡近似「${art.name}」；分數 ${match.shapeScore.toFixed(3)}、最大誤差 ${match.maxPointError.toFixed(3)}。`,
+      matchStatus: match.matchStatus,
+      shapeScore: match.shapeScore,
+      maxPointError: match.maxPointError
     };
-  });
+    });
 
   function deepFreeze(value) {
     if (!value || typeof value !== "object" || Object.isFrozen(value)) return value;

@@ -20,12 +20,7 @@ const routeSpecs = {
   "lienchiang-nangan": { bundle: "lienchiang", bounds: [26.12, 26.18, 119.89, 119.98], note: /南竿.*跨島|跨島.*南竿/ },
   "lienchiang-beigan": { bundle: "lienchiang", bounds: [26.18, 26.26, 119.94, 120.04], note: /北竿.*跨島|跨島.*北竿/ },
   "lienchiang-dongyin": { bundle: "lienchiang", bounds: [26.34, 26.39, 120.46, 120.53], note: /東引.*西引|西引.*東引/ },
-  "route-art-little-taiwan": { bundle: "route-art", bounds: [24.10, 24.23, 120.58, 120.68], art: true },
-  "route-art-elephant": { bundle: "route-art", bounds: [24.04, 24.11, 120.49, 120.57], art: true },
-  "route-art-heart-bay": { bundle: "route-art", bounds: [22.60, 22.67, 120.25, 120.32], art: true },
-  "route-art-crown": { bundle: "route-art", bounds: [25.03, 25.09, 121.49, 121.56], art: true },
-  "route-art-bear": { bundle: "route-art", bounds: [23.93, 24.02, 121.54, 121.64], art: true },
-  "route-art-flying-bird": { bundle: "route-art", bounds: [22.73, 22.82, 121.10, 121.19], art: true }
+  "route-art-little-taiwan": { bundle: "route-art", bounds: [24.10, 24.23, 120.58, 120.68], art: true }
 };
 
 function inBounds(point, bounds) {
@@ -40,7 +35,7 @@ async function loadSeed(routeId) {
   ));
 }
 
-test("Task 11 的 15 份 seed 都固定在指定單一島嶼或城市範圍", async () => {
+test("Task 11 的 10 份公開 seed 都固定在指定單一島嶼或城市範圍", async () => {
   const { validateTrackSeed } = await import(`${pathToFileURL(generatorPath).href}?task11-seeds=${Date.now()}`);
 
   for (const [routeId, spec] of Object.entries(routeSpecs)) {

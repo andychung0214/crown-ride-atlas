@@ -2,7 +2,7 @@
 
 > 沿著山脈與海風，收藏島嶼上每一道值得騎乘的曲線。
 
-狂輪誌是一座桌機優先、支援行動觸控的台灣公路車路線百科與騎乘圖鑑。首版收錄全台 22 個地區、72 條路線、8 項經典挑戰與 6 組路線美學，提供搜尋、篩選、路線詳情、互動地圖、GPX 下載，以及不需後端的本機編輯功能。
+狂輪誌是一座桌機優先、支援行動觸控的台灣公路車路線百科與騎乘圖鑑。首版收錄全台 22 個地區、69 條已發布道路軌跡、8 項經典挑戰與通過幾何閘門的公開路線美學，提供搜尋、篩選、路線詳情、互動地圖、GPX 下載，以及不需後端的本機編輯功能。
 
 線上版本：[https://andychung0214.github.io/crown-ride-atlas/](https://andychung0214.github.io/crown-ride-atlas/)
 
@@ -11,9 +11,11 @@
 - 黃衫、衝刺綠、登山圓點與年輕白衫四套主題，可即時切換並記住選擇。
 - 以日式路誌、等高線與紙張質感構成的「峠之路誌」視覺。
 - 依地區、難度、距離與爬升探索台灣公路車路線。
+- 北高與一日雙塔使用獨立完整 point-to-point 軌跡；挑戰卡片會明確顯示起點、終點與補充分段。
+- 路線美學只公開通過道路政策與幾何相似度閘門的近似圖形，不為不相符的軌跡保留誤導名稱。
 - Leaflet 互動地圖；離線或直接開啟 HTML 時自動改用 SVG 路線圖。
-- 72 條內建路線皆以 BRouter `fastbike` 吸附至道路，搭配 SRTM 海拔、路線級平滑與持續坡度分析。
-- 受版控的道路稽核可在 CI 由 BRouter 原始幾何與 waytags 完整重建 72 條正式路線；明確禁行、渡輪、階梯、施工道路、服務道路與未證明適合公路車的道路會阻擋發布，例外必須綁定精確路段 SHA-256、距離上限與 HTTPS 佐證。
+- 69 條已發布內建路線皆以 BRouter `fastbike` 吸附至道路，搭配 SRTM 海拔、路線級平滑與持續坡度分析。
+- 受版控的道路稽核可在 CI 由 BRouter 原始幾何與 waytags 完整重建 69 條正式路線；明確禁行、渡輪、階梯、施工道路與未證明適合公路車的道路會阻擋發布，必要的公共 service 或明確自行車網路短段例外必須綁定精確路段 SHA-256、距離上限與 HTTPS 佐證。
 - GPX 匯入、下載與可查詢里程／海拔／坡度的詳細剖面。
 - 新增、編輯、刪除、圖片壓縮、JSON 備份與還原，資料只儲存在目前瀏覽器。
 - 鍵盤操作、跳至主要內容、狀態播報、清楚的焦點樣式與減少動態效果支援。
@@ -67,7 +69,7 @@ npm run tracks:validate
 npm run verify
 ```
 
-測試不依賴大型框架，使用 Node.js 內建 `node:test`。`npm run verify` 會檢查 JavaScript 入口、完整測試與 23 個正式軌跡 bundle。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
+測試不依賴大型框架，使用 Node.js 內建 `node:test`。`npm run verify` 會檢查 JavaScript 入口、完整測試與 24 個正式軌跡 bundle。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
 
 ## 靜態網站託管
 

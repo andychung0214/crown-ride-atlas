@@ -17,6 +17,8 @@
     "keelung-harbor-coast": { bundleId: "keelung", src: "js/data/tracks/keelung.js" },
     "keelung-nuannuan-hills": { bundleId: "keelung", src: "js/data/tracks/keelung.js" },
     "keelung-waimushan-wanli": { bundleId: "keelung", src: "js/data/tracks/keelung.js" },
+    "challenge-north-south": { bundleId: "challenges", src: "js/data/tracks/challenges.js" },
+    "challenge-twin-towers": { bundleId: "challenges", src: "js/data/tracks/challenges.js" },
     "taipei-fengguizui": { bundleId: "taipei", src: "js/data/tracks/taipei.js" },
     "taipei-zhongsha-road": { bundleId: "taipei", src: "js/data/tracks/taipei.js" },
     "taipei-lengshuikeng": { bundleId: "taipei", src: "js/data/tracks/taipei.js" },
@@ -80,12 +82,7 @@
     "lienchiang-nangan": { bundleId: "lienchiang", src: "js/data/tracks/lienchiang.js" },
     "lienchiang-beigan": { bundleId: "lienchiang", src: "js/data/tracks/lienchiang.js" },
     "lienchiang-dongyin": { bundleId: "lienchiang", src: "js/data/tracks/lienchiang.js" },
-    "route-art-little-taiwan": { bundleId: "route-art", src: "js/data/tracks/route-art.js" },
-    "route-art-elephant": { bundleId: "route-art", src: "js/data/tracks/route-art.js" },
-    "route-art-heart-bay": { bundleId: "route-art", src: "js/data/tracks/route-art.js" },
-    "route-art-crown": { bundleId: "route-art", src: "js/data/tracks/route-art.js" },
-    "route-art-bear": { bundleId: "route-art", src: "js/data/tracks/route-art.js" },
-    "route-art-flying-bird": { bundleId: "route-art", src: "js/data/tracks/route-art.js" }
+    "route-art-little-taiwan": { bundleId: "route-art", src: "js/data/tracks/route-art.js" }
   };
 
   Object.values(manifest).forEach(Object.freeze);

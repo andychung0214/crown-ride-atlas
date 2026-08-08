@@ -938,8 +938,11 @@ export function validateTrackSeed(seed, routeId) {
     seed.roadPolicyExceptions.forEach((exception, index) => {
       const label = `${routeId} 第 ${index + 1} 個道路政策例外`;
       const key = `${exception && exception.rule}:${exception && exception.value}`;
-      if (!exception || exception.rule !== "conditional-highway"
-        || !CONDITIONAL_HIGHWAYS.has(exception.value)) {
+      const validExceptionRule = exception && (
+        (exception.rule === "conditional-highway" && CONDITIONAL_HIGHWAYS.has(exception.value))
+        || (exception.rule === "access" && FORBIDDEN_ACCESS_VALUES.has(exception.value))
+      );
+      if (!validExceptionRule) {
         throw new TypeError(`${label}規則無效。`);
       }
       if (seenExceptions.has(key)) throw new TypeError(`${label}規則重複。`);

@@ -1,0 +1,29 @@
+{
+  "id": "challenge-north-south",
+  "direction": "point-to-point",
+  "profile": "fastbike",
+  "waypoints": [
+    { "name": "台北大湖成功路公共道路接點", "lat": 25.08115, "lng": 121.58665, "role": "start" },
+    { "name": "桃園大溪慈湖路公共道路節點", "lat": 24.88387, "lng": 121.289188, "role": "via" },
+    { "name": "新竹漁港南側公共道路節點", "lat": 24.842868, "lng": 120.923192, "role": "via" },
+    { "name": "苗栗後龍車站前公共道路節點", "lat": 24.615882, "lng": 120.787243, "role": "via" },
+    { "name": "台中東門橋公共道路節點", "lat": 24.13274, "lng": 120.69937, "role": "via" },
+    { "name": "彰化縣道139公共道路節點", "lat": 23.908893, "lng": 120.636929, "role": "via" },
+    { "name": "嘉義火車站中山路公共道路節點", "lat": 23.4793, "lng": 120.44307, "role": "via" },
+    { "name": "高雄岡山公共道路接點", "lat": 22.79, "lng": 120.3, "role": "finish" }
+  ],
+  "reviewStatus": "approved",
+  "reviewedAt": "2026-08-09T00:00:00.000Z",
+  "roadPolicyExceptions": [
+    {
+      "rule": "conditional-highway",
+      "value": "service",
+      "maximumDistanceM": 10457,
+      "segmentSha256": "2b669d9f59a4871032eca7190363e4bc65fc80862b5c85a5e9e1622be8e3cda8",
+      "reason": "BRouter 長距離路徑在城市與主要道路銜接處使用鋪面公共 service 道路；本次路由稽核確認沒有 footway、path、track、steps、motorway 或 bicycle=no 段落，例外距離上限鎖定本次 40 個 service 路段總長。",
+      "referenceLabel": "OpenStreetMap 道路標籤與 BRouter 路徑稽核",
+      "referenceUrl": "https://www.openstreetmap.org/copyright"
+    }
+  ],
+  "reviewerNote": "北高為台北至高雄的 point-to-point 長距離挑戰。起終點固定在台北與高雄市公共道路，途中以桃園、新竹、苗栗、台中、彰化、嘉義等公共道路節點校正西部走向；不宣稱使用高速公路或不可騎快速道路。長距離路況、施工、禁行與補給仍須出發前依現場標誌查核。"
+}

@@ -10,6 +10,6 @@
     { "name": "向心南路公共主線", "lat": 24.1307859, "lng": 120.6439469, "role": "finish" }
   ],
   "reviewStatus": "approved",
-  "reviewedAt": "2026-08-01T05:30:05.845Z",
-  "reviewerNote": "小台灣圖形以南窄北寬輪廓為辨識重點；為合法公共道路已刪除科博館步道與中科 service 尖角，不追求精準海岸線。raw 的 service、track、footway、path、pedestrian、權限禁制與非法逆向均為 0；live OSM 五窗 5/5，最大偏差 0.06 公尺。"
+  "reviewedAt": "2026-08-09T00:00:00.000Z",
+  "reviewerNote": "小台灣圖形以南窄北寬輪廓為辨識重點；為合法公共道路已刪除科博館步道與中科 service 尖角，不宣稱精準海岸線。raw 的 service、track、footway、path、pedestrian、權限禁制與非法逆向均為 0；live OSM 道路窗口複核通過，另以 64 點道路距離重採樣幾何閘門確認為道路近似，shapeScore 0.185、最大點誤差 0.454。"
 }

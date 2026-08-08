@@ -316,6 +316,16 @@
   font-size: 1.08rem;
 }
 
+.route-detail__endpoints {
+  max-width: 42rem;
+  margin: var(--space-4) 0 0;
+  padding: 0.8rem 1rem;
+  border-left: 0.25rem solid var(--color-accent);
+  background: var(--color-paper-raised);
+  color: var(--color-ink-soft);
+  font: 650 0.78rem/1.6 var(--font-data);
+}
+
 .route-facts {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

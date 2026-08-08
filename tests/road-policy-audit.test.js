@@ -9,7 +9,7 @@ const manifest = require("../js/data/track-manifest.js");
 
 const root = path.join(__dirname, "..");
 
-test("受版控道路稽核可由原始幾何重建 72 條正式路線並重算道路政策", async () => {
+test("受版控道路稽核可由原始幾何重建全部正式路線並重算道路政策", async () => {
   const generator = await import(`${pathToFileURL(path.join(root, "scripts", "generate-tracks.mjs")).href}?road-audit=${Date.now()}`);
   const validator = await import(`${pathToFileURL(path.join(root, "scripts", "validate-tracks.mjs")).href}?road-audit=${Date.now()}`);
   const audit = JSON.parse(await fs.readFile(

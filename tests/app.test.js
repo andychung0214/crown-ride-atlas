@@ -257,7 +257,7 @@ test("已完成分析的內建軌跡經 App 與海拔掛載不會再次分析", 
   }
 });
 
-test("路線美學總覽會載入每條 trackRef 並掛載六張真實軌跡預覽", async () => {
+test("路線美學總覽會載入每條公開 trackRef 並掛載真實軌跡預覽", async () => {
   const tracks = Object.fromEntries(Array.from({ length: 6 }, (_, index) => {
     const routeId = `art-${index + 1}`;
     return [routeId, {

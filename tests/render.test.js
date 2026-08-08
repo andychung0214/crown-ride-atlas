@@ -37,6 +37,48 @@ test("路線美學會略過已從本機移除的參考路線", () => {
   ]);
 });
 
+test("路線美學會略過未通過 near-match 閘門的項目", () => {
+  const entries = Render.routeArtEntries(
+    [
+      { id: "art-1", routeId: "r1", matchStatus: "near-match" },
+      { id: "art-2", routeId: "r2", matchStatus: "rejected" }
+    ],
+    [{ id: "r1", name: "保留路線" }, { id: "r2", name: "錯誤圖形" }]
+  );
+
+  assert.deepEqual(entries, [
+    { art: { id: "art-1", routeId: "r1", matchStatus: "near-match" }, route: { id: "r1", name: "保留路線" } }
+  ]);
+});
+
+test("完整挑戰卡片連到正式挑戰路線並顯示端點", () => {
+  const page = Render.challengesPage(fakeDocument(), {
+    challenges: [{
+      id: "challenge-north-south",
+      name: "北高",
+      description: "完整長距離挑戰",
+      routeIds: ["challenge-north-south"],
+      referenceRouteIds: ["taipei-zhongsha-road"],
+      routeMode: "single",
+      startLabel: "台北",
+      finishLabel: "高雄"
+    }],
+    allRoutes: [
+      { id: "challenge-north-south", name: "北高完整挑戰", distanceKm: 376.5 },
+      { id: "taipei-zhongsha-road", name: "中社路", distanceKm: 8.4 }
+    ]
+  });
+  const nodes = descendants(page);
+  const link = nodes.find(node => node.name === "a" && node.attributes.href === "#/route/challenge-north-south");
+  const texts = nodes.map(node => node.textContent).filter(Boolean).join(" ");
+
+  assert.ok(link);
+  assert.equal(link.textContent, "開啟完整 GPX →");
+  assert.match(texts, /起點 台北 → 終點 高雄/);
+  assert.match(texts, /1 條完整挑戰路線/);
+  assert.match(texts, /補充參考：中社路/);
+});
+
 test("缺少海拔資料時回傳可理解的說明", () => {
   assert.deepEqual(Render.elevationSummary([{ lat: 25, lng: 121 }, { lat: 25.1, lng: 121.1 }]), {
     available: false,

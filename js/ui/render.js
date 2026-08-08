@@ -109,7 +109,8 @@
     const routeById = new Map((Array.isArray(routes) ? routes : []).map(route => [route.id, route]));
     return (Array.isArray(routeArt) ? routeArt : [])
       .map(art => ({ art, route: routeById.get(art.routeId) }))
-      .filter(entry => Boolean(entry.route));
+      .filter(entry => Boolean(entry.route)
+        && (!entry.art.matchStatus || entry.art.matchStatus === "near-match"));
   }
 
   function selectFeaturedRoute(routes) {
@@ -521,7 +522,7 @@
 
     return node(documentRef, "div", { className: "index-page" }, [
       node(documentRef, "section", { className: "page-intro" }, [
-        node(documentRef, "p", { className: "eyebrow", text: region ? `${region.area} · REGION` : "ROUTE INDEX · 72 ENTRIES" }),
+        node(documentRef, "p", { className: "eyebrow", text: region ? `${region.area} · REGION` : `ROUTE INDEX · ${state.allRoutes.length} ENTRIES` }),
         node(documentRef, "h1", { text: title }),
         node(documentRef, "p", { className: "page-intro__description", text: description })
       ]),
@@ -602,10 +603,20 @@
     return node(documentRef, "article", { className: "route-detail" }, [
       node(documentRef, "header", { className: "route-detail__hero" }, [
         node(documentRef, "div", { className: "route-detail__copy" }, [
-          node(documentRef, "a", { className: "back-link", href: `#/region/${route.regionId}`, text: `← 返回${route.regionName}` }),
+          node(documentRef, "a", {
+            className: "back-link",
+            href: route.challenge ? "#/challenges" : `#/region/${route.regionId}`,
+            text: route.challenge ? "← 返回經典挑戰" : `← 返回${route.regionName}`
+          }),
           node(documentRef, "p", { className: "eyebrow", text: `${route.regionName} · ${route.category} · ${route.id.toUpperCase()}` }),
           node(documentRef, "h1", { text: route.name }),
           node(documentRef, "p", { className: "route-detail__summary", text: route.summary }),
+          route.challenge
+            ? node(documentRef, "p", {
+              className: "route-detail__endpoints",
+              text: `起點：${route.startLabel} → 終點：${route.finishLabel}。${route.endpointNote}`
+            })
+            : null,
           tagList(documentRef, route.tags),
           node(documentRef, "div", { className: "route-detail__actions" }, [
             node(documentRef, "button", {
@@ -721,19 +732,38 @@
         .map(id => state.allRoutes.find(route => route.id === id))
         .filter(Boolean);
       const distance = linkedRoutes.reduce((sum, route) => sum + route.distanceKm, 0);
+      const primaryRoute = linkedRoutes[0];
+      const referenceRoutes = (challenge.referenceRouteIds || [])
+        .map(id => state.allRoutes.find(route => route.id === id))
+        .filter(Boolean);
+      const isSingleRoute = challenge.routeMode === "single" && primaryRoute;
+      const startLabel = challenge.startLabel || (primaryRoute && primaryRoute.startLabel);
+      const finishLabel = challenge.finishLabel || (primaryRoute && primaryRoute.finishLabel);
       return node(documentRef, "article", { className: "challenge-card paper-panel" }, [
         node(documentRef, "div", { className: "challenge-card__index", text: String(index + 1).padStart(2, "0") }),
         node(documentRef, "p", { className: "eyebrow", text: "CLASSIC CHALLENGE" }),
         node(documentRef, "h2", { text: challenge.name }),
         node(documentRef, "p", { text: challenge.description }),
+        startLabel && finishLabel
+          ? node(documentRef, "p", {
+            className: "challenge-card__endpoints",
+            text: `起點 ${startLabel} → 終點 ${finishLabel}`
+          })
+          : null,
         node(documentRef, "div", { className: "challenge-card__facts" }, [
-          node(documentRef, "span", { text: `${linkedRoutes.length} 段參考路線` }),
+          node(documentRef, "span", { text: isSingleRoute ? "1 條完整挑戰路線" : `${linkedRoutes.length} 段參考路線` }),
           node(documentRef, "span", { text: `約 ${Math.round(distance)} km` })
         ]),
-        linkedRoutes[0] ? node(documentRef, "a", {
+        referenceRoutes.length
+          ? node(documentRef, "p", {
+            className: "challenge-card__references",
+            text: `補充參考：${referenceRoutes.map(route => route.name).join("、")}`
+          })
+          : null,
+        primaryRoute ? node(documentRef, "a", {
           className: "text-link",
-          href: `#/route/${linkedRoutes[0].id}`,
-          text: "查看參考路線 →"
+          href: `#/route/${primaryRoute.id}`,
+          text: isSingleRoute ? "開啟完整 GPX →" : "查看參考路線 →"
         }) : null
       ]);
     });
@@ -752,7 +782,8 @@
   }
 
   function routeArtPage(documentRef, state) {
-    const cards = routeArtEntries(state.routeArt, state.allRoutes).map(({ art, route }) => {
+    const entries = routeArtEntries(state.routeArt, state.allRoutes);
+    const cards = entries.map(({ art, route }) => {
       return node(documentRef, "article", { className: "art-card paper-panel" }, [
         node(documentRef, "div", {
           className: "art-card__map",
@@ -768,11 +799,11 @@
     });
     return node(documentRef, "div", { className: "catalog-page" }, [
       node(documentRef, "section", { className: "page-intro" }, [
-        node(documentRef, "p", { className: "eyebrow", text: "GPS ART · 06 SHAPES" }),
+        node(documentRef, "p", { className: "eyebrow", text: `GPS ART · ${String(cards.length).padStart(2, "0")} NEAR MATCH` }),
         node(documentRef, "h1", { text: "把騎過的路，畫成一個形狀。" }),
         node(documentRef, "p", {
           className: "page-intro__description",
-          text: "環小台灣、大象、王冠與飛鳥；轉彎不只是轉彎，也是線條的一部分。"
+          text: "只列出通過幾何相似度與道路政策檢查的近似圖形；轉彎不只是轉彎，也是線條的一部分。"
         })
       ]),
       cards.length
@@ -870,6 +901,7 @@
     routeArtEntries,
     selectFeaturedRoute,
     pageTitle,
+    challengesPage,
     routeDetailPage,
     mount
   };
