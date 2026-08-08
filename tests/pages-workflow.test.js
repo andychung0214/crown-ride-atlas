@@ -29,3 +29,26 @@ test("GitHub Pages 工作流程具備測試、最小權限與官方部署步驟"
   assert.match(workflow, /needs:\s*build/);
   assert.match(workflow, /name:\s*github-pages/);
 });
+
+test("入口頁只載入一次核准的 GA4 snippet", () => {
+  const indexPath = path.join(__dirname, "..", "index.html");
+  const html = fs.readFileSync(indexPath, "utf8");
+
+  assert.equal(
+    (html.match(/https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=G-RLDGGCGQV7/g) || []).length,
+    1
+  );
+  assert.match(
+    html,
+    /<script[^>]+async[^>]+src="https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=G-RLDGGCGQV7"/
+  );
+  assert.equal(
+    (html.match(/window\.dataLayer\s*=\s*window\.dataLayer\s*\|\|\s*\[\];/g) || []).length,
+    1
+  );
+  assert.equal((html.match(/gtag\(['"]js['"],\s*new Date\(\)\)/g) || []).length, 1);
+  assert.equal(
+    (html.match(/gtag\(['"]config['"],\s*['"]G-RLDGGCGQV7['"]\)/g) || []).length,
+    1
+  );
+});
