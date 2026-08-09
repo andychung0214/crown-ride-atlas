@@ -75,3 +75,92 @@ test("空白查詢與未知排序使用精選優先", () => {
     ["r1", "r3", "r2"]
   );
 });
+
+test("可依區域、最陡坡度與行程時間區間篩選", () => {
+  const facets = [
+    {
+      id: "easy-facet",
+      name: "城市短坡",
+      regionId: "taipei",
+      regionName: "台北市",
+      areaId: "north",
+      area: "北部",
+      category: "丘陵",
+      tags: [],
+      difficulty: 2,
+      maxGradePct: 8,
+      durationMinutes: 45,
+      featured: false
+    },
+    {
+      id: "steep-facet",
+      name: "中部陡坡",
+      regionId: "taichung",
+      regionName: "台中市",
+      areaId: "central",
+      area: "中部",
+      category: "山岳",
+      tags: [],
+      difficulty: 4,
+      maxGradePct: 18,
+      durationMinutes: 150,
+      featured: true
+    },
+    {
+      id: "long-facet",
+      name: "南部長途",
+      regionId: "kaohsiung",
+      regionName: "高雄市",
+      areaId: "south",
+      area: "南部",
+      category: "挑戰",
+      tags: [],
+      difficulty: 5,
+      maxGradePct: 23,
+      durationMinutes: 720,
+      featured: false
+    }
+  ];
+
+  assert.deepEqual(Filter.apply(facets, { gradeBand: "15-19" }).map(route => route.id), ["steep-facet"]);
+  assert.deepEqual(Filter.apply(facets, { durationBand: "12h-plus" }).map(route => route.id), ["long-facet"]);
+  assert.deepEqual(Filter.apply(facets, { areaId: "south" }).map(route => route.id), ["long-facet"]);
+});
+
+test("缺少可靠坡度資料時不會猜測篩選結果", () => {
+  assert.deepEqual(
+    Filter.apply([{ id: "unknown-grade", name: "未知", regionId: "taipei", difficulty: 3 }], { gradeBand: "10-14" }),
+    []
+  );
+});
+
+test("支援最新、難度與名稱排序且不修改來源陣列", () => {
+  const source = [
+    { id: "old-hard", name: "B route", difficulty: 5, createdAt: "2026-01-01", featured: false },
+    { id: "new-easy", name: "C route", difficulty: 1, createdAt: "2026-08-01", featured: false },
+    { id: "new-hard", name: "A route", difficulty: 5, createdAt: "2026-08-01", featured: true }
+  ];
+  assert.deepEqual(Filter.apply(source, { sort: "latest" }).map(route => route.id), ["new-hard", "new-easy", "old-hard"]);
+  assert.deepEqual(Filter.apply(source, { sort: "difficulty-asc" }).map(route => route.id), ["new-easy", "new-hard", "old-hard"]);
+  assert.deepEqual(Filter.apply(source, { sort: "difficulty-desc" }).map(route => route.id), ["new-hard", "old-hard", "new-easy"]);
+  assert.deepEqual(Filter.apply(source, { sort: "name" }).map(route => route.id), ["new-hard", "old-hard", "new-easy"]);
+  assert.deepEqual(source.map(route => route.id), ["old-hard", "new-easy", "new-hard"]);
+});
+
+test("paginate 以 1 起算並限制頁碼與頁面大小", () => {
+  const source = [{ id: "a" }, { id: "b" }, { id: "c" }];
+  assert.deepEqual(Filter.paginate(source, 2, 2), {
+    items: [source[2]],
+    page: 2,
+    pageSize: 2,
+    total: 3,
+    totalPages: 2
+  });
+  assert.deepEqual(Filter.paginate(source, 0, 2), {
+    items: [source[0], source[1]],
+    page: 1,
+    pageSize: 2,
+    total: 3,
+    totalPages: 2
+  });
+});
