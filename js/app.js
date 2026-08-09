@@ -11,6 +11,7 @@
       "Geo",
       "Gpx",
       "Store",
+      "Progress",
       "ImageTools",
       "MapView",
       "Editor",
@@ -31,18 +32,26 @@
     }
 
     const store = app.Store.create(root.localStorage, app.Data.routes);
+    const progress = app.Progress.create(root.localStorage);
+    const defaultFilters = () => ({
+      query: "",
+      regionId: "",
+      areaId: "",
+      difficulty: "",
+      gradeBand: "",
+      durationBand: "",
+      sort: "featured",
+      page: 1
+    });
     const state = {
       theme: app.Theme.loadTheme(root.localStorage),
-      filters: {
-        query: "",
-        regionId: "",
-        difficulty: "",
-        sort: "featured"
-      },
+      filters: defaultFilters(),
       favorites: loadFavorites(),
+      completed: progress.list(),
       routeInfo: app.Router.parseHash(root.location.hash),
       allRoutes: [],
       visibleRoutes: [],
+      pageView: { items: [], page: 1, pageSize: 24, total: 0, totalPages: 1 },
       selectedRoute: null,
       trackState: {
         routeId: null,
@@ -187,6 +196,8 @@
         routeFilters.regionId = state.routeInfo.params.regionId;
       }
       state.visibleRoutes = app.Filter.apply(state.allRoutes, routeFilters);
+      state.pageView = app.Filter.paginate(state.visibleRoutes, state.filters.page, 24);
+      state.filters.page = state.pageView.page;
       state.selectedRoute = state.routeInfo.page === "route"
         ? state.allRoutes.find(route => route.id === state.routeInfo.params.routeId) || null
         : null;
@@ -322,18 +333,18 @@
         announce(`已切換為${state.theme === "yellow" ? "黃衫" : state.theme === "green" ? "衝刺綠" : state.theme === "polka" ? "登山圓點" : "白衫"}主題。`);
       },
       setFilters(filters) {
-        state.filters = Object.assign({
-          query: "",
-          regionId: "",
-          difficulty: "",
-          sort: "featured"
-        }, filters || {});
+        state.filters = Object.assign(defaultFilters(), filters || {}, { page: 1 });
         if (state.routeInfo.page !== "routes" && state.routeInfo.page !== "region") {
           root.location.hash = "#/routes";
           return;
         }
         render();
         announce(`目前顯示 ${state.visibleRoutes.length} 條路線。`);
+      },
+      setPage(page) {
+        state.filters.page = Number.isInteger(Number(page)) ? Number(page) : 1;
+        render();
+        announce(`目前顯示第 ${state.pageView.page} 頁。`);
       },
       downloadGpx(route, track) {
         try {
@@ -366,6 +377,16 @@
         persistFavorites();
         render();
         announce(state.favorites.has(routeId) ? "已收藏路線。" : "已取消收藏。");
+      },
+      toggleCompleted(routeId) {
+        try {
+          const completed = progress.toggle(routeId);
+          state.completed = progress.list();
+          render();
+          announce(completed ? "已標記為騎過此路線。" : "已取消騎乘完成標記。");
+        } catch (error) {
+          announce(error.message || "目前無法儲存完成標記。");
+        }
       }
     };
 

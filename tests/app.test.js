@@ -9,14 +9,15 @@ const TrackAnalysis = require("../js/core/track-analysis.js");
 
 const appSource = fs.readFileSync(path.join(__dirname, "../js/app.js"), "utf8");
 
-function bootWithTrack(track) {
+function bootWithTrack(track, onRender, page = "route") {
   const snapshots = [];
+  const completed = new Set();
   const rootElement = {
     querySelectorAll() { return []; },
     querySelector() { return null; }
   };
   const root = {
-    location: { hash: "#/route/r1" },
+    location: { hash: page === "route" ? "#/route/r1" : "#/routes" },
     history: { replaceState() {} },
     localStorage: { getItem() { return null; }, setItem() {} },
     requestAnimationFrame(callback) { callback(); },
@@ -37,13 +38,38 @@ function bootWithTrack(track) {
         challenges: [],
         routeArt: []
       },
-      Filter: { apply(routes) { return routes; } },
+      Filter: {
+        apply(routes) { return routes; },
+        paginate(routes, currentPage, pageSize) {
+          return { items: routes, page: currentPage || 1, pageSize: pageSize || 24, total: routes.length, totalPages: 1 };
+        }
+      },
       Router: {
-        parseHash() { return { page: "route", params: { routeId: "r1" } }; }
+        parseHash() {
+          return page === "route"
+            ? { page: "route", params: { routeId: "r1" } }
+            : { page, params: {} };
+        }
       },
       Theme: { loadTheme() { return "yellow"; }, applyTheme(theme) { return theme; } },
       Geo: {},
       Gpx: {},
+      Progress: {
+        create() {
+          return {
+            list() { return new Set(completed); },
+            has(routeId) { return completed.has(routeId); },
+            toggle(routeId) {
+              if (completed.has(routeId)) {
+                completed.delete(routeId);
+                return false;
+              }
+              completed.add(routeId);
+              return true;
+            }
+          };
+        }
+      },
       Store: { create() { return { list() { return root.CrownRideAtlas.Data.routes; } }; } },
       ImageTools: {},
       MapView: {},
@@ -57,7 +83,8 @@ function bootWithTrack(track) {
       },
       Render: {
         pageTitle() { return "測試"; },
-        mount(_element, state) {
+        mount(_element, state, actions) {
+          if (onRender) onRender(state, actions);
           snapshots.push({
             selectedRouteId: state.selectedRoute && state.selectedRoute.id,
             trackState: {
@@ -105,10 +132,16 @@ function bootWithInteractiveTrack(track, onMapMount) {
     addEventListener() {},
     CrownRideAtlas: {
       Data: { routes: [{ id: "r1", name: "測試", trackRef: "r1" }], regions: [], challenges: [], routeArt: [] },
-      Filter: { apply(routes) { return routes; } },
+      Filter: {
+        apply(routes) { return routes; },
+        paginate(routes, currentPage, pageSize) {
+          return { items: routes, page: currentPage || 1, pageSize: pageSize || 24, total: routes.length, totalPages: 1 };
+        }
+      },
       Router: { parseHash() { return { page: "route", params: { routeId: "r1" } }; } },
       Theme: { loadTheme() { return "yellow"; }, applyTheme(theme) { return theme; } },
       Geo: {}, Gpx: {}, ImageTools: {}, Editor: {}, TrackRegistry: {}, TrackManifest: {}, TrackAnalysis,
+      Progress: { create() { return { list() { return new Set(); }, toggle() { return true; } }; } },
       Store: { create() { return { list() { return root.CrownRideAtlas.Data.routes; } }; } },
       TrackLoader: { create() { return { load: async () => track, clear() {} }; } },
       MapView: {
@@ -157,10 +190,16 @@ function bootRouteArtPreview(trackByRouteId, onMapMount) {
     addEventListener() {},
     CrownRideAtlas: {
       Data: { routes, regions: [], challenges: [], routeArt: routes.map(route => ({ routeId: route.id })) },
-      Filter: { apply(items) { return items; } },
+      Filter: {
+        apply(items) { return items; },
+        paginate(items, currentPage, pageSize) {
+          return { items, page: currentPage || 1, pageSize: pageSize || 24, total: items.length, totalPages: 1 };
+        }
+      },
       Router: { parseHash() { return { page: "route-art", params: {} }; } },
       Theme: { loadTheme() { return "yellow"; }, applyTheme(theme) { return theme; } },
       Geo: {}, Gpx: {}, ImageTools: {}, Editor: {}, TrackRegistry: {}, TrackManifest: {}, TrackAnalysis,
+      Progress: { create() { return { list() { return new Set(); }, toggle() { return true; } }; } },
       Store: { create() { return { list() { return routes; } }; } },
       TrackLoader: {
         create() {
@@ -274,4 +313,25 @@ test("路線美學總覽會載入每條公開 trackRef 並掛載真實軌跡預�
   await new Promise(resolve => setTimeout(resolve, 0));
 
   assert.deepEqual(mountedRouteIds.sort(), Object.keys(tracks).sort());
+});
+
+test("App 套用篩選時重設頁碼並可切換完成路線", () => {
+  let latestState = null;
+  let actions = null;
+  bootWithTrack({
+    routeId: "r1",
+    coordinates: [{ lat: 25, lng: 121, ele: 10 }, { lat: 25.01, lng: 121.01, ele: 20 }]
+  }, (state, nextActions) => {
+    latestState = state;
+    actions = nextActions;
+  }, "routes");
+
+  actions.setFilters({ query: "測試", page: 9 });
+  assert.equal(latestState.filters.page, 1);
+  assert.equal(latestState.filters.query, "測試");
+
+  actions.toggleCompleted("r1");
+  assert.equal(latestState.completed.has("r1"), true);
+  actions.toggleCompleted("r1");
+  assert.equal(latestState.completed.has("r1"), false);
 });
