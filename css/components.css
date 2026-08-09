@@ -1078,6 +1078,8 @@
 }
 
 .route-card__actions {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1086,6 +1088,8 @@
 }
 
 .route-card__actions .button {
+  position: relative;
+  z-index: 3;
   min-height: 2.35rem;
   padding: 0.5rem 0.75rem;
   font-size: 0.74rem;

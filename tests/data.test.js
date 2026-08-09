@@ -10,10 +10,10 @@ test("首版涵蓋 22 個地區與至少 60 條路線", () => {
   assert.equal(new Set(Data.routes.map(route => route.regionId)).size, 22);
 });
 
-test("首版包含 8 條經典挑戰與通過閘門的公開路線美學", () => {
+test("首版包含 8 條經典挑戰且不公開不相符的路線美學", () => {
   assert.equal(Data.challenges.length, 8);
-  assert.ok(Data.routeArt.length > 0);
-  assert.ok(Data.routeArt.length <= 6);
+  assert.equal(Data.routeArt.length, 0);
+  assert.equal(Data.routes.some(route => route.id === "route-art-little-taiwan"), false);
 });
 
 test("每條內建路線以相同識別碼的 trackRef 參照軌跡", () => {
@@ -29,6 +29,8 @@ test("每條內建路線以相同識別碼的 trackRef 參照軌跡", () => {
     assert.ok(route.elevationGainM >= 0);
     assert.ok(Number.isInteger(route.difficulty));
     assert.ok(route.difficulty >= 1 && route.difficulty <= 5);
+    assert.ok(Number.isFinite(route.maxGradePct));
+    assert.ok(route.maxGradePct >= 0);
     assert.ok(route.durationMinutes > 0);
     assert.ok(Array.isArray(route.tags) && route.tags.length > 0);
     assert.ok(Array.isArray(route.cautions) && route.cautions.length > 0);
@@ -79,13 +81,7 @@ test("北高與雙塔使用完整 point-to-point 挑戰路線", () => {
   }
 });
 
-test("公開路線美學只保留通過 near-match 閘門的項目", () => {
-  assert.ok(Data.routeArt.length <= 6);
-  assert.ok(Data.routeArt.length > 0);
-  Data.routeArt.forEach(art => {
-    assert.equal(art.matchStatus, "near-match");
-    assert.ok(Number.isFinite(art.shapeScore));
-    assert.ok(Number.isFinite(art.maxPointError));
-    assert.ok(art.name.includes("近似") || art.name.includes("道路"));
-  });
+test("公開路線美學可以為空，但不得公開未相符圖形", () => {
+  assert.deepEqual(Data.routeArt, []);
+  assert.equal(Data.routes.filter(route => route.category === "路線美學").length, 0);
 });

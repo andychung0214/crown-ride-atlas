@@ -291,6 +291,34 @@
     "assets/images/high-pass.webp"
   ];
 
+  // 每條公開路線的最大持續坡度，取自同一份已核准軌跡 bundle 的
+  // SRTM 500m／200m 分析摘要；不以難度等級推估坡度。
+  const routeFacets = {
+    "challenge-north-south": 18.1, "challenge-twin-towers": 20.4,
+    "changhua-route-139": 14.4, "changhua-baguashan": 19.2, "changhua-coast": 2.4,
+    "chiayi-city-lantan": 5.1, "chiayi-city-coffee": 3, "chiayi-city-two-lakes": 11.4,
+    "chiayi-alishan": 14.5, "chiayi-meishan-36": 11.7, "chiayi-route-166": 14.9,
+    "hsinchu-city-coast-17k": 3, "hsinchu-city-gangnan-morning": 2.6, "hsinchu-city-nanliao-xiangshan": 3,
+    "hsinchu-county-five-fingers": 21.4, "hsinchu-county-yulao": 23.3, "hsinchu-county-smangus": 23.3,
+    "hualien-qixingtan": 4.2, "hualien-valley-north": 4.5, "hualien-lake-route-193": 4.3,
+    "kaohsiung-qimei": 10, "kaohsiung-jiaxian-liugui": 10, "kaohsiung-harbor": 1,
+    "keelung-harbor-coast": 10.1, "keelung-nuannuan-hills": 13.4, "keelung-waimushan-wanli": 9.6,
+    "kinmen-big-loop": 5.6, "kinmen-lieyu": 3.6, "kinmen-taiwu": 5.2,
+    "lienchiang-nangan": 13, "lienchiang-beigan": 17, "lienchiang-dongyin": 11.5,
+    "miaoli-xianshan": 28.6, "miaoli-jiangmayuan": 22.4, "miaoli-coast": 5.4,
+    "nantou-wuling-west": 18.5, "nantou-sun-moon-lake": 10.5, "nantou-shanlinxi": 16.2,
+    "new-taipei-yangjin-3p": 21.4, "new-taipei-north-coast": 12, "new-taipei-buyanting": 32,
+    "penghu-cross-sea-bridge": 1.9, "penghu-south-loop": 1.8, "penghu-north-loop": 4.2,
+    "pingtung-south-border": 5.9, "pingtung-dapengbay": 0.7, "pingtung-shouka-mudan": 7.3,
+    "taichung-route-136": 22.2, "taichung-daxueshan": 17.8, "taichung-xinshe": 17.7,
+    "tainan-route-175": 10.4, "tainan-guanziling": 11.5, "tainan-nanhua": 10.3,
+    "taipei-fengguizui": 21.7, "taipei-zhongsha-road": 13.9, "taipei-lengshuikeng": 22.7,
+    "taitung-route-197": 10, "taitung-dulan-coast": 4.8, "taitung-south-link": 8.2,
+    "taoyuan-roman-road": 24.5, "taoyuan-north-cross-baling": 17.2, "taoyuan-shimen-loop": 17.9,
+    "yilan-beiyi": 7.8, "yilan-taipingshan": 12, "yilan-coast": 1.6,
+    "yunlin-caoling": 16.7, "yunlin-huashan": 12.6, "yunlin-kouhu-coast": 0.9
+  };
+
   function cautionsFor(category) {
     const shared = "道路與天候可能變動，出發前請再次確認";
     if (category === "海岸") return ["留意側風與曝曬", shared];
@@ -502,6 +530,7 @@
         distanceKm,
         elevationGainM,
         difficulty,
+        maxGradePct: routeFacets[id],
         durationMinutes: Math.round(distanceKm * 2.4 + elevationGainM / 22),
         tags: tags.concat(category),
         cautions: routeCautions[id] || cautionsFor(category),
@@ -577,6 +606,7 @@
       direction: "point-to-point",
       trackRef: spec.id,
       thumbnail: thumbnails[(routes.length + 1) % thumbnails.length],
+      maxGradePct: routeFacets[spec.id],
       durationMinutes: spec.durationMinutes,
       featured: false,
       createdAt: "2026-08-09T00:00:00.000Z",
@@ -636,7 +666,7 @@
   ];
 
   const artMatchAudit = {
-    "route-art-little-taiwan": { matchStatus: "near-match", shapeScore: 0.1849, maxPointError: 0.4543 },
+    "route-art-little-taiwan": { matchStatus: "rejected", shapeScore: 0.1849, maxPointError: 0.4543, rejectionReason: "道路軌跡為台中市區短迴圈，無法誠實代表環小台灣輪廓。" },
     "route-art-elephant": { matchStatus: "rejected", shapeScore: 0.3704, maxPointError: 0.5558 },
     "route-art-heart-bay": { matchStatus: "rejected", shapeScore: 0.2552, maxPointError: 0.5636 },
     "route-art-crown": { matchStatus: "rejected", shapeScore: 0.3547, maxPointError: 0.6711 },

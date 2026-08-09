@@ -12,15 +12,16 @@ const manifest = require("../js/data/track-manifest.js");
 const root = path.join(__dirname, "..");
 const validatorPath = path.join(root, "scripts", "validate-tracks.mjs");
 
-test("正式資料由 66 條地區路線、2 條挑戰路線與公開路線美學組成", () => {
+test("正式資料由 66 條地區路線與 2 條挑戰路線組成", () => {
   const routeArt = Data.routes.filter(route => route.category === "路線美學");
   const challengeRoutes = Data.routes.filter(route => route.category === "經典挑戰");
   const regularRoutes = Data.routes.filter(route => !["路線美學", "經典挑戰"].includes(route.category));
 
   assert.equal(regularRoutes.length, 66);
   assert.equal(challengeRoutes.length, 2);
-  assert.equal(routeArt.length, Data.routeArt.length);
-  assert.equal(Data.routes.length, 68 + routeArt.length);
+  assert.equal(routeArt.length, 0);
+  assert.equal(Data.routeArt.length, 0);
+  assert.equal(Data.routes.length, 68);
   assert.deepEqual(Object.keys(manifest).sort(), Data.routes.map(route => route.id).sort());
 });
 

@@ -19,9 +19,11 @@ test("受版控道路稽核可由原始幾何重建全部正式路線並重算�
   const bundleCache = new Map();
 
   assert.equal(audit.schemaVersion, 2);
-  assert.deepEqual(Object.keys(audit.routes).sort(), Object.keys(manifest).sort());
+  const publishedAuditIds = Object.keys(audit.routes).filter(routeId => manifest[routeId]).sort();
+  assert.deepEqual(publishedAuditIds, Object.keys(manifest).sort());
 
   for (const [routeId, entry] of Object.entries(audit.routes)) {
+    if (!manifest[routeId]) continue;
     const seed = JSON.parse(await fs.readFile(
       path.join(root, "tools", "route-data", "seeds", `${routeId}.json`),
       "utf8"

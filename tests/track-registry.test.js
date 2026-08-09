@@ -57,7 +57,7 @@ test("固定 manifest 涵蓋且只涵蓋 Data.routes 的 route ID", () => {
     if (error.code !== "MODULE_NOT_FOUND") throw error;
   }
 
-  assert.equal(Data.routes.length, 68 + Data.routeArt.length);
+  assert.equal(Data.routes.length, 68);
   assert.deepEqual(
     Object.keys(manifest).sort(),
     Data.routes.map(route => route.id).sort()
@@ -68,16 +68,12 @@ test("固定 manifest 涵蓋且只涵蓋 Data.routes 的 route ID", () => {
   });
 });
 
-test("公開路線美學都由獨立 route-art bundle 載入", () => {
+test("不相符的 route-art bundle 僅供稽核，不進入公開 manifest", () => {
   const manifest = require("../js/data/track-manifest.js");
   const routeArtIds = Data.routes
     .filter(route => route.category === "路線美學")
     .map(route => route.id);
 
-  routeArtIds.forEach(routeId => {
-    assert.deepEqual(manifest[routeId], {
-      bundleId: "route-art",
-      src: "js/data/tracks/route-art.js"
-    });
-  });
+  assert.deepEqual(routeArtIds, []);
+  assert.equal(manifest["route-art-little-taiwan"], undefined);
 });

@@ -24,14 +24,12 @@ test("明顯不同折線不會通過路線美學閘門", () => {
   assert.equal(Shape.isNearMatch(result), false);
 });
 
-test("公開路線美學的分數與實際道路 bundle 一致", async () => {
+test("環小台灣 audit bundle 保留可重現資料但不進入公開路線", async () => {
   const { parseBundleSource } = await import("../scripts/validate-tracks.mjs");
   const source = await fs.readFile("js/data/tracks/route-art.js", "utf8");
   const tracks = parseBundleSource("route-art", source);
-  const route = Data.routes.find(item => item.id === "route-art-little-taiwan");
-  const result = Shape.compareShape(route.targetShape, tracks[route.id].coordinates);
 
-  assert.equal(Shape.isNearMatch(result), true);
-  assert.ok(Math.abs(result.score - route.shapeScore) < 0.001);
-  assert.ok(Math.abs(result.maxPointError - route.maxPointError) < 0.001);
+  assert.ok(tracks["route-art-little-taiwan"]);
+  assert.equal(Data.routes.some(item => item.id === "route-art-little-taiwan"), false);
+  assert.deepEqual(Data.routeArt, []);
 });

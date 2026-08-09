@@ -81,8 +81,7 @@
     "kinmen-taiwu": { bundleId: "kinmen", src: "js/data/tracks/kinmen.js" },
     "lienchiang-nangan": { bundleId: "lienchiang", src: "js/data/tracks/lienchiang.js" },
     "lienchiang-beigan": { bundleId: "lienchiang", src: "js/data/tracks/lienchiang.js" },
-    "lienchiang-dongyin": { bundleId: "lienchiang", src: "js/data/tracks/lienchiang.js" },
-    "route-art-little-taiwan": { bundleId: "route-art", src: "js/data/tracks/route-art.js" }
+    "lienchiang-dongyin": { bundleId: "lienchiang", src: "js/data/tracks/lienchiang.js" }
   };
 
   Object.values(manifest).forEach(Object.freeze);
