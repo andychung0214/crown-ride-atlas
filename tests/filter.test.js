@@ -156,6 +156,25 @@ test("坡度級距涵蓋小數摘要與 20% 以上路線", () => {
   assert.deepEqual(Filter.apply(routes, { gradeBand: "20-25" }).map(route => route.id), ["edge-32"]);
 });
 
+test("行程時間級距涵蓋小數邊界且不留下分鐘空隙", () => {
+  const routes = [
+    { id: "edge-59", name: "59.5 分鐘", durationMinutes: 59.5 },
+    { id: "edge-119", name: "119.5 分鐘", durationMinutes: 119.5 },
+    { id: "edge-179", name: "179.5 分鐘", durationMinutes: 179.5 },
+    { id: "edge-239", name: "239.5 分鐘", durationMinutes: 239.5 },
+    { id: "edge-299", name: "299.5 分鐘", durationMinutes: 299.5 },
+    { id: "edge-479", name: "479.5 分鐘", durationMinutes: 479.5 },
+    { id: "edge-719", name: "719.5 分鐘", durationMinutes: 719.5 }
+  ];
+  assert.deepEqual(Filter.apply(routes, { durationBand: "under-1h" }).map(route => route.id), ["edge-59"]);
+  assert.deepEqual(Filter.apply(routes, { durationBand: "1-2h" }).map(route => route.id), ["edge-119"]);
+  assert.deepEqual(Filter.apply(routes, { durationBand: "2-3h" }).map(route => route.id), ["edge-179"]);
+  assert.deepEqual(Filter.apply(routes, { durationBand: "3-4h" }).map(route => route.id), ["edge-239"]);
+  assert.deepEqual(Filter.apply(routes, { durationBand: "4-5h" }).map(route => route.id), ["edge-299"]);
+  assert.deepEqual(Filter.apply(routes, { durationBand: "5-8h" }).map(route => route.id), ["edge-479"]);
+  assert.deepEqual(Filter.apply(routes, { durationBand: "8-12h" }).map(route => route.id), ["edge-719"]);
+});
+
 test("支援最新、難度與名稱排序且不修改來源陣列", () => {
   const source = [
     { id: "old-hard", name: "B route", difficulty: 5, createdAt: "2026-01-01", featured: false },

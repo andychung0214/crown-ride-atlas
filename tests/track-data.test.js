@@ -60,6 +60,10 @@ test("正式軌跡均已人工核准且海拔與累積距離可用", async () =>
     assert.ok(Number.isFinite(track.summary.elevationGainM));
     assert.ok(Number.isFinite(track.summary.maximumSustainedGradePct));
     assert.ok(
+      Math.abs(Number(route.maxGradePct) - track.summary.maximumSustainedGradePct) <= 0.05,
+      `${route.id} 卡片坡度須與核准軌跡摘要一致`
+    );
+    assert.ok(
       Math.abs(previousDistance - track.summary.distanceKm) <= 0.01,
       `${route.id} 最後累積距離須與摘要一致`
     );
