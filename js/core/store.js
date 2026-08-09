@@ -118,8 +118,17 @@
     return hasValidMetadata(route) && hasValidCoordinates(route);
   }
 
-  function isValidOverride(route) {
-    return Boolean(route && isText(route.id));
+  function isValidOverride(route, builtInRoute) {
+    if (!route || !isText(route.id)) return false;
+    if (!Object.hasOwn(route, "maxGradePct")) return true;
+    return Boolean(
+      builtInRoute &&
+      typeof builtInRoute.maxGradePct === "number" &&
+      Number.isFinite(builtInRoute.maxGradePct) &&
+      typeof route.maxGradePct === "number" &&
+      Number.isFinite(route.maxGradePct) &&
+      route.maxGradePct === builtInRoute.maxGradePct
+    );
   }
 
   function migrateLegacyAddition(route) {
@@ -130,9 +139,9 @@
   }
 
   function normalizeOverride(route, sourceVersion, builtInById) {
-    if (!isValidOverride(route)) return null;
+    if (!route || !isText(route.id)) return null;
     const base = builtInById.get(route.id);
-    if (!base) return null;
+    if (!base || !isValidOverride(route, base)) return null;
 
     if (sourceVersion === LEGACY_VERSION) {
       if (Object.hasOwn(route, "coordinates")) {
@@ -268,6 +277,9 @@
       }
       if (route.trackSource === "local" && !hasValidCoordinates(route)) {
         throw new Error("路線至少需要兩個有效座標。");
+      }
+      if (builtInIds.has(route.id) && !isValidOverride(route, builtInById.get(route.id))) {
+        throw new Error("內建路線的最大坡度必須沿用核准軌跡摘要。");
       }
       if (!isValidRoute(route) || (!builtInIds.has(route.id) && !isValidLocalRoute(route))) {
         throw new Error("路線資料不完整或格式不正確。");

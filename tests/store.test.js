@@ -32,6 +32,7 @@ const builtInRoute = {
   thumbnail: "assets/images/mountain-dawn.webp",
   distanceKm: 30,
   elevationGainM: 600,
+  maxGradePct: 9.6,
   difficulty: 3,
   durationMinutes: 90,
   tags: ["晨騎"],
@@ -200,6 +201,28 @@ test("匯入會拒絕破壞完整資料契約的新增與覆寫", () => {
   assert.deepEqual(store.previewImport(backup), { valid: 0, invalid: 2, conflicts: 0, sourceVersion: 2 });
   assert.deepEqual(store.importJson(backup), { imported: 0, skipped: 2 });
   assert.deepEqual(store.list(), [builtInRoute]);
+});
+
+test("內建路線覆寫不得竄改核准軌跡的最大持續坡度", () => {
+  const store = Store.create(memoryStorage(), [builtInRoute]);
+  assert.throws(
+    () => store.save({ ...builtInRoute, maxGradePct: 999 }),
+    /最大坡度/
+  );
+  assert.throws(
+    () => store.save({ ...builtInRoute, maxGradePct: "9.6" }),
+    /最大坡度/
+  );
+  const backup = JSON.stringify({
+    version: 2,
+    additions: [],
+    overrides: [{ id: "r1", maxGradePct: 999 }],
+    deleted: []
+  });
+
+  assert.deepEqual(store.previewImport(backup), { valid: 0, invalid: 1, conflicts: 0, sourceVersion: 2 });
+  assert.deepEqual(store.importJson(backup), { imported: 0, skipped: 1 });
+  assert.equal(store.list()[0].maxGradePct, builtInRoute.maxGradePct);
 });
 
 test("拒絕未知版本或無法解析的備份", () => {
