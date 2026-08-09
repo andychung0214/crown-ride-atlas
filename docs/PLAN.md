@@ -8,6 +8,15 @@
 
 **Tech Stack:** HTML5、CSS、Vanilla JavaScript、Leaflet（CDN，可降級）、Web Storage、Canvas、Node.js 內建測試執行器。
 
+## 2026-08-09 對照目前版本
+
+- 公開路線為 68 條（66 條地區路線＋北高、一日雙塔 2 條完整 point-to-point 挑戰）。
+- 路線索引對齊 bike100 公開可見的探索流程：關鍵字、區域、縣市、難度、最陡坡度、行程時間、排序與每頁 24 條分頁。
+- 路線卡與詳情提供「騎過此路線」本機標記，使用 `localStorage`，不宣稱跨裝置同步。
+- `maxGradePct` 只接受各自已核准軌跡 bundle 的 SRTM 路線摘要；缺少可靠資料時篩選會排除該項目，不以難度猜測。
+- 路線美學採誠實發布：目前無通過幾何閘門的公開圖形；`route-art-little-taiwan` 僅供 audit 重現，不可在產品中冒充完整台灣輪廓。
+- 本次範圍不複製 bike100 登入後才能取得的會員資料、路線 GPX、照片或受限內容；只實作公開可觀察的索引互動。
+
 ## Global Constraints
 
 - 不使用 React、Angular、Vue、TypeScript、後端服務、大型遊戲引擎或必要建構流程。

@@ -2,14 +2,21 @@
 
 首版執行結果與未驗證項目請見 [`VERIFICATION.md`](VERIFICATION.md)。
 
+## 2026-08-09 bike100 對照增補
+
+- 路線索引提供關鍵字、區域、縣市、難度、最陡坡度、行程時間與排序；結果以每頁 24 條分頁。
+- 路線卡與詳情可切換「騎過此路線」，狀態只寫入目前瀏覽器的 `localStorage`。
+- 公開資料為 66 條地區路線＋2 條完整挑戰，共 68 條；路線美學頁可在沒有通過幾何閘門的項目時顯示空狀態。
+- 「環小台灣」audit bundle 仍可由測試重現，但不得出現在公開 manifest、路線索引或路線美學頁。
+
 ## 自動化單元測試
 
 | 測試項目 | 測試方式 | 預期結果 |
 |---|---|---|
-| 路線資料契約 | 執行 `npm test`，檢查地區、路線、挑戰、路線美學與識別碼 | 22 地區、66 條地區路線、2 條完整挑戰、至少 1 條公開路線美學均有效且可互相參照 |
+| 路線資料契約 | 執行 `npm test`，檢查地區、路線、挑戰、路線美學與識別碼 | 22 地區、66 條地區路線、2 條完整挑戰；不相符路線美學可為空且不得被公開參照 |
 | 離島與路線美學軌跡 | 執行 `node --test tests/task11-islands-art.test.js` 與 bundle validator | 10 份公開 seed 均 approved；路線美學只驗證通過閘門的公開軌跡，重採樣相鄰點不超過 80.5 公尺 |
-| 全站正式軌跡資料 | 執行 `node --test tests/track-data.test.js` | 66 條地區路線、2 條挑戰與公開路線美學共 69 條；全數人工核准，經緯度、海拔與累積距離為有限數值且距離不倒退 |
-| 全站道路政策稽核 | 執行 `node --test tests/road-policy-audit.test.js` | 受版控原始幾何與 waytags 可完整重建 69 條路線；幾何與稽核 SHA-256 同時綁定正式 bundle，未核准違規為 0 |
+| 全站正式軌跡資料 | 執行 `node --test tests/track-data.test.js` | 66 條地區路線、2 條挑戰共 68 條；全數人工核准，經緯度、海拔與累積距離為有限數值且距離不倒退 |
+| 全站道路政策稽核 | 執行 `node --test tests/road-policy-audit.test.js` | 受版控原始幾何與 waytags 可完整重建 68 條路線；幾何與稽核 SHA-256 同時綁定正式 bundle，未核准違規為 0 |
 | 搜尋、篩選與排序 | 以名稱、地區、標籤、難度、距離與爬升測試純函式 | 結果正確，排序不修改來源陣列 |
 | Hash 路由 | 測試首頁、固定頁、地區、路線與錯誤編碼 | 正確解析參數，未知網址回傳找不到頁 |
 | 地理運算 | 測試 Haversine 距離、總距離與 SVG 座標正規化 | 距離落在合理範圍，無效座標不污染結果 |
@@ -108,7 +115,7 @@
 
 發佈前必須同時通過：
 
-1. `npm run verify` 零失敗，且正式 validator 確認 24 個 bundle、69 條路線。
+1. `npm run verify` 零失敗，且正式 validator 確認 23 個 bundle（22 個公開 bundle＋1 個 audit-only bundle）、68 條公開路線；audit-only 路線不列入 manifest。
 2. 所有 JavaScript 通過 `node --check`。
 3. `git diff --check` 無空白錯誤。
 4. HTTP 首頁與本機靜態資源可存取。
