@@ -361,7 +361,7 @@
     return node(documentRef, "div", { className: "section-heading" }, children);
   }
 
-  function homePage(documentRef, state) {
+  function homePage(documentRef, state, actions) {
     const featured = selectFeaturedRoute(state.allRoutes);
     if (!featured) {
       return node(documentRef, "div", { className: "home-page" }, [
@@ -1030,6 +1030,7 @@
     routeArtEntries,
     selectFeaturedRoute,
     pageTitle,
+    homePage,
     routeCard,
     routesPage,
     routeArtPage,

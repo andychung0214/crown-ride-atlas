@@ -95,6 +95,37 @@ test("空路線目錄不會產生不存在的首頁精選", () => {
   );
 });
 
+test("首頁精選卡片可取得完成標記 action", () => {
+  let toggled = null;
+  const page = Render.homePage(fakeDocument(), {
+    allRoutes: [{
+      id: "home-route",
+      name: "首頁路線",
+      regionId: "taipei",
+      regionName: "台北市",
+      category: "丘陵",
+      summary: "摘要",
+      story: "故事",
+      thumbnail: "assets/images/city-morning.webp",
+      distanceKm: 12,
+      elevationGainM: 200,
+      difficulty: 2,
+      durationMinutes: 60,
+      tags: ["丘陵"],
+      featured: true
+    }],
+    regions: [],
+    favorites: new Set(),
+    completed: new Set()
+  }, {
+    toggleCompleted(routeId) { toggled = routeId; }
+  });
+  const button = descendants(page).find(node => node.name === "button" && node.textContent === "騎過此路線？");
+  assert.ok(button);
+  button.handlers.click();
+  assert.equal(toggled, "home-route");
+});
+
 test("路線索引提供 bike100 對照的坡度、時間與區域篩選", () => {
   const state = {
     routeInfo: { page: "routes", params: {} },
@@ -168,6 +199,9 @@ test("沒有公開路線美學時顯示誠實空狀態", () => {
 function fakeDocument() {
   const documentRef = {
     createElement(name) {
+      return fakeNode(name, documentRef);
+    },
+    createElementNS(_namespace, name) {
       return fakeNode(name, documentRef);
     },
     createTextNode(text) {
