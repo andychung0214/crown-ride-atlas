@@ -31,6 +31,8 @@ test("每條內建路線以相同識別碼的 trackRef 參照軌跡", () => {
     assert.ok(route.difficulty >= 1 && route.difficulty <= 5);
     assert.ok(Number.isFinite(route.maxGradePct));
     assert.ok(route.maxGradePct >= 0);
+    assert.match(route.areaId, /^(north|central|south|east|islands)$/);
+    assert.match(route.durationBand, /^(under-1h|1-2h|2-3h|3-4h|4-5h|5-8h|8-12h|12h-plus)$/);
     assert.ok(route.durationMinutes > 0);
     assert.ok(Array.isArray(route.tags) && route.tags.length > 0);
     assert.ok(Array.isArray(route.cautions) && route.cautions.length > 0);

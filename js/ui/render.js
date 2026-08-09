@@ -497,7 +497,8 @@
       ["north", "北台灣"],
       ["central", "中台灣"],
       ["south", "南台灣"],
-      ["east", "東台灣"]
+      ["east", "東台灣"],
+      ["islands", "離島"]
     ].map(([value, text]) => node(documentRef, "option", {
       value,
       text,

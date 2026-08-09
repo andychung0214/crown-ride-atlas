@@ -70,7 +70,7 @@ npm run tracks:validate
 npm run verify
 ```
 
-測試不依賴大型框架，使用 Node.js 內建 `node:test`。`npm run verify` 會檢查 JavaScript 入口、完整測試與 23 個 bundle（22 個公開 bundle＋1 個 audit-only bundle，共 68 條公開路線）。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
+測試不依賴大型框架，使用 Node.js 內建 `node:test`。`npm run verify` 會檢查 JavaScript 入口、23 個公開軌跡 bundle（共 68 條公開路線）；不相符的 route-art bundle 不在 manifest。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
 
 ## 靜態網站託管
 

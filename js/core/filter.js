@@ -63,7 +63,9 @@
     "南台灣": "south",
     east: "east",
     "東部": "east",
-    "東台灣": "east"
+    "東台灣": "east",
+    islands: "islands",
+    "離島": "islands"
   });
 
   function areaIdFor(route) {

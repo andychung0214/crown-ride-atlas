@@ -6,7 +6,7 @@
 
 | 檢查 | 目前結果 | 證據摘要 |
 |---|---|---|
-| Node.js 自動測試 | 通過 | `npm test`：234 項通過、0 項失敗 |
+| Node.js 自動測試 | 通過 | `npm test`：235 項通過、0 項失敗 |
 | 路線資料完整性 | 通過 | 66 條地區路線＋2 條完整挑戰；每條公開路線均有有限 `maxGradePct` |
 | 路線美學發布閘門 | 通過 | `Data.routeArt` 為空；不相符圖形只保留 audit 資料，不進入公開 manifest |
 | 瀏覽器與 GitHub Pages | 瀏覽器通過／Pages 待驗證 | Chrome 本機 HTTP 實測完成；推送後仍需確認 Pages workflow 成功 |

@@ -115,7 +115,7 @@
 
 發佈前必須同時通過：
 
-1. `npm run verify` 零失敗，且正式 validator 確認 23 個 bundle（22 個公開 bundle＋1 個 audit-only bundle）、68 條公開路線；audit-only 路線不列入 manifest。
+1. `npm run verify` 零失敗，且正式 validator 確認 23 個公開 bundle、68 條公開路線；audit-only route-art 不列入 manifest。
 2. 所有 JavaScript 通過 `node --check`。
 3. `git diff --check` 無空白錯誤。
 4. HTTP 首頁與本機靜態資源可存取。

@@ -319,6 +319,19 @@
     "yunlin-caoling": 16.7, "yunlin-huashan": 12.6, "yunlin-kouhu-coast": 0.9
   };
 
+  const areaIds = { "北部": "north", "中部": "central", "南部": "south", "東部": "east", "離島": "islands" };
+
+  function durationBandFor(minutes) {
+    if (minutes < 60) return "under-1h";
+    if (minutes < 120) return "1-2h";
+    if (minutes < 180) return "2-3h";
+    if (minutes < 240) return "3-4h";
+    if (minutes < 300) return "4-5h";
+    if (minutes < 480) return "5-8h";
+    if (minutes < 720) return "8-12h";
+    return "12h-plus";
+  }
+
   function cautionsFor(category) {
     const shared = "道路與天候可能變動，出發前請再次確認";
     if (category === "海岸") return ["留意側風與曝曬", shared];
@@ -523,6 +536,7 @@
         regionId: region.id,
         regionName: region.name,
         area: region.area,
+        areaId: areaIds[region.area] || "north",
         category,
         summary: `${name}把${region.character}濃縮成一段適合公路車探索的島嶼路線。`,
         story: `從${region.name}的日常街景出發，${name}沿途經過${region.character}。節奏在平路、彎道與爬升之間轉換，適合想用雙輪閱讀地方地景的騎士。`,
@@ -532,6 +546,7 @@
         difficulty,
         maxGradePct: routeFacets[id],
         durationMinutes: Math.round(distanceKm * 2.4 + elevationGainM / 22),
+        durationBand: durationBandFor(Math.round(distanceKm * 2.4 + elevationGainM / 22)),
         tags: tags.concat(category),
         cautions: routeCautions[id] || cautionsFor(category),
         supplies: suppliesFor(distanceKm, difficulty),
@@ -606,8 +621,10 @@
       direction: "point-to-point",
       trackRef: spec.id,
       thumbnail: thumbnails[(routes.length + 1) % thumbnails.length],
+      areaId: areaIds[regions.find(region => region.id === spec.regionId).area] || "north",
       maxGradePct: routeFacets[spec.id],
       durationMinutes: spec.durationMinutes,
+      durationBand: durationBandFor(spec.durationMinutes),
       featured: false,
       createdAt: "2026-08-09T00:00:00.000Z",
       updatedAt: "2026-08-09T00:00:00.000Z"
