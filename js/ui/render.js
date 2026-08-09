@@ -327,6 +327,7 @@
         node(documentRef, "div", { className: "route-card__stats" }, [
           stat(documentRef, `${route.distanceKm} km`, "距離"),
           stat(documentRef, `${route.elevationGainM.toLocaleString("zh-Hant")} m`, "爬升"),
+          stat(documentRef, Number.isFinite(Number(route.maxGradePct)) ? `${Number(route.maxGradePct).toFixed(1)}%` : "未提供", "最陡坡度"),
           stat(documentRef, difficultyLabel(route.difficulty), `難度 ${route.difficulty}`)
         ]),
         node(documentRef, "div", { className: "route-card__actions" }, [
@@ -510,7 +511,7 @@
       ["5-9", "緩坡（5–9%）"],
       ["10-14", "普通坡（10–14%）"],
       ["15-19", "陡坡（15–19%）"],
-      ["20-25", "極陡坡（20–25%）"]
+      ["20-25", "極陡坡（20–25%＋）"]
     ].map(([value, text]) => node(documentRef, "option", {
       value,
       text,

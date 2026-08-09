@@ -134,6 +134,28 @@ test("缺少可靠坡度資料時不會猜測篩選結果", () => {
   );
 });
 
+test("篩選不信任與數值矛盾的自訂坡度或時間區間", () => {
+  const inconsistent = [
+    { id: "wrong-grade", name: "矛盾坡度", maxGradePct: 3, gradeBand: "20-25" },
+    { id: "wrong-duration", name: "矛盾時間", durationMinutes: 30, durationBand: "12h-plus" }
+  ];
+  assert.deepEqual(Filter.apply(inconsistent, { gradeBand: "20-25" }), []);
+  assert.deepEqual(Filter.apply(inconsistent, { durationBand: "12h-plus" }), []);
+});
+
+test("坡度級距涵蓋小數摘要與 20% 以上路線", () => {
+  const routes = [
+    { id: "edge-9", name: "9.6%", maxGradePct: 9.6 },
+    { id: "edge-14", name: "14.4%", maxGradePct: 14.4 },
+    { id: "edge-19", name: "19.2%", maxGradePct: 19.2 },
+    { id: "edge-32", name: "32%", maxGradePct: 32 }
+  ];
+  assert.deepEqual(Filter.apply(routes, { gradeBand: "5-9" }).map(route => route.id), ["edge-9"]);
+  assert.deepEqual(Filter.apply(routes, { gradeBand: "10-14" }).map(route => route.id), ["edge-14"]);
+  assert.deepEqual(Filter.apply(routes, { gradeBand: "15-19" }).map(route => route.id), ["edge-19"]);
+  assert.deepEqual(Filter.apply(routes, { gradeBand: "20-25" }).map(route => route.id), ["edge-32"]);
+});
+
 test("支援最新、難度與名稱排序且不修改來源陣列", () => {
   const source = [
     { id: "old-hard", name: "B route", difficulty: 5, createdAt: "2026-01-01", featured: false },

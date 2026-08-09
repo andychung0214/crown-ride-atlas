@@ -34,10 +34,12 @@
   }
 
   const GRADE_BANDS = Object.freeze({
-    "5-9": [5, 9],
-    "10-14": [10, 14],
-    "15-19": [15, 19],
-    "20-25": [20, 25]
+    // 標籤沿用 bike100 的整數級距；邊界以半開區間避免 9.6%、19.2%
+    // 這類真實摘要落在級距縫隙，20% 以上歸入最後一級。
+    "5-9": [5, 10],
+    "10-14": [10, 15],
+    "15-19": [15, 20],
+    "20-25": [20, Infinity]
   });
 
   const DURATION_BANDS = Object.freeze({
@@ -83,18 +85,16 @@
     return Boolean(band)
       && Number.isFinite(number)
       && number >= band[0]
-      && number <= band[1];
+      && (band[1] === Infinity ? true : number < band[1]);
   }
 
   function matchesGrade(route, key) {
     if (!key) return true;
-    if (typeof route.gradeBand === "string" && route.gradeBand === key) return true;
     return inBand(route.maxGradePct, GRADE_BANDS, key);
   }
 
   function matchesDuration(route, key) {
     if (!key) return true;
-    if (typeof route.durationBand === "string" && route.durationBand === key) return true;
     return inBand(route.durationMinutes, DURATION_BANDS, key);
   }
 

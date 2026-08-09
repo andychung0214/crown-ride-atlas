@@ -155,6 +155,7 @@ test("路線卡提供騎過此路線完成按鈕並反映狀態", () => {
     thumbnail: "assets/images/city-morning.webp",
     distanceKm: 12,
     elevationGainM: 200,
+    maxGradePct: 9.6,
     difficulty: 2
   }, { favorites: new Set(), completed: new Set(["r-complete"]) }, {
     toggleCompleted(routeId) { toggled = routeId; }
@@ -162,6 +163,7 @@ test("路線卡提供騎過此路線完成按鈕並反映狀態", () => {
   const nodes = descendants(page);
   const button = nodes.find(node => node.name === "button");
   assert.ok(button);
+  assert.ok(nodes.some(node => node.textContent === "9.6%"));
   assert.equal(button.textContent, "已完成 · 取消標記");
   assert.equal(button.attributes["aria-pressed"], "true");
   button.handlers.click();

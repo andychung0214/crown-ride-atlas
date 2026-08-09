@@ -9,7 +9,7 @@
 | Node.js 自動測試 | 通過 | `npm test`：235 項通過、0 項失敗 |
 | 路線資料完整性 | 通過 | 66 條地區路線＋2 條完整挑戰；每條公開路線均有有限 `maxGradePct` |
 | 路線美學發布閘門 | 通過 | `Data.routeArt` 為空；不相符圖形只保留 audit 資料，不進入公開 manifest |
-| 瀏覽器與 GitHub Pages | 瀏覽器通過／Pages 待驗證 | Chrome 本機 HTTP 實測完成；推送後仍需確認 Pages workflow 成功 |
+| 瀏覽器與 GitHub Pages | 通過 | Chrome 本機 HTTP 實測完成；Pages run `31320944705` 成功，公開網址 HTTP 200 |
 
 ### Chrome 本機 HTTP 實測
 
@@ -18,6 +18,12 @@
 - 路線美學頁顯示「尚無可顯示的圖案路線」與重新審核條件，未渲染不相符的環小台灣圖形。
 - `challenge-north-south` 詳情實際顯示台北 → 高雄、376.5 km、2,249 m、18.1% 最大持續坡度、Leaflet 道路圖、海拔剖面與「路線資料已載入」；主控台未見阻斷性錯誤。
 - 以畫面擷取確認詳情頁的道路地圖與海拔摘要區塊可見；GPX 下載按鈕可用，GPX XML 內容由 Node 單元測試驗證。
+
+### GitHub Pages 部署實測
+
+- 推送 commit：`7b574c03efc7f537ef0494dc25688097cfa81fbb`。
+- GitHub Actions：[run 31320944705](https://github.com/andychung0214/crown-ride-atlas/actions/runs/31320944705) 狀態 `completed`、結論 `success`。
+- 公開網址：[https://andychung0214.github.io/crown-ride-atlas/](https://andychung0214.github.io/crown-ride-atlas/)；HTTP 實測 `200`，HTML 含「狂輪誌」與 `#app` 容器。
 
 ## 歷史紀錄：2026-07-26 挑戰路線與路線美學修正驗證
 
