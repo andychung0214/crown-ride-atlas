@@ -1,6 +1,6 @@
 # 狂輪誌首版驗證紀錄
 
-## 2026-08-09 bike100 對照與路線美學修正（進行中）
+## 2026-08-09 bike100 對照與路線美學修正（已驗證）
 
 本次版本已完成公開索引功能對照與資料誠實性修正：路線索引加入區域／縣市／最陡坡度／行程時間篩選、排序、每頁 24 條分頁與「騎過此路線」本機標記；68 條公開軌跡的卡片坡度欄位直接取自各自已核准 BRouter／SRTM bundle 摘要。坡度與行程時間級距採半開區間，涵蓋小數摘要且不留下邊界空隙。原本與實際道路幾何不符的「環小台灣」已從公開路線與 manifest 移除，audit bundle 保留供重現，路線美學頁改為誠實空狀態。
 
@@ -9,7 +9,7 @@
 | Node.js 自動測試 | 通過 | `npm test`：238 項通過、0 項失敗 |
 | 路線資料完整性 | 通過 | 66 條地區路線＋2 條完整挑戰；每條公開路線均有有限 `maxGradePct` |
 | 路線美學發布閘門 | 通過 | `Data.routeArt` 為空；不相符圖形只保留 audit 資料，不進入公開 manifest |
-| 瀏覽器與 GitHub Pages | 通過 | Chrome 本機 HTTP 實測完成；Pages run `31320944705` 成功，公開網址 HTTP 200 |
+| 瀏覽器與 GitHub Pages | 通過 | Chrome 本機 HTTP 實測完成；Pages run `31321380473` 成功，公開網址 HTTP 200 |
 
 ### Chrome 本機 HTTP 實測
 
@@ -21,8 +21,8 @@
 
 ### GitHub Pages 部署實測
 
-- 推送 commit：`7b574c03efc7f537ef0494dc25688097cfa81fbb`。
-- GitHub Actions：[run 31320944705](https://github.com/andychung0214/crown-ride-atlas/actions/runs/31320944705) 狀態 `completed`、結論 `success`。
+- 推送 commit：`7820bd47e9a36e685cc5414df817dcc64738d2ee`。
+- GitHub Actions：[run 31321380473](https://github.com/andychung0214/crown-ride-atlas/actions/runs/31321380473) 狀態 `completed`、結論 `success`。
 - 公開網址：[https://andychung0214.github.io/crown-ride-atlas/](https://andychung0214.github.io/crown-ride-atlas/)；HTTP 實測 `200`，HTML 含「狂輪誌」與 `#app` 容器。
 
 ## 歷史紀錄：2026-07-26 挑戰路線與路線美學修正驗證
