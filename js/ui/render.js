@@ -302,8 +302,9 @@
     ]);
   }
 
-  function routeCard(documentRef, route, state) {
+  function routeCard(documentRef, route, state, actions) {
     const favorite = state.favorites.has(route.id);
+    const completed = Boolean(state.completed && state.completed.has(route.id));
     const article = node(documentRef, "article", { className: "route-card paper-panel" });
     article.append(
       node(documentRef, "div", {
@@ -327,6 +328,21 @@
           stat(documentRef, `${route.distanceKm} km`, "距離"),
           stat(documentRef, `${route.elevationGainM.toLocaleString("zh-Hant")} m`, "爬升"),
           stat(documentRef, difficultyLabel(route.difficulty), `難度 ${route.difficulty}`)
+        ]),
+        node(documentRef, "div", { className: "route-card__actions" }, [
+          node(documentRef, "button", {
+            className: completed ? "button button--completed" : "button button--quiet",
+            type: "button",
+            text: completed ? "已完成 · 取消標記" : "騎過此路線？",
+            pressed: completed,
+            label: completed ? "取消騎乘完成標記" : "標記為騎過此路線",
+            on: { click: () => actions && actions.toggleCompleted && actions.toggleCompleted(route.id) }
+          }),
+          node(documentRef, "a", {
+            className: "text-link",
+            href: `#/route/${encodeURIComponent(route.id)}`,
+            text: "查看詳情 →"
+          })
         ])
       ])
     );
@@ -424,7 +440,7 @@
           "從城市短坡到高山長征，先讀懂路線，再決定今天要騎多遠。",
           node(documentRef, "a", { className: "text-link", href: "#/routes", text: "檢視全部 →" })
         ),
-        node(documentRef, "div", { className: "route-grid" }, routes.map(route => routeCard(documentRef, route, state)))
+      node(documentRef, "div", { className: "route-grid" }, routes.map(route => routeCard(documentRef, route, state, actions)))
       ]),
       node(documentRef, "section", { className: "challenge-banner" }, [
         node(documentRef, "div", { className: "challenge-banner__number", text: "08" }),
@@ -448,7 +464,10 @@
           actions.setFilters({
             query: data.get("query"),
             regionId: data.get("regionId"),
+            areaId: data.get("areaId"),
             difficulty: data.get("difficulty"),
+            gradeBand: data.get("gradeBand"),
+            durationBand: data.get("durationBand"),
             sort: data.get("sort")
           });
         }
@@ -473,6 +492,43 @@
         attributes: state.filters.regionId === region.id ? { selected: "selected" } : {}
       }))
     ]);
+    const areaSelect = node(documentRef, "select", { name: "areaId" }, [
+      ["", "全部台灣"],
+      ["north", "北台灣"],
+      ["central", "中台灣"],
+      ["south", "南台灣"],
+      ["east", "東台灣"]
+    ].map(([value, text]) => node(documentRef, "option", {
+      value,
+      text,
+      attributes: state.filters.areaId === value ? { selected: "selected" } : {}
+    })));
+    const gradeSelect = node(documentRef, "select", { name: "gradeBand" }, [
+      ["", "全部坡度"],
+      ["5-9", "緩坡（5–9%）"],
+      ["10-14", "普通坡（10–14%）"],
+      ["15-19", "陡坡（15–19%）"],
+      ["20-25", "極陡坡（20–25%）"]
+    ].map(([value, text]) => node(documentRef, "option", {
+      value,
+      text,
+      attributes: state.filters.gradeBand === value ? { selected: "selected" } : {}
+    })));
+    const durationSelect = node(documentRef, "select", { name: "durationBand" }, [
+      ["", "全部時間"],
+      ["under-1h", "1 小時內"],
+      ["1-2h", "1–2 小時"],
+      ["2-3h", "2–3 小時"],
+      ["3-4h", "3–4 小時"],
+      ["4-5h", "4–5 小時"],
+      ["5-8h", "5–8 小時"],
+      ["8-12h", "8–12 小時"],
+      ["12h-plus", "12 小時以上"]
+    ].map(([value, text]) => node(documentRef, "option", {
+      value,
+      text,
+      attributes: state.filters.durationBand === value ? { selected: "selected" } : {}
+    })));
     const difficultySelect = node(documentRef, "select", { name: "difficulty" }, [
       node(documentRef, "option", { value: "", text: "全部難度" }),
       ...[1, 2, 3, 4, 5].map(value => node(documentRef, "option", {
@@ -483,6 +539,9 @@
     ]);
     const sortSelect = node(documentRef, "select", { name: "sort" }, [
       ["featured", "精選優先"],
+      ["latest", "最新加入"],
+      ["difficulty-asc", "難度由低至高"],
+      ["difficulty-desc", "難度由高至低"],
       ["distance-asc", "距離由短至長"],
       ["elevation-desc", "爬升由高至低"],
       ["name", "名稱排序"]
@@ -499,8 +558,20 @@
         regionSelect
       ]),
       node(documentRef, "label", { className: "field" }, [
+        node(documentRef, "span", { className: "field__label", text: "台灣區域" }),
+        areaSelect
+      ]),
+      node(documentRef, "label", { className: "field" }, [
         node(documentRef, "span", { className: "field__label", text: "難度" }),
         difficultySelect
+      ]),
+      node(documentRef, "label", { className: "field" }, [
+        node(documentRef, "span", { className: "field__label", text: "最陡坡度" }),
+        gradeSelect
+      ]),
+      node(documentRef, "label", { className: "field" }, [
+        node(documentRef, "span", { className: "field__label", text: "行程時間" }),
+        durationSelect
       ]),
       node(documentRef, "label", { className: "field" }, [
         node(documentRef, "span", { className: "field__label", text: "排序" }),
@@ -511,6 +582,45 @@
     return form;
   }
 
+  function paginationControls(documentRef, pageView, actions) {
+    if (!pageView || pageView.totalPages <= 1) return null;
+    const pageButtons = [];
+    for (let page = 1; page <= pageView.totalPages; page += 1) {
+      pageButtons.push(node(documentRef, "button", {
+        className: page === pageView.page ? "pager__button is-active" : "pager__button",
+        type: "button",
+        text: String(page),
+        label: `第 ${page} 頁`,
+        current: page === pageView.page ? "page" : null,
+        on: { click: () => actions.setPage(page) }
+      }));
+    }
+    return node(documentRef, "nav", {
+      className: "pager",
+      label: "路線結果分頁"
+    }, [
+      node(documentRef, "button", {
+        className: "pager__button pager__button--previous",
+        type: "button",
+        text: "上一頁",
+        disabled: pageView.page <= 1,
+        on: { click: () => actions.setPage(pageView.page - 1) }
+      }),
+      node(documentRef, "span", {
+        className: "pager__summary",
+        text: `第 ${pageView.page} / ${pageView.totalPages} 頁`
+      }),
+      node(documentRef, "div", { className: "pager__pages" }, pageButtons),
+      node(documentRef, "button", {
+        className: "pager__button pager__button--next",
+        type: "button",
+        text: "下一頁",
+        disabled: pageView.page >= pageView.totalPages,
+        on: { click: () => actions.setPage(pageView.page + 1) }
+      })
+    ]);
+  }
+
   function routesPage(documentRef, state, actions) {
     const region = state.routeInfo.page === "region"
       ? state.regions.find(item => item.id === state.routeInfo.params.regionId)
@@ -519,6 +629,15 @@
     const description = region
       ? region.character
       : "以地區、難度、距離與爬升，找出下一段值得出發的道路。";
+
+    const pageView = state.pageView || {
+      items: state.visibleRoutes || [],
+      page: 1,
+      pageSize: 24,
+      total: (state.visibleRoutes || []).length,
+      totalPages: 1
+    };
+    const visibleRoutes = Array.isArray(pageView.items) ? pageView.items : [];
 
     return node(documentRef, "div", { className: "index-page" }, [
       node(documentRef, "section", { className: "page-intro" }, [
@@ -531,13 +650,13 @@
         node(documentRef, "div", { className: "results-heading" }, [
           node(documentRef, "p", {
             className: "results-count",
-            text: `找到 ${state.visibleRoutes.length} 條路線`,
+            text: `找到 ${pageView.total} 條路線 · 第 ${pageView.page} / ${pageView.totalPages} 頁`,
             attributes: { "aria-live": "polite" }
           }),
           node(documentRef, "p", { className: "results-note", text: "路況會變動，出發前請再次確認。" })
         ]),
-        state.visibleRoutes.length
-          ? node(documentRef, "div", { className: "route-grid" }, state.visibleRoutes.map(route => routeCard(documentRef, route, state)))
+        pageView.total
+          ? node(documentRef, "div", { className: "route-grid" }, visibleRoutes.map(route => routeCard(documentRef, route, state, actions)))
           : node(documentRef, "div", { className: "empty-state paper-panel" }, [
             node(documentRef, "h2", { text: "沒有符合條件的路線" }),
             node(documentRef, "p", { text: "移除部分篩選或換一個地區，再重新搜尋。" }),
@@ -547,7 +666,8 @@
               text: "清除篩選",
               on: { click: () => actions.setFilters({}) }
             })
-          ])
+          ]),
+        pageView.total ? paginationControls(documentRef, pageView, actions) : null
       ])
     ]);
   }
@@ -574,6 +694,7 @@
       : sourceRoute;
     if (!route) return notFoundPage(documentRef, "找不到這條路線", "它可能已從本機資料中移除。");
     const favorite = state.favorites.has(route.id);
+    const completed = Boolean(state.completed && state.completed.has(route.id));
     const elevation = elevationSummary(route.coordinates);
     const profile = trackReady ? profileDetails(route.track, elevation) : null;
     const trackLoading = currentTrackState.status === "loading";
@@ -632,6 +753,13 @@
               text: favorite ? "取消收藏" : "收藏路線",
               pressed: favorite,
               on: { click: () => actions.toggleFavorite(route.id) }
+            }),
+            node(documentRef, "button", {
+              className: completed ? "button button--completed" : "button button--quiet",
+              type: "button",
+              text: completed ? "已完成 · 取消標記" : "騎過此路線？",
+              pressed: completed,
+              on: { click: () => actions.toggleCompleted && actions.toggleCompleted(route.id) }
             }),
             node(documentRef, "a", {
               className: "text-link",
@@ -810,7 +938,8 @@
         ? node(documentRef, "section", { className: "content-section art-grid" }, cards)
         : node(documentRef, "section", { className: "empty-state paper-panel" }, [
           node(documentRef, "h2", { text: "尚無可顯示的圖案路線" }),
-          node(documentRef, "p", { text: "參考路線可能已從本機資料中移除，可至我的路線重設資料。" })
+          node(documentRef, "p", { text: "目前沒有同時通過公共道路與幾何相似度閘門的公開圖形；取得可驗證的完整環台道路 GPX 並重新審核後，才會重新納入。" }),
+          node(documentRef, "a", { className: "button button--quiet", href: "#/editor", text: "前往我的路線" })
         ])
     ]);
   }
@@ -901,6 +1030,9 @@
     routeArtEntries,
     selectFeaturedRoute,
     pageTitle,
+    routeCard,
+    routesPage,
+    routeArtPage,
     challengesPage,
     routeDetailPage,
     mount

@@ -95,6 +95,76 @@ test("空路線目錄不會產生不存在的首頁精選", () => {
   );
 });
 
+test("路線索引提供 bike100 對照的坡度、時間與區域篩選", () => {
+  const state = {
+    routeInfo: { page: "routes", params: {} },
+    regions: [{ id: "taipei", name: "台北市" }],
+    allRoutes: [],
+    visibleRoutes: [],
+    pageView: { items: [], page: 1, pageSize: 24, total: 0, totalPages: 1 },
+    filters: { query: "", regionId: "", areaId: "", difficulty: "", gradeBand: "", durationBand: "", sort: "featured", page: 1 },
+    completed: new Set()
+  };
+  const page = Render.routesPage(fakeDocument(), state, { setFilters() {} });
+  const nodes = descendants(page);
+  const names = nodes.filter(node => node.name === "select").map(node => node.attributes.name);
+  assert.ok(names.includes("areaId"));
+  assert.ok(names.includes("gradeBand"));
+  assert.ok(names.includes("durationBand"));
+});
+
+test("路線卡提供騎過此路線完成按鈕並反映狀態", () => {
+  let toggled = null;
+  const page = Render.routeCard(fakeDocument(), {
+    id: "r-complete",
+    name: "測試路線",
+    regionName: "台北市",
+    category: "丘陵",
+    summary: "摘要",
+    thumbnail: "assets/images/city-morning.webp",
+    distanceKm: 12,
+    elevationGainM: 200,
+    difficulty: 2
+  }, { favorites: new Set(), completed: new Set(["r-complete"]) }, {
+    toggleCompleted(routeId) { toggled = routeId; }
+  });
+  const nodes = descendants(page);
+  const button = nodes.find(node => node.name === "button");
+  assert.ok(button);
+  assert.equal(button.textContent, "已完成 · 取消標記");
+  assert.equal(button.attributes["aria-pressed"], "true");
+  button.handlers.click();
+  assert.equal(toggled, "r-complete");
+});
+
+test("路線索引顯示頁碼與下一頁操作", () => {
+  let nextPage = null;
+  const state = {
+    routeInfo: { page: "routes", params: {} },
+    regions: [],
+    allRoutes: [],
+    visibleRoutes: [{ id: "r1" }, { id: "r2" }, { id: "r3" }],
+    pageView: { items: [], page: 2, pageSize: 1, total: 3, totalPages: 3 },
+    filters: { query: "", regionId: "", areaId: "", difficulty: "", gradeBand: "", durationBand: "", sort: "featured", page: 2 },
+    completed: new Set()
+  };
+  const page = Render.routesPage(fakeDocument(), state, { setFilters() {}, setPage(value) { nextPage = value; } });
+  const nodes = descendants(page);
+  const texts = nodes.map(node => node.textContent).filter(Boolean).join(" ");
+  assert.match(texts, /第 2 \/ 3 頁/);
+  const next = nodes.find(node => node.name === "button" && node.textContent === "下一頁");
+  assert.ok(next);
+  next.handlers.click();
+  assert.equal(nextPage, 3);
+});
+
+test("沒有公開路線美學時顯示誠實空狀態", () => {
+  const page = Render.routeArtPage(fakeDocument(), { routeArt: [], allRoutes: [] });
+  const texts = descendants(page).map(node => node.textContent).filter(Boolean).join(" ");
+  assert.match(texts, /尚無可顯示的圖案路線/);
+  assert.match(texts, /重新納入/);
+});
+
 function fakeDocument() {
   const documentRef = {
     createElement(name) {
