@@ -498,7 +498,8 @@
       ["central", "中台灣"],
       ["south", "南台灣"],
       ["east", "東台灣"],
-      ["islands", "離島"]
+      ["islands", "離島"],
+      ["cross", "跨區挑戰"]
     ].map(([value, text]) => node(documentRef, "option", {
       value,
       text,

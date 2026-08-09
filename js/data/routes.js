@@ -621,7 +621,7 @@
       direction: "point-to-point",
       trackRef: spec.id,
       thumbnail: thumbnails[(routes.length + 1) % thumbnails.length],
-      areaId: areaIds[regions.find(region => region.id === spec.regionId).area] || "north",
+      areaId: "cross",
       maxGradePct: routeFacets[spec.id],
       durationMinutes: spec.durationMinutes,
       durationBand: durationBandFor(spec.durationMinutes),

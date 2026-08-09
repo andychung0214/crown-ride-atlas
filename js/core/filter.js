@@ -65,7 +65,9 @@
     "東部": "east",
     "東台灣": "east",
     islands: "islands",
-    "離島": "islands"
+    "離島": "islands",
+    cross: "cross",
+    "跨區挑戰": "cross"
   });
 
   function areaIdFor(route) {
