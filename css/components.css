@@ -874,6 +874,10 @@
   background: var(--color-map);
 }
 
+.art-card__map.leaflet-container {
+  min-height: 22rem;
+}
+
 .art-card .route-map {
   height: 100%;
   min-height: 100%;
@@ -972,6 +976,10 @@
     border-bottom: 1px solid var(--color-rule);
   }
 
+  .art-card__map.leaflet-container {
+    min-height: 18rem;
+  }
+
   .art-card__source-mark {
     border-bottom: 1px dashed var(--color-ink-soft);
   }
@@ -990,6 +998,10 @@
   .art-card__source-mark {
     min-height: 16rem;
     font-size: clamp(3.4rem, 18vw, 5.6rem);
+  }
+
+  .art-card__map.leaflet-container {
+    min-height: 16rem;
   }
 
   .art-card__actions {
