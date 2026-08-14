@@ -2,7 +2,7 @@
 
 ## 2026-08-14 台灣 GPS Art 圖鑑候選版
 
-本輪候選版新增 22 件公開來源 GPS Art 圖鑑，與既有正式路線資料隔離。其中台北櫻花 16K、台北圓環 40K 為 `track-ready`；其餘 20 件是 `source-only` 來源卡。逐件查核帳、來源 SHA-256、canonical geometry SHA-256 與段點數見 [`route-research/taiwan-gps-art.md`](route-research/taiwan-gps-art.md)。本節只記錄 2026-08-14 本輪實際執行證據；GitHub Pages 公開版尚待 Task 7 推送與部署後補記。
+本輪正式版新增 22 件公開來源 GPS Art 圖鑑，與既有正式路線資料隔離。其中台北櫻花 16K、台北圓環 40K 為 `track-ready`；其餘 20 件是 `source-only` 來源卡。逐件查核帳、來源 SHA-256、canonical geometry SHA-256 與段點數見 [`route-research/taiwan-gps-art.md`](route-research/taiwan-gps-art.md)。本節記錄 2026-08-14 本輪實際執行、GitHub Pages 部署與公開版 Chrome 驗收證據。
 
 ### 自動驗證
 
@@ -15,6 +15,7 @@
 | Git 空白檢查 | 通過 | `git diff --check` 無輸出、exit code 0 |
 | 敏感檔名掃描 | 通過 | `git ls-files` 未找到 `.env`、`.pem` 或 `.key` 等敏感檔名 |
 | 泛型憑證欄位掃描 | 通過 | 首次只命中 `docs/PLAN.md` 第 648、682 行的掃描命令自我參照；將等價欄位名稱改為分組 regex 後，以 Task 6 指定模式重跑為零匹配，未隱藏或放寬掃描範圍 |
+| GitHub Pages | 通過 | 功能提交 `f7411e9f64f2ef4396d3b4e1811acff981773eb9` 的 [Actions run 31781355667](https://github.com/andychung0214/crown-ride-atlas/actions/runs/31781355667) 結論為 `success`；公開首頁與 GPS Art catalog／tracks 資料檔均為 HTTP 200 |
 
 ### 本機 Chrome 實測
 
@@ -23,10 +24,14 @@
 - 390×844 重新開啟 `#/route-art`，等待首卡可見並再等待 600ms 後，頁面標題為「路線美學｜狂輪誌」；本機 Chrome 本輪 dev logs 的 error／warn 清單為空。
 - 點選台北櫻花 16K 的「下載 GPX」後，站內狀態顯示「已準備下載 台北櫻花 16K GPX。」。Chrome connector 等待 8 秒未捕捉到程式化 Blob 下載事件，因此本輪只宣稱按鈕呼叫與站內狀態成功；GPX XML、MIME、分段與 round-trip 由 Node 自動測試驗證。
 
-### 本輪尚待完成
+### GitHub Pages 部署實測
 
-- GitHub Pages 尚未推送或驗證；公開網址、Actions run 與 HTTP 結果須在 Task 7 實際部署後補入。
-- 圖磚失敗時的 SVG fallback 已有自動測試，但本節不把未在本輪 Chrome 手動切斷網路的情境宣稱為瀏覽器實測通過。
+- 功能提交：`f7411e9f64f2ef4396d3b4e1811acff981773eb9`。
+- GitHub Actions：[run 31781355667](https://github.com/andychung0214/crown-ride-atlas/actions/runs/31781355667) 狀態 `completed`、結論 `success`。
+- 公開網址：[https://andychung0214.github.io/crown-ride-atlas/](https://andychung0214.github.io/crown-ride-atlas/)；首頁、`js/data/route-art-catalog.js` 與 `js/data/route-art-tracks.js` 實測均為 HTTP 200。
+- 公開版 Chrome：`#/route-art` 顯示 22 張卡、20 件 `source-only`、2 張真實軌跡地圖與 17 筆 CS72 作者署名；錯誤清單與水平溢位均為 0。
+- 公開版 Chrome 390×844：仍顯示 22 張卡與 2 張地圖；地圖高度 256px、四個篩選控制高度 47.6px、水平溢位為 0。
+- 圖磚失敗時的 SVG fallback 已有自動測試，但本輪未在公開版 Chrome 手動切斷網路，因此不宣稱該情境已完成瀏覽器實測。
 
 ## 歷史驗證快照
 
