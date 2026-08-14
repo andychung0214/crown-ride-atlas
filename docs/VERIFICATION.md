@@ -1,5 +1,32 @@
 # 狂輪誌首版驗證紀錄
 
+## 2026-08-14 台灣 GPS Art 圖鑑候選版
+
+本輪候選版新增 22 件公開來源 GPS Art 圖鑑，與既有正式路線資料隔離。其中台北櫻花 16K、台北圓環 40K 為 `track-ready`；其餘 20 件是 `source-only` 來源卡。逐件查核帳與軌跡來源 SHA-256 見 [`route-research/taiwan-gps-art.md`](route-research/taiwan-gps-art.md)。本節只記錄 2026-08-14 本輪實際執行證據；GitHub Pages 公開版尚待 Task 7 推送與部署後補記。
+
+### 自動驗證
+
+| 檢查 | 本輪結果 | 實際證據 |
+|---|---|---|
+| 圖鑑頁面／App／渲染 focused 回歸 | 通過 | `node --test tests/pages-workflow.test.js tests/app.test.js tests/render.test.js`：32 項通過、0 項失敗 |
+| 完整驗證 | 通過 | `npm run verify`：262 項通過、0 項失敗；正式 validator 為 23 個 bundle／68 條路線 |
+| 正式路線隔離 | 通過 | `Data.routes` 維持 68 條；GPS Art 不加入正式 track manifest |
+| Git 空白檢查 | 通過 | `git diff --check` 無輸出、exit code 0 |
+| 敏感檔名掃描 | 通過 | `git ls-files` 未找到 `.env`、`.pem` 或 `.key` 等敏感檔名 |
+| 泛型憑證欄位掃描 | 通過 | 首次只命中 `docs/PLAN.md` 第 648、682 行的掃描命令自我參照；將等價欄位名稱改為分組 regex 後，以 Task 6 指定模式重跑為零匹配，未隱藏或放寬掃描範圍 |
+
+### 本機 Chrome 實測
+
+- 1280px 桌機：圖鑑為兩欄；篩選按鈕實際高度 47.6px；水平溢位為 0；顯示 2 件作品地圖。台北櫻花與台北圓環的 Leaflet 線層分別為 12 與 24（每個來源 segment 各有 halo／主線），焦點輪廓為 2px。
+- 390×844：圖鑑為單欄；地圖與 source-only 文字標記高度皆為 256px；水平溢位為 0。選取「有站內軌跡」後精確顯示 2 張卡、2 張地圖與 2 個下載按鈕；兩件作品的線層仍分別為 12 與 24，未因行動版合併 segment。
+- 390×844 重新開啟 `#/route-art`，等待首卡可見並再等待 600ms 後，頁面標題為「路線美學｜狂輪誌」；本機 Chrome 本輪 dev logs 的 error／warn 清單為空。
+- 點選台北櫻花 16K 的「下載 GPX」後，站內狀態顯示「已準備下載 台北櫻花 16K GPX。」。Chrome connector 等待 8 秒未捕捉到程式化 Blob 下載事件，因此本輪只宣稱按鈕呼叫與站內狀態成功；GPX XML、MIME、分段與 round-trip 由 Node 自動測試驗證。
+
+### 本輪尚待完成
+
+- GitHub Pages 尚未推送或驗證；公開網址、Actions run 與 HTTP 結果須在 Task 7 實際部署後補入。
+- 圖磚失敗時的 SVG fallback 已有自動測試，但本節不把未在本輪 Chrome 手動切斷網路的情境宣稱為瀏覽器實測通過。
+
 ## 2026-08-09 bike100 對照與路線美學修正（已驗證）
 
 本次版本已完成公開索引功能對照與資料誠實性修正：路線索引加入區域／縣市／最陡坡度／行程時間篩選、排序、每頁 24 條分頁與「騎過此路線」本機標記；68 條公開軌跡的卡片坡度欄位直接取自各自已核准 BRouter／SRTM bundle 摘要，內建路線覆寫也拒絕竄改此欄位。坡度與行程時間級距採半開區間，涵蓋小數摘要且不留下邊界空隙。原本與實際道路幾何不符的「環小台灣」已從公開路線與 manifest 移除，audit bundle 保留供重現，路線美學頁改為誠實空狀態。

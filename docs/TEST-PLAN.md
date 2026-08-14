@@ -2,7 +2,36 @@
 
 首版執行結果與未驗證項目請見 [`VERIFICATION.md`](VERIFICATION.md)。
 
-## 2026-08-09 bike100 對照增補
+## 2026-08-14 GPS Art 圖鑑增補
+
+### 自動測試
+
+| 測試項目 | 測試方式 | 預期結果 |
+|---|---|---|
+| Catalog 契約 | 執行 `node --test tests/route-art.test.js tests/route-art-catalog.test.js` | 精確 22 件、ID 唯一、公開來源為 HTTPS；活動只接受單車／跑步／步行，來源未明示的數值或地區不補猜 |
+| 狀態與假幾何防護 | 同上，逐件檢查 `track-ready`／`source-only` | 2 件 track-ready 有有效台灣 `segments`；20 件 source-only 不含 `segments` 或 `coordinates` |
+| 分段地圖 | 執行 `node --test tests/map.test.js` | Leaflet 與 SVG 每個來源 segment 各自繪製，不在段界接線；正式路線 flat `coordinates` 行為不變 |
+| 分段 GPX | 執行 `node --test tests/gpx.test.js` | 每段輸出獨立 `<trkseg>`，重新解析保留段界與點序；既有正式路線仍為單一 segment |
+| 圖鑑渲染 | 執行 `node --test tests/render.test.js tests/app.test.js` | 四種篩選正確、結果陣列不被修改；只有 track-ready 建立地圖與 GPX 按鈕，source-only 顯示「軌跡待取得」 |
+| 外部連結安全 | 檢查來源卡渲染測試 | 連結使用 HTTPS、`target="_blank"` 與 `rel="noopener noreferrer"` |
+| 正式路線隔離 | 執行 `npm run verify` | `Data.routes` 維持 68 條；正式 validator 維持 23 個 bundle／68 條路線，GPS Art 不加入 manifest |
+
+### Chrome 手動與行動驗收
+
+| 測試項目 | 測試方式 | 預期結果 |
+|---|---|---|
+| 四種篩選 | 在 `#/route-art` 依序選全部、單車、跑步／步行、有站內軌跡 | 結果數與卡片活動一致；有站內軌跡精確顯示 2 件，`aria-live` 播報結果 |
+| source-only 誠實顯示 | 抽查單車與跑步來源卡 | 顯示圖形文字標記與「軌跡待取得」，沒有 Leaflet、SVG 假折線或 GPX 按鈕 |
+| track-ready 互動 | 抽查台北櫻花 16K、台北圓環 40K | 各有地圖、來源連結與 GPX 按鈕；按鈕呼叫後有可理解狀態訊息 |
+| 圖磚失敗降級 | 載入頁面後阻擋 OpenStreetMap 圖磚或停用網路，再重新掛載／開啟作品 | 以 SVG 顯示相同 segment 數，段界不產生額外連線；文字與來源仍可用 |
+| 390×844 行動版 | Chrome 設定 390×844，檢查全部與有軌跡篩選 | 單欄卡片、地圖／來源標記至少 256px、控制項至少 44×44px、無水平溢位 |
+| 桌機版 | Chrome 設定至少 1280px 寬 | 圖鑑兩欄、內容不截斷、兩件地圖可讀、焦點輪廓清楚 |
+| 外部來源 | 以鍵盤聚焦並開啟來源連結 | 連結可辨識、在新分頁開啟，原分頁不被外部頁控制 |
+| 主控台 | 在桌機及 390px 重載並完成篩選／GPX 按鈕操作 | 沒有由本站程式造成的 error／warn；若第三方圖磚失敗，畫面應降級而非阻斷 |
+
+> 瀏覽器 Blob 下載是否被自動化工具捕捉，與按鈕是否呼叫是不同驗收。若工具沒有下載事件介面，只記錄按鈕與狀態訊息；GPX XML、MIME、段界與 round-trip 由自動測試驗證，不可宣稱已在 Chrome 擷取檔案。
+
+## 2026-08-09 bike100 對照增補（歷史基準）
 
 - 路線索引提供關鍵字、區域、縣市、難度、最陡坡度、行程時間與排序；結果以每頁 24 條分頁。
 - 最陡坡度與行程時間採半開級距（最後一級無上限），小數與 59／60、119／120 等邊界均不得遺漏。
@@ -15,8 +44,8 @@
 
 | 測試項目 | 測試方式 | 預期結果 |
 |---|---|---|
-| 路線資料契約 | 執行 `npm test`，檢查地區、路線、挑戰、路線美學與識別碼 | 22 地區、66 條地區路線、2 條完整挑戰；不相符路線美學可為空且不得被公開參照 |
-| 離島與路線美學軌跡 | 執行 `node --test tests/task11-islands-art.test.js` 與 bundle validator | 10 份公開 seed 均 approved；路線美學只驗證通過閘門的公開軌跡，重採樣相鄰點不超過 80.5 公尺 |
+| 路線資料契約 | 執行 `npm test`，檢查地區、正式路線、挑戰、GPS Art 與識別碼 | 22 地區、66 條地區路線、2 條完整挑戰；另有 22 件獨立 GPS Art，不納入正式路線數 |
+| 離島與舊路線美學軌跡 | 執行 `node --test tests/task11-islands-art.test.js` 與 bundle validator | 離島正式 seed 維持 approved；不相符的舊路線美學只保留 audit 資料，不進入公開 manifest；新 GPS Art 另由 catalog／segments 契約驗證 |
 | 全站正式軌跡資料 | 執行 `node --test tests/track-data.test.js` | 66 條地區路線、2 條挑戰共 68 條；全數人工核准，經緯度、海拔與累積距離為有限數值且距離不倒退 |
 | 全站道路政策稽核 | 執行 `node --test tests/road-policy-audit.test.js` | 受版控原始幾何與 waytags 可完整重建 68 條路線；幾何與稽核 SHA-256 同時綁定正式 bundle，未核准違規為 0 |
 | 搜尋、篩選與排序 | 以名稱、地區、標籤、難度、距離與爬升測試純函式 | 結果正確，排序不修改來源陣列 |

@@ -8,7 +8,16 @@
 
 **Tech Stack:** HTML5、CSS、Vanilla JavaScript、Leaflet（CDN，可降級）、Web Storage、Canvas、Node.js 內建測試執行器。
 
-## 2026-08-09 對照目前版本
+## 2026-08-14 GPS Art 圖鑑增補
+
+- 新增獨立、唯讀的台灣 GPS Art catalog，共 22 件公開來源作品：18 件單車、2 件跑步、2 件步行。
+- 台北櫻花 16K 與台北圓環 40K 的公開 Google My Maps KML 已匯入；分別保留 6 段／1,036 點與 12 段／2,459 點，地圖與 GPX 共用相同 `segments`。
+- 另外 20 件維持 `source-only`，只顯示可稽核來源與「軌跡待取得」，不建立假地圖、假 GPX 或猜測座標。新莊臥虎公開 GPX 因本輪 TLS 建連失敗而留在此狀態。
+- 圖鑑提供全部、單車、跑步／步行、有站內軌跡四種篩選，並支援安全外部連結、分段 Leaflet／SVG 顯示與 390px 觸控版面。
+- GPS Art 不寫入 Store、不加入正式路線或 track manifest；正式資料仍為 66 條地區路線＋2 條完整挑戰、23 個 bundle／68 條路線。
+- 逐件來源、作者、地區、軌跡 URL 與來源 SHA-256 記錄於 `docs/route-research/taiwan-gps-art.md`。
+
+## 2026-08-09 對照版本（歷史快照）
 
 - 公開路線為 68 條（66 條地區路線＋北高、一日雙塔 2 條完整 point-to-point 挑戰）。
 - 路線索引對齊 bike100 公開可見的探索流程：關鍵字、區域、縣市、難度、最陡坡度、行程時間、排序與每頁 24 條分頁。
@@ -34,8 +43,8 @@
 
 ### 首版包含
 
-- 60 條地區路線、22 個台灣縣市／區域。
-- 8 條經典挑戰與 6 組路線美學。
+- 66 條地區路線、2 條完整挑戰路線、22 個台灣縣市／區域。
+- 8 項經典挑戰與 22 件獨立 GPS Art 公開來源圖鑑；其中 2 件具站內軌跡。
 - 首頁、路線索引、地區頁、路線詳情、經典挑戰、路線美學、本機編輯器。
 - 黃衫、衝刺綠、登山圓點與白衫四套主題。
 - 搜尋、地區／難度篩選、排序、收藏。
@@ -63,7 +72,9 @@ crown-ride-atlas/
 │  ├─ layout.css                 # 導覽、頁面、網格與響應式
 │  └─ components.css             # 路線卡、地圖、對話框、通知
 ├─ js/
-│  ├─ data/routes.js             # 60 路線、8 挑戰、6 路線美學
+│  ├─ data/routes.js             # 68 條正式路線、8 項挑戰與圖鑑掛載點
+│  ├─ data/route-art-catalog.js  # 22 件 GPS Art 公開來源圖鑑
+│  ├─ data/route-art-tracks.js   # 兩件公開 KML 的凍結分段軌跡
 │  ├─ core/filter.js             # 搜尋、篩選與排序純函式
 │  ├─ core/store.js              # 本機資料合併、備份與匯入
 │  ├─ core/theme.js              # 主題驗證與持久化
@@ -634,7 +645,7 @@ README 包含網站介紹、特色、操作、安裝與執行、結構、測試�
 Run:
 
 ```powershell
-rg -n "TODO|TBD|localhost:[0-9]+/\\?key=|apiAccessKey|apiSecretKey" README.md CONTRIBUTING.md docs js index.html
+rg -n "TODO|TBD|localhost:[0-9]+/\\?key=|api(Access|Secret)Key" README.md CONTRIBUTING.md docs js index.html
 ```
 
 Expected: no matches。
@@ -668,7 +679,7 @@ Expected: 0 failures。
 Run:
 
 ```powershell
-rg -n "(apiAccessKey|apiSecretKey|client_secret|private[_-]?key|BEGIN [A-Z ]+PRIVATE KEY|innerHTML|insertAdjacentHTML)" . --glob "!.git/**" --glob "!.superpowers/**"
+rg -n "(api(Access|Secret)Key|client_secret|private[_-]?key|BEGIN [A-Z ]+PRIVATE KEY|innerHTML|insertAdjacentHTML)" . --glob "!.git/**" --glob "!.superpowers/**"
 ```
 
 Expected: no credential matches and no unsafe DOM sink matches。
@@ -737,7 +748,8 @@ Expected: `main -> main`，並建立 upstream。
 - **`localStorage` 容量有限**：圖片壓縮、檔案上限、錯誤回復與 JSON 備份。
 - **Leaflet／圖磚需要網路**：提供 SVG 路線圖與完整文字資料。
 - **`file://` 限制**：使用傳統 defer scripts，避免必要 ES Modules 與 fetch。
-- **60 條資料的一致性**：以資料契約測試檢查數量、唯一性、座標與數值。
+- **正式路線與 GPS Art 污染**：以資料契約測試固定 68 條正式路線與 23 個 bundle，GPS Art 使用獨立 catalog，不寫入 Store 或 manifest。
+- **GPS Art 來源失效或幾何不足**：保留查核日期；沒有可驗證的公開軌跡時降級為來源卡，不以人工描圖補足。
 - **原創圖片幾何錯誤或 AI 感**：限制畫面構圖、目視審查並以編輯誌裁切降低不自然細節。
 - **使用者已公開 Unsplash 憑證**：專案完全不使用該憑證，提交前執行敏感資訊掃描；擁有者需撤銷並重發。
 
@@ -746,7 +758,8 @@ Expected: `main -> main`，並建立 upstream。
 - [x] 可直接開啟 `index.html` 使用核心功能。
 - [x] 靜態伺服器下 Leaflet 正常，失敗時 SVG 正常。
 - [x] 四主題可切換並持久化。
-- [x] 72 條路線可搜尋、篩選與檢視。
+- [x] 68 條正式路線可搜尋、篩選與檢視。
+- [x] 路線美學顯示 22 件公開來源作品，2 件站內軌跡可依原始 segment 顯示與輸出 GPX，其餘不建立假幾何。
 - [x] 每條路線可下載有效 GPX。
 - [x] 本機新增、編輯、刪除、備份、匯入與重設可用。
 - [x] 桌機、平板、手機與鍵盤操作通過。
