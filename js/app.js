@@ -16,6 +16,7 @@
       "MapView",
       "Editor",
       "Render",
+      "RouteArt",
       "TrackRegistry",
       "TrackManifest",
       "TrackLoader"
@@ -61,7 +62,8 @@
       },
       regions: app.Data.regions,
       challenges: app.Data.challenges,
-      routeArt: app.Data.routeArt
+      routeArt: app.Data.routeArt,
+      routeArtFilter: "all"
     };
     let interactiveHandles = [];
     let interactiveGeneration = 0;
@@ -165,6 +167,11 @@
           element.setAttribute("aria-busy", "false");
           element.textContent = "路線預覽暫時無法載入。";
         });
+      });
+      rootElement.querySelectorAll("[data-art-map]").forEach(element => {
+        const art = state.routeArt.find(item => item.id === element.dataset.artMap);
+        if (!art || art.status !== "track-ready" || !app.RouteArt.hasUsableSegments(art.segments)) return;
+        interactiveHandles.push(app.MapView.mount(element, art));
       });
       rootElement.querySelectorAll("[data-elevation]").forEach(element => {
         const route = hydratedRoute(state.allRoutes.find(item => item.id === element.dataset.elevation));
@@ -345,6 +352,24 @@
         state.filters.page = Number.isInteger(Number(page)) ? Number(page) : 1;
         render();
         announce(`目前顯示第 ${state.pageView.page} 頁。`);
+      },
+      setRouteArtFilter(filterKey) {
+        state.routeArtFilter = app.RouteArt.FILTERS.includes(filterKey) ? filterKey : "all";
+        render();
+        announce(`目前顯示 ${app.RouteArt.filter(state.routeArt, state.routeArtFilter).length} 件作品。`);
+      },
+      downloadArtGpx(art) {
+        if (!art || art.status !== "track-ready" || !app.RouteArt.hasUsableSegments(art.segments)) {
+          announce("這件作品目前沒有可下載的公開軌跡。");
+          return;
+        }
+        try {
+          const download = app.Gpx.createDownload(art, { segments: art.segments });
+          createFileDownload(download.filename, download.text, download.mimeType);
+          announce(`已準備下載 ${art.name} GPX。`);
+        } catch (error) {
+          announce(error.message || "目前無法建立 GPX。");
+        }
       },
       downloadGpx(route, track) {
         try {

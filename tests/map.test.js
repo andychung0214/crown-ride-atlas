@@ -579,3 +579,61 @@ test("直接開啟檔案時不啟動 Leaflet 並使用 SVG", () => {
   assert.equal(leafletCalls, 0);
   assert.equal(element.dataset.mapMode, "svg");
 });
+
+test("GPS Art 的 Leaflet 地圖逐段繪製且以全部點計算邊界", () => {
+  const documentRef = fakeDocument();
+  const element = fakeNode("div", documentRef);
+  const lineCalls = [];
+  let fittedBounds = null;
+  const map = {
+    fitBounds(bounds) { fittedBounds = bounds; },
+    remove() {}
+  };
+  documentRef.defaultView.L = {
+    map() { return map; },
+    tileLayer() { return { addTo() { return this; }, on() {}, off() {} }; },
+    polyline(points, options) {
+      lineCalls.push({ points, options });
+      return { addTo() { return this; }, getBounds() { return {}; } };
+    }
+  };
+
+  MapView.mount(element, {
+    id: "gps-art-two-segments",
+    name: "分段圖形",
+    segments: [
+      [{ lat: 25, lng: 121 }, { lat: 25.01, lng: 121.01 }],
+      [{ lat: 24.9, lng: 120.9 }, { lat: 24.91, lng: 120.91 }]
+    ]
+  });
+
+  assert.equal(lineCalls.length, 4);
+  assert.deepEqual(lineCalls.map(call => call.points), [
+    [[25, 121], [25.01, 121.01]],
+    [[25, 121], [25.01, 121.01]],
+    [[24.9, 120.9], [24.91, 120.91]],
+    [[24.9, 120.9], [24.91, 120.91]]
+  ]);
+  assert.deepEqual(fittedBounds, [[24.9, 120.9], [25.01, 121.01]]);
+});
+
+test("GPS Art 的 SVG fallback 為每個 segment 建立獨立路徑", () => {
+  const documentRef = fakeDocument();
+  documentRef.defaultView.location.protocol = "file:";
+  const element = fakeNode("div", documentRef);
+
+  MapView.mount(element, {
+    id: "gps-art-two-segments",
+    name: "分段圖形",
+    segments: [
+      [{ lat: 25, lng: 121 }, { lat: 25.01, lng: 121.01 }],
+      [{ lat: 24.9, lng: 120.9 }, { lat: 24.91, lng: 120.91 }]
+    ]
+  });
+
+  const paths = descendants(element.children[0]).filter(node => [
+    "route-map__line-halo", "route-map__line"
+  ].includes(node.attributes.class));
+  assert.equal(paths.length, 4);
+  assert.ok(paths.every(path => (path.attributes.d.match(/M /g) || []).length === 1));
+});

@@ -4,7 +4,10 @@
   const TrackAnalysis = typeof module === "object" && module.exports
     ? require("../core/track-analysis.js")
     : root.CrownRideAtlas.TrackAnalysis;
-  const api = factory(TrackAnalysis);
+  const RouteArt = typeof module === "object" && module.exports
+    ? require("../core/route-art.js")
+    : root.CrownRideAtlas.RouteArt;
+  const api = factory(TrackAnalysis, RouteArt);
 
   if (typeof module === "object" && module.exports) {
     module.exports = api;
@@ -15,7 +18,7 @@
       Render: api
     });
   }
-})(typeof window !== "undefined" ? window : globalThis, function (TrackAnalysis) {
+})(typeof window !== "undefined" ? window : globalThis, function (TrackAnalysis, RouteArt) {
   const difficultyNames = ["", "入門", "輕鬆", "進階", "困難", "極限"];
   const themeLabels = {
     yellow: "黃衫",
@@ -105,12 +108,8 @@
         && point.lng <= 180);
   }
 
-  function routeArtEntries(routeArt, routes) {
-    const routeById = new Map((Array.isArray(routes) ? routes : []).map(route => [route.id, route]));
-    return (Array.isArray(routeArt) ? routeArt : [])
-      .map(art => ({ art, route: routeById.get(art.routeId) }))
-      .filter(entry => Boolean(entry.route)
-        && (!entry.art.matchStatus || entry.art.matchStatus === "near-match"));
+  function routeArtEntries(routeArt, filterKey) {
+    return RouteArt.filter(routeArt, filterKey);
   }
 
   function selectFeaturedRoute(routes) {
@@ -912,37 +911,107 @@
     ]);
   }
 
-  function routeArtPage(documentRef, state) {
-    const entries = routeArtEntries(state.routeArt, state.allRoutes);
-    const cards = entries.map(({ art, route }) => {
+  function routeArtPage(documentRef, state, actions) {
+    const filterKey = RouteArt.FILTERS.includes(state.routeArtFilter) ? state.routeArtFilter : "all";
+    const entries = routeArtEntries(state.routeArt, filterKey);
+    const stats = RouteArt.stats(state.routeArt);
+    const filterLabels = {
+      all: "全部",
+      cycling: "單車",
+      foot: "跑步／步行",
+      "track-ready": "有站內軌跡"
+    };
+    const cards = entries.map(art => {
+      const facts = [
+        art.regionName || "地區未公開",
+        art.activityLabel,
+        `來源 ${art.sourcePlatform}`,
+        art.author ? `作者 ${art.author}` : null,
+        Number.isFinite(art.distanceKm) ? `${art.distanceKm.toLocaleString("zh-Hant")} km` : null,
+        Number.isFinite(art.elevationGainM) ? `爬升 ${art.elevationGainM.toLocaleString("zh-Hant")} m` : art.elevationGainLabel ? `爬升 ${art.elevationGainLabel}` : null,
+        `查核 ${art.verifiedAt}`
+      ].filter(Boolean);
       return node(documentRef, "article", { className: "art-card paper-panel" }, [
-        node(documentRef, "div", {
-          className: "art-card__map",
-          data: { routeMap: route.id }
-        }),
+        art.status === "track-ready"
+          ? node(documentRef, "div", {
+            className: "art-card__map",
+            label: `${art.name} GPS Art 軌跡預覽`,
+            data: { artMap: art.id }
+          })
+          : node(documentRef, "div", {
+            className: "art-card__source-mark",
+            text: art.shapeLabel,
+            attributes: { "aria-hidden": "true" }
+          }),
         node(documentRef, "div", { className: "art-card__copy" }, [
-          node(documentRef, "p", { className: "eyebrow", text: "GPS ART · RIDE TO DRAW" }),
+          node(documentRef, "p", {
+            className: `art-card__status art-card__status--${art.status}`,
+            text: art.status === "track-ready" ? "站內軌跡可預覽" : "軌跡待取得"
+          }),
           node(documentRef, "h2", { text: art.name }),
-          node(documentRef, "p", { text: art.description }),
-          node(documentRef, "a", { className: "text-link", href: `#/route/${route.id}`, text: "檢視圖案路線 →" })
+          node(documentRef, "p", { className: "art-card__shape", text: `圖形主題：${art.shapeLabel}` }),
+          node(documentRef, "p", { text: art.summary }),
+          node(documentRef, "p", { className: "art-card__facts", text: facts.join(" · ") }),
+          node(documentRef, "div", { className: "art-card__actions" }, [
+            art.status === "track-ready"
+              ? node(documentRef, "button", {
+                className: "button",
+                type: "button",
+                text: "下載 GPX",
+                on: { click: () => actions.downloadArtGpx(art) }
+              })
+              : null,
+            node(documentRef, "a", {
+              className: "text-link",
+              href: art.sourceUrl,
+              text: "查看原始作品",
+              attributes: { target: "_blank", rel: "noopener noreferrer" }
+            })
+          ])
         ])
       ]);
     });
     return node(documentRef, "div", { className: "catalog-page" }, [
       node(documentRef, "section", { className: "page-intro" }, [
-        node(documentRef, "p", { className: "eyebrow", text: `GPS ART · ${String(cards.length).padStart(2, "0")} NEAR MATCH` }),
+        node(documentRef, "p", { className: "eyebrow", text: "TAIWAN GPS ART CATALOG" }),
         node(documentRef, "h1", { text: "把騎過的路，畫成一個形狀。" }),
         node(documentRef, "p", {
           className: "page-intro__description",
-          text: "只列出通過幾何相似度與道路政策檢查的近似圖形；轉彎不只是轉彎，也是線條的一部分。"
+          text: "蒐集台灣公開 GPS Art／Strava Art 作品；跑步、步行與單車，都能留下島嶼上的線條。"
+        }),
+        node(documentRef, "p", {
+          className: "art-catalog__stats",
+          text: `${stats.total} 件公開作品 · ${stats.trackReady} 件可預覽軌跡`
+        }),
+        node(documentRef, "div", {
+          className: "art-catalog__filters",
+          label: "篩選路線美學作品",
+          attributes: { role: "group" }
+        }, RouteArt.FILTERS.map(key => node(documentRef, "button", {
+          className: key === filterKey ? "button is-active" : "button button--quiet",
+          type: "button",
+          text: filterLabels[key],
+          pressed: key === filterKey,
+          data: { artFilter: key },
+          on: { click: () => actions.setRouteArtFilter(key) }
+        }))),
+        node(documentRef, "p", {
+          className: "art-catalog__result",
+          text: `目前顯示 ${entries.length} 件作品`,
+          attributes: { "aria-live": "polite", "aria-atomic": "true" }
         })
       ]),
       cards.length
         ? node(documentRef, "section", { className: "content-section art-grid" }, cards)
         : node(documentRef, "section", { className: "empty-state paper-panel" }, [
-          node(documentRef, "h2", { text: "尚無可顯示的圖案路線" }),
-          node(documentRef, "p", { text: "目前沒有同時通過公共道路與幾何相似度閘門的公開圖形；取得可驗證的完整環台道路 GPX 並重新審核後，才會重新納入。" }),
-          node(documentRef, "a", { className: "button button--quiet", href: "#/editor", text: "前往我的路線" })
+          node(documentRef, "h2", { text: "這個篩選暫無作品" }),
+          node(documentRef, "p", { text: "可以清除篩選，回到完整的台灣 GPS Art 圖鑑。" }),
+          node(documentRef, "button", {
+            className: "button button--quiet",
+            type: "button",
+            text: "顯示全部作品",
+            on: { click: () => actions.setRouteArtFilter("all") }
+          })
         ])
     ]);
   }
@@ -999,7 +1068,7 @@
     }
     if (state.routeInfo.page === "route") return routeDetailPage(documentRef, state, actions);
     if (state.routeInfo.page === "challenges") return challengesPage(documentRef, state);
-    if (state.routeInfo.page === "route-art") return routeArtPage(documentRef, state);
+    if (state.routeInfo.page === "route-art") return routeArtPage(documentRef, state, actions);
     if (state.routeInfo.page === "editor") return editorPlaceholder(documentRef);
     return notFoundPage(documentRef);
   }

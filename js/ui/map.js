@@ -25,6 +25,14 @@
     return Array.isArray(route && route.coordinates) ? route.coordinates : [];
   }
 
+  function routeSegments(route) {
+    if (Array.isArray(route && route.segments)) {
+      return route.segments.filter(segment => Array.isArray(segment) && segment.length >= 2);
+    }
+    const coordinates = routeCoordinates(route);
+    return coordinates.length ? [coordinates] : [];
+  }
+
   function isCompatibleProfileTrack(route, candidate) {
     if (!candidate) return false;
     const candidateId = candidate.routeId;
@@ -255,6 +263,18 @@
     };
   }
 
+  function buildSvgSegmentPaths(segments, width, height, padding) {
+    const allCoordinates = segments.flat().filter(Geo.isCoordinate);
+    return segments.map(segment => segment
+      .filter(Geo.isCoordinate)
+      .map((point, index) => {
+        const projected = projectMapPoint(allCoordinates, point, width, height, padding);
+        return `${index === 0 ? "M" : "L"} ${round(projected.x)} ${round(projected.y)}`;
+      })
+      .join(" "))
+      .filter(Boolean);
+  }
+
   function appendSvgMapMarkers(svg, route, width, height, padding) {
     const coordinates = routeCoordinates(route).filter(Geo.isCoordinate);
     const markerCoordinates = coordinates.concat((route.waypoints || []).filter(Geo.isCoordinate));
@@ -287,9 +307,16 @@
     title.textContent = `${route.name}路線輪廓`;
     const contours = svgElement(documentRef, "g", { class: "route-map__contours", "aria-hidden": "true" });
     ["M -40 350 C 140 260 230 420 430 300 S 760 170 960 260", "M -30 265 C 170 170 285 330 470 225 S 760 90 950 170", "M -20 175 C 150 110 310 220 480 145 S 720 30 940 75"].forEach(data => contours.append(svgElement(documentRef, "path", { d: data })));
-    const routePath = buildSvgPath(routeCoordinates(route), width, height, 52);
-    svg.append(title, contours, svgElement(documentRef, "path", { class: "route-map__line-halo", d: routePath }), svgElement(documentRef, "path", { class: "route-map__line", d: routePath }));
-    appendSvgMapMarkers(svg, route, width, height, 52);
+    const isSegmented = Array.isArray(route.segments);
+    const routePaths = isSegmented
+      ? buildSvgSegmentPaths(routeSegments(route), width, height, 52)
+      : [buildSvgPath(routeCoordinates(route), width, height, 52)];
+    svg.append(title, contours);
+    routePaths.forEach(routePath => svg.append(
+      svgElement(documentRef, "path", { class: "route-map__line-halo", d: routePath }),
+      svgElement(documentRef, "path", { class: "route-map__line", d: routePath })
+    ));
+    if (!isSegmented) appendSvgMapMarkers(svg, route, width, height, 52);
     const note = documentRef.createElement("p");
     note.className = "route-map__fallback-note";
     note.textContent = "目前顯示離線路線輪廓；使用靜態伺服器並連線網路可檢視互動地圖。";
@@ -317,13 +344,23 @@
 
   function mountLeaflet(element, route, leaflet, browserWindow) {
     element.replaceChildren();
-    const points = routeCoordinates(route).map(point => [point.lat, point.lng]);
+    const segments = routeSegments(route);
+    const pointSegments = segments.map(segment => segment.map(point => [point.lat, point.lng]));
+    const allPoints = pointSegments.flat();
     const map = leaflet.map(element, { scrollWheelZoom: false, zoomControl: true });
     const tiles = leaflet.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap contributors" });
-    leaflet.polyline(points, { color: "#f7f3e9", weight: 11, opacity: 0.94, lineCap: "round", lineJoin: "round" }).addTo(map);
-    const line = leaflet.polyline(points, { color: browserWindow.getComputedStyle(element).getPropertyValue("--color-accent").trim() || "#F5D547", weight: 5, opacity: 0.95, lineCap: "round", lineJoin: "round" }).addTo(map);
-    map.fitBounds(line.getBounds(), { padding: [24, 24] });
-    addLeafletMarkers(leaflet, map, route);
+    const accent = browserWindow.getComputedStyle(element).getPropertyValue("--color-accent").trim() || "#F5D547";
+    pointSegments.forEach(points => {
+      leaflet.polyline(points, { color: "#f7f3e9", weight: 11, opacity: 0.94, lineCap: "round", lineJoin: "round" }).addTo(map);
+      leaflet.polyline(points, { color: accent, weight: 5, opacity: 0.95, lineCap: "round", lineJoin: "round" }).addTo(map);
+    });
+    const latitudes = allPoints.map(point => point[0]);
+    const longitudes = allPoints.map(point => point[1]);
+    map.fitBounds([
+      [Math.min(...latitudes), Math.min(...longitudes)],
+      [Math.max(...latitudes), Math.max(...longitudes)]
+    ], { padding: [24, 24] });
+    if (!Array.isArray(route.segments)) addLeafletMarkers(leaflet, map, route);
     element.dataset.mapMode = "leaflet";
     let active = true;
     const handleTileError = () => {

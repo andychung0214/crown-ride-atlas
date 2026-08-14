@@ -6,6 +6,8 @@ const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
 const TrackAnalysis = require("../js/core/track-analysis.js");
+const RouteArt = require("../js/core/route-art.js");
+const Gpx = require("../js/core/gpx.js");
 
 const appSource = fs.readFileSync(path.join(__dirname, "../js/app.js"), "utf8");
 
@@ -76,6 +78,7 @@ function bootWithTrack(track, onRender, page = "route") {
       Editor: {},
       TrackRegistry: {},
       TrackManifest: {},
+      RouteArt,
       TrackLoader: {
         create() {
           return { load: async () => track, clear() {} };
@@ -141,6 +144,7 @@ function bootWithInteractiveTrack(track, onMapMount) {
       Router: { parseHash() { return { page: "route", params: { routeId: "r1" } }; } },
       Theme: { loadTheme() { return "yellow"; }, applyTheme(theme) { return theme; } },
       Geo: {}, Gpx: {}, ImageTools: {}, Editor: {}, TrackRegistry: {}, TrackManifest: {}, TrackAnalysis,
+      RouteArt,
       Progress: { create() { return { list() { return new Set(); }, toggle() { return true; } }; } },
       Store: { create() { return { list() { return root.CrownRideAtlas.Data.routes; } }; } },
       TrackLoader: { create() { return { load: async () => track, clear() {} }; } },
@@ -159,15 +163,16 @@ function bootWithInteractiveTrack(track, onMapMount) {
   vm.runInNewContext(appSource, { window: root, Blob: class Blob {} });
 }
 
-function bootRouteArtPreview(trackByRouteId, onMapMount) {
-  const routes = Object.keys(trackByRouteId).map(id => ({ id, name: id, trackRef: id }));
-  const mapElements = routes.map(route => ({
-    dataset: { routeMap: route.id },
+function bootRouteArtCatalog(items, onMapMount, onDownload) {
+  const mapElements = items.map(art => ({
+    dataset: { artMap: art.id },
     setAttribute() {}
   }));
+  let latestState = null;
+  let latestActions = null;
   const rootElement = {
     querySelectorAll(selector) {
-      return selector === "[data-route-map]" ? mapElements : [];
+      return selector === "[data-art-map]" ? mapElements : [];
     },
     querySelector() { return null; },
     contains(element) { return mapElements.includes(element); }
@@ -184,12 +189,22 @@ function bootRouteArtPreview(trackByRouteId, onMapMount) {
       documentElement: {},
       baseURI: "http://localhost/",
       getElementById() { return rootElement; },
-      createElement() { return { className: "", textContent: "" }; },
+      createElement(name) {
+        if (name === "a") {
+          return {
+            className: "",
+            textContent: "",
+            click() { onDownload(this.download); },
+            remove() {}
+          };
+        }
+        return { className: "", textContent: "" };
+      },
       body: { append() {} }
     },
     addEventListener() {},
     CrownRideAtlas: {
-      Data: { routes, regions: [], challenges: [], routeArt: routes.map(route => ({ routeId: route.id })) },
+      Data: { routes: [], regions: [], challenges: [], routeArt: items },
       Filter: {
         apply(items) { return items; },
         paginate(items, currentPage, pageSize) {
@@ -198,28 +213,39 @@ function bootRouteArtPreview(trackByRouteId, onMapMount) {
       },
       Router: { parseHash() { return { page: "route-art", params: {} }; } },
       Theme: { loadTheme() { return "yellow"; }, applyTheme(theme) { return theme; } },
-      Geo: {}, Gpx: {}, ImageTools: {}, Editor: {}, TrackRegistry: {}, TrackManifest: {}, TrackAnalysis,
+      Geo: {}, Gpx, ImageTools: {}, Editor: {}, TrackRegistry: {}, TrackManifest: {}, TrackAnalysis, RouteArt,
       Progress: { create() { return { list() { return new Set(); }, toggle() { return true; } }; } },
-      Store: { create() { return { list() { return routes; } }; } },
+      Store: { create() { return { list() { return []; } }; } },
       TrackLoader: {
         create() {
           return {
-            load: async routeId => trackByRouteId[routeId],
+            load: async () => null,
             clear() {}
           };
         }
       },
       MapView: {
-        mount(element, route) {
-          onMapMount(element, route);
+        mount(element, art) {
+          onMapMount(element, art);
           return { destroy() {} };
         }
       },
-      Render: { pageTitle() { return "測試"; }, mount() { return { main: { focus() {} } }; } }
+      Render: {
+        pageTitle() { return "測試"; },
+        mount(_element, state, actions) {
+          latestState = state;
+          latestActions = actions;
+          return { main: { focus() {} } };
+        }
+      }
     }
   };
 
   vm.runInNewContext(appSource, { window: root, Blob: class Blob {} });
+  return {
+    get state() { return latestState; },
+    get actions() { return latestActions; }
+  };
 }
 
 for (const coordinates of [[], [{ lat: 25, lng: 121, ele: 12 }]]) {
@@ -296,23 +322,33 @@ test("已完成分析的內建軌跡經 App 與海拔掛載不會再次分析", 
   }
 });
 
-test("路線美學總覽會載入每條公開 trackRef 並掛載真實軌跡預覽", async () => {
-  const tracks = Object.fromEntries(Array.from({ length: 6 }, (_, index) => {
-    const routeId = `art-${index + 1}`;
-    return [routeId, {
-      routeId,
-      coordinates: [
-        { lat: 25 + index * 0.01, lng: 121, ele: 10 },
-        { lat: 25.001 + index * 0.01, lng: 121.001, ele: 20 }
-      ]
-    }];
-  }));
-  const mountedRouteIds = [];
+test("路線美學只掛載 track-ready 作品並支援篩選與 GPX 下載", () => {
+  const trackReadyArt = {
+    id: "gps-art-taipei-cherry-blossom",
+    name: "台北櫻花 16K",
+    activityType: "walking",
+    status: "track-ready",
+    segments: [[{ lat: 25, lng: 121 }, { lat: 25.01, lng: 121.01 }]]
+  };
+  const sourceOnlyArt = {
+    id: "gps-art-source-only",
+    name: "來源作品",
+    activityType: "cycling",
+    status: "source-only"
+  };
+  const mountedIds = [];
+  let downloadedName = null;
+  const app = bootRouteArtCatalog(
+    [trackReadyArt, sourceOnlyArt],
+    (_element, art) => mountedIds.push(art.id),
+    filename => { downloadedName = filename; }
+  );
 
-  bootRouteArtPreview(tracks, (_element, route) => mountedRouteIds.push(route.id));
-  await new Promise(resolve => setTimeout(resolve, 0));
-
-  assert.deepEqual(mountedRouteIds.sort(), Object.keys(tracks).sort());
+  assert.deepEqual(mountedIds, ["gps-art-taipei-cherry-blossom"]);
+  app.actions.setRouteArtFilter("foot");
+  assert.equal(app.state.routeArtFilter, "foot");
+  app.actions.downloadArtGpx(trackReadyArt);
+  assert.equal(downloadedName, "台北櫻花-16K.gpx");
 });
 
 test("App 套用篩選時重設頁碼並可切換完成路線", () => {

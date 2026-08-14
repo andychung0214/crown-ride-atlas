@@ -26,29 +26,14 @@ test("頁面標題依路由與內容產生", () => {
   assert.equal(Render.pageTitle({ page: "not-found", params: {} }), "找不到頁面｜狂輪誌");
 });
 
-test("路線美學會略過已從本機移除的參考路線", () => {
-  const entries = Render.routeArtEntries(
-    [{ id: "art-1", routeId: "r1" }, { id: "art-2", routeId: "missing" }],
-    [{ id: "r1", name: "保留路線" }]
-  );
+test("路線美學直接依活動篩選獨立圖鑑且不修改來源陣列", () => {
+  const items = [
+    fixtureArt({ id: "bike", activityType: "cycling", activityLabel: "單車" }),
+    fixtureArt({ id: "walk", activityType: "walking", activityLabel: "步行" })
+  ];
 
-  assert.deepEqual(entries, [
-    { art: { id: "art-1", routeId: "r1" }, route: { id: "r1", name: "保留路線" } }
-  ]);
-});
-
-test("路線美學會略過未通過 near-match 閘門的項目", () => {
-  const entries = Render.routeArtEntries(
-    [
-      { id: "art-1", routeId: "r1", matchStatus: "near-match" },
-      { id: "art-2", routeId: "r2", matchStatus: "rejected" }
-    ],
-    [{ id: "r1", name: "保留路線" }, { id: "r2", name: "錯誤圖形" }]
-  );
-
-  assert.deepEqual(entries, [
-    { art: { id: "art-1", routeId: "r1", matchStatus: "near-match" }, route: { id: "r1", name: "保留路線" } }
-  ]);
+  assert.deepEqual(Render.routeArtEntries(items, "foot"), [items[1]]);
+  assert.deepEqual(items.map(item => item.id), ["bike", "walk"]);
 });
 
 test("完整挑戰卡片連到正式挑戰路線並顯示端點", () => {
@@ -191,12 +176,85 @@ test("路線索引顯示頁碼與下一頁操作", () => {
   assert.equal(nextPage, 3);
 });
 
-test("沒有公開路線美學時顯示誠實空狀態", () => {
-  const page = Render.routeArtPage(fakeDocument(), { routeArt: [], allRoutes: [] });
-  const texts = descendants(page).map(node => node.textContent).filter(Boolean).join(" ");
-  assert.match(texts, /尚無可顯示的圖案路線/);
-  assert.match(texts, /重新納入/);
+test("路線美學顯示來源卡且只有 track-ready 可下載 GPX", () => {
+  let downloaded = null;
+  const items = [
+    fixtureArt({
+      id: "ready",
+      name: "台北櫻花 16K",
+      status: "track-ready",
+      segments: [[{ lat: 25, lng: 121 }, { lat: 25.1, lng: 121.1 }]],
+      distanceKm: 16
+    }),
+    fixtureArt({ id: "source", name: "風櫃兔", shapeLabel: "兔", status: "source-only" })
+  ];
+  const page = Render.routeArtPage(fakeDocument(), {
+    routeArt: items,
+    routeArtFilter: "all"
+  }, {
+    setRouteArtFilter() {},
+    downloadArtGpx(art) { downloaded = art; }
+  });
+  const nodes = descendants(page);
+  const mapNodes = nodes.filter(node => node.dataset && node.dataset.artMap);
+  const downloadButtons = nodes.filter(node => node.name === "button" && node.textContent === "下載 GPX");
+  const sourceLinks = nodes.filter(node => node.name === "a" && node.textContent === "查看原始作品");
+  const text = nodes.map(node => node.textContent).filter(Boolean).join(" ");
+
+  assert.deepEqual(mapNodes.map(node => node.dataset.artMap), ["ready"]);
+  assert.equal(downloadButtons.length, 1);
+  downloadButtons[0].handlers.click();
+  assert.equal(downloaded, items[0]);
+  assert.match(text, /2 件公開作品/);
+  assert.match(text, /1 件可預覽軌跡/);
+  assert.match(text, /軌跡待取得/);
+  assert.match(text, /台北市/);
+  assert.match(text, /16 km/);
+  assert.match(text, /查核 2026-08-14/);
+  assert.equal(sourceLinks.length, 2);
+  sourceLinks.forEach(link => {
+    assert.equal(link.attributes.target, "_blank");
+    assert.equal(link.attributes.rel, "noopener noreferrer");
+  });
 });
+
+test("路線美學提供四個篩選、aria-live 結果與空結果清除操作", () => {
+  let nextFilter = null;
+  const page = Render.routeArtPage(fakeDocument(), {
+    routeArt: [fixtureArt({ activityType: "cycling", activityLabel: "單車" })],
+    routeArtFilter: "foot"
+  }, {
+    setRouteArtFilter(value) { nextFilter = value; },
+    downloadArtGpx() {}
+  });
+  const nodes = descendants(page);
+  const filters = nodes.filter(node => node.name === "button" && node.dataset && node.dataset.artFilter);
+  const result = nodes.find(node => node.attributes && node.attributes["aria-live"] === "polite");
+  const clear = nodes.find(node => node.name === "button" && node.textContent === "顯示全部作品");
+
+  assert.deepEqual(filters.map(node => node.dataset.artFilter), ["all", "cycling", "foot", "track-ready"]);
+  assert.equal(result.textContent, "目前顯示 0 件作品");
+  assert.ok(clear);
+  clear.handlers.click();
+  assert.equal(nextFilter, "all");
+});
+
+function fixtureArt(overrides) {
+  return Object.assign({
+    id: "art-1",
+    name: "測試作品",
+    shapeLabel: "圖形",
+    regionName: "台北市",
+    activityType: "walking",
+    activityLabel: "步行",
+    status: "source-only",
+    summary: "公開 GPS Art 作品。",
+    author: "測試作者",
+    sourcePlatform: "公開來源",
+    sourceUrl: "https://example.com/art",
+    verifiedAt: "2026-08-14"
+  }, overrides || {});
+}
 
 function fakeDocument() {
   const documentRef = {
