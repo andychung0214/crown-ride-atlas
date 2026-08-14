@@ -95,11 +95,14 @@
   sourceUrl: "https://…",
   routeSourceUrl: "https://…",
   verifiedAt: "2026-08-14",
-  coordinates: [{ lat: 25.0, lng: 121.4, ele: 20 }]
+  segments: [[
+    { lat: 25.0, lng: 121.4, ele: 20 },
+    { lat: 25.01, lng: 121.41, ele: 22 }
+  ]]
 }
 ```
 
-`source-only` 項目不提供 `coordinates`、不得提供假的距離／爬升；來源沒有數值時欄位省略。`track-ready` 的座標可拆到 `js/data/route-art-tracks.js`，避免圖鑑 metadata 與較大的軌跡資料混在同一檔案。
+`source-only` 項目不提供 `segments` 或 `coordinates`、不得提供假的距離／爬升；來源沒有數值時欄位省略。`track-ready` 的公開軌跡以 `segments` 儲存在 `js/data/route-art-tracks.js`，catalog 直接引用同一份凍結陣列，避免圖鑑 metadata 與較大的軌跡資料混在同一檔案。
 
 既有 `js/data/routes.js` 的 `routes` 維持 68 條，不把 GPS Art 作品插入一般路線索引。既有錯誤「環小台灣」與早期人工圖形仍維持 audit-only，不會重新公開。
 
@@ -116,7 +119,7 @@
 1. 頁首顯示公開作品總數、可預覽軌跡數與資料說明。
 2. 四個篩選：全部、單車、跑步／步行、有站內軌跡。
 3. 每張作品卡顯示作品名稱、圖形主題、縣市、活動類型、來源平台、作者（若有）、距離／爬升（若來源提供）與查核日期。
-4. `track-ready` 卡片顯示本站 Leaflet 路線圖；圖磚失敗時沿用 SVG 軌跡降級。提供「下載 GPX」與「查看原始來源」。
+4. `track-ready` 卡片顯示本站 Leaflet 路線圖；每個來源 segment 必須分開繪製，不得在段界畫線。圖磚失敗時沿用同樣保留段界的 SVG 軌跡降級。提供「下載 GPX」與「查看原始來源」。
 5. `source-only` 卡片不畫假折線，使用一致的文字型作品標記，顯示「軌跡待取得」並提供「查看原始作品」。
 6. 外部連結在新分頁開啟，使用 `target="_blank"` 與 `rel="noopener noreferrer"`。
 7. 篩選結果以 `aria-live` 播報；按鈕觸控範圍至少 44×44px。
@@ -126,9 +129,9 @@
 ## 6. 軌跡取得與處理
 
 1. 只下載來源頁明確提供的公開 GPX／KML，或讀取公開 Google My Maps KML；Strava 登入後下載、私人活動與受限制 API 不在範圍。
-2. 解析後驗證每點經緯度有限、落在台灣合理範圍、至少兩點且相鄰點沒有明顯跨海瞬移。
-3. 保留原始點序，不用 BRouter 重新吸附來冒充作者原始活動。若原始資料本身包含暫停直線、穿越不可通行區或非連續段，卡片顯示來源軌跡提醒，不宣稱適合公路車導航。
-4. 站內 GPX 由同一份已驗證座標輸出，地圖與下載必須共用資料。
+2. 解析後驗證每點經緯度有限、落在台灣合理範圍、至少一段、每段至少兩點，且同一段的相鄰點不得有達 500 m 的異常跳點。
+3. 公開 KML 的每個原始 `LineString` 是權威 segment；保留文件順序與段內點序，不重排、不反轉、不補點，也不在段與段之間畫線。正式 68 條路線維持既有 flat `coordinates` 契約不變。
+4. 站內 GPX 與地圖共用同一份已驗證 `segments`；每段輸出為獨立 `<trkseg>`，下載後再解析仍須保留相同段界。既有 flat `coordinates` GPX 保持單一 `<trkseg>` 相容行為。
 5. 跑步／步行軌跡只標示對應活動，不套用公路車道路政策或「可騎」宣稱。
 
 ## 7. 錯誤與降級
@@ -144,12 +147,12 @@
 ### 8.1 自動測試
 
 1. 圖鑑至少 20 件、ID 唯一、來源皆為 HTTPS、活動類型只接受 `cycling`／`running`／`walking`。
-2. `track-ready` 必須有有效台灣座標；`source-only` 不得帶假座標。
+2. `track-ready` 必須有至少一個有效台灣座標 segment，且每段至少兩點；`source-only` 不得帶 `segments` 或假座標。
 3. 每件作品有 `sourceUrl`、`sourcePlatform`、`verifiedAt`，來源沒有提供的數值不得被補成 0。
 4. `Data.routes.length` 仍為 68，正式 track manifest 仍精確涵蓋原有 68 條路線。
 5. 路線美學篩選能正確區分活動與軌跡狀態，且不修改來源陣列。
 6. 渲染測試涵蓋數量、狀態 badge、來源連結、外部連結安全屬性、空篩選結果與 GPX 按鈕條件。
-7. GPX 下載座標與地圖座標相同。
+7. GPX 下載 segments 與地圖 segments 相同，且不在段界產生額外連線。
 8. `npm run verify` 零失敗，正式 validator 仍回報 23 個 bundle、68 條路線。
 
 ### 8.2 瀏覽器驗證

@@ -3,6 +3,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const Gpx = require("../js/core/gpx.js");
+const Catalog = require("../js/data/route-art-catalog.js");
 
 const route = {
   id: "test-route",
@@ -19,6 +20,7 @@ test("GPX 輸出與解析保留路線名稱和座標", () => {
 
   assert.equal(parsed.name, route.name);
   assert.deepEqual(parsed.coordinates, route.coordinates);
+  assert.deepEqual(parsed.segments, [route.coordinates]);
   assert.match(xml, /山與海 &lt;晨騎&gt;/);
 });
 
@@ -31,13 +33,12 @@ test("可解析命名空間與單引號屬性的 GPX", () => {
       </gpx:trkseg></gpx:trk>
     </gpx:gpx>`;
 
-  assert.deepEqual(Gpx.parse(xml), {
-    name: "海岸線",
-    coordinates: [
-      { lat: 23.5, lng: 120.5, ele: 8.4 },
-      { lat: 23.6, lng: 120.6, ele: 0 }
-    ]
-  });
+  const parsed = Gpx.parse(xml);
+  const coordinates = [
+    { lat: 23.5, lng: 120.5, ele: 8.4 },
+    { lat: 23.6, lng: 120.6, ele: 0 }
+  ];
+  assert.deepEqual(parsed, { name: "海岸線", coordinates, segments: [coordinates] });
 });
 
 test("拒絕沒有有效軌跡點或座標超界的 GPX", () => {
@@ -78,4 +79,30 @@ test("內建路線下載使用已載入軌跡的完整座標與海拔", () => {
   assert.match(download.text, /lat="25\.001" lon="121\.002"><ele>73<\/ele>/);
   assert.match(download.text, /lat="25\.002" lon="121\.003"><ele>141<\/ele>/);
   assert.equal((download.text.match(/<trkpt /g) || []).length, 3);
+});
+
+test("多段作品以獨立 trkseg 輸出並保留扁平座標相容欄位", () => {
+  const segments = [
+    [{ lat: 25, lng: 121, ele: 1 }, { lat: 25.001, lng: 121.001, ele: 2 }],
+    [{ lat: 25.02, lng: 121.02 }, { lat: 25.021, lng: 121.021, ele: 4 }]
+  ];
+
+  const xml = Gpx.serialize({ name: "多段作品", segments });
+  const parsed = Gpx.parse(xml);
+
+  assert.equal((xml.match(/<trkseg>/g) || []).length, 2);
+  assert.deepEqual(parsed.segments, [
+    segments[0],
+    [{ lat: 25.02, lng: 121.02, ele: 0 }, { lat: 25.021, lng: 121.021, ele: 4 }]
+  ]);
+  assert.deepEqual(parsed.coordinates, parsed.segments.flat());
+});
+
+test("作品 GPX 與地圖共用同一份座標", () => {
+  const art = Catalog.find(item => item.id === "gps-art-taipei-cherry-blossom");
+  const download = Gpx.createDownload(art, { segments: art.segments });
+  const parsed = Gpx.parse(download.text);
+  assert.deepEqual(parsed.segments, art.segments.map(segment => segment.map(point => ({
+    lat: point.lat, lng: point.lng, ele: Number.isFinite(point.ele) ? point.ele : 0
+  }))));
 });

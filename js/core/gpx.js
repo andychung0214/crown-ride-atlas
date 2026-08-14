@@ -54,43 +54,54 @@
     const xml = String(xmlText || "");
     const nameMatch = /<(?:[\w-]+:)?name\b[^>]*>([\s\S]*?)<\/(?:[\w-]+:)?name\s*>/i.exec(xml);
     const name = nameMatch ? decodeXml(nameMatch[1].trim()) : "未命名路線";
-    const coordinates = [];
-    const pointPattern = /<(?:[\w-]+:)?trkpt\b([^>]*)>([\s\S]*?)<\/(?:[\w-]+:)?trkpt\s*>/gi;
-    let pointMatch;
+    const segmentBodies = [];
+    const segmentPattern = /<(?:[\w-]+:)?trkseg\b[^>]*>([\s\S]*?)<\/(?:[\w-]+:)?trkseg\s*>/gi;
+    let segmentMatch;
+    while ((segmentMatch = segmentPattern.exec(xml))) segmentBodies.push(segmentMatch[1]);
+    if (segmentBodies.length === 0) segmentBodies.push(xml);
 
-    while ((pointMatch = pointPattern.exec(xml))) {
-      const lat = extractAttribute(pointMatch[1], "lat");
-      const lng = extractAttribute(pointMatch[1], "lon");
-      if (!validCoordinate(lat, lng)) continue;
-      const elevationMatch = /<(?:[\w-]+:)?ele\b[^>]*>([\s\S]*?)<\/(?:[\w-]+:)?ele\s*>/i.exec(pointMatch[2]);
-      const elevation = elevationMatch ? Number(elevationMatch[1].trim()) : 0;
-      coordinates.push({
-        lat,
-        lng,
-        ele: Number.isFinite(elevation) ? elevation : 0
-      });
-    }
+    const segments = segmentBodies.map(segmentBody => {
+      const segment = [];
+      const pointPattern = /<(?:[\w-]+:)?trkpt\b([^>]*)>([\s\S]*?)<\/(?:[\w-]+:)?trkpt\s*>/gi;
+      let pointMatch;
+      while ((pointMatch = pointPattern.exec(segmentBody))) {
+        const lat = extractAttribute(pointMatch[1], "lat");
+        const lng = extractAttribute(pointMatch[1], "lon");
+        if (!validCoordinate(lat, lng)) continue;
+        const elevationMatch = /<(?:[\w-]+:)?ele\b[^>]*>([\s\S]*?)<\/(?:[\w-]+:)?ele\s*>/i.exec(pointMatch[2]);
+        const elevation = elevationMatch ? Number(elevationMatch[1].trim()) : 0;
+        segment.push({ lat, lng, ele: Number.isFinite(elevation) ? elevation : 0 });
+      }
+      return segment;
+    }).filter(segment => segment.length > 0);
+    const coordinates = segments.flat();
 
     if (coordinates.length < 2) {
       throw new Error("GPX 未包含至少兩個有效座標。");
     }
 
-    return { name, coordinates };
+    return { name, coordinates, segments };
   }
 
   function serialize(route) {
     const safeRoute = route || {};
-    const coordinates = Array.isArray(safeRoute.coordinates)
-      ? safeRoute.coordinates.filter(point => validCoordinate(point.lat, point.lng))
-      : [];
+    const sourceSegments = Array.isArray(safeRoute.segments)
+      ? safeRoute.segments
+      : [Array.isArray(safeRoute.coordinates) ? safeRoute.coordinates : []];
+    const segments = sourceSegments.map(segment => Array.isArray(segment)
+      ? segment.filter(point => validCoordinate(point.lat, point.lng))
+      : []);
 
-    if (coordinates.length < 2) {
+    if (segments.length < 1 || segments.some(segment => segment.length < 2)) {
       throw new Error("路線至少需要兩個有效座標才能輸出 GPX。");
     }
 
-    const points = coordinates.map(point => {
-      const elevation = Number.isFinite(point.ele) ? point.ele : 0;
-      return `        <trkpt lat="${point.lat}" lon="${point.lng}"><ele>${elevation}</ele></trkpt>`;
+    const trackSegments = segments.map(segment => {
+      const points = segment.map(point => {
+        const elevation = Number.isFinite(point.ele) ? point.ele : 0;
+        return `        <trkpt lat="${point.lat}" lon="${point.lng}"><ele>${elevation}</ele></trkpt>`;
+      }).join("\n");
+      return ["    <trkseg>", points, "    </trkseg>"].join("\n");
     }).join("\n");
 
     return [
@@ -98,9 +109,7 @@
       "<gpx version=\"1.1\" creator=\"CROWN RIDE ATLAS\" xmlns=\"http://www.topografix.com/GPX/1/1\">",
       "  <trk>",
       `    <name>${escapeXml(safeRoute.name || "未命名路線")}</name>`,
-      "    <trkseg>",
-      points,
-      "    </trkseg>",
+      trackSegments,
       "  </trk>",
       "</gpx>"
     ].join("\n");
@@ -118,12 +127,13 @@
   function createDownload(route, track) {
     const safeRoute = route || {};
     const loadedCoordinates = track && Array.isArray(track.coordinates) ? track.coordinates : null;
-    if (safeRoute.trackRef && (!loadedCoordinates || loadedCoordinates.length < 2)) {
+    const loadedSegments = track && Array.isArray(track.segments) ? track.segments : null;
+    if (safeRoute.trackRef && !loadedSegments && (!loadedCoordinates || loadedCoordinates.length < 2)) {
       throw new Error("內建路線軌跡尚未載入，暫時無法下載 GPX。");
     }
-    const routeForDownload = loadedCoordinates
-      ? Object.assign({}, safeRoute, { coordinates: loadedCoordinates })
-      : safeRoute;
+    const routeForDownload = loadedSegments
+      ? Object.assign({}, safeRoute, { segments: loadedSegments })
+      : loadedCoordinates ? Object.assign({}, safeRoute, { coordinates: loadedCoordinates }) : safeRoute;
     return {
       filename: safeFilename(safeRoute.name),
       text: serialize(routeForDownload),

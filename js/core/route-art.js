@@ -21,6 +21,14 @@
       && Number.isFinite(point.lng) && point.lng >= 119.5 && point.lng <= 122.1;
   }
 
+  function hasUsableSegments(segments) {
+    return Array.isArray(segments)
+      && segments.length >= 1
+      && segments.every(segment => Array.isArray(segment)
+        && segment.length >= 2
+        && segment.every(isTaiwanCoordinate));
+  }
+
   function isHttpsUrl(value) {
     try {
       return new URL(value).protocol === "https:";
@@ -54,14 +62,18 @@
     }
 
     if (item.status === "track-ready") {
-      if (!Array.isArray(item.coordinates) || item.coordinates.length < 2) {
-        throw new TypeError("track-ready 必須具有至少兩個 coordinates");
+      if (!Array.isArray(item.segments) || item.segments.length < 1
+        || !item.segments.every(segment => Array.isArray(segment) && segment.length >= 2)) {
+        throw new TypeError("track-ready 必須具有至少一段有效 segments");
       }
-      if (!item.coordinates.every(isTaiwanCoordinate)) {
-        throw new TypeError("coordinates 必須位於 Taiwan");
+      if (!item.segments.flat().every(isTaiwanCoordinate)) {
+        throw new TypeError("segments 座標必須位於 Taiwan");
       }
-    } else if (Object.hasOwn(item, "coordinates")) {
-      throw new TypeError("source-only 不可具有 coordinates");
+      if (Object.hasOwn(item, "coordinates")) {
+        throw new TypeError("track-ready GPS Art 不可具有 coordinates");
+      }
+    } else if (Object.hasOwn(item, "coordinates") || Object.hasOwn(item, "segments")) {
+      throw new TypeError("source-only 不可具有 coordinates 或 segments");
     }
 
     return true;
@@ -81,5 +93,5 @@
     return { total: source.length, trackReady, sourceOnly: source.length - trackReady };
   }
 
-  return { FILTERS, isTaiwanCoordinate, validateItem, filter, stats };
+  return { FILTERS, isTaiwanCoordinate, hasUsableSegments, validateItem, filter, stats };
 });

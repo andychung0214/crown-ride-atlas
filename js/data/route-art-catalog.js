@@ -4,7 +4,10 @@
   const RouteArt = typeof module === "object" && module.exports
     ? require("../core/route-art.js")
     : root.CrownRideAtlas.RouteArt;
-  const api = factory(RouteArt);
+  const RouteArtTracks = typeof module === "object" && module.exports
+    ? require("./route-art-tracks.js")
+    : root.CrownRideAtlas.RouteArtTracks;
+  const api = factory(RouteArt, RouteArtTracks);
 
   if (typeof module === "object" && module.exports) {
     module.exports = api;
@@ -13,9 +16,20 @@
   if (root) {
     root.CrownRideAtlas = Object.assign(root.CrownRideAtlas || {}, { RouteArtCatalog: api });
   }
-})(typeof window !== "undefined" ? window : globalThis, function (RouteArt) {
+})(typeof window !== "undefined" ? window : globalThis, function (RouteArt, RouteArtTracks) {
   const mobile01Url = "https://www.mobile01.com/topicdetail.php?f=377&t=5800991";
   const verifiedAt = "2026-08-14";
+  const requiredTrackIds = [
+    "gps-art-taipei-cherry-blossom",
+    "gps-art-taipei-circle-walk"
+  ];
+
+  for (const id of requiredTrackIds) {
+    if (!RouteArtTracks || !RouteArtTracks[id]
+      || !RouteArt.hasUsableSegments(RouteArtTracks[id].segments)) {
+      throw new Error(`必要 GPS Art 軌跡缺失或無效：${id}`);
+    }
+  }
 
   const items = [
     { id: "gps-art-north-taoyuan-raptor", name: "北桃迅猛龍", shapeLabel: "迅猛龍", regionName: "桃園市／新北市", activityType: "cycling", activityLabel: "單車", status: "source-only", distanceKm: 101, elevationGainM: 1254, summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「北桃迅猛龍」。", sourcePlatform: "Mobile01", sourceUrl: mobile01Url, verifiedAt },
@@ -40,7 +54,12 @@
     { id: "gps-art-taipei-cherry-blossom", name: "台北櫻花 16K", shapeLabel: "櫻花", regionId: "taipei", regionName: "台北市", activityType: "walking", activityLabel: "步行", status: "source-only", distanceKm: 16, summary: "公開來源收錄的步行 GPS Art 作品，作品名稱為「台北櫻花 16K」。", sourcePlatform: "GPS ART Japan", sourceUrl: "https://gpsart.info/en/asia-2/cherry-blossom-in-taipei-taiwan-16km/", verifiedAt },
     { id: "gps-art-taipei-circle-walk", name: "台北圓環 40K", shapeLabel: "圓環", regionId: "taipei", regionName: "台北市", activityType: "walking", activityLabel: "步行", status: "source-only", distanceKm: 40, summary: "公開來源收錄的步行 GPS Art 作品，作品名稱為「台北圓環 40K」。", sourcePlatform: "GPS ART Japan", sourceUrl: "https://gpsart.info/en/asia-2/taipei-circle-walk-40km/", verifiedAt },
     { id: "gps-art-yangmingshan-buddha-hand", name: "陽明山佛手", shapeLabel: "佛手", regionName: "台北市／新北市", activityType: "cycling", activityLabel: "單車", status: "source-only", distanceKm: 135, elevationGainLabel: "3,000 m 以上", summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「陽明山佛手」。", sourcePlatform: "Reddit r/Strava", sourceUrl: "https://www.reddit.com/r/Strava/comments/1d3qhxn/waving_hello_from_taipei/", verifiedAt }
-  ];
+  ].map(item => {
+    const track = RouteArtTracks && RouteArtTracks[item.id];
+    return track && RouteArt.hasUsableSegments(track.segments)
+      ? Object.assign({}, item, { status: "track-ready", segments: track.segments })
+      : item;
+  });
 
   items.forEach(item => RouteArt.validateItem(item));
 

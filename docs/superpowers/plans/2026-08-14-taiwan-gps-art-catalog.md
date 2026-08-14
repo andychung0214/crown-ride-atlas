@@ -15,7 +15,7 @@
 - GPS Art 首批至少 20 件；本計畫固定收錄下方 22 件，涵蓋 `cycling`、`running`、`walking`。
 - 只讀取不需登入的 HTTPS 公開來源；不得讀取或提交 cookie、token、`.env`、私人活動或會員資料。
 - 不複製或 hotlink 外站作品圖片；沒有公開幾何的項目不得出現假折線、假地圖或 GPX 按鈕。
-- `track-ready` 座標必須來自公開 GPX／KML，位於台灣合理範圍且至少兩點；地圖與下載 GPX 必須共用同一份座標。
+- `track-ready` segments 必須來自公開 GPX／KML，位於台灣合理範圍且每段至少兩點；地圖與下載 GPX 必須共用同一份分段資料，不得跨段畫線。正式 68 條路線維持既有 flat `coordinates` 契約。
 - 跑步與步行作品不得套用公路車道路政策，也不得宣稱適合公路車導航。
 - 外部來源連結必須使用 `target="_blank"` 與 `rel="noopener noreferrer"`。
 - 所有新增中文 UI、文件與 commit description 使用繁體中文與專案名詞規範。
@@ -24,7 +24,7 @@
 ## File Map
 
 - Create `js/core/route-art.js`: GPS Art schema validation、統計與不變更輸入的篩選純函式。
-- Create `js/data/route-art-tracks.js`: 由公開 GPX／KML 匯入並驗證後的凍結座標資料。
+- Create `js/data/route-art-tracks.js`: 由公開 GPX／KML 匯入並驗證後的凍結 segments 資料。
 - Create `js/data/route-art-catalog.js`: 22 件作品的來源、活動、狀態、已知數值與可用軌跡資料。
 - Create `scripts/import-route-art-tracks.mjs`: 從兩個必要 KML 與一個可選 GPX 的已核准公開 URL 重建軌跡資料並執行台灣座標閘門。
 - Create `tests/route-art.test.js`: 核心篩選、統計與 schema 規則。
@@ -48,8 +48,8 @@
 - Modify: `index.html`
 
 **Interfaces:**
-- Consumes: GPS Art item `{ id, activityType, status, sourceUrl, verifiedAt, coordinates? }`。
-- Produces: `RouteArt.FILTERS`, `RouteArt.isTaiwanCoordinate(point)`, `RouteArt.validateItem(item)`, `RouteArt.filter(items, filterKey)`, `RouteArt.stats(items)`。
+- Consumes: GPS Art item `{ id, activityType, status, sourceUrl, verifiedAt, segments? }`。
+- Produces: `RouteArt.FILTERS`, `RouteArt.isTaiwanCoordinate(point)`, `RouteArt.hasUsableSegments(segments)`, `RouteArt.validateItem(item)`, `RouteArt.filter(items, filterKey)`, `RouteArt.stats(items)`。
 
 - [ ] **Step 1: 寫入會失敗的核心測試**
 
@@ -115,7 +115,7 @@ function stats(items) {
 }
 ```
 
-`validateItem` 必須明確檢查：slug ID、名稱、允許的活動類型、允許的狀態、HTTPS 來源、平台、`YYYY-MM-DD` 查核日期；`track-ready` 只能接受至少兩個台灣座標，`source-only` 必須沒有 `coordinates`。
+`validateItem` 必須明確檢查：slug ID、名稱、允許的活動類型、允許的狀態、HTTPS 來源、平台、`YYYY-MM-DD` 查核日期；Task 3 起 `track-ready` 只能接受至少一段、每段至少兩個台灣座標的 `segments`，`source-only` 必須同時沒有 `segments` 與 `coordinates`。
 
 - [ ] **Step 4: 讓瀏覽器在 Render 前載入核心模組並重跑測試**
 
@@ -173,6 +173,7 @@ test("GPS Art 不污染正式路線與 track manifest", () => {
 test("沒有公開軌跡的作品不帶座標或虛構零值", () => {
   for (const item of Catalog.filter(item => item.status === "source-only")) {
     assert.equal(Object.hasOwn(item, "coordinates"), false);
+    assert.equal(Object.hasOwn(item, "segments"), false);
     if (Object.hasOwn(item, "distanceKm")) assert.ok(item.distanceKm > 0);
     if (Object.hasOwn(item, "elevationGainM")) assert.ok(item.elevationGainM > 0);
   }
@@ -262,14 +263,19 @@ git commit -m "feat: 收錄台灣 GPS Art 公開來源圖鑑"
 **Files:**
 - Create: `scripts/import-route-art-tracks.mjs`
 - Create: `js/data/route-art-tracks.js`
+- Modify: `js/core/route-art.js`
+- Modify: `js/core/gpx.js`
 - Modify: `js/data/route-art-catalog.js`
 - Modify: `index.html`
 - Modify: `tests/route-art-catalog.test.js`
+- Modify: `tests/route-art.test.js`
 - Modify: `tests/gpx.test.js`
+- Modify: `docs/superpowers/specs/2026-08-14-taiwan-gps-art-catalog-design.md`
+- Modify: `docs/superpowers/plans/2026-08-14-taiwan-gps-art-catalog.md`
 
 **Interfaces:**
 - Consumes: 兩個必要公開 KML 與一個可選公開 GPX URL，分別解析 GPX `<trkpt>` 與 KML `<coordinates>`。
-- Produces: `RouteArtTracks[id] = { routeId, sourceFormat, sourceUrl, coordinates }`；catalog 中實際下載成功的 `track-ready` 項目引用相同凍結座標陣列。
+- Produces: `RouteArtTracks[id] = { routeId, sourceFormat, sourceUrl, segments }`；catalog 中實際下載成功的 `track-ready` 項目引用相同凍結 segments。每個 KML `LineString` 保留為一段，維持文件順序與段內點序，不建立跨段連線。
 
 - [ ] **Step 1: 先加入軌跡閘門與 GPX 同源失敗測試**
 
@@ -278,19 +284,21 @@ test("track-ready 作品都有公開軌跡且座標位於台灣", () => {
   const ready = Catalog.filter(item => item.status === "track-ready");
   assert.ok(ready.length >= 2);
   for (const item of ready) {
-    assert.ok(item.coordinates.length >= 2);
-    assert.ok(item.coordinates.every(RouteArt.isTaiwanCoordinate));
-    assert.strictEqual(item.coordinates, Tracks[item.id].coordinates);
+    assert.ok(item.segments.length >= 1);
+    assert.ok(item.segments.every(segment => segment.length >= 2));
+    assert.ok(item.segments.flat().every(RouteArt.isTaiwanCoordinate));
+    assert.strictEqual(item.segments, Tracks[item.id].segments);
+    assert.equal(Object.hasOwn(item, "coordinates"), false);
   }
 });
 
 test("作品 GPX 與地圖共用同一份座標", () => {
   const art = Catalog.find(item => item.id === "gps-art-taipei-cherry-blossom");
-  const download = Gpx.createDownload(art, { coordinates: art.coordinates });
+  const download = Gpx.createDownload(art, { segments: art.segments });
   const parsed = Gpx.parse(download.text);
-  assert.deepEqual(parsed.coordinates, art.coordinates.map(point => ({
+  assert.deepEqual(parsed.segments, art.segments.map(segment => segment.map(point => ({
     lat: point.lat, lng: point.lng, ele: Number.isFinite(point.ele) ? point.ele : 0
-  })));
+  }))));
 });
 ```
 
@@ -298,7 +306,7 @@ test("作品 GPX 與地圖共用同一份座標", () => {
 
 Run: `node --test tests/route-art-catalog.test.js tests/gpx.test.js`
 
-Expected: FAIL，訊息指出 `RouteArtTracks` 或必要 KML 作品的 `coordinates` 不存在。
+Expected: FAIL，訊息指出 `RouteArtTracks`、必要 KML 作品的 `segments` 或多 `<trkseg>` round-trip 不存在。
 
 - [ ] **Step 3: 建立只接受核准 URL 的匯入腳本**
 
@@ -325,13 +333,13 @@ const SOURCES = Object.freeze([
 ]);
 ```
 
-腳本必須在產檔前檢查 HTTP 2xx、至少兩點、所有點有限且落在 `21.5–25.5 N / 119.5–122.1 E`。兩個 `required: true` KML 任一失敗即以非零狀態結束且不改寫產物；可選 GPX 若因公開 CDN TLS 或 HTTP 失敗，只記錄可理解警告並省略該軌跡，臥虎保持 `source-only`，不得停用 TLS 驗證或人工描圖。KML 若包含多個 `<LineString>`，依文件順序串接，但每段尾點到下一段首點必須小於 500 m，否則匯入失敗；不解析 `<Point>` 地標。
+腳本必須在產檔前檢查 HTTP 2xx、至少一段、每段至少兩點、所有點有限且落在 `21.5–25.5 N / 119.5–122.1 E`，並拒絕同一段內相鄰點達 500 m 的異常跳點。兩個 `required: true` KML 任一失敗即以非零狀態結束且不改寫產物；可選 GPX 若因公開 CDN TLS 或 HTTP 失敗，只記錄可理解警告並省略該軌跡，臥虎保持 `source-only`，不得停用 TLS 驗證或人工描圖。KML 每個 `<LineString>` 產生一個 segment；保留文件順序與段內點序，不跨段做距離閘門、不解析 `<Point>` 地標、不重排、不反轉、不在段間補點。
 
 - [ ] **Step 4: 執行匯入並檢查產物未含憑證或遠端圖片**
 
 Run: `node scripts/import-route-art-tracks.mjs`
 
-Expected: 至少輸出台北櫻花與台北圓環的作品 ID、各自點數與 SHA-256，建立 `js/data/route-art-tracks.js`；臥虎若下載成功才一併輸出，不輸出 cookie、authorization header 或任何圖片 URL。
+Expected: 至少輸出台北櫻花與台北圓環的作品 ID、各自 segment 數、總點數與 SHA-256，建立 `js/data/route-art-tracks.js`；臥虎若下載成功才一併輸出，不輸出 cookie、authorization header 或任何圖片 URL。
 
 Run: `rg -n "token|cookie|authorization|client_secret|\.env|<img|https://.*\.(jpg|png|webp)" js/data/route-art-tracks.js`
 
@@ -348,7 +356,9 @@ Expected: 無匹配、exit code 1。
 <script defer src="js/data/routes.js"></script>
 ```
 
-catalog factory 在 Node 使用 `require("./route-art-tracks.js")`，在瀏覽器使用 `root.CrownRideAtlas.RouteArtTracks`。台北櫻花與台北圓環必須使用 `coordinates: RouteArtTracks[id].coordinates` 並成為 `track-ready`；臥虎只在同 ID track 實際存在時升級。必要 KML 軌跡缺失時模組初始化必須拋出可辨識錯誤，不得靜默改成假資料。
+catalog factory 在 Node 使用 `require("./route-art-tracks.js")`，在瀏覽器使用 `root.CrownRideAtlas.RouteArtTracks`。台北櫻花與台北圓環必須使用 `segments: RouteArtTracks[id].segments` 並成為 `track-ready`；臥虎只在同 ID track 實際存在時升級。必要 KML 軌跡缺失時模組初始化必須拋出可辨識錯誤，不得靜默改成假資料。
+
+`RouteArt.validateItem` 採用 GPS Art 專用 multi-segment 契約：`track-ready` 必須有至少一段有效 `segments`，`source-only` 同時禁止 `segments` 與 `coordinates`，並提供 `RouteArt.hasUsableSegments(segments)` 給互動層使用。`Gpx.serialize/createDownload` 在輸入 `segments` 時，每段輸出獨立 `<trkseg>`；既有 flat `coordinates` 仍輸出單一 `<trkseg>`。`Gpx.parse` 回傳 `segments` 並保留扁平 `coordinates` 相容欄位。
 
 - [ ] **Step 6: 重跑軌跡、GPX 與正式 manifest 回歸**
 
@@ -359,7 +369,7 @@ Expected: 全部 PASS；validator 仍回報 23 bundles／68 routes，GPS Art 不
 - [ ] **Step 7: 提交可重建的公開軌跡**
 
 ```bash
-git add scripts/import-route-art-tracks.mjs js/data/route-art-tracks.js js/data/route-art-catalog.js index.html tests/route-art-catalog.test.js tests/gpx.test.js
+git add scripts/import-route-art-tracks.mjs js/data/route-art-tracks.js js/data/route-art-catalog.js js/core/route-art.js js/core/gpx.js index.html tests/route-art-catalog.test.js tests/route-art.test.js tests/gpx.test.js docs/superpowers/specs/2026-08-14-taiwan-gps-art-catalog-design.md docs/superpowers/plans/2026-08-14-taiwan-gps-art-catalog.md
 git commit -m "feat: 匯入公開 GPS Art 軌跡"
 ```
 
@@ -370,19 +380,21 @@ git commit -m "feat: 匯入公開 GPS Art 軌跡"
 **Files:**
 - Modify: `js/ui/render.js`
 - Modify: `js/app.js`
+- Modify: `js/ui/map.js`
 - Modify: `tests/render.test.js`
 - Modify: `tests/app.test.js`
+- Modify: `tests/map.test.js`
 
 **Interfaces:**
 - Consumes: `state.routeArt`, `state.routeArtFilter`、`RouteArt.filter/stats`、`actions.setRouteArtFilter(filterKey)`、`actions.downloadArtGpx(art)`。
-- Produces: `[data-art-map="id"]` 地圖掛載點、安全來源連結、track-ready 專屬 GPX 按鈕、source-only 文字型標記與 `aria-live` 結果摘要。
+- Produces: `[data-art-map="id"]` 地圖掛載點、安全來源連結、track-ready 專屬 GPX 按鈕、source-only 文字型標記與 `aria-live` 結果摘要；MapView 對 GPS Art 每個 segment 分開繪製，正式路線 flat `coordinates` 行為不變。
 
 - [ ] **Step 1: 先改寫 render 測試描述新圖鑑行為**
 
 ```js
 test("路線美學顯示來源卡且只有 track-ready 可下載 GPX", () => {
   const items = [
-    fixtureArt({ id: "ready", status: "track-ready", coordinates: [{ lat: 25, lng: 121 }, { lat: 25.1, lng: 121.1 }] }),
+    fixtureArt({ id: "ready", status: "track-ready", segments: [[{ lat: 25, lng: 121 }, { lat: 25.1, lng: 121.1 }]] }),
     fixtureArt({ id: "source", status: "source-only" })
   ];
   const page = Render.routeArtPage(fakeDocument(), { routeArt: items, routeArtFilter: "all" }, {
@@ -446,10 +458,12 @@ function routeArtEntries(routeArt, filterKey) {
 ```js
 rootElement.querySelectorAll("[data-art-map]").forEach(element => {
   const art = state.routeArt.find(item => item.id === element.dataset.artMap);
-  if (!art || art.status !== "track-ready" || !hasUsableCoordinates(art.coordinates)) return;
+  if (!art || art.status !== "track-ready" || !app.RouteArt.hasUsableSegments(art.segments)) return;
   interactiveHandles.push(app.MapView.mount(element, art));
 });
 ```
+
+`MapView.mount` 若收到 `segments`，Leaflet 與 SVG fallback 都必須逐段建立獨立折線／path，共用所有點計算 bounds，但不得把一段尾點連到下一段首點。既有正式路線的 flat `coordinates`、方向標記與海拔圖行為維持不變。
 
 actions 新增：
 
@@ -460,11 +474,11 @@ setRouteArtFilter(filterKey) {
   announce(`目前顯示 ${app.RouteArt.filter(state.routeArt, state.routeArtFilter).length} 件作品。`);
 },
 downloadArtGpx(art) {
-  if (!art || art.status !== "track-ready" || !hasUsableCoordinates(art.coordinates)) {
+  if (!art || art.status !== "track-ready" || !app.RouteArt.hasUsableSegments(art.segments)) {
     announce("這件作品目前沒有可下載的公開軌跡。");
     return;
   }
-  const download = app.Gpx.createDownload(art, { coordinates: art.coordinates });
+  const download = app.Gpx.createDownload(art, { segments: art.segments });
   createFileDownload(download.filename, download.text, download.mimeType);
   announce(`已準備下載 ${art.name} GPX。`);
 }
