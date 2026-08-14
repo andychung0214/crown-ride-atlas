@@ -2,14 +2,15 @@
 
 ## 2026-08-14 台灣 GPS Art 圖鑑候選版
 
-本輪候選版新增 22 件公開來源 GPS Art 圖鑑，與既有正式路線資料隔離。其中台北櫻花 16K、台北圓環 40K 為 `track-ready`；其餘 20 件是 `source-only` 來源卡。逐件查核帳與軌跡來源 SHA-256 見 [`route-research/taiwan-gps-art.md`](route-research/taiwan-gps-art.md)。本節只記錄 2026-08-14 本輪實際執行證據；GitHub Pages 公開版尚待 Task 7 推送與部署後補記。
+本輪候選版新增 22 件公開來源 GPS Art 圖鑑，與既有正式路線資料隔離。其中台北櫻花 16K、台北圓環 40K 為 `track-ready`；其餘 20 件是 `source-only` 來源卡。逐件查核帳、來源 SHA-256、canonical geometry SHA-256 與段點數見 [`route-research/taiwan-gps-art.md`](route-research/taiwan-gps-art.md)。本節只記錄 2026-08-14 本輪實際執行證據；GitHub Pages 公開版尚待 Task 7 推送與部署後補記。
 
 ### 自動驗證
 
 | 檢查 | 本輪結果 | 實際證據 |
 |---|---|---|
-| 圖鑑頁面／App／渲染 focused 回歸 | 通過 | `node --test tests/pages-workflow.test.js tests/app.test.js tests/render.test.js`：32 項通過、0 項失敗 |
-| 完整驗證 | 通過 | `npm run verify`：262 項通過、0 項失敗；正式 validator 為 23 個 bundle／68 條路線 |
+| 最終審查 focused 回歸 | 通過 | `node --test tests/route-art-catalog.test.js tests/render.test.js`：37 項通過、0 項失敗；涵蓋 Mobile01 作者顯示、runtime 單件降級與軌跡 provenance |
+| 公開來源重建 | 通過 | `node scripts/import-route-art-tracks.mjs`：兩個必要 KML 均成功；來源 SHA-256 仍為已核准的 `aa9ce7…9186f0`／`60b4b7…a696f`，canonical geometry SHA-256 為 `e2e3f0…e6f2bd`／`a78871…93433`；可選臥虎仍因 TLS `ECONNRESET` 維持 source-only |
+| 完整驗證 | 通過 | `npm run verify`：264 項通過、0 項失敗；正式 validator 為 23 個 bundle／68 條路線 |
 | 正式路線隔離 | 通過 | `Data.routes` 維持 68 條；GPS Art 不加入正式 track manifest |
 | Git 空白檢查 | 通過 | `git diff --check` 無輸出、exit code 0 |
 | 敏感檔名掃描 | 通過 | `git ls-files` 未找到 `.env`、`.pem` 或 `.key` 等敏感檔名 |

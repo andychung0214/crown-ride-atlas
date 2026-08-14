@@ -102,7 +102,7 @@
 }
 ```
 
-`source-only` 項目不提供 `segments` 或 `coordinates`、不得提供假的距離／爬升；來源沒有數值時欄位省略。`track-ready` 的公開軌跡以 `segments` 儲存在 `js/data/route-art-tracks.js`，catalog 直接引用同一份凍結陣列，避免圖鑑 metadata 與較大的軌跡資料混在同一檔案。
+`source-only` 項目不提供 `segments` 或 `coordinates`、不得提供假的距離／爬升；來源沒有數值時欄位省略。`track-ready` 的公開軌跡以 `segments` 儲存在 `js/data/route-art-tracks.js`，並同時保存來源檔 `sourceSha256` 與以 `SHA-256(JSON.stringify(segments))` 計算的 canonical `geometrySha256`；catalog 只直接引用同一份凍結 `segments`，避免圖鑑 metadata 與較大的軌跡資料混在同一檔案。
 
 既有 `js/data/routes.js` 的 `routes` 維持 68 條，不把 GPS Art 作品插入一般路線索引。既有錯誤「環小台灣」與早期人工圖形仍維持 audit-only，不會重新公開。
 
@@ -133,10 +133,11 @@
 3. 公開 KML 的每個原始 `LineString` 是權威 segment；保留文件順序與段內點序，不重排、不反轉、不補點，也不在段與段之間畫線。正式 68 條路線維持既有 flat `coordinates` 契約不變。
 4. 站內 GPX 與地圖共用同一份已驗證 `segments`；每段輸出為獨立 `<trkseg>`，下載後再解析仍須保留相同段界。既有 flat `coordinates` GPX 保持單一 `<trkseg>` 相容行為。
 5. 跑步／步行軌跡只標示對應活動，不套用公路車道路政策或「可騎」宣稱。
+6. 匯入器對兩個必要 KML 的 HTTP、TLS、解析與座標錯誤採 hard-fail，且失敗時不得改寫產物；測試與 CI 另鎖定已核准來源／幾何 provenance、段點數與總點數。來源內容變動造成任何鎖定值不符時不得接受重產結果，必須經人工查核後才能更新常數。
 
 ## 7. 錯誤與降級
 
-- 單件軌跡解析失敗：該件降級為 `source-only`，其他作品仍顯示。
+- 瀏覽器 runtime 載入單件軌跡缺失或 `segments` 無效：只將該件降級為不含 `segments`／`coordinates` 的 `source-only`，其餘合法作品仍維持 `track-ready` 並顯示。此 fail-soft 行為不取代前述匯入器與 CI 的 hard-fail 發布閘門。
 - Leaflet 或圖磚失敗：使用既有 SVG fallback。
 - 外部來源失效：卡片顯示「來源待重新查核」，不移除其他資料。
 - GPX 建立失敗：以 `aria-live` 顯示可理解錯誤，不拋出未處理例外。
@@ -153,7 +154,8 @@
 5. 路線美學篩選能正確區分活動與軌跡狀態，且不修改來源陣列。
 6. 渲染測試涵蓋數量、狀態 badge、來源連結、外部連結安全屬性、空篩選結果與 GPX 按鈕條件。
 7. GPX 下載 segments 與地圖 segments 相同，且不在段界產生額外連線。
-8. `npm run verify` 零失敗，正式 validator 仍回報 23 個 bundle、68 條路線。
+8. 兩件必要 KML 的 `sourceSha256`、canonical `geometrySha256`、逐段點數與總點數均鎖定已核准常數；來源變動不得由自動化自行接受。
+9. `npm run verify` 零失敗，正式 validator 仍回報 23 個 bundle、68 條路線。
 
 ### 8.2 瀏覽器驗證
 

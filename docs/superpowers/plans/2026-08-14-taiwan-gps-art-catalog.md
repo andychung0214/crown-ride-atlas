@@ -4,7 +4,7 @@
 
 **Goal:** 將空白的「路線美學」改為至少 22 件有公開來源的台灣 GPS Art 圖鑑，讓可取得公開軌跡的作品提供站內地圖與 GPX，其餘作品誠實顯示來源與「軌跡待取得」。
 
-**Architecture:** GPS Art 使用獨立、唯讀的 catalog 與 tracks 模組，不寫入 `Store`、不併入一般路線，也不加入正式 track manifest。`RouteArt` 核心模組負責資料驗證、統計與純函式篩選；Render 直接渲染作品物件，App 只為 `track-ready` 項目掛載既有 MapView 與 GPX 下載。
+**Architecture:** GPS Art 使用獨立、唯讀的 catalog 與 tracks 模組，不寫入 `Store`、不併入一般路線，也不加入正式 track manifest。`RouteArt` 核心模組負責資料驗證、統計與純函式篩選；Render 直接渲染作品物件，App 只為 `track-ready` 項目掛載既有 MapView 與 GPX 下載。瀏覽器 runtime 對單件軌跡採 fail-soft，匯入器與 CI 對必要 KML 仍採 hard-fail。
 
 **Tech Stack:** HTML5、CSS、Vanilla JavaScript UMD 模組、Leaflet 1.9.4、Node.js 內建 test runner、公開 GPX／Google My Maps KML、GitHub Pages。
 
@@ -24,7 +24,7 @@
 ## File Map
 
 - Create `js/core/route-art.js`: GPS Art schema validation、統計與不變更輸入的篩選純函式。
-- Create `js/data/route-art-tracks.js`: 由公開 GPX／KML 匯入並驗證後的凍結 segments 資料。
+- Create `js/data/route-art-tracks.js`: 由公開 GPX／KML 匯入並驗證後的凍結 segments、來源 SHA-256 與 canonical geometry SHA-256 資料。
 - Create `js/data/route-art-catalog.js`: 22 件作品的來源、活動、狀態、已知數值與可用軌跡資料。
 - Create `scripts/import-route-art-tracks.mjs`: 從兩個必要 KML 與一個可選 GPX 的已核准公開 URL 重建軌跡資料並執行台灣座標閘門。
 - Create `tests/route-art.test.js`: 核心篩選、統計與 schema 規則。
@@ -275,7 +275,7 @@ git commit -m "feat: 收錄台灣 GPS Art 公開來源圖鑑"
 
 **Interfaces:**
 - Consumes: 兩個必要公開 KML 與一個可選公開 GPX URL，分別解析 GPX `<trkpt>` 與 KML `<coordinates>`。
-- Produces: `RouteArtTracks[id] = { routeId, sourceFormat, sourceUrl, segments }`；catalog 中實際下載成功的 `track-ready` 項目引用相同凍結 segments。每個 KML `LineString` 保留為一段，維持文件順序與段內點序，不建立跨段連線。
+- Produces: `RouteArtTracks[id] = { routeId, sourceFormat, sourceUrl, sourceSha256, geometrySha256, segments }`；`geometrySha256` 固定以 `SHA-256(JSON.stringify(segments))` 計算。catalog 中實際下載成功的 `track-ready` 項目只引用相同凍結 segments。每個 KML `LineString` 保留為一段，維持文件順序與段內點序，不建立跨段連線。
 
 - [ ] **Step 1: 先加入軌跡閘門與 GPX 同源失敗測試**
 
@@ -339,7 +339,7 @@ const SOURCES = Object.freeze([
 
 Run: `node scripts/import-route-art-tracks.mjs`
 
-Expected: 至少輸出台北櫻花與台北圓環的作品 ID、各自 segment 數、總點數與 SHA-256，建立 `js/data/route-art-tracks.js`；臥虎若下載成功才一併輸出，不輸出 cookie、authorization header 或任何圖片 URL。
+Expected: 至少輸出台北櫻花與台北圓環的作品 ID、各自 segment 數、總點數、來源 SHA-256 與 canonical geometry SHA-256，建立 `js/data/route-art-tracks.js`；兩個來源雜湊、幾何雜湊、逐段點數與總點數必須符合人工核准常數，來源變動時停止並要求重新查核，不得自行接受。臥虎若下載成功才一併輸出，不輸出 cookie、authorization header 或任何圖片 URL。
 
 Run: `rg -n "token|cookie|authorization|client_secret|\.env|<img|https://.*\.(jpg|png|webp)" js/data/route-art-tracks.js`
 
@@ -356,7 +356,7 @@ Expected: 無匹配、exit code 1。
 <script defer src="js/data/routes.js"></script>
 ```
 
-catalog factory 在 Node 使用 `require("./route-art-tracks.js")`，在瀏覽器使用 `root.CrownRideAtlas.RouteArtTracks`。台北櫻花與台北圓環必須使用 `segments: RouteArtTracks[id].segments` 並成為 `track-ready`；臥虎只在同 ID track 實際存在時升級。必要 KML 軌跡缺失時模組初始化必須拋出可辨識錯誤，不得靜默改成假資料。
+catalog factory 在 Node 使用 `require("./route-art-tracks.js")`，在瀏覽器使用 `root.CrownRideAtlas.RouteArtTracks`。每件作品只在同 ID track 存在且 `segments` 有效時，使用 `segments: RouteArtTracks[id].segments` 升級為 `track-ready`；單件必要 KML 軌跡缺失或無效時，瀏覽器 catalog 仍須建立完整 22 件作品，該件維持不含 `segments`／`coordinates` 的 `source-only`，其他合法軌跡不受影響。必要來源的 HTTP、TLS 與解析錯誤仍由匯入器 hard-fail 且不得改寫產物；provenance 不符則由測試／CI hard-fail，重產結果必須取得人工核准才能接受。
 
 `RouteArt.validateItem` 採用 GPS Art 專用 multi-segment 契約：`track-ready` 必須有至少一段有效 `segments`，`source-only` 同時禁止 `segments` 與 `coordinates`，並提供 `RouteArt.hasUsableSegments(segments)` 給互動層使用。`Gpx.serialize/createDownload` 在輸入 `segments` 時，每段輸出獨立 `<trkseg>`；既有 flat `coordinates` 仍輸出單一 `<trkseg>`。`Gpx.parse` 回傳 `segments` 並保留扁平 `coordinates` 相容欄位。
 
@@ -364,7 +364,7 @@ catalog factory 在 Node 使用 `require("./route-art-tracks.js")`，在瀏覽�
 
 Run: `node --test tests/route-art-catalog.test.js tests/gpx.test.js tests/track-registry.test.js && npm run tracks:validate`
 
-Expected: 全部 PASS；validator 仍回報 23 bundles／68 routes，GPS Art 不在正式 manifest。
+Expected: 全部 PASS；測試另鎖定兩件必要 KML 的來源 SHA-256、canonical geometry SHA-256、逐段點數與總點數，並驗證 runtime 單件降級；validator 仍回報 23 bundles／68 routes，GPS Art 不在正式 manifest。
 
 - [ ] **Step 7: 提交可重建的公開軌跡**
 
@@ -578,7 +578,7 @@ assert.ok(indexSource.indexOf("route-art.js") < indexSource.indexOf("render.js")
 
 - [ ] **Step 2: 建立 22 件來源研究表**
 
-`docs/route-research/taiwan-gps-art.md` 必須逐件列出：ID、作品名、圖形、活動、地區（來源未明示則寫「來源未明示」）、狀態、作者（來源有揭露才填）、原始頁、軌跡下載頁、查核日。每件實際 track-ready 作品另列下載 URL、格式、點數、SHA-256；明示本站未複製外站圖片，也未從登入後 Strava 取得任何資料。
+`docs/route-research/taiwan-gps-art.md` 必須逐件列出：ID、作品名、圖形、活動、地區（來源未明示則寫「來源未明示」）、狀態、作者（來源有揭露才填）、原始頁、軌跡下載頁、查核日。每件實際 track-ready 作品另列下載 URL、格式、逐段點數、總點數、來源 SHA-256 與 canonical geometry SHA-256；明示本站未複製外站圖片，也未從登入後 Strava 取得任何資料。
 
 - [ ] **Step 3: 同步產品、測試與限制文件**
 

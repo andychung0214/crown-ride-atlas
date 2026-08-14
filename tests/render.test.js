@@ -182,6 +182,7 @@ test("路線美學顯示來源卡且只有 track-ready 可下載 GPX", () => {
     fixtureArt({
       id: "ready",
       name: "台北櫻花 16K",
+      author: "CS72",
       status: "track-ready",
       segments: [[{ lat: 25, lng: 121 }, { lat: 25.1, lng: 121.1 }]],
       distanceKm: 16
@@ -210,6 +211,7 @@ test("路線美學顯示來源卡且只有 track-ready 可下載 GPX", () => {
   assert.match(text, /軌跡待取得/);
   assert.match(text, /台北市/);
   assert.match(text, /16 km/);
+  assert.match(text, /作者 CS72/);
   assert.match(text, /查核 2026-08-14/);
   assert.equal(sourceLinks.length, 2);
   sourceLinks.forEach(link => {

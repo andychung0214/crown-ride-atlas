@@ -4,6 +4,8 @@
 
 ## 2026-08-14 GPS Art 圖鑑增補
 
+目前候選版完整基準為 `npm run verify` 264 項測試通過，正式 validator 維持 23 個 bundle／68 條路線。
+
 ### 自動測試
 
 | 測試項目 | 測試方式 | 預期結果 |
@@ -12,6 +14,8 @@
 | 狀態與假幾何防護 | 同上，逐件檢查 `track-ready`／`source-only` | 2 件 track-ready 有有效台灣 `segments`；20 件 source-only 不含 `segments` 或 `coordinates` |
 | 分段地圖 | 執行 `node --test tests/map.test.js` | Leaflet 與 SVG 每個來源 segment 各自繪製，不在段界接線；正式路線 flat `coordinates` 行為不變 |
 | 分段 GPX | 執行 `node --test tests/gpx.test.js` | 每段輸出獨立 `<trkseg>`，重新解析保留段界與點序；既有正式路線仍為單一 segment |
+| 軌跡 provenance | 執行 `node --test tests/route-art-catalog.test.js` | 每件軌跡產物都有來源與 canonical geometry SHA-256；兩件必要 KML 鎖定已核准來源雜湊、幾何雜湊、逐段點數與總點數，任何變動均須人工重新查核 |
+| runtime 單件降級 | 同上，以缺少軌跡與無效 `segments` 建立瀏覽器 catalog | catalog 仍有 22 件；只有失效作品降為不含幾何的 source-only，另一件合法作品維持 track-ready；匯入器／CI 對必要來源仍 hard-fail |
 | 圖鑑渲染 | 執行 `node --test tests/render.test.js tests/app.test.js` | 四種篩選正確、結果陣列不被修改；只有 track-ready 建立地圖與 GPX 按鈕，source-only 顯示「軌跡待取得」 |
 | 外部連結安全 | 檢查來源卡渲染測試 | 連結使用 HTTPS、`target="_blank"` 與 `rel="noopener noreferrer"` |
 | 正式路線隔離 | 執行 `npm run verify` | `Data.routes` 維持 68 條；正式 validator 維持 23 個 bundle／68 條路線，GPS Art 不加入 manifest |

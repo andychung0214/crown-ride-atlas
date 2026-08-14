@@ -46,12 +46,14 @@
 
 ## 站內軌跡稽核
 
-兩件 `track-ready` 作品皆直接來自公開 Google My Maps KML。每個原始 `LineString` 保留為獨立 segment，維持文件順序與段內點序；沒有重排、反轉、補點或跨段連線。地圖與 GPX 使用同一份凍結 `segments`，GPX 每段輸出為獨立 `<trkseg>`。
+兩件 `track-ready` 作品皆直接來自公開 Google My Maps KML。每個原始 `LineString` 保留為獨立 segment，維持文件順序與段內點序；沒有重排、反轉、補點或跨段連線。地圖與 GPX 使用同一份凍結 `segments`，GPX 每段輸出為獨立 `<trkseg>`。產物保存來源檔 SHA-256，並以 UTF-8 `JSON.stringify(segments)` 的結果計算 canonical geometry SHA-256。
 
-| ID | 下載 URL | 格式 | segments | 點數 | 來源檔 SHA-256 |
-|---|---|---|---:|---:|---|
-| `gps-art-taipei-cherry-blossom` | [KML](https://www.google.com/maps/d/kml?mid=1XFfh9ZGnEVTth4D4cyZ3oQuy3fLymWU&forcekml=1) | KML | 6 | 1,036 | `aa9ce71997e0e81f84783be37a2bc493238264df0749625ec1dd2d285c9186f0` |
-| `gps-art-taipei-circle-walk` | [KML](https://www.google.com/maps/d/kml?mid=1thheW0QAsTO65i6iOZ90-yZWA4M7Pqej&forcekml=1) | KML | 12 | 2,459 | `60b4b710b9460719aff0dcffbdffdfbb1542b45e7f46acdc68629f7eefea696f` |
+| ID | 下載 URL | 格式 | 各 segment 點數 | 總點數 | 來源檔 SHA-256 | canonical geometry SHA-256 |
+|---|---|---|---|---:|---|---|
+| `gps-art-taipei-cherry-blossom` | [KML](https://www.google.com/maps/d/kml?mid=1XFfh9ZGnEVTth4D4cyZ3oQuy3fLymWU&forcekml=1) | KML | 202／266／63／134／87／284 | 1,036 | `aa9ce71997e0e81f84783be37a2bc493238264df0749625ec1dd2d285c9186f0` | `e2e3f0434e3f18e7a246105e1e48dbf227197b94d0be98f4cc61972d82e6f2bd` |
+| `gps-art-taipei-circle-walk` | [KML](https://www.google.com/maps/d/kml?mid=1thheW0QAsTO65i6iOZ90-yZWA4M7Pqej&forcekml=1) | KML | 165／454／139／63／130／547／562／249／83／30／16／21 | 2,459 | `60b4b710b9460719aff0dcffbdffdfbb1542b45e7f46acdc68629f7eefea696f` | `a788714f69fd805bfc3fecde54b0146f6526275d5f7574f5090b189679b93433` |
+
+上述兩組來源與幾何 provenance、逐段點數及總點數是 2026-08-14 人工核准常數。來源重新下載後若任何值改變，測試與 CI 必須失敗，重產結果不得被接受；重新檢視公開來源、段界與點序並取得人工核准後，才能更新常數。
 
 `gps-art-xinzhuang-tiger` 的公開 GPX 在本輪 Windows TLS 建連前回傳 `ECONNRESET`。匯入器沒有停用 TLS 驗證，也沒有以人工描圖替代，因此作品維持 `source-only`。後續只有在相同公開軌跡能通過 HTTPS 下載、台灣座標與分段契約驗證時，才可改為 `track-ready`。
 
@@ -61,3 +63,4 @@
 - 作品頁、公開 KML／GPX 與道路狀態可能改變；`verifiedAt` 是最後查核日，不是持續可用保證。
 - 步行與跑步作品只標示原活動，不宣稱適合公路車導航。
 - Google My Maps KML 的 LineString 段界是來源幾何的一部分；即使段尾與下一段首點相距較遠，也不得為了外觀自行接線。
+- 瀏覽器若只缺少其中一件軌跡，該件會降級為 `source-only`，其他作品仍顯示；發布用匯入器仍要求兩件必要 KML 與上述 provenance 全部通過。

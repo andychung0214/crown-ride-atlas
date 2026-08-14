@@ -2,12 +2,21 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const { createHash } = require("node:crypto");
 const fs = require("node:fs");
 const vm = require("node:vm");
 const RouteArt = require("../js/core/route-art.js");
 const Catalog = require("../js/data/route-art-catalog.js");
+const Tracks = require("../js/data/route-art-tracks.js");
 const Data = require("../js/data/routes.js");
 const TrackManifest = require("../js/data/track-manifest.js");
+
+function loadBrowserCatalog(routeArtTracks) {
+  const source = fs.readFileSync(require.resolve("../js/data/route-art-catalog.js"), "utf8");
+  const browserWindow = { CrownRideAtlas: { RouteArt, RouteArtTracks: routeArtTracks } };
+  vm.runInNewContext(source, { window: browserWindow, globalThis: browserWindow });
+  return browserWindow.CrownRideAtlas.RouteArtCatalog;
+}
 
 test("圖鑑固定收錄 22 件有公開來源的台灣 GPS Art", () => {
   assert.equal(Catalog.length, 22);
@@ -31,6 +40,7 @@ test("圖鑑保留來源已明示的數值與作者，且不把下限當作精�
     shapeLabel: "迅猛龍",
     activityLabel: "單車",
     summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「北桃迅猛龍」。",
+    author: "CS72",
     sourcePlatform: "Mobile01",
     sourceUrl: "https://www.mobile01.com/topicdetail.php?f=377&t=5800991",
     verifiedAt: "2026-08-14"
@@ -39,6 +49,12 @@ test("圖鑑保留來源已明示的數值與作者，且不把下限當作精�
   assert.equal(byId.get("gps-art-yangmingshan-buddha-hand").distanceKm, 135);
   assert.equal(Object.hasOwn(byId.get("gps-art-yangmingshan-buddha-hand"), "elevationGainM"), false);
   assert.equal(byId.get("gps-art-yangmingshan-buddha-hand").elevationGainLabel, "3,000 m 以上");
+});
+
+test("Mobile01 公開整理頁的 17 件作品皆保留原作者 CS72", () => {
+  const mobile01Items = Catalog.filter(item => item.sourcePlatform === "Mobile01");
+  assert.equal(mobile01Items.length, 17);
+  assert.ok(mobile01Items.every(item => item.author === "CS72"));
 });
 
 test("GPS Art 不污染正式路線與 track manifest", () => {
@@ -60,7 +76,6 @@ test("沒有公開軌跡的作品不帶座標或虛構零值", () => {
 });
 
 test("track-ready 作品都有公開軌跡且座標位於台灣", () => {
-  const Tracks = require("../js/data/route-art-tracks.js");
   const ready = Catalog.filter(item => item.status === "track-ready");
   assert.ok(ready.length >= 2);
   for (const item of ready) {
@@ -74,14 +89,69 @@ test("track-ready 作品都有公開軌跡且座標位於台灣", () => {
   assert.equal(tiger.status, Object.hasOwn(Tracks, tiger.id) ? "track-ready" : "source-only");
 });
 
-test("catalog 初始化拒絕缺少必要 KML 軌跡", () => {
-  const source = fs.readFileSync(require.resolve("../js/data/route-art-catalog.js"), "utf8");
-  const browserWindow = { CrownRideAtlas: { RouteArt, RouteArtTracks: {} } };
+test("catalog 對單件必要軌跡缺失或 segments 無效採逐件降級", () => {
+  const validCircleTrack = Tracks["gps-art-taipei-circle-walk"];
+  const invalidCherryTrack = Object.assign({}, Tracks["gps-art-taipei-cherry-blossom"], {
+    segments: [[Tracks["gps-art-taipei-cherry-blossom"].segments[0][0]]]
+  });
+  const cases = [
+    { name: "缺少軌跡", tracks: { "gps-art-taipei-circle-walk": validCircleTrack } },
+    {
+      name: "segments 無效",
+      tracks: {
+        "gps-art-taipei-cherry-blossom": invalidCherryTrack,
+        "gps-art-taipei-circle-walk": validCircleTrack
+      }
+    }
+  ];
 
-  assert.throws(
-    () => vm.runInNewContext(source, { window: browserWindow, globalThis: browserWindow }),
-    /必要 GPS Art 軌跡缺失.*gps-art-taipei-cherry-blossom/
-  );
+  for (const scenario of cases) {
+    const catalog = loadBrowserCatalog(scenario.tracks);
+    const cherry = catalog.find(item => item.id === "gps-art-taipei-cherry-blossom");
+    const circle = catalog.find(item => item.id === "gps-art-taipei-circle-walk");
+
+    assert.equal(catalog.length, 22, scenario.name);
+    assert.equal(cherry.status, "source-only", scenario.name);
+    assert.equal(Object.hasOwn(cherry, "segments"), false, scenario.name);
+    assert.equal(Object.hasOwn(cherry, "coordinates"), false, scenario.name);
+    assert.equal(circle.status, "track-ready", scenario.name);
+    assert.strictEqual(circle.segments, validCircleTrack.segments, scenario.name);
+  }
+});
+
+test("公開軌跡產物鎖定來源與 canonical geometry provenance", () => {
+  const approved = {
+    "gps-art-taipei-cherry-blossom": {
+      sourceSha256: "aa9ce71997e0e81f84783be37a2bc493238264df0749625ec1dd2d285c9186f0",
+      geometrySha256: "e2e3f0434e3f18e7a246105e1e48dbf227197b94d0be98f4cc61972d82e6f2bd",
+      segmentPointCounts: [202, 266, 63, 134, 87, 284],
+      totalPoints: 1036
+    },
+    "gps-art-taipei-circle-walk": {
+      sourceSha256: "60b4b710b9460719aff0dcffbdffdfbb1542b45e7f46acdc68629f7eefea696f",
+      geometrySha256: "a788714f69fd805bfc3fecde54b0146f6526275d5f7574f5090b189679b93433",
+      segmentPointCounts: [165, 454, 139, 63, 130, 547, 562, 249, 83, 30, 16, 21],
+      totalPoints: 2459
+    }
+  };
+
+  for (const track of Object.values(Tracks)) {
+    assert.match(track.sourceSha256, /^[a-f0-9]{64}$/);
+    assert.match(track.geometrySha256, /^[a-f0-9]{64}$/);
+    assert.equal(
+      track.geometrySha256,
+      createHash("sha256").update(JSON.stringify(track.segments)).digest("hex")
+    );
+  }
+
+  for (const [id, expected] of Object.entries(approved)) {
+    const track = Tracks[id];
+    const segmentPointCounts = track.segments.map(segment => segment.length);
+    assert.equal(track.sourceSha256, expected.sourceSha256, id);
+    assert.equal(track.geometrySha256, expected.geometrySha256, id);
+    assert.deepEqual(segmentPointCounts, expected.segmentPointCounts, id);
+    assert.equal(segmentPointCounts.reduce((total, count) => total + count, 0), expected.totalPoints, id);
+  }
 });
 
 test("KML 匯入依文件順序保留 LineString 段界並忽略 Point 地標", async () => {

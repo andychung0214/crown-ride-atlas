@@ -23,6 +23,8 @@
       "routeId": "gps-art-taipei-cherry-blossom",
       "sourceFormat": "kml",
       "sourceUrl": "https://www.google.com/maps/d/kml?mid=1XFfh9ZGnEVTth4D4cyZ3oQuy3fLymWU&forcekml=1",
+      "sourceSha256": "aa9ce71997e0e81f84783be37a2bc493238264df0749625ec1dd2d285c9186f0",
+      "geometrySha256": "e2e3f0434e3f18e7a246105e1e48dbf227197b94d0be98f4cc61972d82e6f2bd",
       "segments": [
         [
           {
@@ -5222,6 +5224,8 @@
       "routeId": "gps-art-taipei-circle-walk",
       "sourceFormat": "kml",
       "sourceUrl": "https://www.google.com/maps/d/kml?mid=1thheW0QAsTO65i6iOZ90-yZWA4M7Pqej&forcekml=1",
+      "sourceSha256": "60b4b710b9460719aff0dcffbdffdfbb1542b45e7f46acdc68629f7eefea696f",
+      "geometrySha256": "a788714f69fd805bfc3fecde54b0146f6526275d5f7574f5090b189679b93433",
       "segments": [
         [
           {

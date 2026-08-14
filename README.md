@@ -15,6 +15,7 @@
 - 北高與一日雙塔使用獨立完整 point-to-point 軌跡；挑戰卡片會明確顯示起點、終點與補充分段。
 - 路線美學頁收錄 22 件台灣 GPS Art 公開來源圖鑑，涵蓋單車、跑步與步行；其中 2 件具可重建的公開 KML，可在站內檢視分段地圖並下載同源 GPX，其餘 20 件明確標示「軌跡待取得」。
 - GPS Art 提供全部、單車、跑步／步行與有站內軌跡四種篩選；沒有公開幾何的來源卡不顯示假地圖或 GPX 按鈕。不相符的舊「環小台灣」仍只保留稽核資料。
+- GPS Art 軌跡產物保存來源檔與 canonical geometry SHA-256，CI 同時鎖定逐段點數與總點數；來源變動須人工重新查核。瀏覽器遇到單件軌跡缺失時只降級該件，不會阻斷其餘圖鑑。
 - Leaflet 互動地圖；離線或直接開啟 HTML 時自動改用 SVG 路線圖。
 - 68 條已發布內建路線皆以 BRouter `fastbike` 吸附至道路，搭配 SRTM 海拔、路線級平滑與持續坡度分析；卡片坡度欄位直接取自對應軌跡摘要。
 - 受版控的道路稽核可在 CI 由 BRouter 原始幾何與 waytags 完整重建 68 條正式路線；明確禁行、渡輪、階梯、施工道路與未證明適合公路車的道路會阻擋發布，必要的公共 service 或明確自行車網路短段例外必須綁定精確路段 SHA-256、距離上限與 HTTPS 佐證。
@@ -72,7 +73,7 @@ npm run tracks:validate
 npm run verify
 ```
 
-測試不依賴大型框架，使用 Node.js 內建 `node:test`。`npm run verify` 會檢查 JavaScript 入口、GPS Art catalog／分段 GPX 契約，以及 23 個公開軌跡 bundle（共 68 條正式路線）；GPS Art 不加入正式 manifest。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，來源帳見 [`docs/route-research/taiwan-gps-art.md`](docs/route-research/taiwan-gps-art.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
+測試不依賴大型框架，使用 Node.js 內建 `node:test`。目前 `npm run verify` 共 264 項測試，會檢查 JavaScript 入口、GPS Art catalog／分段 GPX／runtime 單件降級／軌跡 provenance 契約，以及 23 個公開軌跡 bundle（共 68 條正式路線）；GPS Art 不加入正式 manifest。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，來源帳見 [`docs/route-research/taiwan-gps-art.md`](docs/route-research/taiwan-gps-art.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
 
 ## 靜態網站託管
 

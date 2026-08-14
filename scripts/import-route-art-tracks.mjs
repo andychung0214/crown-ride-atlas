@@ -151,8 +151,9 @@ async function downloadSource(source) {
     routeId: source.id,
     sourceFormat: source.format,
     sourceUrl: source.url,
-    segments,
-    sha256: createHash("sha256").update(payload).digest("hex")
+    sourceSha256: createHash("sha256").update(payload).digest("hex"),
+    geometrySha256: createHash("sha256").update(JSON.stringify(segments)).digest("hex"),
+    segments
   };
 }
 
@@ -162,6 +163,8 @@ function serializeTracks(tracks) {
       routeId: track.routeId,
       sourceFormat: track.sourceFormat,
       sourceUrl: track.sourceUrl,
+      sourceSha256: track.sourceSha256,
+      geometrySha256: track.geometrySha256,
       segments: track.segments
     };
     return `    ${JSON.stringify(track.routeId)}: ${JSON.stringify(value, null, 2).replace(/^/gm, "    ").trimStart()}`;
@@ -187,7 +190,7 @@ export async function importTracks() {
     try {
       const track = await downloadSource(source);
       tracks.push(track);
-      console.log(`${source.id}: ${track.segments.length} segments, ${track.segments.flat().length} points, SHA-256 ${track.sha256}`);
+      console.log(`${source.id}: ${track.segments.length} segments, ${track.segments.flat().length} points, source SHA-256 ${track.sourceSha256}, geometry SHA-256 ${track.geometrySha256}`);
     } catch (error) {
       const detail = describeDownloadError(error);
       if (source.required) {
