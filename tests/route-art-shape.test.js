@@ -31,5 +31,6 @@ test("環小台灣 audit bundle 保留可重現資料但不進入公開路線", 
 
   assert.ok(tracks["route-art-little-taiwan"]);
   assert.equal(Data.routes.some(item => item.id === "route-art-little-taiwan"), false);
-  assert.deepEqual(Data.routeArt, []);
+  assert.equal(Data.routeArt.length, 22);
+  assert.equal(Data.routeArt.some(item => item.id === "route-art-little-taiwan"), false);
 });

@@ -1,7 +1,10 @@
 "use strict";
 
 (function (root, factory) {
-  const api = factory();
+  const RouteArtCatalog = typeof module === "object" && module.exports
+    ? require("./route-art-catalog.js")
+    : root.CrownRideAtlas.RouteArtCatalog;
+  const api = factory(RouteArtCatalog);
 
   if (typeof module === "object" && module.exports) {
     module.exports = api;
@@ -12,7 +15,7 @@
       Data: api
     });
   }
-})(typeof window !== "undefined" ? window : globalThis, function () {
+})(typeof window !== "undefined" ? window : globalThis, function (RouteArtCatalog) {
   const regionSpecs = [
     {
       id: "keelung",
@@ -796,21 +799,6 @@
     }
   ];
 
-  const routeArt = artShapes
-    .filter(art => artMatchAudit[art.id] && artMatchAudit[art.id].matchStatus === "near-match")
-    .map(function (art) {
-      const match = artMatchAudit[art.id];
-    return {
-      id: art.id.replace("route-", ""),
-      name: `${art.name}道路近似`,
-      routeId: art.id,
-      description: `以通過幾何閘門的公共道路軌跡近似「${art.name}」；分數 ${match.shapeScore.toFixed(3)}、最大誤差 ${match.maxPointError.toFixed(3)}。`,
-      matchStatus: match.matchStatus,
-      shapeScore: match.shapeScore,
-      maxPointError: match.maxPointError
-    };
-    });
-
   function deepFreeze(value) {
     if (!value || typeof value !== "object" || Object.isFrozen(value)) return value;
     Object.freeze(value);
@@ -822,6 +810,6 @@
     regions,
     routes,
     challenges,
-    routeArt
+    routeArt: Array.isArray(RouteArtCatalog) ? RouteArtCatalog : []
   });
 });
