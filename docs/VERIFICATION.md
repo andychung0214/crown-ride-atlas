@@ -8,8 +8,8 @@
 
 | 檢查 | 結果 | 實際證據 |
 |---|---|---|
-| Focused 回歸 | 通過 | `node --test tests/app.test.js tests/render.test.js tests/bike-anatomy.test.js tests/bike-parts.test.js tests/css.test.js tests/pages-workflow.test.js` exit code 0；84 項通過、0 項失敗 |
-| 完整驗證 | 通過 | `npm run verify` exit code 0；311 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
+| Focused 回歸 | 通過 | `node --test tests/app.test.js tests/render.test.js tests/bike-anatomy.test.js tests/bike-parts.test.js tests/css.test.js tests/pages-workflow.test.js` exit code 0；87 項通過、0 項失敗 |
+| 完整驗證 | 通過 | `npm run verify` exit code 0；314 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
 | Git 空白檢查 | 通過 | `git diff --check` exit code 0；沒有空白錯誤，只有工作樹既有 LF→CRLF 行尾轉換警告 |
 | 敏感資訊掃描 | 通過 | 受版控敏感檔名掃描為 0 筆；指定內容掃描的命中均為文件中的掃描命令／安全說明與測試 DOM guard，沒有憑證值、私人金鑰或 production 危險 DOM sink |
 | 正式資料隔離 | 通過 | `git diff --name-only -- js/data/routes.js js/data/track-manifest.js js/data/tracks` 無輸出；沒有修改 routes、`Data.routes`、`TrackManifest` 或正式 tracks |
@@ -27,6 +27,7 @@
 - 文字降級：無 BikeAnatomy、`mount` 拋錯、SVG 建立失敗與 destroy 後恢復，均由 App／Render／BikeAnatomy 自動測試驗證；destroy 的真 CSS 排版另由 lifecycle fixture 完成 Chrome 實測。缺 module／強制 SVG failure 未在 Chrome 故障注入，不宣稱已實測。
 - Gesture 證據：diagram surface 的 production event 測試涵蓋 direct marker、direct SVG hotspot、marker＋背景、marker＋marker、SVG hotspot＋背景；237×128.375 非 1:1 rect 的單指與雙指 midpoint 40 CSS px 均換算成約 40px 視覺位移。
 - 觸控證據邊界：Chrome 控制 surface 只有 viewport 與一般 pointer click，沒有觸控裝置模擬；390／320px 的實際點選是 Chrome mouse pointer。touch／pen direct part、22 CSS px 最近熱點與 gesture 防誤選由 production event 自動測試通過，不冒稱為實機 touch 驗證。
+- 768×1024 真 mouse drag：縮放 1.25 倍後 SVG rect 為 655.5625×355.09375px；從下管附近背景拖 60 CSS px，transform 由 `translate(0 0) scale(1.25)` 改為 `translate(87.86412039074189 0) scale(1.25)`，但標題仍為「上管」、top pressed true、down pressed false，status 沒有選取訊息。接著正常點擊鏈條後標題為「鏈條」、pressed true、status 為「已選取 22 鏈條。」，證明 suppression 只消費一次；Chrome warn／error 為 0。
 - 主控台：本機頁面沒有 fatal error；Chrome log 另有一筆 `chrome-extension://` 翻譯擴充功能 token error，來源不是本站，未把它隱藏或記成本站通過訊息。
 - Reduced Motion 證據邊界：Chrome runtime 沒有 `emulateMedia` 能力，因此未執行真實 `prefers-reduced-motion` media emulation。精確 CSS media-block 測試鎖定縮減動態效果規則；此項不宣稱已完成實機 media 驗證。
 - 本輪沒有建立畫面擷取檔；Chrome 測試 tab 已關閉，本機 HTTP server 已停止，使用者原有 tabs 保留。

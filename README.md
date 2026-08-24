@@ -35,7 +35,7 @@
 7. 從「路線美學」檢視 GPS Art 圖鑑；使用活動／軌跡篩選，並由作品卡查閱公開來源。只有標示「有站內軌跡」的作品提供地圖與 GPX。
 8. 從「公路車百科」或 `#/bike-parts` 開啟部件圖解。桌機可沿導引線閱讀標籤，滑過熱點或分類清單會同步標示同一部件；窄版可點選 01–32 的圓形 marker 或下方分類清單。可用前一筆／下一筆、放大／縮小與重設控制；圖解縮放範圍為 1 至 3 倍。
 
-百科的桌機 SVG 熱點、行動版 HTML marker、控制項與分類按鈕支援 Tab、Enter、Space 與 Pointer Events；diagram surface 會同時接收 marker 與背景 gesture，觸控以 direct part 或 22 CSS px 半徑最近熱點選取，拖曳與雙指不會誤選。client CSS px 會依實際 SVG rect／viewBox 換算為圖面位移。互動模組缺少、建立失敗或被銷毀時，32 個原生 `<details>` 仍各自保留名稱與七類完整內容。
+百科的桌機 SVG 熱點、行動版 HTML marker、控制項與分類按鈕支援 Tab、Enter、Space 與 Pointer Events；diagram surface 會同時接收 marker 與背景 gesture，觸控以 direct part 或 22 CSS px 半徑最近熱點選取，拖曳與雙指不會誤選。diagram 內的滑鼠與原生 marker click 統一由 surface 委派，拖曳後的合成 click 只會被抑制一次，不會誤選或永久吞掉下一次正常點擊。client CSS px 會依實際 SVG rect／viewBox 換算為圖面位移。互動模組缺少、建立失敗或被銷毀時，32 個原生 `<details>` 仍各自保留名稱與七類完整內容。
 
 ## 安裝與執行
 
@@ -77,7 +77,7 @@ npm run tracks:validate
 npm run verify
 ```
 
-測試不依賴大型框架，使用 Node.js 內建 `node:test`。目前 `npm run verify` 共 311 項測試，會檢查 JavaScript 入口、GPS Art catalog／分段 GPX／runtime 單件降級／軌跡 provenance 契約、32 筆公路車部件圖解、靜態 fallback、screen-space marker 與 gesture，以及 23 個公開軌跡 bundle（共 68 條正式路線）；GPS Art 與部件百科均不加入正式 manifest。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，來源帳見 [`docs/route-research/taiwan-gps-art.md`](docs/route-research/taiwan-gps-art.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
+測試不依賴大型框架，使用 Node.js 內建 `node:test`。目前 `npm run verify` 共 314 項測試，會檢查 JavaScript 入口、GPS Art catalog／分段 GPX／runtime 單件降級／軌跡 provenance 契約、32 筆公路車部件圖解、靜態 fallback、screen-space marker 與 gesture，以及 23 個公開軌跡 bundle（共 68 條正式路線）；GPS Art 與部件百科均不加入正式 manifest。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，來源帳見 [`docs/route-research/taiwan-gps-art.md`](docs/route-research/taiwan-gps-art.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
 
 ## 靜態網站託管
 

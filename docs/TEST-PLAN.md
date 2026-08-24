@@ -4,7 +4,7 @@
 
 ## 現行基準：公路車部件百科（2026-08-25）
 
-現行 `npm run verify` 基準為 311 項測試、23 個公開 bundle 與 68 條正式路線；部件百科固定為 4 個分類、32 筆內容，且不寫入 `TrackManifest` 或正式路線資料。
+現行 `npm run verify` 基準為 314 項測試、23 個公開 bundle 與 68 條正式路線；部件百科固定為 4 個分類、32 筆內容，且不寫入 `TrackManifest` 或正式路線資料。
 
 ### 自動測試
 
@@ -12,7 +12,7 @@
 |---|---|---|
 | 資料契約與內容 | 執行 `node --test tests/bike-parts.test.js` | 精確 4 個分類、32 筆部件、ID／編號唯一；每筆具名稱、用途、保養、注意事項與相關部件，不以重複模板替代內容 |
 | 路由與渲染 | 執行 `node --test tests/router.test.js tests/render.test.js tests/app.test.js` | `#/bike-parts` 可解析；只缺 BikeAnatomy 或 mount 失敗時不 fatal；32 個 native details 各有名稱與七類完整內容 |
-| 圖解互動 | 執行 `node --test tests/bike-anatomy.test.js` | 32 個 HTML marker、click／Enter／Space、重疊 marker 最近點、混合 target 雙指防誤選、237px 非 1:1 rect 的單指／midpoint 換算、capture／lost capture 與 fallback lifecycle 均受測 |
+| 圖解互動 | 執行 `node --test tests/bike-anatomy.test.js` | 32 個 HTML marker、click／Enter／Space、單一 surface delegated selection、拖曳後一次性 click suppression、重疊 marker 最近點、混合 target 雙指防誤選、237px 非 1:1 rect 的單指／midpoint 換算、capture／lost capture 與 fallback lifecycle 均受測 |
 | 專屬樣式隔離 | 執行 `node --test tests/css.test.js` | 以精確 rule／media helper 鎖定 hidden fallback、44px marker、窄版隱藏 SVG 互動層、hover 非色彩狀態及 reduced-motion，不以貪婪 regex 跨規則 |
 | 正式路線隔離 | 執行 `npm run verify` | 23 個公開 bundle／68 條正式路線維持不變；部件百科不改動 routes 或 `TrackManifest` |
 
@@ -24,7 +24,7 @@
 | 768×1024 平板 | 開啟 `#/bike-parts` 並切換部件 | 圖解、詳情與分類清單可讀，控制項焦點清楚 |
 | 390px 與 320px 窄版 | 開啟 `#/bike-parts` | 原 SVG hotspot、leader、label 均隱藏；32 個 HTML marker 顯示 01–32、每個至少 44×44 CSS px、字形為 screen-space 尺寸；百科內容無水平溢位 |
 | 鍵盤 | 使用 Chrome 真實 Tab、Enter、Space | 熱點、前後一筆、放大／縮小與重設均可操作，選取部件與狀態播報同步 |
-| Pointer Events | 點選鏈條／飛輪等重疊 marker，並以 marker＋背景、marker＋marker、SVG hotspot＋背景進行單指／雙指 | mouse click 以最近 hotspot 解開重疊；touch／pen 記錄 direct part 或 22px 最近點；拖曳／雙指不誤選，結束、取消與 lost capture 不殘留 gesture |
+| Pointer Events | 點選鏈條／飛輪等重疊 marker，並以 marker＋背景、marker＋marker、SVG hotspot＋背景進行單指／雙指；1.25 倍時從下管附近背景拖 60 CSS px 後觀察合成 click，再正常點擊鏈條 | mouse click 以最近 hotspot 解開重疊；diagram child 不重複播報；touch／pen 記錄 direct part 或 22px 最近點；拖曳後的合成 click 不誤選且只抑制一次，下一次正常 click 可用 |
 | 四主題 | 依序切換四套領騎衫主題 | 主題切換不破壞百科文字、焦點、熱點或車架幾何辨識 |
 | 文字降級 | 略過 BikeAnatomy、強制 SVG 建立失敗，再以 `tests/fixtures/bike-anatomy-lifecycle.html` 掛載／destroy 成功增強 | 成功掛載時 hidden fallback computed `display:none` 且 rect 為 0；destroy 後恢復可排版，32 個 native details 各有名稱及七類完整文字 |
 | 減少動態效果 | 以支援 media emulation 的瀏覽器設定 `prefers-reduced-motion: reduce` 後開啟 | 不播放長動畫，平移／縮放與選取仍可用；若控制介面不支援此模擬，必須明記未執行而非宣稱通過 |
