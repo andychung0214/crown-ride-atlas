@@ -9,6 +9,11 @@ const requiredFields = [
   "warningSigns", "workshopAdvice"
 ];
 
+const safetyCriticalCrackPartIds = [
+  "seat-tube", "derailleur-hanger", "pedal",
+  "jockey-wheel", "valve", "spoke"
+];
+
 const expectedLayout = [
   ["top-tube", "上管", "frame-fork", 1, 525, 195, 360, 72],
   ["down-tube", "下管", "frame-fork", 2, 545, 286, 795, 155],
@@ -70,6 +75,16 @@ test("每個零件都有座標、七類內容與有效關聯", () => {
     assert.ok(part.relatedParts.every(id => ids.has(id) && id !== part.id));
   }
   assert.equal(new Set(BikeParts.parts.map(part => requiredFields.map(field => part[field]).join("|"))).size, 32);
+});
+
+test("安全關鍵零件的裂損警訊明確要求停止騎乘", () => {
+  const missingInstructionIds = safetyCriticalCrackPartIds.filter(id => {
+    const part = BikeParts.parts.find(item => item.id === id);
+    assert.ok(part, `缺少安全關鍵零件：${id}`);
+    return !part.warningSigns.includes("停止騎乘");
+  });
+
+  assert.deepEqual(missingInstructionIds, []);
 });
 
 test("百科資料深度凍結且預設選取上管", () => {

@@ -87,7 +87,7 @@
       materials: "可由鋼、鋁、鈦或碳纖維構成，內壁尺寸與夾持區設計各有差異。",
       adjustment: "只在標示範圍內夾持相符直徑座桿，夾環鎖付依車架製造商規定。",
       maintenance: "定期取出座桿清潔接觸面，依材質使用合適裝配膏並保持排水孔暢通。",
-      warningSigns: "夾口裂痕、座桿持續下滑、管內腐蝕或中軸接合異音需立即檢查。",
+      warningSigns: "夾口裂痕、座桿持續下滑、管內腐蝕或中軸接合異音，應停止騎乘並檢查。",
       relatedParts: ["seatpost", "top-tube", "bottom-bracket"],
       workshopAdvice: "碳纖維夾持扭力以製造商標示為準，勿靠加長工具或過度鎖緊止滑。"
     },
@@ -123,7 +123,7 @@
       materials: "多為加工或鍛造鋁合金，也有鋼製或特定通用規格的可更換設計。",
       adjustment: "使用吊耳校正工具檢查平行度，不能靠扳動後變速器目測猜測位置。",
       maintenance: "拆裝後清潔接觸面並確認固定螺栓，運送或倒車後複查變速表現。",
-      warningSigns: "變速跨多片齒盤不準、後變速器傾斜、裂紋或螺牙受損需處理。",
+      warningSigns: "變速跨多片飛輪齒片不準、後變速器傾斜、裂紋或螺牙受損，應停止騎乘並處理。",
       relatedParts: ["rear-derailleur", "cassette", "chain-stay"],
       workshopAdvice: "先確認車架專用型號再備料；嚴重彎曲或裂開的吊耳應更換而非反覆校正。"
     },
@@ -195,7 +195,7 @@
       materials: "本體可用工程塑膠、鋁或碳纖維，軸心多為鉻鉬鋼或鈦合金。",
       adjustment: "依型號調整卡入釋放張力，扣片角度與前後位置需配合膝踝軌跡。",
       maintenance: "清除卡扣泥沙，檢查軸承轉動與鎖片磨耗，安裝螺紋使用合適潤滑。",
-      warningSigns: "軸心明顯間隙、卡扣無法可靠固定、裂痕或踩踏異音需立即檢查。",
+      warningSigns: "軸心明顯間隙、卡扣無法可靠固定、裂痕或踩踏異音，應停止騎乘並檢查。",
       relatedParts: ["crank-arm", "bottom-bracket"],
       workshopAdvice: "左右踏板螺紋方向不同；初次使用卡踏應在安全環境練習脫卡。"
     },
@@ -267,7 +267,7 @@
       materials: "常用工程塑膠或鋁合金齒輪，中心配置襯套、滾珠或密封軸承。",
       adjustment: "上下導輪若有方向或位置標示必須照裝，導板螺栓依原廠程序固定。",
       maintenance: "定期清除齒槽黏附油泥，拆檢時勿遺失防塵蓋並按規格潤滑。",
-      warningSigns: "齒尖磨損、轉動卡澀、側向明顯晃動或導輪裂開會妨礙變速。",
+      warningSigns: "齒尖磨損、轉動卡澀、側向明顯晃動或導輪裂開，應停止騎乘並處理。",
       relatedParts: ["rear-derailleur", "chain", "cassette"],
       workshopAdvice: "替換前核對齒數、上下位置、旋轉方向與變速器型號，軸承規格不可猜配。"
     },
@@ -294,7 +294,7 @@
       materials: "閥桿多為黃銅或鋁合金，搭配橡膠底座、密封圈與可拆式氣門芯。",
       adjustment: "氣門芯應適度固定，無內胎閥底座與螺帽只需壓緊至可靠密封。",
       maintenance: "保持閥口清潔並蓋回防塵帽，補胎液堵塞時拆芯清理或更換。",
-      warningSigns: "閥根裂開、持續漏氣、閥桿彎曲或氣門芯無法密封需立即處理。",
+      warningSigns: "閥根裂開、持續漏氣、閥桿彎曲或氣門芯無法密封，應停止騎乘並處理。",
       relatedParts: ["tire", "rim"],
       workshopAdvice: "打氣筒接頭應直進直出，勿以外側螺帽過度鎖緊來補救錯位的胎帶。"
     },
@@ -312,7 +312,7 @@
       materials: "通常為不鏽鋼，也有鋁、鈦或碳纖維；輻帽多採黃銅或鋁合金。",
       adjustment: "使用輻條張力計及校輪台平衡左右張力，同時控制偏擺與圓度。",
       maintenance: "定期查看交叉接觸處、輻帽與花鼓耳，發現鬆動應檢查整輪張力。",
-      warningSigns: "斷裂、張力顯著不均、輻帽裂開或輪圈持續偏擺需儘快檢修。",
+      warningSigns: "輻條斷裂、張力顯著不均、輻帽裂開或輪圈持續偏擺，應停止騎乘並檢修。",
       relatedParts: ["rim", "hub"],
       workshopAdvice: "不要只緊故障附近一支輻條；編法、長度與目標張力需依輪組規格決定。"
     },
