@@ -692,3 +692,81 @@
     padding: var(--space-6) var(--space-4);
   }
 }
+
+/* 公路車百科：日式維修手冊解剖版 */
+.bike-parts-page,
+.bike-parts-page .bike-anatomy {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1.65fr) minmax(20rem, 0.75fr);
+  column-gap: clamp(1rem, 2vw, 2rem);
+}
+
+.bike-parts-page > .page-intro,
+.bike-parts-page > .bike-parts-categories {
+  grid-column: 1 / -1;
+}
+
+.bike-parts-page > .bike-parts-anatomy {
+  min-width: 0;
+  grid-column: 1;
+  grid-row: 2;
+  margin: clamp(2rem, 5vw, 5rem) 0 0 clamp(1rem, 4vw, 4rem);
+}
+
+.bike-parts-page > .bike-part-detail {
+  min-width: 0;
+  align-self: start;
+  grid-column: 2;
+  grid-row: 2;
+  margin: clamp(2rem, 5vw, 5rem) clamp(1rem, 4vw, 4rem) 0 0;
+}
+
+.bike-parts-page .bike-parts-categories {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 2rem);
+}
+
+.bike-parts-page .bike-parts-category,
+.bike-parts-page .bike-part-list {
+  min-width: 0;
+}
+
+@media (max-width: 72rem) {
+  .bike-parts-page,
+  .bike-parts-page .bike-anatomy {
+    grid-template-columns: 1fr;
+  }
+
+  .bike-parts-page > .bike-parts-anatomy,
+  .bike-parts-page > .bike-part-detail {
+    grid-column: 1;
+    margin-inline: clamp(1rem, 4vw, 4rem);
+  }
+
+  .bike-parts-page > .bike-parts-anatomy { grid-row: 2; }
+  .bike-parts-page > .bike-part-detail { grid-row: 3; }
+  .bike-parts-page > .bike-parts-categories { grid-row: 4; }
+
+  .bike-parts-page .bike-parts-categories {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 40rem) {
+  .bike-parts-page .bike-anatomy,
+  .bike-parts-page {
+    grid-template-columns: 1fr;
+  }
+
+  .bike-parts-page > .bike-parts-anatomy,
+  .bike-parts-page > .bike-part-detail {
+    margin-inline: var(--space-4);
+  }
+
+  .bike-parts-page .bike-parts-categories,
+  .bike-parts-page .bike-part-list {
+    grid-template-columns: 1fr;
+  }
+}

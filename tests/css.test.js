@@ -62,3 +62,22 @@ test("路線摘要在四欄與平板三欄版面都收齊每列邊界", () => {
   assert.match(css, /\.route-facts \.route-stat:nth-child\(n \+ 5\)[\s\S]*?border-top:\s*1px solid var\(--color-rule\)/);
   assert.match(css, /@media \(max-width: 56rem\)[\s\S]*?\.route-facts \.route-stat:nth-child\(4n\)[\s\S]*?border-right:\s*1px solid var\(--color-rule\)/);
 });
+
+test("百科控制符合 44px 且手機切換為編號熱點", () => {
+  const componentsCss = fs.readFileSync(path.join(__dirname, "..", "css", "components.css"), "utf8");
+  const layoutCss = fs.readFileSync(path.join(__dirname, "..", "css", "layout.css"), "utf8");
+
+  assert.match(componentsCss, /\.bike-anatomy__control[\s\S]*min-width:\s*2\.75rem/);
+  assert.match(componentsCss, /\.bike-anatomy__control[\s\S]*min-height:\s*2\.75rem/);
+  assert.match(componentsCss, /\.bike-hotspot:focus-visible/);
+  assert.match(layoutCss, /@media\s*\(max-width:\s*40rem\)[\s\S]*\.bike-anatomy[\s\S]*grid-template-columns:\s*1fr/);
+  assert.match(componentsCss, /@media\s*\(max-width:\s*40rem\)[\s\S]*\.bike-leader__label[\s\S]*display:\s*none/);
+});
+
+test("極窄手機不以固定 20rem 根寬製造水平溢位", () => {
+  const baseCss = fs.readFileSync(path.join(__dirname, "..", "css", "base.css"), "utf8");
+  const htmlRule = /html\s*\{([\s\S]*?)\}/.exec(baseCss);
+
+  assert.ok(htmlRule, "找不到 html 根規則");
+  assert.match(htmlRule[1], /min-width:\s*0/);
+});
