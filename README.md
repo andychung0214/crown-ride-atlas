@@ -2,7 +2,7 @@
 
 > 沿著山脈與海風，收藏島嶼上每一道值得騎乘的曲線。
 
-狂輪誌是一座桌機優先、支援行動觸控的台灣公路車路線百科與騎乘圖鑑。目前收錄全台 22 個地區、68 條已發布道路軌跡（66 條地區路線＋2 條完整挑戰）、8 項經典挑戰，以及 22 件公開來源的台灣 GPS Art 作品，提供搜尋、篩選、排序、分頁、完成標記、路線詳情、互動地圖、GPX 下載，以及不需後端的本機編輯功能。
+狂輪誌是一座桌機優先、支援行動觸控的台灣公路車路線百科與騎乘圖鑑。目前收錄全台 22 個地區、68 條已發布道路軌跡（66 條地區路線＋2 條完整挑戰）、8 項經典挑戰、22 件公開來源的台灣 GPS Art 作品，以及 4 個分類、32 筆內容的公路車部件百科；提供搜尋、篩選、排序、分頁、完成標記、路線詳情、互動地圖、GPX 下載，以及不需後端的本機編輯功能。
 
 線上版本：[https://andychung0214.github.io/crown-ride-atlas/](https://andychung0214.github.io/crown-ride-atlas/)
 
@@ -22,6 +22,7 @@
 - GPX 匯入、下載與可查詢里程／海拔／坡度的詳細剖面。
 - 新增、編輯、刪除、圖片壓縮、JSON 備份與還原，資料只儲存在目前瀏覽器。
 - 鍵盤操作、跳至主要內容、狀態播報、清楚的焦點樣式與減少動態效果支援。
+- 公路車百科位於 `#/bike-parts`：桌機以森林綠色系車架、導引線與標籤協助對照；窄版改以編號熱點與部件清單，確保標籤不互相遮蔽。
 
 ## 操作方式
 
@@ -32,6 +33,9 @@
 5. 在「我的路線」新增或編輯內容；可上傳 JPEG、PNG、WebP 與 GPX。
 6. 編輯完成後下載 JSON 備份，以便跨瀏覽器還原。
 7. 從「路線美學」檢視 GPS Art 圖鑑；使用活動／軌跡篩選，並由作品卡查閱公開來源。只有標示「有站內軌跡」的作品提供地圖與 GPX。
+8. 從「公路車百科」或 `#/bike-parts` 開啟部件圖解。桌機可沿導引線閱讀標籤；窄版請點選編號熱點或下方分類清單。可用前一筆／下一筆、放大／縮小與重設控制；圖解縮放範圍為 1 至 3 倍。
+
+百科的熱點、控制項與分類按鈕支援 Tab、Enter、Space 與 Pointer Events；拖曳可平移，雙指可縮放。圖形無法使用時，仍保留完整的 32 筆部件文字、用途、保養與相關部件內容。
 
 ## 安裝與執行
 
@@ -73,7 +77,7 @@ npm run tracks:validate
 npm run verify
 ```
 
-測試不依賴大型框架，使用 Node.js 內建 `node:test`。目前 `npm run verify` 共 264 項測試，會檢查 JavaScript 入口、GPS Art catalog／分段 GPX／runtime 單件降級／軌跡 provenance 契約，以及 23 個公開軌跡 bundle（共 68 條正式路線）；GPS Art 不加入正式 manifest。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，來源帳見 [`docs/route-research/taiwan-gps-art.md`](docs/route-research/taiwan-gps-art.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
+測試不依賴大型框架，使用 Node.js 內建 `node:test`。目前 `npm run verify` 共 288 項測試，會檢查 JavaScript 入口、GPS Art catalog／分段 GPX／runtime 單件降級／軌跡 provenance 契約、32 筆公路車部件圖解與互動，以及 23 個公開軌跡 bundle（共 68 條正式路線）；GPS Art 與部件百科均不加入正式 manifest。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，來源帳見 [`docs/route-research/taiwan-gps-art.md`](docs/route-research/taiwan-gps-art.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
 
 ## 靜態網站託管
 
@@ -91,6 +95,7 @@ npm run verify
 - OpenStreetMap 圖磚不可當作大量離線下載服務。
 - GPS Art 公開來源可能失效或更改；目前 22 件中只有 2 件具站內軌跡。其餘作品只保留可稽核來源，不提供猜測座標、假地圖或 GPX。
 - GPS Art 的跑步與步行作品不代表適合公路車騎乘；使用者應依活動類型、道路現況與管制自行評估。
+- 公路車百科的圖解是操作與辨識輔助，不是組裝、維修或騎乘安全指示；遇到鬆動、裂痕、煞車或傳動異常時，應由合格技師檢查。
 
 ## 安全與隱私
 

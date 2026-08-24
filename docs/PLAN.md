@@ -734,6 +734,15 @@ Expected: `main -> main`，並建立 upstream。
 
 ---
 
+## 2026-08-25 公路車部件百科里程碑
+
+- [x] 新增獨立 `#/bike-parts` 路由與首頁／導覽入口。
+- [x] 建立 4 個分類、32 筆內容的部件百科，並保留用途、保養、注意事項與相關部件的文字降級。
+- [x] 完成森林綠色系公路車圖解：桌機導引線與標籤；`40rem` 以下改為可聚焦的編號熱點。
+- [x] 完成鍵盤、Pointer Events、1 至 3 倍縮放、平移與監聽器銷毀的自動驗證；不改動 routes 或 `TrackManifest`。
+- [x] 以 Chrome 完成 1440px、768px、390px 與 320px 視窗、四主題以及 Tab／Enter／Space 回歸；320px 百科無水平溢位，既有頁面保留 20rem 根寬行為。
+- [x] 文件同步與 fresh `npm run verify`、`git diff --check`、敏感資訊掃描結果記錄於 `docs/VERIFICATION.md`。
+
 ## 里程碑
 
 1. **M1 基礎與資料**：Task 1–2 的原始最低門檻為 60 條；現況為四主題與 68 條正式路線通過資料測試。

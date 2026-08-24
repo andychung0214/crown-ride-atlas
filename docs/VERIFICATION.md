@@ -1,6 +1,33 @@
 # 狂輪誌首版驗證紀錄
 
-## 2026-08-14 台灣 GPS Art 圖鑑候選版
+## 現行驗證：2026-08-25 公路車部件百科
+
+本節只記錄公路車部件百科文件同步後的本輪命令與 Chrome 證據。現況為 4 個分類、32 筆內容、`#/bike-parts`、23 個公開 bundle 與 68 條正式路線；部件百科不改動 routes 或 `TrackManifest`。較早版本的數字與瀏覽器結果均移至「歷史驗證快照」。
+
+### 本輪自動驗證
+
+| 檢查 | 結果 | 實際證據 |
+|---|---|---|
+| 完整驗證 | 通過 | `npm run verify` exit code 0；288 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
+| Git 空白檢查 | 通過 | `git diff --check` exit code 0；沒有空白錯誤。輸出僅為五份已修改 Markdown 的 LF→CRLF 行尾轉換警告 |
+| 敏感資訊掃描 | 已檢查，沒有秘密 | 指定 `rg` exit code 0（有 9 筆一般文字命中）；逐筆皆為 README、CONTRIBUTING、PLAN、TEST-PLAN、VERIFICATION 的安全提醒、舊掃描命令或本輪掃描命令本身，沒有憑證值或私人金鑰 |
+
+### Chrome 瀏覽器回歸證據
+
+- 1440px 桌機：外側導引線與文字標籤可讀，車架、前叉、輪組、傳動與煞車幾何可辨識。
+- 768px 平板：圖解、詳情與分類清單可讀，互動控制項可聚焦。
+- 390px 與 320px：外側導引文字在窄版切換為編號熱點；320px 百科沒有水平溢位。既有頁面保留 20rem 根寬行為。
+- Chrome 真實 Tab、Enter、Space：可依焦點啟用熱點與控制項，選取內容與狀態同步。
+- 四套主題：切換後部件文字、焦點、熱點與圖解幾何仍可辨識。
+- Pointer Events：單指平移、雙指縮放與取消／釋放路徑由自動測試及 Chrome 回歸覆蓋；縮放範圍為 1 至 3 倍。
+- 文字降級：完整 32 筆部件內容與分類清單不依賴圖形互動。
+- 已知工具限制：Chrome runtime 沒有已記錄的 `emulateMedia` 能力，因此未執行真實 `prefers-reduced-motion` media emulation。CSS 具有 base、tokens 與百科專屬三層 reduced-motion 保護，且正常模式沒有長動畫；此項不宣稱已完成實機 media 驗證。
+
+## 歷史驗證快照
+
+以下章節皆為各日期當次版本的封存證據，不代表 2026-08-25 公路車部件百科的現行數量、功能或部署狀態；歷史數據保留原值供追溯。
+
+### 2026-08-14 台灣 GPS Art 圖鑑候選版
 
 本輪正式版新增 22 件公開來源 GPS Art 圖鑑，與既有正式路線資料隔離。其中台北櫻花 16K、台北圓環 40K 為 `track-ready`；其餘 20 件是 `source-only` 來源卡。逐件查核帳、來源 SHA-256、canonical geometry SHA-256 與段點數見 [`route-research/taiwan-gps-art.md`](route-research/taiwan-gps-art.md)。本節記錄 2026-08-14 本輪實際執行、GitHub Pages 部署與公開版 Chrome 驗收證據。
 
@@ -32,10 +59,6 @@
 - 公開版 Chrome：`#/route-art` 顯示 22 張卡、20 件 `source-only`、2 張真實軌跡地圖與 17 筆 CS72 作者署名；錯誤清單與水平溢位均為 0。
 - 公開版 Chrome 390×844：仍顯示 22 張卡與 2 張地圖；地圖高度 256px、四個篩選控制高度 47.6px、水平溢位為 0。
 - 圖磚失敗時的 SVG fallback 已有自動測試，但本輪未在公開版 Chrome 手動切斷網路，因此不宣稱該情境已完成瀏覽器實測。
-
-## 歷史驗證快照
-
-以下章節皆為各日期當次版本的封存證據，不代表 2026-08-14 GPS Art 候選版的現行數量、功能或部署狀態；歷史數據保留原值供追溯。
 
 ### 2026-08-09 bike100 對照與路線美學修正（已驗證）
 
