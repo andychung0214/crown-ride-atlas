@@ -53,12 +53,15 @@ test("入口頁只載入一次核准的 GA4 snippet", () => {
   );
 });
 
-test("百科資料在渲染前載入，App 最後載入", () => {
+test("百科資料與互動模組依序在渲染前載入，App 最後載入", () => {
   const indexSource = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const bikePartsPosition = indexSource.indexOf("js/data/bike-parts.js");
+  const bikeAnatomyPosition = indexSource.indexOf("js/ui/bike-anatomy.js");
   const renderPosition = indexSource.indexOf("js/ui/render.js");
   const appPosition = indexSource.indexOf("js/app.js");
   assert.ok(bikePartsPosition >= 0, "入口頁必須載入百科資料");
-  assert.ok(bikePartsPosition < renderPosition);
+  assert.ok(bikeAnatomyPosition >= 0, "入口頁必須載入百科互動模組");
+  assert.ok(bikePartsPosition < bikeAnatomyPosition);
+  assert.ok(bikeAnatomyPosition < renderPosition);
   assert.ok(renderPosition < appPosition);
 });

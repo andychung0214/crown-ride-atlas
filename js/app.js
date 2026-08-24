@@ -18,6 +18,7 @@
       "Render",
       "RouteArt",
       "BikeParts",
+      "BikeAnatomy",
       "TrackRegistry",
       "TrackManifest",
       "TrackLoader"
@@ -174,6 +175,12 @@
         const art = state.routeArt.find(item => item.id === element.dataset.artMap);
         if (!art || art.status !== "track-ready" || !app.RouteArt.hasUsableSegments(art.segments)) return;
         interactiveHandles.push(app.MapView.mount(element, art));
+      });
+      rootElement.querySelectorAll("[data-bike-anatomy]").forEach(element => {
+        interactiveHandles.push(app.BikeAnatomy.mount(element, {
+          catalog: state.bikeParts,
+          announce
+        }));
       });
       rootElement.querySelectorAll("[data-elevation]").forEach(element => {
         const route = hydratedRoute(state.allRoutes.find(item => item.id === element.dataset.elevation));

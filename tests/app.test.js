@@ -81,6 +81,7 @@ function bootWithTrack(track, onRender, page = "route") {
       TrackManifest: {},
       RouteArt,
       BikeParts,
+      BikeAnatomy: { mount() { return { destroy() {} }; } },
       TrackLoader: {
         create() {
           return { load: async () => track, clear() {} };
@@ -147,6 +148,7 @@ function bootWithInteractiveTrack(track, onMapMount) {
       Theme: { loadTheme() { return "yellow"; }, applyTheme(theme) { return theme; } },
       Geo: {}, Gpx: {}, ImageTools: {}, Editor: {}, TrackRegistry: {}, TrackManifest: {}, TrackAnalysis,
       RouteArt, BikeParts,
+      BikeAnatomy: { mount() { return { destroy() {} }; } },
       Progress: { create() { return { list() { return new Set(); }, toggle() { return true; } }; } },
       Store: { create() { return { list() { return root.CrownRideAtlas.Data.routes; } }; } },
       TrackLoader: { create() { return { load: async () => track, clear() {} }; } },
@@ -216,6 +218,7 @@ function bootRouteArtCatalog(items, onMapMount, onDownload) {
       Router: { parseHash() { return { page: "route-art", params: {} }; } },
       Theme: { loadTheme() { return "yellow"; }, applyTheme(theme) { return theme; } },
       Geo: {}, Gpx, ImageTools: {}, Editor: {}, TrackRegistry: {}, TrackManifest: {}, TrackAnalysis, RouteArt, BikeParts,
+      BikeAnatomy: { mount() { return { destroy() {} }; } },
       Progress: { create() { return { list() { return new Set(); }, toggle() { return true; } }; } },
       Store: { create() { return { list() { return []; } }; } },
       TrackLoader: {
@@ -247,6 +250,71 @@ function bootRouteArtCatalog(items, onMapMount, onDownload) {
   return {
     get state() { return latestState; },
     get actions() { return latestActions; }
+  };
+}
+
+function bootBikePartsLifecycle() {
+  const anatomyElement = { dataset: { bikeAnatomy: "true" } };
+  let mountCount = 0;
+  let destroyCount = 0;
+  const rootElement = {
+    querySelectorAll(selector) {
+      return selector === "[data-bike-anatomy]" ? [anatomyElement] : [];
+    },
+    querySelector() { return null; }
+  };
+  const root = {
+    location: { hash: "#/bike-parts" },
+    history: { replaceState() {} },
+    localStorage: { getItem() { return null; }, setItem() {} },
+    requestAnimationFrame(callback) { callback(); },
+    setTimeout,
+    URL: { createObjectURL() { return "blob:test"; }, revokeObjectURL() {} },
+    document: {
+      readyState: "complete",
+      documentElement: {},
+      baseURI: "http://localhost/",
+      title: "",
+      getElementById() { return rootElement; },
+      createElement() { return { className: "", textContent: "" }; },
+      body: { append() {} }
+    },
+    addEventListener(event, handler) {
+      if (event === "hashchange") this.hashChange = handler;
+    },
+    CrownRideAtlas: {
+      Data: { routes: [], regions: [], challenges: [], routeArt: [] },
+      Filter: {
+        apply(items) { return items; },
+        paginate(items, currentPage, pageSize) {
+          return { items, page: currentPage || 1, pageSize: pageSize || 24, total: items.length, totalPages: 1 };
+        }
+      },
+      Router: { parseHash() { return { page: "bike-parts", params: {} }; } },
+      Theme: { loadTheme() { return "yellow"; }, applyTheme(theme) { return theme; } },
+      Geo: {}, Gpx: {}, ImageTools: {}, MapView: {}, Editor: {}, TrackRegistry: {}, TrackManifest: {}, TrackAnalysis,
+      RouteArt, BikeParts,
+      BikeAnatomy: {
+        mount(element, options) {
+          assert.equal(element, anatomyElement);
+          assert.equal(options.catalog, BikeParts);
+          assert.equal(typeof options.announce, "function");
+          mountCount += 1;
+          return { destroy() { destroyCount += 1; } };
+        }
+      },
+      Progress: { create() { return { list() { return new Set(); }, toggle() { return true; } }; } },
+      Store: { create() { return { list() { return []; } }; } },
+      TrackLoader: { create() { return { load: async () => null, clear() {} }; } },
+      Render: { pageTitle() { return "公路車百科"; }, mount() { return { main: { focus() {} } }; } }
+    }
+  };
+
+  vm.runInNewContext(appSource, { window: root, Blob: class Blob {} });
+  return {
+    rerender() { root.hashChange(); },
+    get mountCount() { return mountCount; },
+    get destroyCount() { return destroyCount; }
   };
 }
 
@@ -377,6 +445,15 @@ test("缺少百科資料時沿用既有 fatal-error 契約", () => {
   assert.equal(fatalErrors.length, 1);
   assert.equal(fatalErrors[0].className, "fatal-error");
   assert.match(fatalErrors[0].textContent, /BikeParts/);
+});
+
+test("App 每次重繪先銷毀舊百科互動再重新掛載", () => {
+  const lifecycle = bootBikePartsLifecycle();
+  assert.equal(lifecycle.mountCount, 1);
+  assert.equal(lifecycle.destroyCount, 0);
+  lifecycle.rerender();
+  assert.equal(lifecycle.destroyCount, 1);
+  assert.equal(lifecycle.mountCount, 2);
 });
 
 test("App 套用篩選時重設頁碼並可切換完成路線", () => {
