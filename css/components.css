@@ -1481,6 +1481,10 @@ html:has(.bike-parts-page) {
   min-width: 0;
 }
 
+.bike-parts-page [data-bike-fallback][hidden] {
+  display: none !important;
+}
+
 .bike-parts-page .bike-anatomy-fallback {
   display: grid;
   gap: var(--space-2);
@@ -1516,6 +1520,46 @@ html:has(.bike-parts-page) {
 .bike-parts-page .bike-anatomy-fallback__details dt {
   color: #5f6258;
   font: 700 0.66rem/1.55 var(--font-data);
+}
+
+.bike-parts-page [data-bike-diagram-surface] {
+  position: relative;
+  min-width: 0;
+  touch-action: none;
+}
+
+.bike-parts-page [data-bike-mobile-markers] {
+  display: none;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.bike-parts-page [data-bike-mobile-marker] {
+  position: absolute;
+  display: inline-flex;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid #245c43;
+  border-radius: 50%;
+  color: #245c43;
+  background: #f7f3e9;
+  box-shadow: 0 0 0 1px rgba(247, 243, 233, 0.88);
+  font: 800 0.78rem/1 var(--font-data);
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+}
+
+.bike-parts-page [data-bike-mobile-marker]:focus-visible,
+.bike-parts-page [data-bike-mobile-marker].is-selected {
+  border-width: 3px;
+  border-color: #24271f;
+  color: #24271f;
+  outline: 0.18rem solid var(--color-accent);
+  outline-offset: 0.08rem;
 }
 
 .bike-parts-page .bike-anatomy-controls {
@@ -1761,9 +1805,12 @@ html:has(.bike-parts-page) {
     display: none;
   }
 
-  .bike-parts-page [data-bike-hotspot-number] {
-    font-size: 16px;
-    font-weight: 800;
+  .bike-parts-page [data-bike-hotspot-layer] {
+    display: none;
+  }
+
+  .bike-parts-page [data-bike-mobile-markers] {
+    display: block;
   }
 
   .bike-parts-page .bike-part-detail__row {

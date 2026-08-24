@@ -117,12 +117,22 @@ test("百科控制符合 44px，hover 有非色彩同步狀態", () => {
   assert.match(ruleBody(css, ".bike-parts-page .bike-part-button.is-hovered"), /border-left:\s*0\.32rem solid #24271f\s*;/);
 });
 
-test("40rem 以下同時隱藏導引線與文字並放大編號視覺", () => {
+test("成功增強的 hidden fallback 以高優先規則退出版面", () => {
+  const declarations = ruleBody(readCss("components.css"), ".bike-parts-page [data-bike-fallback][hidden]");
+  assert.match(declarations, /display:\s*none\s*!important\s*;/);
+});
+
+test("40rem 以下只顯示 44px HTML marker 並隱藏 SVG 互動層", () => {
   const css = readCss("components.css");
   const query = "(max-width: 40rem)";
   assert.match(ruleInMedia(css, query, ".bike-parts-page [data-bike-leader]"), /display:\s*none\s*;/);
   assert.match(ruleInMedia(css, query, ".bike-parts-page [data-bike-leader-label]"), /display:\s*none\s*;/);
-  assert.match(ruleInMedia(css, query, ".bike-parts-page [data-bike-hotspot-number]"), /font-size:\s*16px\s*;/);
+  assert.match(ruleInMedia(css, query, ".bike-parts-page [data-bike-hotspot-layer]"), /display:\s*none\s*;/);
+  assert.match(ruleInMedia(css, query, ".bike-parts-page [data-bike-mobile-markers]"), /display:\s*block\s*;/);
+  const marker = ruleBody(css, ".bike-parts-page [data-bike-mobile-marker]");
+  assert.match(marker, /min-width:\s*2\.75rem\s*;/);
+  assert.match(marker, /min-height:\s*2\.75rem\s*;/);
+  assert.match(marker, /position:\s*absolute\s*;/);
 });
 
 test("百科 40rem 單欄與全站 20rem 根寬例外各自精確 scoped", () => {

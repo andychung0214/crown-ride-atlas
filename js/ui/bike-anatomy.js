@@ -327,6 +327,23 @@
     return panel;
   }
 
+  function createMobileMarkers(documentRef, catalog) {
+    const overlay = htmlElement(documentRef, "div", {
+      "data-bike-mobile-markers": "true",
+      "aria-label": "行動版公路車零件編號"
+    });
+    catalog.parts.forEach(part => {
+      const markerNumber = String(part.number).padStart(2, "0");
+      overlay.append(htmlElement(documentRef, "button", {
+        type: "button",
+        "data-bike-mobile-marker": part.id,
+        "aria-label": `${markerNumber} ${part.name}`,
+        "aria-pressed": "false"
+      }, markerNumber));
+    });
+    return overlay;
+  }
+
   function mount(root, options) {
     if (!root || !root.ownerDocument) throw new TypeError("圖解掛載區無效。");
     const settings = options || {};
@@ -343,11 +360,16 @@
     let svg;
     let controls;
     let enhancement;
+    let diagramSurface;
+    let mobileMarkers;
     try {
       svg = createSvg(documentRef, catalog, function () {});
       controls = createControls(documentRef);
+      mobileMarkers = createMobileMarkers(documentRef, catalog);
+      diagramSurface = htmlElement(documentRef, "div", { "data-bike-diagram-surface": "true" });
+      diagramSurface.append(svg, mobileMarkers);
       enhancement = htmlElement(documentRef, "div", { "data-bike-enhancement": "true" });
-      enhancement.append(controls, svg);
+      enhancement.append(controls, diagramSurface);
     } catch (_error) {
       let destroyed = false;
       const failedHandle = {
@@ -402,6 +424,15 @@
         element.classList[selected ? "add" : "remove"]("is-selected");
         const mark = element.querySelector("[data-bike-selection-mark]");
         if (mark) mark.textContent = selected ? "✓" : "";
+      });
+      root.querySelectorAll("[data-bike-mobile-marker]").forEach(element => {
+        const markerPart = partById.get(element.dataset.bikeMobileMarker);
+        const selected = markerPart.id === state.selectedPartId;
+        element.setAttribute("aria-pressed", String(selected));
+        element.classList[selected ? "add" : "remove"]("is-selected");
+        const left = ((markerPart.hotspot.x * state.scale + state.offsetX) / 960 * 100).toFixed(6);
+        const top = ((markerPart.hotspot.y * state.scale + state.offsetY) / 520 * 100).toFixed(6);
+        element.setAttribute("style", `left: ${left}%; top: ${top}%;`);
       });
       scope.querySelectorAll("[data-bike-part-id]").forEach(element => {
         const selected = element.dataset.bikePartId === state.selectedPartId;
@@ -476,6 +507,9 @@
         }
       });
     });
+    root.querySelectorAll("[data-bike-mobile-marker]").forEach(element => {
+      bindSelection(element, element.dataset.bikeMobileMarker);
+    });
     scope.querySelectorAll("[data-bike-part-id]").forEach(element => {
       bindSelection(element, element.dataset.bikePartId);
       bindHover(element, element.dataset.bikePartId);
@@ -510,7 +544,7 @@
       };
     }
 
-    function nearestHotspot(clientX, clientY) {
+    function diagramGeometry() {
       if (typeof svg.getBoundingClientRect !== "function") return null;
       const rect = svg.getBoundingClientRect();
       const viewBox = String(svg.getAttribute("viewBox") || "").trim().split(/\s+/).map(Number);
@@ -519,21 +553,45 @@
       const cssScale = Math.min(rect.width / viewWidth, rect.height / viewHeight);
       const originX = rect.left + (rect.width - viewWidth * cssScale) / 2;
       const originY = rect.top + (rect.height - viewHeight * cssScale) / 2;
+      return { rect, viewX, viewY, viewWidth, viewHeight, cssScale, originX, originY };
+    }
+
+    function clientDeltaToViewBox(dx, dy) {
+      const geometry = diagramGeometry();
+      if (!geometry || geometry.cssScale <= 0) return { dx, dy };
+      return { dx: dx / geometry.cssScale, dy: dy / geometry.cssScale };
+    }
+
+    function nearestHotspot(clientX, clientY) {
+      const geometry = diagramGeometry();
+      if (!geometry) return null;
       let nearest = null;
       catalog.parts.forEach(part => {
-        const hotspotX = originX + ((part.hotspot.x * state.scale + state.offsetX) - viewX) * cssScale;
-        const hotspotY = originY + ((part.hotspot.y * state.scale + state.offsetY) - viewY) * cssScale;
+        const hotspotX = geometry.originX + ((part.hotspot.x * state.scale + state.offsetX) - geometry.viewX) * geometry.cssScale;
+        const hotspotY = geometry.originY + ((part.hotspot.y * state.scale + state.offsetY) - geometry.viewY) * geometry.cssScale;
         const distance = Math.hypot(clientX - hotspotX, clientY - hotspotY);
         if (distance <= 22 && (!nearest || distance < nearest.distance)) nearest = { part, distance };
       });
       return nearest && nearest.part;
     }
 
-    listen(svg, "pointerdown", event => {
-      if (
-        event.target && typeof event.target.closest === "function" &&
-        event.target.closest("[data-bike-hotspot]")
-      ) return;
+    function directPartId(target) {
+      if (!target || typeof target.closest !== "function") return null;
+      const marker = target.closest("[data-bike-mobile-marker]");
+      if (marker) return marker.dataset.bikeMobileMarker;
+      const hotspot = target.closest("[data-bike-hotspot]");
+      return hotspot ? hotspot.dataset.bikeHotspot : null;
+    }
+
+    listen(diagramSurface, "click", event => {
+      const part = nearestHotspot(event.clientX, event.clientY) || partById.get(directPartId(event.target));
+      if (part) select(part.id);
+    });
+
+    listen(diagramSurface, "pointerdown", event => {
+      const partId = directPartId(event.target);
+      const pointerType = event.pointerType || "mouse";
+      if (pointerType === "mouse" && partId) return;
       pointers.set(event.pointerId, {
         x: event.clientX,
         y: event.clientY,
@@ -541,19 +599,21 @@
         startY: event.clientY,
         moved: false,
         hadMultiple: false,
-        pointerType: event.pointerType || "mouse"
+        pointerType,
+        directPartId: partId
       });
       if (pointers.size > 1) pointers.forEach(pointer => { pointer.hadMultiple = true; });
-      if (typeof svg.setPointerCapture === "function") svg.setPointerCapture(event.pointerId);
+      if (typeof diagramSurface.setPointerCapture === "function") diagramSurface.setPointerCapture(event.pointerId);
       gesture = gestureFromPointers();
     });
-    listen(svg, "pointermove", event => {
+    listen(diagramSurface, "pointermove", event => {
       const previous = pointers.get(event.pointerId);
       if (!previous) return;
       const moved = previous.moved || Math.hypot(event.clientX - previous.startX, event.clientY - previous.startY) > 8;
       if (pointers.size === 1) {
         pointers.set(event.pointerId, Object.assign({}, previous, { x: event.clientX, y: event.clientY, moved }));
-        dispatch({ type: "pan", dx: event.clientX - previous.x, dy: event.clientY - previous.y });
+        const delta = clientDeltaToViewBox(event.clientX - previous.x, event.clientY - previous.y);
+        dispatch({ type: "pan", dx: delta.dx, dy: delta.dy });
         return;
       }
       pointers.set(event.pointerId, Object.assign({}, previous, { x: event.clientX, y: event.clientY, moved }));
@@ -561,7 +621,8 @@
       if (gesture && nextGesture && gesture.distance > 0) {
         const targetScale = state.scale * (nextGesture.distance / gesture.distance);
         dispatch({ type: "zoom", delta: targetScale - state.scale });
-        dispatch({ type: "pan", dx: nextGesture.midX - gesture.midX, dy: nextGesture.midY - gesture.midY });
+        const delta = clientDeltaToViewBox(nextGesture.midX - gesture.midX, nextGesture.midY - gesture.midY);
+        dispatch({ type: "pan", dx: delta.dx, dy: delta.dy });
       }
       gesture = nextGesture;
     });
@@ -571,23 +632,23 @@
         event.type === "pointerup" && pointer && pointer.pointerType !== "mouse" &&
         !pointer.moved && !pointer.hadMultiple && pointers.size === 1
       ) {
-        const part = nearestHotspot(event.clientX, event.clientY);
+        const part = partById.get(pointer.directPartId) || nearestHotspot(event.clientX, event.clientY);
         if (part) select(part.id);
       }
       pointers.delete(event.pointerId);
       if (
-        typeof svg.hasPointerCapture === "function" && svg.hasPointerCapture(event.pointerId) &&
-        typeof svg.releasePointerCapture === "function"
-      ) svg.releasePointerCapture(event.pointerId);
+        typeof diagramSurface.hasPointerCapture === "function" && diagramSurface.hasPointerCapture(event.pointerId) &&
+        typeof diagramSurface.releasePointerCapture === "function"
+      ) diagramSurface.releasePointerCapture(event.pointerId);
       gesture = gestureFromPointers();
     }
-    listen(svg, "pointerup", endPointer);
-    listen(svg, "pointercancel", endPointer);
-    listen(svg, "lostpointercapture", event => {
+    listen(diagramSurface, "pointerup", endPointer);
+    listen(diagramSurface, "pointercancel", endPointer);
+    listen(diagramSurface, "lostpointercapture", event => {
       pointers.delete(event.pointerId);
       gesture = gestureFromPointers();
     });
-    listen(svg, "pointerleave", event => {
+    listen(diagramSurface, "pointerleave", event => {
       if (pointers.has(event.pointerId)) endPointer(event);
     });
 

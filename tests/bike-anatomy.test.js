@@ -348,6 +348,64 @@ test("SVG 具有與目錄精確對應的 32 個鍵盤熱點與導引線", () => 
   });
 });
 
+test("增強建立 32 個 screen-space HTML marker 並以 hotspot 百分比定位", () => {
+  const fixture = interactiveFixture();
+  BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
+  const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
+  const overlay = fixture.root.querySelector("[data-bike-mobile-markers]");
+  const markers = fixture.root.querySelectorAll("[data-bike-mobile-marker]");
+
+  assert.ok(surface, "缺少同時容納 SVG 與 marker overlay 的 diagram surface");
+  assert.ok(overlay, "缺少 mobile marker overlay");
+  assert.equal(markers.length, 32);
+  markers.forEach((marker, index) => {
+    const part = BikeParts.parts[index];
+    const markerNumber = String(part.number).padStart(2, "0");
+    assert.equal(marker.name, "button");
+    assert.equal(marker.getAttribute("type"), "button");
+    assert.equal(marker.getAttribute("aria-label"), `${markerNumber} ${part.name}`);
+    assert.equal(marker.textContent, markerNumber);
+  });
+  const chain = byData(fixture.root, "bike-mobile-marker", "chain");
+  assert.match(chain.getAttribute("style"), /left:\s*38\.020833%;\s*top:\s*72\.692308%/);
+  byData(fixture.root, "bike-view-action", "zoom-in").dispatch("click");
+  assert.match(chain.getAttribute("style"), /left:\s*47\.526042%;\s*top:\s*90\.865385%/);
+});
+
+test("mobile marker 的 click、Enter、Space 都可選取對應零件", () => {
+  const fixture = interactiveFixture();
+  BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
+  const chain = byData(fixture.root, "bike-mobile-marker", "chain");
+  const saddle = byData(fixture.root, "bike-mobile-marker", "saddle");
+  const cassette = byData(fixture.root, "bike-mobile-marker", "cassette");
+
+  assert.ok(chain && saddle && cassette, "缺少可操作 mobile marker");
+  chain.dispatch("click");
+  assert.equal(fixture.detail.querySelector("h2").textContent, "鏈條");
+  const enter = saddle.dispatch("keydown", { key: "Enter" });
+  assert.equal(enter.defaultPrevented, true);
+  assert.equal(fixture.detail.querySelector("h2").textContent, "座墊");
+  const space = cassette.dispatch("keydown", { key: " " });
+  assert.equal(space.defaultPrevented, true);
+  assert.equal(fixture.detail.querySelector("h2").textContent, "飛輪");
+});
+
+test("重疊 marker 的 mouse click 以座標最近 hotspot 覆蓋最上層 DOM target", () => {
+  const fixture = interactiveFixture();
+  BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
+  const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
+  const coveringAxle = byData(fixture.root, "bike-mobile-marker", "axle");
+
+  surface.dispatch("click", {
+    target: coveringAxle,
+    pointerType: "mouse",
+    clientX: 252,
+    clientY: 362
+  });
+
+  assert.equal(fixture.detail.querySelector("h2").textContent, "飛輪");
+});
+
 test("hotspot 與靜態清單 hover 會同步四個配對元素的非色彩狀態", () => {
   const fixture = interactiveFixture();
   BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
@@ -370,27 +428,108 @@ test("hotspot 與靜態清單 hover 會同步四個配對元素的非色彩狀�
 test("觸控在 22 CSS px 內選最近 hotspot，超出半徑不選取", () => {
   const near = interactiveFixture();
   BikeAnatomy.mount(near.root, { catalog: BikeParts, announce() {} });
-  const nearSvg = near.root.querySelector("[data-bike-svg]");
-  nearSvg.dispatch("pointerdown", { pointerId: 11, pointerType: "touch", clientX: 385, clientY: 378 });
-  nearSvg.dispatch("pointerup", { pointerId: 11, pointerType: "touch", clientX: 385, clientY: 378 });
+  const nearSurface = near.root.querySelector("[data-bike-diagram-surface]");
+  nearSurface.dispatch("pointerdown", { pointerId: 11, pointerType: "touch", clientX: 385, clientY: 378 });
+  nearSurface.dispatch("pointerup", { pointerId: 11, pointerType: "touch", clientX: 385, clientY: 378 });
   assert.equal(near.detail.querySelector("h2").textContent, "鏈條");
 
   const far = interactiveFixture();
   BikeAnatomy.mount(far.root, { catalog: BikeParts, announce() {} });
-  const farSvg = far.root.querySelector("[data-bike-svg]");
-  farSvg.dispatch("pointerdown", { pointerId: 12, pointerType: "touch", clientX: 389, clientY: 378 });
-  farSvg.dispatch("pointerup", { pointerId: 12, pointerType: "touch", clientX: 389, clientY: 378 });
+  const farSurface = far.root.querySelector("[data-bike-diagram-surface]");
+  farSurface.dispatch("pointerdown", { pointerId: 12, pointerType: "touch", clientX: 389, clientY: 378 });
+  farSurface.dispatch("pointerup", { pointerId: 12, pointerType: "touch", clientX: 389, clientY: 378 });
   assert.equal(far.detail.querySelector("h2").textContent, "上管");
 });
 
-test("直接點擊 hotspot 不被 SVG 畫布 gesture 搶走 pointer capture", () => {
+test("touch direct marker 與 SVG hotspot 都由 diagram surface 記錄並選取", () => {
+  [
+    ["bike-mobile-marker", "chain", "鏈條", 51],
+    ["bike-hotspot", "cassette", "飛輪", 52]
+  ].forEach(([attribute, partId, expectedName, pointerId]) => {
+    const fixture = interactiveFixture();
+    BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
+    const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
+    const target = byData(fixture.root, attribute, partId);
+    assert.ok(surface && target, `缺少 ${attribute} 的 gesture surface`);
+
+    surface.dispatch("pointerdown", { target, pointerId, pointerType: "touch", clientX: 10, clientY: 10 });
+    surface.dispatch("pointerup", { target, pointerId, pointerType: "touch", clientX: 10, clientY: 10 });
+
+    assert.equal(fixture.detail.querySelector("h2").textContent, expectedName);
+    assert.deepEqual(surface.pointerCaptureCalls, [pointerId]);
+  });
+});
+
+test("marker＋背景、marker＋marker、SVG hotspot＋背景的雙指組合都不誤選", () => {
+  [
+    ["bike-mobile-marker", "chain", "surface", null],
+    ["bike-mobile-marker", "chain", "bike-mobile-marker", "cassette"],
+    ["bike-hotspot", "chain", "surface", null]
+  ].forEach(([firstAttribute, firstId, secondAttribute, secondId], index) => {
+    const fixture = interactiveFixture();
+    BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
+    const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
+    const first = byData(fixture.root, firstAttribute, firstId);
+    const second = secondAttribute === "surface" ? surface : byData(fixture.root, secondAttribute, secondId);
+    assert.ok(surface && first && second, `混合 target 情境 ${index + 1} 缺少必要元素`);
+
+    const firstPointer = 61 + index * 2;
+    const secondPointer = firstPointer + 1;
+    surface.dispatch("pointerdown", { target: first, pointerId: firstPointer, pointerType: "touch", clientX: 30, clientY: 30 });
+    surface.dispatch("pointerdown", { target: second, pointerId: secondPointer, pointerType: "touch", clientX: 70, clientY: 30 });
+    surface.dispatch("pointerup", { target: second, pointerId: secondPointer, pointerType: "touch", clientX: 70, clientY: 30 });
+    surface.dispatch("pointerup", { target: first, pointerId: firstPointer, pointerType: "touch", clientX: 30, clientY: 30 });
+
+    assert.equal(fixture.detail.querySelector("h2").textContent, "上管");
+  });
+});
+
+test("237px SVG 的單指 40 CSS px 拖曳換算為約 40px 視覺位移", () => {
   const fixture = interactiveFixture();
   BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
+  const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
   const svg = fixture.root.querySelector("[data-bike-svg]");
+  const viewport = fixture.root.querySelector("[data-bike-viewport]");
+  assert.ok(surface, "缺少 diagram surface");
+  svg.clientRect = { left: 0, top: 0, width: 237, height: 128.375 };
+  byData(fixture.root, "bike-view-action", "zoom-in").dispatch("click");
+  byData(fixture.root, "bike-view-action", "zoom-in").dispatch("click");
+
+  surface.dispatch("pointerdown", { pointerId: 71, pointerType: "touch", clientX: 20, clientY: 40 });
+  surface.dispatch("pointermove", { pointerId: 71, pointerType: "touch", clientX: 60, clientY: 40 });
+  surface.dispatch("pointerup", { pointerId: 71, pointerType: "touch", clientX: 60, clientY: 40 });
+
+  const offsetX = Number(/translate\(([-\d.]+)/.exec(viewport.getAttribute("transform"))[1]);
+  assert.ok(Math.abs(offsetX * 237 / 960 - 40) < 0.001, `視覺位移應為 40px，實際為 ${offsetX * 237 / 960}`);
+});
+
+test("237px SVG 的雙指 midpoint 40 CSS px 位移換算為約 40px 視覺位移", () => {
+  const fixture = interactiveFixture();
+  BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
+  const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
+  const svg = fixture.root.querySelector("[data-bike-svg]");
+  const viewport = fixture.root.querySelector("[data-bike-viewport]");
+  assert.ok(surface, "缺少 diagram surface");
+  svg.clientRect = { left: 0, top: 0, width: 237, height: 128.375 };
+  byData(fixture.root, "bike-view-action", "zoom-in").dispatch("click");
+  byData(fixture.root, "bike-view-action", "zoom-in").dispatch("click");
+
+  surface.dispatch("pointerdown", { pointerId: 81, pointerType: "touch", clientX: 20, clientY: 40 });
+  surface.dispatch("pointerdown", { pointerId: 82, pointerType: "touch", clientX: 60, clientY: 40 });
+  surface.dispatch("pointermove", { pointerId: 82, pointerType: "touch", clientX: 140, clientY: 40 });
+
+  const offsetX = Number(/translate\(([-\d.]+)/.exec(viewport.getAttribute("transform"))[1]);
+  assert.ok(Math.abs(offsetX * 237 / 960 - 40) < 0.001, `midpoint 視覺位移應為 40px，實際為 ${offsetX * 237 / 960}`);
+});
+
+test("mouse 直接點擊 hotspot 不被 diagram gesture 搶走 pointer capture", () => {
+  const fixture = interactiveFixture();
+  BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
+  const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
   const chain = byData(fixture.root, "bike-hotspot", "chain");
 
-  svg.dispatch("pointerdown", { target: chain, pointerId: 13, pointerType: "mouse", clientX: 365, clientY: 378 });
-  assert.deepEqual(svg.pointerCaptureCalls, []);
+  surface.dispatch("pointerdown", { target: chain, pointerId: 13, pointerType: "mouse", clientX: 365, clientY: 378 });
+  assert.deepEqual(surface.pointerCaptureCalls, []);
   chain.dispatch("click");
   assert.equal(fixture.detail.querySelector("h2").textContent, "鏈條");
 });
@@ -399,32 +538,33 @@ test("最近 hotspot 換算會套用顯示 rect、viewBox、縮放與平移", ()
   const fixture = interactiveFixture();
   BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
   const svg = fixture.root.querySelector("[data-bike-svg]");
+  const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
   byData(fixture.root, "bike-view-action", "zoom-in").dispatch("click");
-  svg.dispatch("pointerdown", { pointerId: 15, pointerType: "mouse", clientX: 0, clientY: 0 });
-  svg.dispatch("pointermove", { pointerId: 15, pointerType: "mouse", clientX: 20, clientY: 10 });
-  svg.dispatch("pointerup", { pointerId: 15, pointerType: "mouse", clientX: 20, clientY: 10 });
+  surface.dispatch("pointerdown", { pointerId: 15, pointerType: "mouse", clientX: 0, clientY: 0 });
+  surface.dispatch("pointermove", { pointerId: 15, pointerType: "mouse", clientX: 20, clientY: 10 });
+  surface.dispatch("pointerup", { pointerId: 15, pointerType: "mouse", clientX: 20, clientY: 10 });
 
-  svg.dispatch("pointerdown", { pointerId: 16, pointerType: "touch", clientX: 496, clientY: 482.5 });
-  svg.dispatch("pointerup", { pointerId: 16, pointerType: "touch", clientX: 496, clientY: 482.5 });
+  surface.dispatch("pointerdown", { pointerId: 16, pointerType: "touch", clientX: 496, clientY: 482.5 });
+  surface.dispatch("pointerup", { pointerId: 16, pointerType: "touch", clientX: 496, clientY: 482.5 });
   assert.equal(fixture.detail.querySelector("h2").textContent, "鏈條");
 });
 
 test("觸控拖曳與雙指 gesture 不會誤選附近 hotspot", () => {
   const drag = interactiveFixture();
   BikeAnatomy.mount(drag.root, { catalog: BikeParts, announce() {} });
-  const dragSvg = drag.root.querySelector("[data-bike-svg]");
-  dragSvg.dispatch("pointerdown", { pointerId: 21, pointerType: "touch", clientX: 365, clientY: 378 });
-  dragSvg.dispatch("pointermove", { pointerId: 21, pointerType: "touch", clientX: 379, clientY: 378 });
-  dragSvg.dispatch("pointerup", { pointerId: 21, pointerType: "touch", clientX: 379, clientY: 378 });
+  const dragSurface = drag.root.querySelector("[data-bike-diagram-surface]");
+  dragSurface.dispatch("pointerdown", { pointerId: 21, pointerType: "touch", clientX: 365, clientY: 378 });
+  dragSurface.dispatch("pointermove", { pointerId: 21, pointerType: "touch", clientX: 379, clientY: 378 });
+  dragSurface.dispatch("pointerup", { pointerId: 21, pointerType: "touch", clientX: 379, clientY: 378 });
   assert.equal(drag.detail.querySelector("h2").textContent, "上管");
 
   const pinch = interactiveFixture();
   BikeAnatomy.mount(pinch.root, { catalog: BikeParts, announce() {} });
-  const pinchSvg = pinch.root.querySelector("[data-bike-svg]");
-  pinchSvg.dispatch("pointerdown", { pointerId: 31, pointerType: "touch", clientX: 365, clientY: 378 });
-  pinchSvg.dispatch("pointerdown", { pointerId: 32, pointerType: "touch", clientX: 385, clientY: 378 });
-  pinchSvg.dispatch("pointerup", { pointerId: 32, pointerType: "touch", clientX: 385, clientY: 378 });
-  pinchSvg.dispatch("pointerup", { pointerId: 31, pointerType: "touch", clientX: 365, clientY: 378 });
+  const pinchSurface = pinch.root.querySelector("[data-bike-diagram-surface]");
+  pinchSurface.dispatch("pointerdown", { pointerId: 31, pointerType: "touch", clientX: 365, clientY: 378 });
+  pinchSurface.dispatch("pointerdown", { pointerId: 32, pointerType: "touch", clientX: 385, clientY: 378 });
+  pinchSurface.dispatch("pointerup", { pointerId: 32, pointerType: "touch", clientX: 385, clientY: 378 });
+  pinchSurface.dispatch("pointerup", { pointerId: 31, pointerType: "touch", clientX: 365, clientY: 378 });
   assert.equal(pinch.detail.querySelector("h2").textContent, "上管");
 });
 
@@ -490,46 +630,46 @@ test("上一個、下一個、縮放與重設控制會同步更新狀態", () =>
 test("Pointer capture 涵蓋 1→2→1 轉換、雙指中點平移及 up/cancel 釋放", () => {
   const fixture = interactiveFixture();
   BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
-  const svg = fixture.root.querySelector("[data-bike-svg]");
+  const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
   const viewport = fixture.root.querySelector("[data-bike-viewport]");
   byData(fixture.root, "bike-view-action", "zoom-in").dispatch("click");
-  svg.dispatch("pointerdown", { pointerId: 1, clientX: 10, clientY: 10 });
-  assert.deepEqual(svg.pointerCaptureCalls, [1]);
-  assert.deepEqual([...svg.capturedPointerIds], [1]);
-  svg.dispatch("pointermove", { pointerId: 1, clientX: 30, clientY: 20 });
+  surface.dispatch("pointerdown", { pointerId: 1, clientX: 10, clientY: 10 });
+  assert.deepEqual(surface.pointerCaptureCalls, [1]);
+  assert.deepEqual([...surface.capturedPointerIds], [1]);
+  surface.dispatch("pointermove", { pointerId: 1, clientX: 30, clientY: 20 });
   assert.equal(viewport.getAttribute("transform"), "translate(20 10) scale(1.25)");
 
-  svg.dispatch("pointerdown", { pointerId: 2, clientX: 50, clientY: 20 });
-  assert.deepEqual(svg.pointerCaptureCalls, [1, 2]);
-  assert.deepEqual([...svg.capturedPointerIds], [1, 2]);
-  svg.dispatch("pointermove", { pointerId: 2, clientX: 70, clientY: 20 });
+  surface.dispatch("pointerdown", { pointerId: 2, clientX: 50, clientY: 20 });
+  assert.deepEqual(surface.pointerCaptureCalls, [1, 2]);
+  assert.deepEqual([...surface.capturedPointerIds], [1, 2]);
+  surface.dispatch("pointermove", { pointerId: 2, clientX: 70, clientY: 20 });
   assert.equal(viewport.getAttribute("transform"), "translate(30 10) scale(2.5)");
 
-  svg.dispatch("pointerup", { pointerId: 2, clientX: 70, clientY: 20 });
-  assert.deepEqual(svg.pointerReleaseCalls, [2]);
-  assert.deepEqual([...svg.capturedPointerIds], [1]);
-  svg.dispatch("pointermove", { pointerId: 1, clientX: 40, clientY: 25 });
+  surface.dispatch("pointerup", { pointerId: 2, clientX: 70, clientY: 20 });
+  assert.deepEqual(surface.pointerReleaseCalls, [2]);
+  assert.deepEqual([...surface.capturedPointerIds], [1]);
+  surface.dispatch("pointermove", { pointerId: 1, clientX: 40, clientY: 25 });
   assert.equal(viewport.getAttribute("transform"), "translate(40 15) scale(2.5)");
 
-  svg.dispatch("pointercancel", { pointerId: 1, clientX: 40, clientY: 25 });
-  assert.deepEqual(svg.pointerReleaseCalls, [2, 1]);
-  assert.deepEqual([...svg.capturedPointerIds], []);
+  surface.dispatch("pointercancel", { pointerId: 1, clientX: 40, clientY: 25 });
+  assert.deepEqual(surface.pointerReleaseCalls, [2, 1]);
+  assert.deepEqual([...surface.capturedPointerIds], []);
 });
 
-test("lostpointercapture 會清除 stale gesture，且只釋放仍由 SVG 捕捉的 pointer", () => {
+test("lostpointercapture 會清除 stale gesture，且只釋放仍由 diagram surface 捕捉的 pointer", () => {
   const fixture = interactiveFixture();
   BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
-  const svg = fixture.root.querySelector("[data-bike-svg]");
+  const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
   const viewport = fixture.root.querySelector("[data-bike-viewport]");
   byData(fixture.root, "bike-view-action", "zoom-in").dispatch("click");
 
-  svg.dispatch("pointerdown", { pointerId: 41, pointerType: "touch", clientX: 20, clientY: 20 });
-  svg.dispatch("lostpointercapture", { pointerId: 41, pointerType: "touch" });
-  svg.dispatch("pointermove", { pointerId: 41, pointerType: "touch", clientX: 80, clientY: 80 });
-  svg.dispatch("pointerup", { pointerId: 41, pointerType: "touch", clientX: 80, clientY: 80 });
+  surface.dispatch("pointerdown", { pointerId: 41, pointerType: "touch", clientX: 20, clientY: 20 });
+  surface.dispatch("lostpointercapture", { pointerId: 41, pointerType: "touch" });
+  surface.dispatch("pointermove", { pointerId: 41, pointerType: "touch", clientX: 80, clientY: 80 });
+  surface.dispatch("pointerup", { pointerId: 41, pointerType: "touch", clientX: 80, clientY: 80 });
 
   assert.equal(viewport.getAttribute("transform"), "translate(0 0) scale(1.25)");
-  assert.deepEqual(svg.pointerReleaseCalls, []);
+  assert.deepEqual(surface.pointerReleaseCalls, []);
 });
 
 test("重複 mount 不會疊加監聽器，destroy 會完整移除監聽器", () => {

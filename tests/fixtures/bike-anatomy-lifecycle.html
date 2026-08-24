@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bike Anatomy Lifecycle Fixture</title>
+    <link rel="stylesheet" href="../../css/tokens.css">
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/components.css">
+  </head>
+  <body>
+    <main id="fixture-root"></main>
+    <div>
+      <button id="mount-anatomy" type="button">掛載圖解</button>
+      <button id="destroy-anatomy" type="button">銷毀圖解</button>
+    </div>
+    <script src="../../js/data/bike-parts.js"></script>
+    <script src="../../js/ui/render.js"></script>
+    <script src="../../js/ui/bike-anatomy.js"></script>
+    <script>
+      "use strict";
+      const app = window.CrownRideAtlas;
+      const page = app.Render.bikePartsPage(document, {
+        routeInfo: { page: "bike-parts", params: {} },
+        bikeParts: app.BikeParts
+      });
+      document.querySelector("#fixture-root").append(page);
+      let handle = null;
+      document.querySelector("#mount-anatomy").addEventListener("click", () => {
+        handle = app.BikeAnatomy.mount(document.querySelector("[data-bike-anatomy]"), {
+          catalog: app.BikeParts,
+          announce() {}
+        });
+      });
+      document.querySelector("#destroy-anatomy").addEventListener("click", () => {
+        if (handle) handle.destroy();
+        handle = null;
+      });
+    </script>
+  </body>
+</html>
