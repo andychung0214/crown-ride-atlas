@@ -13,7 +13,7 @@
     });
   }
 })(typeof window !== "undefined" ? window : globalThis, function () {
-  const fixedPages = new Set(["home", "routes", "challenges", "route-art", "editor"]);
+  const fixedPages = new Set(["home", "routes", "challenges", "route-art", "bike-parts", "editor"]);
 
   function parseHash(hash) {
     const value = String(hash || "").replace(/^#/, "");

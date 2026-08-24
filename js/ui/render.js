@@ -130,6 +130,7 @@
     if (page === "routes") return "探索路線｜狂輪誌";
     if (page === "challenges") return "經典挑戰｜狂輪誌";
     if (page === "route-art") return "路線美學｜狂輪誌";
+    if (page === "bike-parts") return "公路車百科｜狂輪誌";
     if (page === "editor") return "我的路線｜狂輪誌";
     if (page === "region") return "地區路線｜狂輪誌";
     return "找不到頁面｜狂輪誌";
@@ -232,6 +233,12 @@
         text: "路線美學",
         href: "#/route-art",
         current: state.routeInfo.page === "route-art" ? "page" : null
+      }),
+      node(documentRef, "a", {
+        className: state.routeInfo.page === "bike-parts" ? "primary-nav__link is-active" : "primary-nav__link",
+        text: "公路車百科",
+        href: "#/bike-parts",
+        current: state.routeInfo.page === "bike-parts" ? "page" : null
       }),
       node(documentRef, "a", {
         className: state.routeInfo.page === "editor" ? "primary-nav__link is-active" : "primary-nav__link",
@@ -428,6 +435,15 @@
 
     return node(documentRef, "div", { className: "home-page" }, [
       hero,
+      node(documentRef, "section", { className: "content-section bike-parts-home" }, [
+        sectionHeading(
+          documentRef,
+          "ROAD BIKE ENCYCLOPEDIA",
+          "從車架到煞車，讀懂每一個接觸點",
+          "以 32 個部件的用途、保養與安全警訊，建立出發前的基本判讀。",
+          node(documentRef, "a", { className: "text-link", href: "#/bike-parts", text: "檢視公路車百科 →" })
+        )
+      ]),
       node(documentRef, "section", { className: "content-section region-section" }, [
         sectionHeading(documentRef, "REGION INDEX", "從一個地名開始", "22 個縣市與島嶼，每一區都有不同的風、坡度與道路表情。"),
         node(documentRef, "div", { className: "region-grid" }, regionLinks)
@@ -1039,6 +1055,65 @@
     ]);
   }
 
+  function bikePartsPage(documentRef, state) {
+    const bikeParts = state.bikeParts || {};
+    const parts = Array.isArray(bikeParts.parts) ? bikeParts.parts : [];
+    const categories = Array.isArray(bikeParts.categories) ? bikeParts.categories : [];
+    const defaultPart = parts.find(part => part.id === bikeParts.defaultPartId) || parts[0] || {};
+    const partNames = new Map(parts.map(part => [part.id, part.name]));
+    const detailRows = [
+      ["用途", defaultPart.purpose],
+      ["常見材質", defaultPart.materials],
+      ["調整", defaultPart.adjustment],
+      ["保養", defaultPart.maintenance],
+      ["安全警訊", defaultPart.warningSigns],
+      ["相關部件", (defaultPart.relatedParts || []).map(id => partNames.get(id) || id).join("、")],
+      ["車店建議", defaultPart.workshopAdvice]
+    ];
+
+    return node(documentRef, "div", { className: "bike-parts-page" }, [
+      node(documentRef, "section", { className: "page-intro" }, [
+        node(documentRef, "p", { className: "eyebrow", text: "ROAD BIKE ENCYCLOPEDIA" }),
+        node(documentRef, "h1", { text: "森林綠公路車百科" }),
+        node(documentRef, "p", {
+          className: "page-intro__description",
+          text: "先從可閱讀的部件清單開始；圖解增強無法載入時，名稱與安全資訊仍完整保留。"
+        })
+      ]),
+      node(documentRef, "section", { className: "bike-parts-anatomy paper-panel" }, [
+        node(documentRef, "h2", { text: "公路車部件圖解" }),
+        node(documentRef, "p", { text: "互動圖解載入後會顯示於此；以下清單可直接閱讀。" }),
+        node(documentRef, "div", {
+          data: { bikeAnatomy: "true" },
+          attributes: { "aria-label": "公路車圖解增強掛載區" }
+        })
+      ]),
+      node(documentRef, "section", { className: "content-section bike-parts-categories" }, categories.map(category => {
+        const categoryParts = parts.filter(part => part.categoryId === category.id);
+        return node(documentRef, "section", { className: "bike-parts-category" }, [
+          node(documentRef, "h2", { text: category.name }),
+          node(documentRef, "div", { className: "bike-parts-category__list" }, categoryParts.map(part => node(documentRef, "button", {
+            className: "bike-part-button",
+            type: "button",
+            text: `${part.number}. ${part.name}`,
+            data: { bikePartId: part.id }
+          })))
+        ]);
+      })),
+      node(documentRef, "section", {
+        className: "bike-part-detail paper-panel",
+        data: { bikePartDetail: "true" }
+      }, [
+        node(documentRef, "p", { className: "eyebrow", text: "DEFAULT PART" }),
+        node(documentRef, "h2", { text: defaultPart.name || "上管" }),
+        ...detailRows.map(([label, value]) => node(documentRef, "div", { className: "bike-part-detail__row" }, [
+          node(documentRef, "h3", { text: label }),
+          node(documentRef, "p", { text: value || "未提供" })
+        ]))
+      ])
+    ]);
+  }
+
   function notFoundPage(documentRef, title, description) {
     return node(documentRef, "section", { className: "not-found" }, [
       node(documentRef, "p", { className: "eyebrow", text: "404 · OFF ROUTE" }),
@@ -1069,6 +1144,7 @@
     if (state.routeInfo.page === "route") return routeDetailPage(documentRef, state, actions);
     if (state.routeInfo.page === "challenges") return challengesPage(documentRef, state);
     if (state.routeInfo.page === "route-art") return routeArtPage(documentRef, state, actions);
+    if (state.routeInfo.page === "bike-parts") return bikePartsPage(documentRef, state);
     if (state.routeInfo.page === "editor") return editorPlaceholder(documentRef);
     return notFoundPage(documentRef);
   }
@@ -1106,6 +1182,7 @@
     routeCard,
     routesPage,
     routeArtPage,
+    bikePartsPage,
     challengesPage,
     routeDetailPage,
     mount

@@ -8,6 +8,7 @@ const vm = require("node:vm");
 const TrackAnalysis = require("../js/core/track-analysis.js");
 const RouteArt = require("../js/core/route-art.js");
 const Gpx = require("../js/core/gpx.js");
+const BikeParts = require("../js/data/bike-parts.js");
 
 const appSource = fs.readFileSync(path.join(__dirname, "../js/app.js"), "utf8");
 
@@ -79,6 +80,7 @@ function bootWithTrack(track, onRender, page = "route") {
       TrackRegistry: {},
       TrackManifest: {},
       RouteArt,
+      BikeParts,
       TrackLoader: {
         create() {
           return { load: async () => track, clear() {} };
@@ -144,7 +146,7 @@ function bootWithInteractiveTrack(track, onMapMount) {
       Router: { parseHash() { return { page: "route", params: { routeId: "r1" } }; } },
       Theme: { loadTheme() { return "yellow"; }, applyTheme(theme) { return theme; } },
       Geo: {}, Gpx: {}, ImageTools: {}, Editor: {}, TrackRegistry: {}, TrackManifest: {}, TrackAnalysis,
-      RouteArt,
+      RouteArt, BikeParts,
       Progress: { create() { return { list() { return new Set(); }, toggle() { return true; } }; } },
       Store: { create() { return { list() { return root.CrownRideAtlas.Data.routes; } }; } },
       TrackLoader: { create() { return { load: async () => track, clear() {} }; } },
@@ -213,7 +215,7 @@ function bootRouteArtCatalog(items, onMapMount, onDownload) {
       },
       Router: { parseHash() { return { page: "route-art", params: {} }; } },
       Theme: { loadTheme() { return "yellow"; }, applyTheme(theme) { return theme; } },
-      Geo: {}, Gpx, ImageTools: {}, Editor: {}, TrackRegistry: {}, TrackManifest: {}, TrackAnalysis, RouteArt,
+      Geo: {}, Gpx, ImageTools: {}, Editor: {}, TrackRegistry: {}, TrackManifest: {}, TrackAnalysis, RouteArt, BikeParts,
       Progress: { create() { return { list() { return new Set(); }, toggle() { return true; } }; } },
       Store: { create() { return { list() { return []; } }; } },
       TrackLoader: {
@@ -345,10 +347,36 @@ test("路線美學只掛載 track-ready 作品並支援篩選與 GPX 下載", ()
   );
 
   assert.deepEqual(mountedIds, ["gps-art-taipei-cherry-blossom"]);
+  assert.equal(app.state.bikeParts, BikeParts);
   app.actions.setRouteArtFilter("foot");
   assert.equal(app.state.routeArtFilter, "foot");
   app.actions.downloadArtGpx(trackReadyArt);
   assert.equal(downloadedName, "台北櫻花-16K.gpx");
+});
+
+test("缺少百科資料時沿用既有 fatal-error 契約", () => {
+  const fatalErrors = [];
+  const root = {
+    location: { hash: "#/home" },
+    localStorage: { getItem() { return null; }, setItem() {} },
+    document: {
+      readyState: "complete",
+      getElementById() { return {}; },
+      createElement() { return { className: "", textContent: "" }; },
+      body: { append(element) { fatalErrors.push(element); } }
+    },
+    CrownRideAtlas: {
+      Data: {}, Filter: {}, Router: {}, Theme: {}, Geo: {}, Gpx: {}, Store: {}, Progress: {},
+      ImageTools: {}, MapView: {}, Editor: {}, Render: {}, RouteArt: {}, TrackRegistry: {},
+      TrackManifest: {}, TrackLoader: {}
+    }
+  };
+
+  vm.runInNewContext(appSource, { window: root, Blob: class Blob {} });
+
+  assert.equal(fatalErrors.length, 1);
+  assert.equal(fatalErrors[0].className, "fatal-error");
+  assert.match(fatalErrors[0].textContent, /BikeParts/);
 });
 
 test("App 套用篩選時重設頁碼並可切換完成路線", () => {

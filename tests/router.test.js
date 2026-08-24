@@ -28,6 +28,11 @@ test("解析固定頁面並拒絕多餘路徑", () => {
   assert.deepEqual(Router.parseHash("#/routes/extra"), { page: "not-found", params: {} });
 });
 
+test("解析公路車百科固定頁", () => {
+  assert.deepEqual(Router.parseHash("#/bike-parts"), { page: "bike-parts", params: {} });
+  assert.equal(Router.routeHref("bike-parts"), "#/bike-parts");
+});
+
 test("解碼網址參數且無效編碼回傳找不到", () => {
   assert.deepEqual(Router.parseHash("#/route/%E7%92%B0%E5%B3%B6"), {
     page: "route",

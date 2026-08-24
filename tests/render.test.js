@@ -3,6 +3,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const Render = require("../js/ui/render.js");
+const BikeParts = require("../js/data/bike-parts.js");
 
 test("騎乘時間格式化為小時與分鐘", () => {
   assert.equal(Render.formatDuration(45), "45 分");
@@ -109,6 +110,26 @@ test("首頁精選卡片可取得完成標記 action", () => {
   assert.ok(button);
   button.handlers.click();
   assert.equal(toggled, "home-route");
+});
+
+test("公路車百科顯示靜態降級清單與首頁入口", () => {
+  const state = { routeInfo: { page: "bike-parts", params: {} }, bikeParts: BikeParts };
+  const page = Render.bikePartsPage(fakeDocument(), state);
+  const nodes = descendants(page);
+  assert.equal(nodes.filter(item => item.dataset && item.dataset.bikePartId).length, 32);
+  assert.match(nodes.map(item => item.textContent).join(" "), /森林綠公路車|上管|常見材質|安全警訊/);
+  assert.ok(nodes.some(item => item.dataset && item.dataset.bikeAnatomy === "true"));
+
+  const home = Render.homePage(fakeDocument(), {
+    bikeParts: BikeParts,
+    allRoutes: [{
+      id: "home-route", name: "首頁路線", regionName: "台北市", category: "丘陵",
+      summary: "摘要", thumbnail: "assets/images/city-morning.webp", distanceKm: 12,
+      elevationGainM: 200, difficulty: 2, durationMinutes: 60, tags: [], featured: true
+    }],
+    regions: [], favorites: new Set(), completed: new Set()
+  }, { toggleCompleted() {} });
+  assert.ok(descendants(home).some(item => item.attributes && item.attributes.href === "#/bike-parts"));
 });
 
 test("路線索引提供 bike100 對照的坡度、時間與區域篩選", () => {

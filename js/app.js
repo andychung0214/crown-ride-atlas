@@ -17,6 +17,7 @@
       "Editor",
       "Render",
       "RouteArt",
+      "BikeParts",
       "TrackRegistry",
       "TrackManifest",
       "TrackLoader"
@@ -63,6 +64,7 @@
       regions: app.Data.regions,
       challenges: app.Data.challenges,
       routeArt: app.Data.routeArt,
+      bikeParts: app.BikeParts,
       routeArtFilter: "all"
     };
     let interactiveHandles = [];
