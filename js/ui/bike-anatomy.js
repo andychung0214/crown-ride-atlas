@@ -395,6 +395,7 @@
     const title = root.querySelector("[data-bike-selected-title]");
     let state = initialView(catalog);
     let gesture = null;
+    let suppressNextClick = false;
     let destroyed = false;
 
     function listen(element, type, handler) {
@@ -465,6 +466,10 @@
 
     function bindSelection(element, partId) {
       listen(element, "click", () => select(partId));
+      bindKeyboardSelection(element, partId);
+    }
+
+    function bindKeyboardSelection(element, partId) {
       listen(element, "keydown", event => {
         if (event.key !== "Enter" && event.key !== " " && event.key !== "Spacebar") return;
         event.preventDefault();
@@ -489,7 +494,7 @@
     }
 
     root.querySelectorAll("[data-bike-hotspot]").forEach(element => {
-      bindSelection(element, element.dataset.bikeHotspot);
+      bindKeyboardSelection(element, element.dataset.bikeHotspot);
       bindHover(element, element.dataset.bikeHotspot);
       const ring = element.querySelector("[data-bike-hotspot-ring]");
       listen(element, "focus", () => {
@@ -506,9 +511,6 @@
           ring.setAttribute("stroke-width", 2);
         }
       });
-    });
-    root.querySelectorAll("[data-bike-mobile-marker]").forEach(element => {
-      bindSelection(element, element.dataset.bikeMobileMarker);
     });
     scope.querySelectorAll("[data-bike-part-id]").forEach(element => {
       bindSelection(element, element.dataset.bikePartId);
@@ -584,11 +586,16 @@
     }
 
     listen(diagramSurface, "click", event => {
+      if (suppressNextClick) {
+        suppressNextClick = false;
+        return;
+      }
       const part = nearestHotspot(event.clientX, event.clientY) || partById.get(directPartId(event.target));
       if (part) select(part.id);
     });
 
     listen(diagramSurface, "pointerdown", event => {
+      suppressNextClick = false;
       const partId = directPartId(event.target);
       const pointerType = event.pointerType || "mouse";
       if (pointerType === "mouse" && partId) return;
@@ -628,12 +635,19 @@
     });
     function endPointer(event) {
       const pointer = pointers.get(event.pointerId);
+      let selectedFromPointer = false;
       if (
         event.type === "pointerup" && pointer && pointer.pointerType !== "mouse" &&
         !pointer.moved && !pointer.hadMultiple && pointers.size === 1
       ) {
         const part = partById.get(pointer.directPartId) || nearestHotspot(event.clientX, event.clientY);
-        if (part) select(part.id);
+        if (part) {
+          select(part.id);
+          selectedFromPointer = true;
+        }
+      }
+      if (pointer && (pointer.moved || pointer.hadMultiple || event.type === "pointercancel" || selectedFromPointer)) {
+        suppressNextClick = true;
       }
       pointers.delete(event.pointerId);
       if (
@@ -645,6 +659,7 @@
     listen(diagramSurface, "pointerup", endPointer);
     listen(diagramSurface, "pointercancel", endPointer);
     listen(diagramSurface, "lostpointercapture", event => {
+      if (pointers.has(event.pointerId)) suppressNextClick = true;
       pointers.delete(event.pointerId);
       gesture = gestureFromPointers();
     });

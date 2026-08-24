@@ -372,22 +372,48 @@ test("增強建立 32 個 screen-space HTML marker 並以 hotspot 百分比定�
   assert.match(chain.getAttribute("style"), /left:\s*47\.526042%;\s*top:\s*90\.865385%/);
 });
 
-test("mobile marker 的 click、Enter、Space 都可選取對應零件", () => {
+test("mobile marker 的 click、Enter、Space 由原生合成 click 委派至 surface", () => {
   const fixture = interactiveFixture();
   BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
+  const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
   const chain = byData(fixture.root, "bike-mobile-marker", "chain");
   const saddle = byData(fixture.root, "bike-mobile-marker", "saddle");
   const cassette = byData(fixture.root, "bike-mobile-marker", "cassette");
 
-  assert.ok(chain && saddle && cassette, "缺少可操作 mobile marker");
-  chain.dispatch("click");
+  assert.ok(surface && chain && saddle && cassette, "缺少可操作 mobile marker");
+  surface.dispatch("click", { target: chain, clientX: 0, clientY: 0 });
   assert.equal(fixture.detail.querySelector("h2").textContent, "鏈條");
   const enter = saddle.dispatch("keydown", { key: "Enter" });
-  assert.equal(enter.defaultPrevented, true);
+  assert.equal(enter.defaultPrevented, undefined);
+  assert.equal(fixture.detail.querySelector("h2").textContent, "鏈條");
+  surface.dispatch("click", { target: saddle, clientX: 0, clientY: 0 });
   assert.equal(fixture.detail.querySelector("h2").textContent, "座墊");
   const space = cassette.dispatch("keydown", { key: " " });
-  assert.equal(space.defaultPrevented, true);
+  assert.equal(space.defaultPrevented, undefined);
+  assert.equal(fixture.detail.querySelector("h2").textContent, "座墊");
+  surface.dispatch("click", { target: cassette, clientX: 0, clientY: 0 });
   assert.equal(fixture.detail.querySelector("h2").textContent, "飛輪");
+});
+
+test("diagram hotspot 與 marker 的 bubbled click 各只選取及播報一次", () => {
+  [
+    ["bike-hotspot", "chain", 365, 378],
+    ["bike-mobile-marker", "cassette", 252, 362]
+  ].forEach(([attribute, partId, clientX, clientY]) => {
+    const fixture = interactiveFixture();
+    const announcements = [];
+    BikeAnatomy.mount(fixture.root, {
+      catalog: BikeParts,
+      announce: message => announcements.push(message)
+    });
+    const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
+    const target = byData(fixture.root, attribute, partId);
+
+    target.dispatch("click", { clientX, clientY });
+    surface.dispatch("click", { target, clientX, clientY });
+
+    assert.equal(announcements.length, 1, `${attribute} 不可同時由 child 與 surface 重複選取`);
+  });
 });
 
 test("重疊 marker 的 mouse click 以座標最近 hotspot 覆蓋最上層 DOM target", () => {
@@ -522,6 +548,136 @@ test("237px SVG 的雙指 midpoint 40 CSS px 位移換算為約 40px 視覺位�
   assert.ok(Math.abs(offsetX * 237 / 960 - 40) < 0.001, `midpoint 視覺位移應為 40px，實際為 ${offsetX * 237 / 960}`);
 });
 
+test("mouse 背景拖曳後的合成 click 不選零件且下一次正常 click 可用", () => {
+  const fixture = interactiveFixture();
+  const announcements = [];
+  BikeAnatomy.mount(fixture.root, {
+    catalog: BikeParts,
+    announce: message => announcements.push(message)
+  });
+  const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
+  const svg = fixture.root.querySelector("[data-bike-svg]");
+  const viewport = fixture.root.querySelector("[data-bike-viewport]");
+  const chain = byData(fixture.root, "bike-hotspot", "chain");
+  svg.clientRect = { left: 0, top: 0, width: 768, height: 416 };
+  byData(fixture.root, "bike-view-action", "zoom-in").dispatch("click");
+  announcements.length = 0;
+
+  surface.dispatch("pointerdown", {
+    target: surface,
+    pointerId: 91,
+    pointerType: "mouse",
+    clientX: 545,
+    clientY: 286
+  });
+  surface.dispatch("pointermove", {
+    target: surface,
+    pointerId: 91,
+    pointerType: "mouse",
+    clientX: 605,
+    clientY: 286
+  });
+  surface.dispatch("pointerup", {
+    target: surface,
+    pointerId: 91,
+    pointerType: "mouse",
+    clientX: 605,
+    clientY: 286
+  });
+  surface.dispatch("click", {
+    target: surface,
+    pointerType: "mouse",
+    clientX: 605,
+    clientY: 286
+  });
+
+  assert.equal(viewport.getAttribute("transform"), "translate(75 0) scale(1.25)");
+  assert.equal(fixture.detail.querySelector("h2").textContent, "上管");
+  assert.deepEqual(announcements, []);
+
+  surface.dispatch("pointerdown", {
+    target: chain,
+    pointerId: 92,
+    pointerType: "mouse",
+    clientX: 425,
+    clientY: 378
+  });
+  surface.dispatch("pointerup", {
+    target: chain,
+    pointerId: 92,
+    pointerType: "mouse",
+    clientX: 425,
+    clientY: 378
+  });
+  surface.dispatch("click", {
+    target: chain,
+    pointerType: "mouse",
+    clientX: 425,
+    clientY: 378
+  });
+  assert.equal(fixture.detail.querySelector("h2").textContent, "鏈條");
+  assert.equal(announcements.length, 1);
+});
+
+test("multi、cancel、lost capture 與 touch direct selection 都只吞下一個合成 click", () => {
+  const scenarios = ["multi", "cancel", "lost", "touch-direct"];
+  scenarios.forEach((scenario, index) => {
+    const fixture = interactiveFixture();
+    const announcements = [];
+    BikeAnatomy.mount(fixture.root, {
+      catalog: BikeParts,
+      announce: message => announcements.push(message)
+    });
+    const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
+    const chain = byData(fixture.root, "bike-mobile-marker", "chain");
+    const pointerId = 101 + index * 2;
+
+    surface.dispatch("pointerdown", {
+      target: scenario === "touch-direct" ? chain : surface,
+      pointerId,
+      pointerType: scenario === "touch-direct" ? "touch" : "mouse",
+      clientX: 10,
+      clientY: 10
+    });
+    if (scenario === "multi") {
+      surface.dispatch("pointerdown", {
+        target: surface,
+        pointerId: pointerId + 1,
+        pointerType: "touch",
+        clientX: 30,
+        clientY: 10
+      });
+      surface.dispatch("pointerup", {
+        target: surface,
+        pointerId: pointerId + 1,
+        pointerType: "touch",
+        clientX: 30,
+        clientY: 10
+      });
+      surface.dispatch("pointerup", {
+        target: surface,
+        pointerId,
+        pointerType: "mouse",
+        clientX: 10,
+        clientY: 10
+      });
+    } else if (scenario === "cancel") {
+      surface.dispatch("pointercancel", { target: surface, pointerId, pointerType: "mouse", clientX: 10, clientY: 10 });
+    } else if (scenario === "lost") {
+      surface.dispatch("lostpointercapture", { target: surface, pointerId, pointerType: "mouse", clientX: 10, clientY: 10 });
+    } else {
+      surface.dispatch("pointerup", { target: chain, pointerId, pointerType: "touch", clientX: 10, clientY: 10 });
+    }
+
+    const beforeClick = announcements.length;
+    surface.dispatch("click", { target: chain, pointerType: "mouse", clientX: 0, clientY: 0 });
+    assert.equal(announcements.length, beforeClick, `${scenario} 後的合成 click 必須被吞掉`);
+
+    surface.dispatch("click", { target: chain, pointerType: "mouse", clientX: 0, clientY: 0 });
+    assert.equal(announcements.length, beforeClick + 1, `${scenario} 不可永久吞掉後續正常 click`);
+  });
+});
+
 test("mouse 直接點擊 hotspot 不被 diagram gesture 搶走 pointer capture", () => {
   const fixture = interactiveFixture();
   BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
@@ -530,7 +686,7 @@ test("mouse 直接點擊 hotspot 不被 diagram gesture 搶走 pointer capture",
 
   surface.dispatch("pointerdown", { target: chain, pointerId: 13, pointerType: "mouse", clientX: 365, clientY: 378 });
   assert.deepEqual(surface.pointerCaptureCalls, []);
-  chain.dispatch("click");
+  surface.dispatch("click", { target: chain, clientX: 365, clientY: 378 });
   assert.equal(fixture.detail.querySelector("h2").textContent, "鏈條");
 });
 
@@ -579,7 +735,9 @@ test("正式 Render 百科 DOM 掛載後可用 click 選取熱點並更新七個
   BikeAnatomy.mount(root, { catalog: BikeParts, announce() {} });
 
   assert.equal(page.querySelectorAll("[data-bike-part-id]").length, 32);
-  byData(root, "bike-hotspot", "chain").dispatch("click");
+  const surface = root.querySelector("[data-bike-diagram-surface]");
+  const chain = byData(root, "bike-hotspot", "chain");
+  surface.dispatch("click", { target: chain, clientX: 365, clientY: 378 });
   assert.equal(detail.querySelector("h2").textContent, "鏈條");
   assert.equal(detail.querySelectorAll(".bike-part-detail__row").length, 7);
   assert.equal(
