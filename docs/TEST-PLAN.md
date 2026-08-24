@@ -4,29 +4,29 @@
 
 ## 現行基準：公路車部件百科（2026-08-25）
 
-現行 `npm run verify` 基準為 288 項測試、23 個公開 bundle 與 68 條正式路線；部件百科固定為 4 個分類、32 筆內容，且不寫入 `TrackManifest` 或正式路線資料。
+現行 `npm run verify` 基準為 303 項測試、23 個公開 bundle 與 68 條正式路線；部件百科固定為 4 個分類、32 筆內容，且不寫入 `TrackManifest` 或正式路線資料。
 
 ### 自動測試
 
 | 測試項目 | 測試方式 | 預期結果 |
 |---|---|---|
 | 資料契約與內容 | 執行 `node --test tests/bike-parts.test.js` | 精確 4 個分類、32 筆部件、ID／編號唯一；每筆具名稱、用途、保養、注意事項與相關部件，不以重複模板替代內容 |
-| 路由與渲染 | 執行 `node --test tests/router.test.js tests/render.test.js tests/app.test.js` | `#/bike-parts` 可解析、導覽可到達，分類、詳情與文字降級可渲染 |
-| 圖解互動 | 執行 `node --test tests/bike-anatomy.test.js` | 熱點與控制項可由鍵盤操作；縮放限制為 1 至 3 倍；Pointer Events 的單指平移、雙指縮放、capture／release 與 destroy 均受測 |
-| 專屬樣式隔離 | 執行 `node --test tests/css.test.js` | 導引線、窄版熱點與 reduced-motion 規則限制於百科頁，不污染既有頁面 |
+| 路由與渲染 | 執行 `node --test tests/router.test.js tests/render.test.js tests/app.test.js` | `#/bike-parts` 可解析；只缺 BikeAnatomy 或 mount 失敗時不 fatal；32 個 native details 各有名稱與七類完整內容 |
+| 圖解互動 | 執行 `node --test tests/bike-anatomy.test.js` | 鍵盤操作、hover 四方同步、22 CSS px 最近熱點、拖曳／雙指防誤選、1 至 3 倍縮放、capture／lost capture 與 fallback lifecycle 均受測 |
+| 專屬樣式隔離 | 執行 `node --test tests/css.test.js` | 以精確 rule／media helper 鎖定 hover 非色彩狀態、窄版同時隱藏導引線與文字、加大編號及 reduced-motion，不以貪婪 regex 跨規則 |
 | 正式路線隔離 | 執行 `npm run verify` | 23 個公開 bundle／68 條正式路線維持不變；部件百科不改動 routes 或 `TrackManifest` |
 
 ### Chrome 手動與響應式驗收
 
 | 測試項目 | 測試方式 | 預期結果 |
 |---|---|---|
-| 1440×900 桌機 | 開啟 `#/bike-parts` | 森林綠色系車架幾何可辨識；外側導引線與文字可讀，無水平溢位 |
+| 1440×900 桌機 | 開啟 `#/bike-parts` 並滑過 hotspot／分類清單 | 森林綠色系車架幾何可辨識；hotspot、導引線、標籤與清單同步出現非色彩 hover 狀態，無水平溢位 |
 | 768×1024 平板 | 開啟 `#/bike-parts` 並切換部件 | 圖解、詳情與分類清單可讀，控制項焦點清楚 |
-| 390px 與 320px 窄版 | 開啟 `#/bike-parts` | 外側導引文字隱藏，僅保留編號熱點；百科內容無水平溢位，既有頁面維持其 20rem 根寬行為 |
+| 390px 與 320px 窄版 | 開啟 `#/bike-parts` | 外側導引線與文字都隱藏，加大編號仍可辨識；百科內容無水平溢位，既有頁面維持其 20rem 根寬行為 |
 | 鍵盤 | 使用 Chrome 真實 Tab、Enter、Space | 熱點、前後一筆、放大／縮小與重設均可操作，選取部件與狀態播報同步 |
-| Pointer Events | 在圖解進行單指拖曳與雙指縮放 | 平移與縮放可用，縮放維持 1 至 3 倍，結束／取消後 pointer capture 正確釋放 |
+| Pointer Events | 在編號 22 CSS px 內／外點按，並進行單指拖曳與雙指縮放 | 半徑內選最近 hotspot、半徑外不選；拖曳／雙指不誤選，結束、取消與 lost capture 不殘留 gesture |
 | 四主題 | 依序切換四套領騎衫主題 | 主題切換不破壞百科文字、焦點、熱點或車架幾何辨識 |
-| 文字降級 | 暫停或略過圖形互動能力後檢查詳情 | 部件清單、名稱、用途、保養、注意事項與相關部件仍可讀 |
+| 文字降級 | 略過 BikeAnatomy、強制 SVG 建立失敗，再 destroy 成功增強 | 32 個 native details 始終可恢復閱讀，每筆有名稱及用途、材質、調整、保養、安全警訊、相關部件、車店建議 |
 | 減少動態效果 | 以支援 media emulation 的瀏覽器設定 `prefers-reduced-motion: reduce` 後開啟 | 不播放長動畫，平移／縮放與選取仍可用；若控制介面不支援此模擬，必須明記未執行而非宣稱通過 |
 
 ## 歷史快照：2026-08-14 GPS Art 圖鑑增補

@@ -22,7 +22,7 @@
 - GPX 匯入、下載與可查詢里程／海拔／坡度的詳細剖面。
 - 新增、編輯、刪除、圖片壓縮、JSON 備份與還原，資料只儲存在目前瀏覽器。
 - 鍵盤操作、跳至主要內容、狀態播報、清楚的焦點樣式與減少動態效果支援。
-- 公路車百科位於 `#/bike-parts`：桌機以森林綠色系車架、導引線與標籤協助對照；窄版改以編號熱點與部件清單，確保標籤不互相遮蔽。
+- 公路車百科位於 `#/bike-parts`：桌機將熱點、導引線、標籤與部件清單的 hover 狀態同步；窄版隱藏導引線與文字，改用加大的編號視覺及 22 CSS px 最近熱點判定。
 
 ## 操作方式
 
@@ -33,9 +33,9 @@
 5. 在「我的路線」新增或編輯內容；可上傳 JPEG、PNG、WebP 與 GPX。
 6. 編輯完成後下載 JSON 備份，以便跨瀏覽器還原。
 7. 從「路線美學」檢視 GPS Art 圖鑑；使用活動／軌跡篩選，並由作品卡查閱公開來源。只有標示「有站內軌跡」的作品提供地圖與 GPX。
-8. 從「公路車百科」或 `#/bike-parts` 開啟部件圖解。桌機可沿導引線閱讀標籤；窄版請點選編號熱點或下方分類清單。可用前一筆／下一筆、放大／縮小與重設控制；圖解縮放範圍為 1 至 3 倍。
+8. 從「公路車百科」或 `#/bike-parts` 開啟部件圖解。桌機可沿導引線閱讀標籤，滑過熱點或分類清單會同步標示同一部件；窄版請點選編號附近或下方分類清單。可用前一筆／下一筆、放大／縮小與重設控制；圖解縮放範圍為 1 至 3 倍。
 
-百科的熱點、控制項與分類按鈕支援 Tab、Enter、Space 與 Pointer Events；拖曳可平移，雙指可縮放。圖形無法使用時，仍保留完整的 32 筆部件文字、用途、保養與相關部件內容。
+百科的熱點、控制項與分類按鈕支援 Tab、Enter、Space 與 Pointer Events；觸控以 22 CSS px 半徑選取最近熱點，拖曳可平移，雙指可縮放且不會誤選。互動模組缺少、建立失敗或被銷毀時，32 個原生 `<details>` 仍各自保留名稱與七類完整內容。
 
 ## 安裝與執行
 
@@ -77,7 +77,7 @@ npm run tracks:validate
 npm run verify
 ```
 
-測試不依賴大型框架，使用 Node.js 內建 `node:test`。目前 `npm run verify` 共 288 項測試，會檢查 JavaScript 入口、GPS Art catalog／分段 GPX／runtime 單件降級／軌跡 provenance 契約、32 筆公路車部件圖解與互動，以及 23 個公開軌跡 bundle（共 68 條正式路線）；GPS Art 與部件百科均不加入正式 manifest。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，來源帳見 [`docs/route-research/taiwan-gps-art.md`](docs/route-research/taiwan-gps-art.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
+測試不依賴大型框架，使用 Node.js 內建 `node:test`。目前 `npm run verify` 共 303 項測試，會檢查 JavaScript 入口、GPS Art catalog／分段 GPX／runtime 單件降級／軌跡 provenance 契約、32 筆公路車部件圖解、靜態 fallback 與互動，以及 23 個公開軌跡 bundle（共 68 條正式路線）；GPS Art 與部件百科均不加入正式 manifest。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，來源帳見 [`docs/route-research/taiwan-gps-art.md`](docs/route-research/taiwan-gps-art.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
 
 ## 靜態網站託管
 

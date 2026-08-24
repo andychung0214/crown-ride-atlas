@@ -737,11 +737,11 @@ Expected: `main -> main`，並建立 upstream。
 ## 2026-08-25 公路車部件百科里程碑
 
 - [x] 新增獨立 `#/bike-parts` 路由與首頁／導覽入口。
-- [x] 建立 4 個分類、32 筆內容的部件百科，並保留用途、保養、注意事項與相關部件的文字降級。
-- [x] 完成森林綠色系公路車圖解：桌機導引線與標籤；`40rem` 以下改為可聚焦的編號熱點。
-- [x] 完成鍵盤、Pointer Events、1 至 3 倍縮放、平移與監聽器銷毀的自動驗證；不改動 routes 或 `TrackManifest`。
+- [x] 建立 4 個分類、32 筆內容的部件百科；Render 預先輸出 32 個 native `<details>`，每筆保留七類完整內容，BikeAnatomy 只作可選的 progressive enhancement。
+- [x] 完成森林綠色系公路車圖解：桌機 hotspot、導引線、標籤與清單 hover 同步；`40rem` 以下同時隱藏導引線與文字，保留加大編號視覺。
+- [x] 完成鍵盤、Pointer Events、22 CSS px 最近熱點 touch hit testing、1 至 3 倍縮放、平移、gesture 防誤選、capture 清理與監聽器銷毀的自動驗證；不改動 routes 或 `TrackManifest`。
 - [x] 以 Chrome 完成 1440px、768px、390px 與 320px 視窗、四主題以及 Tab／Enter／Space 回歸；320px 百科無水平溢位，既有頁面保留 20rem 根寬行為。
-- [x] 文件同步與 fresh `npm run verify`、`git diff --check`、敏感資訊掃描結果記錄於 `docs/VERIFICATION.md`。
+- [x] 文件同步與 fresh 303 項 `npm run verify`、`git diff --check`、敏感資訊掃描結果記錄於 `docs/VERIFICATION.md`。
 
 ## 里程碑
 

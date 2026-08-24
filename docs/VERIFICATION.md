@@ -2,26 +2,31 @@
 
 ## 現行驗證：2026-08-25 公路車部件百科
 
-本節只記錄公路車部件百科文件同步後的本輪命令與 Chrome 證據。現況為 4 個分類、32 筆內容、`#/bike-parts`、23 個公開 bundle 與 68 條正式路線；部件百科不改動 routes 或 `TrackManifest`。較早版本的數字與瀏覽器結果均移至「歷史驗證快照」。
+本節只記錄公路車部件百科最終審查修正後的 fresh 命令與 Chrome 證據。現況為 4 個分類、32 筆內容、`#/bike-parts`、23 個公開 bundle 與 68 條正式路線；部件百科不改動 routes 或 `TrackManifest`。較早版本的數字與瀏覽器結果均移至「歷史驗證快照」。
 
 ### 本輪自動驗證
 
 | 檢查 | 結果 | 實際證據 |
 |---|---|---|
-| 完整驗證 | 通過 | `npm run verify` exit code 0；288 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
-| Git 空白檢查 | 通過 | `git diff --check` exit code 0；沒有空白錯誤。輸出僅為五份已修改 Markdown 的 LF→CRLF 行尾轉換警告 |
-| 敏感資訊掃描 | 已檢查，沒有秘密 | 指定 `rg` exit code 0（有 9 筆一般文字命中）；逐筆皆為 README、CONTRIBUTING、PLAN、TEST-PLAN、VERIFICATION 的安全提醒、舊掃描命令或本輪掃描命令本身，沒有憑證值或私人金鑰 |
+| Focused 回歸 | 通過 | `node --test tests/app.test.js tests/render.test.js tests/bike-anatomy.test.js tests/bike-parts.test.js tests/css.test.js tests/pages-workflow.test.js` exit code 0；76 項通過、0 項失敗 |
+| 完整驗證 | 通過 | `npm run verify` exit code 0；303 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
+| Git 空白檢查 | 通過 | `git diff --check` exit code 0；沒有空白錯誤，只有工作樹既有 LF→CRLF 行尾轉換警告 |
+| 敏感資訊掃描 | 通過 | 受版控敏感檔名掃描為 0 筆；指定內容掃描的命中均為文件中的掃描命令／安全說明與測試 DOM guard，沒有憑證值、私人金鑰或 production 危險 DOM sink |
+| 正式資料隔離 | 通過 | `git diff --name-only -- js/data/routes.js js/data/track-manifest.js js/data/tracks` 無輸出；沒有修改 routes、`Data.routes`、`TrackManifest` 或正式 tracks |
 
 ### Chrome 瀏覽器回歸證據
 
-- 1440px 桌機：外側導引線與文字標籤可讀，車架、前叉、輪組、傳動與煞車幾何可辨識。
-- 768px 平板：圖解、詳情與分類清單可讀，互動控制項可聚焦。
-- 390px 與 320px：外側導引文字在窄版切換為編號熱點；320px 百科沒有水平溢位。既有頁面保留 20rem 根寬行為。
-- Chrome 真實 Tab、Enter、Space：可依焦點啟用熱點與控制項，選取內容與狀態同步。
-- 四套主題：切換後部件文字、焦點、熱點與圖解幾何仍可辨識。
-- Pointer Events：單指平移、雙指縮放與取消／釋放路徑由自動測試及 Chrome 回歸覆蓋；縮放範圍為 1 至 3 倍。
-- 文字降級：完整 32 筆部件內容與分類清單不依賴圖形互動。
-- 已知工具限制：Chrome runtime 沒有已記錄的 `emulateMedia` 能力，因此未執行真實 `prefers-reduced-motion` media emulation。CSS 具有 base、tokens 與百科專屬三層 reduced-motion 保護，且正常模式沒有長動畫；此項不宣稱已完成實機 media 驗證。
+- 1440×900 桌機：document `clientWidth`／`scrollWidth` 均為 1425px（15px 為垂直捲軸）；32 個 hotspot、leader、label 均存在，fallback 有 32 筆且只在增強成功後隱藏，fatal error 為 0。
+- 桌機 hover：從 hotspot 或靜態清單進入時，hotspot、leader、文字標籤與清單四方的 `.is-hovered` 同步；實測 hotspot ring 為 4px、leader 為 2.5px 實線、label 加底線、清單加 5px 左框。Chrome 實際點擊鏈條後標題為「鏈條」、`aria-pressed=true`；此項也捕捉並修正了 SVG 畫布錯誤搶走 direct-hotspot pointer capture 的缺陷。
+- SVG 無障礙：`aria-labelledby="bike-anatomy-title"`、`aria-describedby="bike-anatomy-description"` 均指向實際 `<title>`／`<desc>`；32 個 hotspot 均保留可操作語意。頭管 computed stroke 為森林綠 `rgb(36, 92, 67)`。
+- 390×844：瀏覽器內容寬 375px，document `clientWidth`／`scrollWidth` 均為 375px；leader 與 label 各 32 個 computed `display:none`，編號字級 16px，SVG 為 307×166.28125px，32 個 hotspot 與實際 pointer 點選均正常。
+- 320×844：瀏覽器內容寬 305px，document `clientWidth`／`scrollWidth` 均為 305px、`html` computed `min-width:0px`；leader／label 各 32 個隱藏，編號字級 16px，SVG 為 237×128.375px，點選飛輪後標題、pressed 與 live announcement 同步。舊頁在 320px 保留全域 `min-width:20rem`；若垂直捲軸使 viewport client 小於 320px，document `scrollWidth=320px` 是既有保護契約，不是舊頁的無溢位宣稱。
+- 鍵盤與主題：同日先前 Chrome 回歸已以真實 Tab、Enter、Space 驗證百科控制與 hotspot，並驗四套主題的 focus／selected 非只用顏色表達；本輪自動測試持續鎖定 Enter／Space 行為。
+- 原頁回歸：`#/home`、`#/routes`、`#/route-art`、`#/editor` 在 1440px 的 document `clientWidth`／`scrollWidth` 均為 1425px，fatal error 為 0；Chrome dev logs 的 error／warn 清單為空。
+- 文字降級：無 BikeAnatomy、`mount` 拋錯、SVG 建立失敗與 destroy 後恢復，均由 App／Render／BikeAnatomy 自動測試驗證 32 個 native `<details>` 各有名稱與七類完整文字；本輪未另以 Chrome 人為移除 script，因此不宣稱該故障注入已完成瀏覽器實測。
+- 觸控證據邊界：Chrome 控制 surface 只有 viewport 與一般 pointer click，沒有觸控裝置模擬；390／320px 的實際點選是 Chrome mouse pointer。22 CSS px 最近熱點、超界不選、拖曳／雙指不誤選、transform 換算與 capture 清理均由 production event 自動測試通過，不冒稱為實機 touch 驗證。
+- Reduced Motion 證據邊界：Chrome runtime 沒有 `emulateMedia` 能力，因此未執行真實 `prefers-reduced-motion` media emulation。精確 CSS media-block 測試鎖定縮減動態效果規則；此項不宣稱已完成實機 media 驗證。
+- 本輪沒有建立畫面擷取檔；Chrome 測試 tab 已關閉，本機 HTTP server 已停止，使用者原有 tabs 保留。
 
 ## 歷史驗證快照
 
