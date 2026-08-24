@@ -2,6 +2,9 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+const vm = require("node:vm");
 const BikeParts = require("../js/data/bike-parts.js");
 
 const requiredFields = [
@@ -90,9 +93,35 @@ test("安全關鍵零件的裂損警訊明確要求停止騎乘", () => {
 test("百科資料深度凍結且預設選取上管", () => {
   assert.equal(BikeParts.defaultPartId, "top-tube");
   assert.equal(Object.isFrozen(BikeParts), true);
+  assert.equal(Object.isFrozen(BikeParts.categories), true);
+  assert.equal(Object.isFrozen(BikeParts.parts), true);
   assert.ok(BikeParts.categories.every(Object.isFrozen));
   assert.ok(BikeParts.parts.every(Object.isFrozen));
   assert.ok(BikeParts.parts.every(part => Object.isFrozen(part.hotspot) && Object.isFrozen(part.labelAnchor)));
+  assert.ok(BikeParts.parts.every(part => Object.isFrozen(part.relatedParts)));
+  assert.throws(() => { BikeParts.categories.push({ id: "wrong", name: "錯誤" }); }, TypeError);
+  assert.throws(() => { BikeParts.parts.pop(); }, TypeError);
+  assert.throws(() => { BikeParts.parts[0].relatedParts.push("wrong"); }, TypeError);
   assert.throws(() => { BikeParts.parts[0].name = "錯誤"; }, TypeError);
   assert.throws(() => { BikeParts.parts[0].hotspot.x = 0; }, TypeError);
+});
+
+test("煞車卡鉗文案分別說明碟煞與輪圈煞車的構造及保養", () => {
+  const caliper = BikeParts.parts.find(part => part.id === "brake-caliper");
+  const content = [caliper.materials, caliper.adjustment, caliper.maintenance, caliper.workshopAdvice].join("｜");
+
+  ["碟煞", "活塞", "密封", "來令片", "輪圈煞車", "拉臂", "樞軸", "煞車皮"].forEach(term => {
+    assert.match(content, new RegExp(term), `煞車卡鉗文案缺少「${term}」`);
+  });
+});
+
+test("BikeParts UMD 註冊不覆寫既有 CrownRideAtlas namespace", () => {
+  const source = fs.readFileSync(path.join(__dirname, "../js/data/bike-parts.js"), "utf8");
+  const sentinel = { preserved: true };
+  const context = { CrownRideAtlas: { sentinel } };
+
+  vm.runInNewContext(source, context);
+
+  assert.equal(context.CrownRideAtlas.sentinel, sentinel);
+  assert.equal(context.CrownRideAtlas.BikeParts.parts.length, 32);
 });

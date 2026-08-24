@@ -47,7 +47,9 @@
     }
     if (action.type === "zoom") {
       const scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, state.scale + Number(action.delta || 0)));
-      return Object.assign({}, state, { scale });
+      return Object.assign({}, state, scale === MIN_SCALE
+        ? { scale, offsetX: 0, offsetY: 0 }
+        : { scale });
     }
     if (action.type === "pan" && state.scale > 1) {
       return Object.assign({}, state, {
@@ -112,6 +114,7 @@
       "stroke-linecap": "round", "stroke-linejoin": "round"
     }));
     viewport.append(svgElement(documentRef, "line", {
+      "data-bike-shape": "head-tube",
       x1: 610, y1: 190, x2: 632, y2: 250,
       stroke: green, "stroke-width": 19, "stroke-linecap": "round"
     }));
@@ -210,10 +213,13 @@
       width: 960,
       height: 520,
       role: "group",
-      "aria-label": "森林綠公路車完整側視零件互動圖",
+      "aria-labelledby": "bike-anatomy-title",
+      "aria-describedby": "bike-anatomy-description",
       "data-bike-svg": "true",
       style: "touch-action: none"
     });
+    svg.append(svgElement(documentRef, "title", { id: "bike-anatomy-title" }, "森林綠公路車完整側視零件互動圖"));
+    svg.append(svgElement(documentRef, "desc", { id: "bike-anatomy-description" }, "包含 32 個可操作編號，可用鍵盤選取零件，並可縮放或拖曳圖面。"));
     const viewport = svgElement(documentRef, "g", {
       "data-bike-viewport": "true",
       transform: "translate(0 0) scale(1)"
@@ -236,6 +242,8 @@
         "stroke-dasharray": "4 3"
       }));
       leaderLayer.append(svgElement(documentRef, "text", {
+        id: `bike-leader-label-${part.id}`,
+        "data-bike-leader-label": part.id,
         x: part.labelAnchor.x,
         y: part.labelAnchor.y,
         fill: "#26352e",
@@ -259,17 +267,18 @@
         "data-bike-hotspot-ring": "true",
         cx: part.hotspot.x,
         cy: part.hotspot.y,
-        r: 14,
+        r: 16,
         fill: "#f1eee4",
         stroke: "#17633f",
         "stroke-width": 2
       }));
       hotspot.append(svgElement(documentRef, "text", {
+        "data-bike-hotspot-number": "true",
         x: part.hotspot.x,
-        y: part.hotspot.y + 4,
+        y: part.hotspot.y + 5,
         "text-anchor": "middle",
         fill: "#17633f",
-        "font-size": 11,
+        "font-size": 13,
         "font-weight": 700
       }, part.number));
       hotspot.append(svgElement(documentRef, "text", {
@@ -330,11 +339,15 @@
 
     const documentRef = root.ownerDocument;
     const scope = (typeof root.closest === "function" && root.closest(".bike-parts-page")) || root.parentNode || root;
+    const fallback = root.querySelector("[data-bike-fallback]");
     let svg;
     let controls;
+    let enhancement;
     try {
       svg = createSvg(documentRef, catalog, function () {});
       controls = createControls(documentRef);
+      enhancement = htmlElement(documentRef, "div", { "data-bike-enhancement": "true" });
+      enhancement.append(controls, svg);
     } catch (_error) {
       let destroyed = false;
       const failedHandle = {
@@ -349,7 +362,8 @@
       return failedHandle;
     }
 
-    root.replaceChildren(controls, svg);
+    root.append(enhancement);
+    if (fallback) fallback.hidden = true;
     const listeners = [];
     const pointers = new Map();
     const partById = new Map(catalog.parts.map(part => [part.id, part]));
@@ -427,8 +441,25 @@
       });
     }
 
+    function setHovered(partId, hovered) {
+      [
+        root.querySelector(`[data-bike-hotspot="${partId}"]`),
+        root.querySelector(`[data-bike-leader="${partId}"]`),
+        root.querySelector(`[data-bike-leader-label="${partId}"]`),
+        scope.querySelector(`[data-bike-part-id="${partId}"]`)
+      ].filter(Boolean).forEach(element => {
+        element.classList[hovered ? "add" : "remove"]("is-hovered");
+      });
+    }
+
+    function bindHover(element, partId) {
+      listen(element, "pointerenter", () => setHovered(partId, true));
+      listen(element, "pointerleave", () => setHovered(partId, false));
+    }
+
     root.querySelectorAll("[data-bike-hotspot]").forEach(element => {
       bindSelection(element, element.dataset.bikeHotspot);
+      bindHover(element, element.dataset.bikeHotspot);
       const ring = element.querySelector("[data-bike-hotspot-ring]");
       listen(element, "focus", () => {
         element.setAttribute("data-focus-visible", "true");
@@ -440,13 +471,14 @@
       listen(element, "blur", () => {
         element.removeAttribute("data-focus-visible");
         if (ring) {
-          ring.setAttribute("r", 14);
+          ring.setAttribute("r", 16);
           ring.setAttribute("stroke-width", 2);
         }
       });
     });
     scope.querySelectorAll("[data-bike-part-id]").forEach(element => {
       bindSelection(element, element.dataset.bikePartId);
+      bindHover(element, element.dataset.bikePartId);
     });
 
     function cycle(direction) {
@@ -478,20 +510,53 @@
       };
     }
 
+    function nearestHotspot(clientX, clientY) {
+      if (typeof svg.getBoundingClientRect !== "function") return null;
+      const rect = svg.getBoundingClientRect();
+      const viewBox = String(svg.getAttribute("viewBox") || "").trim().split(/\s+/).map(Number);
+      if (viewBox.length !== 4 || !viewBox.every(Number.isFinite) || rect.width <= 0 || rect.height <= 0) return null;
+      const [viewX, viewY, viewWidth, viewHeight] = viewBox;
+      const cssScale = Math.min(rect.width / viewWidth, rect.height / viewHeight);
+      const originX = rect.left + (rect.width - viewWidth * cssScale) / 2;
+      const originY = rect.top + (rect.height - viewHeight * cssScale) / 2;
+      let nearest = null;
+      catalog.parts.forEach(part => {
+        const hotspotX = originX + ((part.hotspot.x * state.scale + state.offsetX) - viewX) * cssScale;
+        const hotspotY = originY + ((part.hotspot.y * state.scale + state.offsetY) - viewY) * cssScale;
+        const distance = Math.hypot(clientX - hotspotX, clientY - hotspotY);
+        if (distance <= 22 && (!nearest || distance < nearest.distance)) nearest = { part, distance };
+      });
+      return nearest && nearest.part;
+    }
+
     listen(svg, "pointerdown", event => {
-      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if (
+        event.target && typeof event.target.closest === "function" &&
+        event.target.closest("[data-bike-hotspot]")
+      ) return;
+      pointers.set(event.pointerId, {
+        x: event.clientX,
+        y: event.clientY,
+        startX: event.clientX,
+        startY: event.clientY,
+        moved: false,
+        hadMultiple: false,
+        pointerType: event.pointerType || "mouse"
+      });
+      if (pointers.size > 1) pointers.forEach(pointer => { pointer.hadMultiple = true; });
       if (typeof svg.setPointerCapture === "function") svg.setPointerCapture(event.pointerId);
       gesture = gestureFromPointers();
     });
     listen(svg, "pointermove", event => {
       const previous = pointers.get(event.pointerId);
       if (!previous) return;
+      const moved = previous.moved || Math.hypot(event.clientX - previous.startX, event.clientY - previous.startY) > 8;
       if (pointers.size === 1) {
-        pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        pointers.set(event.pointerId, Object.assign({}, previous, { x: event.clientX, y: event.clientY, moved }));
         dispatch({ type: "pan", dx: event.clientX - previous.x, dy: event.clientY - previous.y });
         return;
       }
-      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      pointers.set(event.pointerId, Object.assign({}, previous, { x: event.clientX, y: event.clientY, moved }));
       const nextGesture = gestureFromPointers();
       if (gesture && nextGesture && gesture.distance > 0) {
         const targetScale = state.scale * (nextGesture.distance / gesture.distance);
@@ -501,12 +566,27 @@
       gesture = nextGesture;
     });
     function endPointer(event) {
+      const pointer = pointers.get(event.pointerId);
+      if (
+        event.type === "pointerup" && pointer && pointer.pointerType !== "mouse" &&
+        !pointer.moved && !pointer.hadMultiple && pointers.size === 1
+      ) {
+        const part = nearestHotspot(event.clientX, event.clientY);
+        if (part) select(part.id);
+      }
       pointers.delete(event.pointerId);
-      if (typeof svg.releasePointerCapture === "function") svg.releasePointerCapture(event.pointerId);
+      if (
+        typeof svg.hasPointerCapture === "function" && svg.hasPointerCapture(event.pointerId) &&
+        typeof svg.releasePointerCapture === "function"
+      ) svg.releasePointerCapture(event.pointerId);
       gesture = gestureFromPointers();
     }
     listen(svg, "pointerup", endPointer);
     listen(svg, "pointercancel", endPointer);
+    listen(svg, "lostpointercapture", event => {
+      pointers.delete(event.pointerId);
+      gesture = gestureFromPointers();
+    });
     listen(svg, "pointerleave", event => {
       if (pointers.has(event.pointerId)) endPointer(event);
     });
@@ -519,6 +599,8 @@
         listeners.splice(0).forEach(remove => remove());
         pointers.clear();
         gesture = null;
+        if (enhancement) enhancement.remove();
+        if (fallback) fallback.hidden = false;
         if (activeMounts.get(root) === handle) activeMounts.delete(root);
       }
     };

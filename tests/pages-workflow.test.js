@@ -53,6 +53,20 @@ test("入口頁只載入一次核准的 GA4 snippet", () => {
   );
 });
 
+test("入口頁 meta、Open Graph 與 JSON-LD 都明確收錄公路車百科", () => {
+  const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+  const metaDescription = /<meta\s+name="description"\s+content="([^"]+)"/.exec(html);
+  const ogDescription = /<meta\s+property="og:description"\s+content="([^"]+)"/.exec(html);
+  const jsonLdSource = /<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/.exec(html);
+
+  assert.ok(metaDescription, "缺少 meta description");
+  assert.ok(ogDescription, "缺少 og:description");
+  assert.ok(jsonLdSource, "缺少 WebSite JSON-LD");
+  assert.match(metaDescription[1], /公路車百科/);
+  assert.match(ogDescription[1], /公路車百科/);
+  assert.match(JSON.parse(jsonLdSource[1]).description, /公路車百科/);
+});
+
 test("百科資料與互動模組依序在渲染前載入，App 最後載入", () => {
   const indexSource = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const bikePartsPosition = indexSource.indexOf("js/data/bike-parts.js");

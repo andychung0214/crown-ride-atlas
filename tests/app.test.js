@@ -253,10 +253,12 @@ function bootRouteArtCatalog(items, onMapMount, onDownload) {
   };
 }
 
-function bootBikePartsLifecycle() {
+function bootBikePartsLifecycle(settings = {}) {
   const anatomyElement = { dataset: { bikeAnatomy: "true" } };
   let mountCount = 0;
   let destroyCount = 0;
+  let renderCount = 0;
+  const fatalErrors = [];
   const rootElement = {
     querySelectorAll(selector) {
       return selector === "[data-bike-anatomy]" ? [anatomyElement] : [];
@@ -277,7 +279,7 @@ function bootBikePartsLifecycle() {
       title: "",
       getElementById() { return rootElement; },
       createElement() { return { className: "", textContent: "" }; },
-      body: { append() {} }
+      body: { append(element) { fatalErrors.push(element); } }
     },
     addEventListener(event, handler) {
       if (event === "hashchange") this.hashChange = handler;
@@ -294,8 +296,9 @@ function bootBikePartsLifecycle() {
       Theme: { loadTheme() { return "yellow"; }, applyTheme(theme) { return theme; } },
       Geo: {}, Gpx: {}, ImageTools: {}, MapView: {}, Editor: {}, TrackRegistry: {}, TrackManifest: {}, TrackAnalysis,
       RouteArt, BikeParts,
-      BikeAnatomy: {
+      BikeAnatomy: settings.withBikeAnatomy === false ? undefined : {
         mount(element, options) {
+          if (settings.mountThrows) throw new Error("圖解掛載失敗");
           assert.equal(element, anatomyElement);
           assert.equal(options.catalog, BikeParts);
           assert.equal(typeof options.announce, "function");
@@ -306,7 +309,7 @@ function bootBikePartsLifecycle() {
       Progress: { create() { return { list() { return new Set(); }, toggle() { return true; } }; } },
       Store: { create() { return { list() { return []; } }; } },
       TrackLoader: { create() { return { load: async () => null, clear() {} }; } },
-      Render: { pageTitle() { return "公路車百科"; }, mount() { return { main: { focus() {} } }; } }
+      Render: { pageTitle() { return "公路車百科"; }, mount() { renderCount += 1; return { main: { focus() {} } }; } }
     }
   };
 
@@ -314,7 +317,9 @@ function bootBikePartsLifecycle() {
   return {
     rerender() { root.hashChange(); },
     get mountCount() { return mountCount; },
-    get destroyCount() { return destroyCount; }
+    get destroyCount() { return destroyCount; },
+    get renderCount() { return renderCount; },
+    get fatalErrors() { return fatalErrors; }
   };
 }
 
@@ -454,6 +459,20 @@ test("App 每次重繪先銷毀舊百科互動再重新掛載", () => {
   lifecycle.rerender();
   assert.equal(lifecycle.destroyCount, 1);
   assert.equal(lifecycle.mountCount, 2);
+});
+
+test("只缺 BikeAnatomy 時百科仍渲染且不顯示 fatal error", () => {
+  const lifecycle = bootBikePartsLifecycle({ withBikeAnatomy: false });
+  assert.equal(lifecycle.renderCount, 1);
+  assert.equal(lifecycle.mountCount, 0);
+  assert.deepEqual(lifecycle.fatalErrors, []);
+});
+
+test("BikeAnatomy.mount 建立失敗不阻斷百科靜態內容", () => {
+  const lifecycle = bootBikePartsLifecycle({ mountThrows: true });
+  assert.equal(lifecycle.renderCount, 1);
+  assert.equal(lifecycle.mountCount, 0);
+  assert.deepEqual(lifecycle.fatalErrors, []);
 });
 
 test("App 套用篩選時重設頁碼並可切換完成路線", () => {

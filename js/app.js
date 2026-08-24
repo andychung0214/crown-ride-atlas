@@ -18,7 +18,6 @@
       "Render",
       "RouteArt",
       "BikeParts",
-      "BikeAnatomy",
       "TrackRegistry",
       "TrackManifest",
       "TrackLoader"
@@ -177,10 +176,20 @@
         interactiveHandles.push(app.MapView.mount(element, art));
       });
       rootElement.querySelectorAll("[data-bike-anatomy]").forEach(element => {
-        interactiveHandles.push(app.BikeAnatomy.mount(element, {
-          catalog: state.bikeParts,
-          announce
-        }));
+        if (!app.BikeAnatomy || typeof app.BikeAnatomy.mount !== "function") return;
+        try {
+          const handle = app.BikeAnatomy.mount(element, {
+            catalog: state.bikeParts,
+            announce
+          });
+          if (handle && typeof handle.destroy === "function") interactiveHandles.push(handle);
+        } catch (_error) {
+          const fallback = element.querySelector && element.querySelector("[data-bike-fallback]");
+          const enhancement = element.querySelector && element.querySelector("[data-bike-enhancement]");
+          if (fallback) fallback.hidden = false;
+          if (enhancement && typeof enhancement.remove === "function") enhancement.remove();
+          announce("公路車圖解暫時無法載入，靜態百科內容仍可閱讀。");
+        }
       });
       rootElement.querySelectorAll("[data-elevation]").forEach(element => {
         const route = hydratedRoute(state.allRoutes.find(item => item.id === element.dataset.elevation));

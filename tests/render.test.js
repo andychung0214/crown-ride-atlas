@@ -132,6 +132,36 @@ test("公路車百科顯示靜態降級清單與首頁入口", () => {
   assert.ok(descendants(home).some(item => item.attributes && item.attributes.href === "#/bike-parts"));
 });
 
+test("無互動增強時 32 個 native details 各自保留名稱與七類完整內容", () => {
+  const page = Render.bikePartsPage(fakeDocument(), {
+    routeInfo: { page: "bike-parts", params: {} },
+    bikeParts: BikeParts
+  });
+  const details = descendants(page).filter(node => node.name === "details");
+  const partNames = new Map(BikeParts.parts.map(part => [part.id, part.name]));
+
+  assert.equal(details.length, 32);
+  details.forEach((detail, index) => {
+    const part = BikeParts.parts[index];
+    const nodes = descendants(detail);
+    const summary = nodes.find(node => node.name === "summary");
+    const labels = nodes.filter(node => node.name === "dt").map(node => node.textContent);
+    const values = nodes.filter(node => node.name === "dd").map(node => node.textContent);
+    assert.equal(detail.dataset.bikeFallbackPart, part.id);
+    assert.equal(summary.textContent, `${part.number}. ${part.name}`);
+    assert.deepEqual(labels, ["用途", "常見材質", "調整", "保養", "安全警訊", "相關部件", "車店建議"]);
+    assert.deepEqual(values, [
+      part.purpose,
+      part.materials,
+      part.adjustment,
+      part.maintenance,
+      part.warningSigns,
+      part.relatedParts.map(id => partNames.get(id) || id).join("、"),
+      part.workshopAdvice
+    ]);
+  });
+});
+
 test("路線索引提供 bike100 對照的坡度、時間與區域篩選", () => {
   const state = {
     routeInfo: { page: "routes", params: {} },

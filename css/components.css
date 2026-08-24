@@ -1476,6 +1476,48 @@ html:has(.bike-parts-page) {
     radial-gradient(ellipse at 82% 78%, transparent 0 4rem, rgba(36, 39, 31, 0.07) 4.04rem 4.08rem, transparent 4.12rem 5.9rem, rgba(36, 39, 31, 0.045) 5.94rem 5.98rem, transparent 6.02rem);
 }
 
+.bike-parts-page [data-bike-enhancement] {
+  display: grid;
+  min-width: 0;
+}
+
+.bike-parts-page .bike-anatomy-fallback {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.bike-parts-page .bike-anatomy-fallback__part {
+  border-top: 1px solid #c5bfb1;
+}
+
+.bike-parts-page .bike-anatomy-fallback__part summary {
+  min-height: 2.75rem;
+  padding: 0.75rem 0;
+  cursor: pointer;
+  font: 700 0.76rem/1.5 var(--font-data);
+}
+
+.bike-parts-page .bike-anatomy-fallback__details {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(4.5rem, 0.3fr) minmax(0, 1fr);
+  gap: var(--space-2) var(--space-3);
+  margin: 0 0 var(--space-3);
+}
+
+.bike-parts-page .bike-anatomy-fallback__details dt,
+.bike-parts-page .bike-anatomy-fallback__details dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.bike-parts-page .bike-anatomy-fallback__details dt {
+  color: #5f6258;
+  font: 700 0.66rem/1.55 var(--font-data);
+}
+
 .bike-parts-page .bike-anatomy-controls {
   display: flex;
   min-width: 0;
@@ -1538,6 +1580,7 @@ html:has(.bike-parts-page) {
 
 .bike-parts-page [data-bike-svg] [data-bike-shape="frame-front-triangle"],
 .bike-parts-page [data-bike-svg] [data-bike-shape="frame-rear-triangle"],
+.bike-parts-page [data-bike-svg] [data-bike-shape="head-tube"],
 .bike-parts-page [data-bike-svg] [data-bike-shape="fork"] path {
   stroke: #245c43;
 }
@@ -1555,6 +1598,16 @@ html:has(.bike-parts-page) {
   font-weight: 650;
 }
 
+.bike-parts-page [data-bike-leader].is-hovered {
+  stroke-width: 2.5;
+  stroke-dasharray: none;
+}
+
+.bike-parts-page [data-bike-leader-label].is-hovered {
+  font-weight: 800;
+  text-decoration: underline;
+}
+
 .bike-parts-page .bike-hotspot,
 .bike-parts-page [data-bike-hotspot] {
   cursor: pointer;
@@ -1569,6 +1622,10 @@ html:has(.bike-parts-page) {
     stroke var(--motion-fast) ease,
     stroke-width var(--motion-fast) ease,
     filter var(--motion-fast) ease;
+}
+
+.bike-parts-page [data-bike-hotspot].is-hovered [data-bike-hotspot-ring] {
+  stroke-width: 4;
 }
 
 .bike-parts-page .bike-hotspot:focus-visible [data-bike-hotspot-ring],
@@ -1671,6 +1728,10 @@ html:has(.bike-parts-page) {
   border-color: #24271f;
 }
 
+.bike-parts-page .bike-part-button.is-hovered {
+  border-left: 0.32rem solid #24271f;
+}
+
 .bike-parts-page .bike-part-button.is-selected,
 .bike-parts-page .bike-part-button[aria-pressed="true"] {
   border-color: #24271f;
@@ -1693,14 +1754,25 @@ html:has(.bike-parts-page) {
     flex: 1 1 calc(33.333% - var(--space-2));
   }
 
+  .bike-parts-page .bike-leader,
+  .bike-parts-page [data-bike-leader],
   .bike-parts-page .bike-leader__label,
-  .bike-parts-page [data-bike-leader] + text {
+  .bike-parts-page [data-bike-leader-label] {
     display: none;
+  }
+
+  .bike-parts-page [data-bike-hotspot-number] {
+    font-size: 16px;
+    font-weight: 800;
   }
 
   .bike-parts-page .bike-part-detail__row {
     grid-template-columns: 1fr;
     gap: var(--space-1);
+  }
+
+  .bike-parts-page .bike-anatomy-fallback__details {
+    grid-template-columns: 1fr;
   }
 }
 

@@ -1061,15 +1061,29 @@
     const categories = Array.isArray(bikeParts.categories) ? bikeParts.categories : [];
     const defaultPart = parts.find(part => part.id === bikeParts.defaultPartId) || parts[0] || {};
     const partNames = new Map(parts.map(part => [part.id, part.name]));
-    const detailRows = [
-      ["用途", defaultPart.purpose],
-      ["常見材質", defaultPart.materials],
-      ["調整", defaultPart.adjustment],
-      ["保養", defaultPart.maintenance],
-      ["安全警訊", defaultPart.warningSigns],
-      ["相關部件", (defaultPart.relatedParts || []).map(id => partNames.get(id) || id).join("、")],
-      ["車店建議", defaultPart.workshopAdvice]
+    const detailRows = part => [
+      ["用途", part.purpose],
+      ["常見材質", part.materials],
+      ["調整", part.adjustment],
+      ["保養", part.maintenance],
+      ["安全警訊", part.warningSigns],
+      ["相關部件", (part.relatedParts || []).map(id => partNames.get(id) || id).join("、")],
+      ["車店建議", part.workshopAdvice]
     ];
+    const fallback = node(documentRef, "div", {
+      className: "bike-anatomy-fallback",
+      data: { bikeFallback: "true" },
+      attributes: { "aria-label": "公路車零件靜態百科" }
+    }, parts.map(part => node(documentRef, "details", {
+      className: "bike-anatomy-fallback__part",
+      data: { bikeFallbackPart: part.id }
+    }, [
+      node(documentRef, "summary", { text: `${part.number}. ${part.name}` }),
+      node(documentRef, "dl", { className: "bike-anatomy-fallback__details" }, detailRows(part).flatMap(([label, value]) => [
+        node(documentRef, "dt", { text: label }),
+        node(documentRef, "dd", { text: value || "未提供" })
+      ]))
+    ])));
 
     return node(documentRef, "div", { className: "bike-parts-page" }, [
       node(documentRef, "section", { className: "page-intro" }, [
@@ -1086,7 +1100,7 @@
         node(documentRef, "div", {
           data: { bikeAnatomy: "true" },
           attributes: { "aria-label": "公路車圖解增強掛載區" }
-        })
+        }, fallback)
       ]),
       node(documentRef, "section", { className: "content-section bike-parts-categories" }, categories.map(category => {
         const categoryParts = parts.filter(part => part.categoryId === category.id);
@@ -1106,7 +1120,7 @@
       }, [
         node(documentRef, "p", { className: "eyebrow", text: "DEFAULT PART" }),
         node(documentRef, "h2", { text: defaultPart.name || "上管" }),
-        ...detailRows.map(([label, value]) => node(documentRef, "div", { className: "bike-part-detail__row" }, [
+        ...detailRows(defaultPart).map(([label, value]) => node(documentRef, "div", { className: "bike-part-detail__row" }, [
           node(documentRef, "h3", { text: label }),
           node(documentRef, "p", { text: value || "未提供" })
         ]))

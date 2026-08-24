@@ -65,6 +65,8 @@ class FakeElement {
     this.capturedPointerIds = new Set();
     this.pointerCaptureCalls = [];
     this.pointerReleaseCalls = [];
+    this.hidden = false;
+    this.clientRect = { left: 0, top: 0, width: 960, height: 520 };
   }
 
   set innerHTML(_value) {
@@ -128,6 +130,7 @@ class FakeElement {
       clientY: 0,
       preventDefault() { this.defaultPrevented = true; }
     }, properties || {});
+    if (type === "lostpointercapture") this.capturedPointerIds.delete(event.pointerId);
     [...(this.listeners.get(type) || [])].forEach(handler => handler(event));
     return event;
   }
@@ -162,9 +165,23 @@ class FakeElement {
     this.capturedPointerIds.add(pointerId);
   }
 
+  hasPointerCapture(pointerId) {
+    return this.capturedPointerIds.has(pointerId);
+  }
+
   releasePointerCapture(pointerId) {
     this.pointerReleaseCalls.push(pointerId);
     this.capturedPointerIds.delete(pointerId);
+  }
+
+  getBoundingClientRect() {
+    return this.clientRect;
+  }
+
+  remove() {
+    if (!this.parentNode) return;
+    this.parentNode.children = this.parentNode.children.filter(child => child !== this);
+    this.parentNode = null;
   }
 }
 
@@ -200,10 +217,7 @@ function interactiveFixture(catalog = BikeParts) {
   const documentRef = new FakeDocument();
   const page = appendElement(documentRef, documentRef.createElement("div"), "main", { class: "bike-parts-page" });
   const anatomy = appendElement(documentRef, page, "div", { "data-bike-anatomy": "true" });
-  const controls = appendElement(documentRef, anatomy, "div");
-  ["previous", "next", "zoom-in", "zoom-out", "reset"].forEach(action => {
-    appendElement(documentRef, controls, "button", { "data-bike-view-action": action }, action);
-  });
+  const fallback = appendElement(documentRef, anatomy, "div", { "data-bike-fallback": "true" }, "靜態百科");
   const list = appendElement(documentRef, page, "div");
   catalog.parts.forEach(part => {
     appendElement(documentRef, list, "button", { "data-bike-part-id": part.id }, `${part.number}. ${part.name}`);
@@ -220,6 +234,7 @@ function interactiveFixture(catalog = BikeParts) {
     documentRef,
     page,
     root: anatomy,
+    fallback,
     detail,
     listenerCount() { return documentRef.listenerTotal; }
   };
@@ -243,6 +258,14 @@ test("百科 reducer 限制縮放、選取有效零件並可重設", () => {
   assert.deepEqual(initial, { selectedPartId: "top-tube", scale: 1, offsetX: 0, offsetY: 0 });
   assert.equal(BikeAnatomy.reduceView(initial, { type: "zoom", delta: 9 }, BikeParts).scale, 3);
   assert.equal(BikeAnatomy.reduceView(initial, { type: "zoom", delta: -9 }, BikeParts).scale, 1);
+  assert.deepEqual(
+    BikeAnatomy.reduceView(
+      { selectedPartId: "top-tube", scale: 1.25, offsetX: 40, offsetY: -20 },
+      { type: "zoom", delta: -0.25 },
+      BikeParts
+    ),
+    { selectedPartId: "top-tube", scale: 1, offsetX: 0, offsetY: 0 }
+  );
   assert.equal(BikeAnatomy.reduceView(initial, { type: "select", partId: "chain" }, BikeParts).selectedPartId, "chain");
   assert.equal(BikeAnatomy.reduceView(initial, { type: "select", partId: "missing" }, BikeParts), initial);
   assert.deepEqual(
@@ -267,7 +290,7 @@ test("SVG 是固定檢視框且具完整側視公路車結構", () => {
   assert.equal(svg.getAttribute("width"), "960");
   assert.equal(svg.getAttribute("height"), "520");
   assert.equal(svg.querySelectorAll("circle").filter(node => node.getAttribute("r") === "145").length, 2);
-  ["frame-front-triangle", "frame-rear-triangle", "fork", "drop-handlebar", "saddle", "drivetrain", "disc-rotor", "brake-caliper"].forEach(shape => {
+  ["frame-front-triangle", "frame-rear-triangle", "head-tube", "fork", "drop-handlebar", "saddle", "drivetrain", "disc-rotor", "brake-caliper"].forEach(shape => {
     assert.ok(byData(svg, "bike-shape", shape), `缺少 ${shape}`);
   });
 });
@@ -280,12 +303,18 @@ test("SVG 以具名 group 容納可達熱點並只隱藏純車體視覺層", () 
   const hotspots = svg.querySelectorAll("[data-bike-hotspot]");
 
   assert.equal(svg.getAttribute("role"), "group");
-  assert.equal(svg.getAttribute("aria-label"), "森林綠公路車完整側視零件互動圖");
+  assert.equal(svg.getAttribute("aria-labelledby"), "bike-anatomy-title");
+  assert.equal(svg.getAttribute("aria-describedby"), "bike-anatomy-description");
+  assert.equal(svg.querySelector("title").getAttribute("id"), "bike-anatomy-title");
+  assert.equal(svg.querySelector("title").textContent, "森林綠公路車完整側視零件互動圖");
+  assert.equal(svg.querySelector("desc").getAttribute("id"), "bike-anatomy-description");
+  assert.match(svg.querySelector("desc").textContent, /32 個可操作編號|縮放|拖曳/);
   assert.equal(visual.getAttribute("aria-hidden"), "true");
   assert.equal(hotspotLayer.getAttribute("aria-hidden"), null);
   assert.equal(hotspots.length, 32);
   hotspots.forEach(hotspot => {
     assert.equal(hotspot.getAttribute("role"), "button");
+    assert.equal(Number(hotspot.querySelector("[data-bike-hotspot-ring]").getAttribute("r")) <= 16, true);
     let ancestor = hotspot.parentNode;
     while (ancestor) {
       assert.notEqual(ancestor.getAttribute("aria-hidden"), "true", `${hotspot.dataset.bikeHotspot} 不可位於隱藏祖先內`);
@@ -299,19 +328,104 @@ test("SVG 具有與目錄精確對應的 32 個鍵盤熱點與導引線", () => 
   const svg = BikeAnatomy.createSvg(documentRef, BikeParts, () => {});
   const hotspots = svg.querySelectorAll("[data-bike-hotspot]");
   const leaders = svg.querySelectorAll("[data-bike-leader]");
+  const labels = svg.querySelectorAll("[data-bike-leader-label]");
   assert.equal(hotspots.length, 32);
   assert.equal(leaders.length, 32);
+  assert.equal(labels.length, 32);
   assert.deepEqual(hotspots.map(node => node.dataset.bikeHotspot), BikeParts.parts.map(part => part.id));
   assert.deepEqual(leaders.map(node => node.dataset.bikeLeader), BikeParts.parts.map(part => part.id));
+  assert.deepEqual(labels.map(node => node.dataset.bikeLeaderLabel), BikeParts.parts.map(part => part.id));
   BikeParts.parts.forEach(part => {
     const hotspot = byData(svg, "bike-hotspot", part.id);
     const leader = byData(svg, "bike-leader", part.id);
+    const label = byData(svg, "bike-leader-label", part.id);
     assert.equal(hotspot.getAttribute("id"), `bike-hotspot-${part.id}`);
     assert.equal(leader.getAttribute("id"), `bike-leader-${part.id}`);
+    assert.equal(label.getAttribute("id"), `bike-leader-label-${part.id}`);
     assert.equal(hotspot.getAttribute("role"), "button");
     assert.equal(hotspot.getAttribute("tabindex"), "0");
     assert.equal(hotspot.getAttribute("aria-label"), `${part.number} ${part.name}`);
   });
+});
+
+test("hotspot 與靜態清單 hover 會同步四個配對元素的非色彩狀態", () => {
+  const fixture = interactiveFixture();
+  BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
+  const hotspot = byData(fixture.root, "bike-hotspot", "chain");
+  const leader = byData(fixture.root, "bike-leader", "chain");
+  const label = byData(fixture.root, "bike-leader-label", "chain");
+  const listButton = byData(fixture.page, "bike-part-id", "chain");
+  const matched = [hotspot, leader, label, listButton];
+
+  hotspot.dispatch("pointerenter");
+  assert.ok(matched.every(element => element.classList.contains("is-hovered")));
+  hotspot.dispatch("pointerleave");
+  assert.ok(matched.every(element => !element.classList.contains("is-hovered")));
+  listButton.dispatch("pointerenter");
+  assert.ok(matched.every(element => element.classList.contains("is-hovered")));
+  listButton.dispatch("pointerleave");
+  assert.ok(matched.every(element => !element.classList.contains("is-hovered")));
+});
+
+test("觸控在 22 CSS px 內選最近 hotspot，超出半徑不選取", () => {
+  const near = interactiveFixture();
+  BikeAnatomy.mount(near.root, { catalog: BikeParts, announce() {} });
+  const nearSvg = near.root.querySelector("[data-bike-svg]");
+  nearSvg.dispatch("pointerdown", { pointerId: 11, pointerType: "touch", clientX: 385, clientY: 378 });
+  nearSvg.dispatch("pointerup", { pointerId: 11, pointerType: "touch", clientX: 385, clientY: 378 });
+  assert.equal(near.detail.querySelector("h2").textContent, "鏈條");
+
+  const far = interactiveFixture();
+  BikeAnatomy.mount(far.root, { catalog: BikeParts, announce() {} });
+  const farSvg = far.root.querySelector("[data-bike-svg]");
+  farSvg.dispatch("pointerdown", { pointerId: 12, pointerType: "touch", clientX: 389, clientY: 378 });
+  farSvg.dispatch("pointerup", { pointerId: 12, pointerType: "touch", clientX: 389, clientY: 378 });
+  assert.equal(far.detail.querySelector("h2").textContent, "上管");
+});
+
+test("直接點擊 hotspot 不被 SVG 畫布 gesture 搶走 pointer capture", () => {
+  const fixture = interactiveFixture();
+  BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
+  const svg = fixture.root.querySelector("[data-bike-svg]");
+  const chain = byData(fixture.root, "bike-hotspot", "chain");
+
+  svg.dispatch("pointerdown", { target: chain, pointerId: 13, pointerType: "mouse", clientX: 365, clientY: 378 });
+  assert.deepEqual(svg.pointerCaptureCalls, []);
+  chain.dispatch("click");
+  assert.equal(fixture.detail.querySelector("h2").textContent, "鏈條");
+});
+
+test("最近 hotspot 換算會套用顯示 rect、viewBox、縮放與平移", () => {
+  const fixture = interactiveFixture();
+  BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
+  const svg = fixture.root.querySelector("[data-bike-svg]");
+  byData(fixture.root, "bike-view-action", "zoom-in").dispatch("click");
+  svg.dispatch("pointerdown", { pointerId: 15, pointerType: "mouse", clientX: 0, clientY: 0 });
+  svg.dispatch("pointermove", { pointerId: 15, pointerType: "mouse", clientX: 20, clientY: 10 });
+  svg.dispatch("pointerup", { pointerId: 15, pointerType: "mouse", clientX: 20, clientY: 10 });
+
+  svg.dispatch("pointerdown", { pointerId: 16, pointerType: "touch", clientX: 496, clientY: 482.5 });
+  svg.dispatch("pointerup", { pointerId: 16, pointerType: "touch", clientX: 496, clientY: 482.5 });
+  assert.equal(fixture.detail.querySelector("h2").textContent, "鏈條");
+});
+
+test("觸控拖曳與雙指 gesture 不會誤選附近 hotspot", () => {
+  const drag = interactiveFixture();
+  BikeAnatomy.mount(drag.root, { catalog: BikeParts, announce() {} });
+  const dragSvg = drag.root.querySelector("[data-bike-svg]");
+  dragSvg.dispatch("pointerdown", { pointerId: 21, pointerType: "touch", clientX: 365, clientY: 378 });
+  dragSvg.dispatch("pointermove", { pointerId: 21, pointerType: "touch", clientX: 379, clientY: 378 });
+  dragSvg.dispatch("pointerup", { pointerId: 21, pointerType: "touch", clientX: 379, clientY: 378 });
+  assert.equal(drag.detail.querySelector("h2").textContent, "上管");
+
+  const pinch = interactiveFixture();
+  BikeAnatomy.mount(pinch.root, { catalog: BikeParts, announce() {} });
+  const pinchSvg = pinch.root.querySelector("[data-bike-svg]");
+  pinchSvg.dispatch("pointerdown", { pointerId: 31, pointerType: "touch", clientX: 365, clientY: 378 });
+  pinchSvg.dispatch("pointerdown", { pointerId: 32, pointerType: "touch", clientX: 385, clientY: 378 });
+  pinchSvg.dispatch("pointerup", { pointerId: 32, pointerType: "touch", clientX: 385, clientY: 378 });
+  pinchSvg.dispatch("pointerup", { pointerId: 31, pointerType: "touch", clientX: 365, clientY: 378 });
+  assert.equal(pinch.detail.querySelector("h2").textContent, "上管");
 });
 
 test("正式 Render 百科 DOM 掛載後可用 click 選取熱點並更新七個詳情欄位", () => {
@@ -402,6 +516,22 @@ test("Pointer capture 涵蓋 1→2→1 轉換、雙指中點平移及 up/cancel 
   assert.deepEqual([...svg.capturedPointerIds], []);
 });
 
+test("lostpointercapture 會清除 stale gesture，且只釋放仍由 SVG 捕捉的 pointer", () => {
+  const fixture = interactiveFixture();
+  BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
+  const svg = fixture.root.querySelector("[data-bike-svg]");
+  const viewport = fixture.root.querySelector("[data-bike-viewport]");
+  byData(fixture.root, "bike-view-action", "zoom-in").dispatch("click");
+
+  svg.dispatch("pointerdown", { pointerId: 41, pointerType: "touch", clientX: 20, clientY: 20 });
+  svg.dispatch("lostpointercapture", { pointerId: 41, pointerType: "touch" });
+  svg.dispatch("pointermove", { pointerId: 41, pointerType: "touch", clientX: 80, clientY: 80 });
+  svg.dispatch("pointerup", { pointerId: 41, pointerType: "touch", clientX: 80, clientY: 80 });
+
+  assert.equal(viewport.getAttribute("transform"), "translate(0 0) scale(1.25)");
+  assert.deepEqual(svg.pointerReleaseCalls, []);
+});
+
 test("重複 mount 不會疊加監聽器，destroy 會完整移除監聽器", () => {
   const fixture = interactiveFixture();
   const first = BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
@@ -415,6 +545,17 @@ test("重複 mount 不會疊加監聽器，destroy 會完整移除監聽器", ()
   assert.equal(fixture.listenerCount(), 0);
 });
 
+test("互動成功後才隱藏 fallback，destroy 時移除增強並恢復閱讀", () => {
+  const fixture = interactiveFixture();
+  const handle = BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
+
+  assert.equal(fixture.fallback.hidden, true);
+  assert.ok(fixture.root.querySelector("[data-bike-enhancement]"));
+  handle.destroy();
+  assert.equal(fixture.fallback.hidden, false);
+  assert.equal(fixture.root.querySelector("[data-bike-enhancement]"), null);
+});
+
 test("SVG 建立失敗時保留靜態百科內容", () => {
   const fixture = interactiveFixture();
   const originalChildren = [...fixture.root.children];
@@ -422,6 +563,7 @@ test("SVG 建立失敗時保留靜態百科內容", () => {
   const announcements = [];
   const handle = BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce: value => announcements.push(value) });
   assert.deepEqual(fixture.root.children, originalChildren);
+  assert.equal(fixture.fallback.hidden, false);
   assert.equal(fixture.page.querySelectorAll("[data-bike-part-id]").length, 32);
   assert.match(announcements.at(-1), /圖解/);
   handle.destroy();
