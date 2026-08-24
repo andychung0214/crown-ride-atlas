@@ -8,23 +8,26 @@
 
 | 檢查 | 結果 | 實際證據 |
 |---|---|---|
-| Focused 回歸 | 通過 | `node --test tests/app.test.js tests/render.test.js tests/bike-anatomy.test.js tests/bike-parts.test.js tests/css.test.js tests/pages-workflow.test.js` exit code 0；76 項通過、0 項失敗 |
-| 完整驗證 | 通過 | `npm run verify` exit code 0；303 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
+| Focused 回歸 | 通過 | `node --test tests/app.test.js tests/render.test.js tests/bike-anatomy.test.js tests/bike-parts.test.js tests/css.test.js tests/pages-workflow.test.js` exit code 0；84 項通過、0 項失敗 |
+| 完整驗證 | 通過 | `npm run verify` exit code 0；311 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
 | Git 空白檢查 | 通過 | `git diff --check` exit code 0；沒有空白錯誤，只有工作樹既有 LF→CRLF 行尾轉換警告 |
 | 敏感資訊掃描 | 通過 | 受版控敏感檔名掃描為 0 筆；指定內容掃描的命中均為文件中的掃描命令／安全說明與測試 DOM guard，沒有憑證值、私人金鑰或 production 危險 DOM sink |
 | 正式資料隔離 | 通過 | `git diff --name-only -- js/data/routes.js js/data/track-manifest.js js/data/tracks` 無輸出；沒有修改 routes、`Data.routes`、`TrackManifest` 或正式 tracks |
 
 ### Chrome 瀏覽器回歸證據
 
-- 1440×900 桌機：document `clientWidth`／`scrollWidth` 均為 1425px（15px 為垂直捲軸）；32 個 hotspot、leader、label 均存在，fallback 有 32 筆且只在增強成功後隱藏，fatal error 為 0。
+- 1440×900 桌機：document `clientWidth`／`scrollWidth` 均為 1425px（15px 為垂直捲軸）；正式頁成功增強後 fallback 為 `hidden=true`、computed `display:none`、rect 0×0，32 個 details 仍在 DOM，fatal error 為 0。
+- 真 CSS lifecycle fixture：載入正式 Render、BikeParts、BikeAnatomy 與 CSS；掛載後 fallback 為 `hidden=true`／`display:none`／0×0 且 enhancement 為 1，按下 destroy 後為 `hidden=false`／`display:grid`／1373×1712、enhancement 為 0，32 個 details 恢復可排版。
 - 桌機 hover：從 hotspot 或靜態清單進入時，hotspot、leader、文字標籤與清單四方的 `.is-hovered` 同步；實測 hotspot ring 為 4px、leader 為 2.5px 實線、label 加底線、清單加 5px 左框。Chrome 實際點擊鏈條後標題為「鏈條」、`aria-pressed=true`；此項也捕捉並修正了 SVG 畫布錯誤搶走 direct-hotspot pointer capture 的缺陷。
 - SVG 無障礙：`aria-labelledby="bike-anatomy-title"`、`aria-describedby="bike-anatomy-description"` 均指向實際 `<title>`／`<desc>`；32 個 hotspot 均保留可操作語意。頭管 computed stroke 為森林綠 `rgb(36, 92, 67)`。
-- 390×844：瀏覽器內容寬 375px，document `clientWidth`／`scrollWidth` 均為 375px；leader 與 label 各 32 個 computed `display:none`，編號字級 16px，SVG 為 307×166.28125px，32 個 hotspot 與實際 pointer 點選均正常。
-- 320×844：瀏覽器內容寬 305px，document `clientWidth`／`scrollWidth` 均為 305px、`html` computed `min-width:0px`；leader／label 各 32 個隱藏，編號字級 16px，SVG 為 237×128.375px，點選飛輪後標題、pressed 與 live announcement 同步。舊頁在 320px 保留全域 `min-width:20rem`；若垂直捲軸使 viewport client 小於 320px，document `scrollWidth=320px` 是既有保護契約，不是舊頁的無溢位宣稱。
+- 390×844：內容寬 375px，document `clientWidth`／`scrollWidth` 均為 375px；32 個 screen-space HTML marker 的最小 rect 為 44×44px、字形 12.48px、文字為 01–32，overlay `display:block`，原 SVG hotspot layer `display:none`。鏈條有多個幾何重疊但 Chrome 實際 click 後標題為「鏈條」、pressed 為 true。
+- 320×844：內容寬 305px，document `clientWidth`／`scrollWidth` 均為 305px、`html` computed `min-width:0px`；32 個 marker 最小 44×44px、字形 12.48px，SVG 為 237×128.375px。首次 click 飛輪中心被上層 axle marker 截走，新增 surface 最近 hotspot 回歸與修正後，Chrome 重驗標題為「飛輪」、cassette pressed 為 true、axle pressed 為 false、live announcement 同步。
 - 鍵盤與主題：同日先前 Chrome 回歸已以真實 Tab、Enter、Space 驗證百科控制與 hotspot，並驗四套主題的 focus／selected 非只用顏色表達；本輪自動測試持續鎖定 Enter／Space 行為。
 - 原頁回歸：`#/home`、`#/routes`、`#/route-art`、`#/editor` 在 1440px 的 document `clientWidth`／`scrollWidth` 均為 1425px，fatal error 為 0；Chrome dev logs 的 error／warn 清單為空。
-- 文字降級：無 BikeAnatomy、`mount` 拋錯、SVG 建立失敗與 destroy 後恢復，均由 App／Render／BikeAnatomy 自動測試驗證 32 個 native `<details>` 各有名稱與七類完整文字；本輪未另以 Chrome 人為移除 script，因此不宣稱該故障注入已完成瀏覽器實測。
-- 觸控證據邊界：Chrome 控制 surface 只有 viewport 與一般 pointer click，沒有觸控裝置模擬；390／320px 的實際點選是 Chrome mouse pointer。22 CSS px 最近熱點、超界不選、拖曳／雙指不誤選、transform 換算與 capture 清理均由 production event 自動測試通過，不冒稱為實機 touch 驗證。
+- 文字降級：無 BikeAnatomy、`mount` 拋錯、SVG 建立失敗與 destroy 後恢復，均由 App／Render／BikeAnatomy 自動測試驗證；destroy 的真 CSS 排版另由 lifecycle fixture 完成 Chrome 實測。缺 module／強制 SVG failure 未在 Chrome 故障注入，不宣稱已實測。
+- Gesture 證據：diagram surface 的 production event 測試涵蓋 direct marker、direct SVG hotspot、marker＋背景、marker＋marker、SVG hotspot＋背景；237×128.375 非 1:1 rect 的單指與雙指 midpoint 40 CSS px 均換算成約 40px 視覺位移。
+- 觸控證據邊界：Chrome 控制 surface 只有 viewport 與一般 pointer click，沒有觸控裝置模擬；390／320px 的實際點選是 Chrome mouse pointer。touch／pen direct part、22 CSS px 最近熱點與 gesture 防誤選由 production event 自動測試通過，不冒稱為實機 touch 驗證。
+- 主控台：本機頁面沒有 fatal error；Chrome log 另有一筆 `chrome-extension://` 翻譯擴充功能 token error，來源不是本站，未把它隱藏或記成本站通過訊息。
 - Reduced Motion 證據邊界：Chrome runtime 沒有 `emulateMedia` 能力，因此未執行真實 `prefers-reduced-motion` media emulation。精確 CSS media-block 測試鎖定縮減動態效果規則；此項不宣稱已完成實機 media 驗證。
 - 本輪沒有建立畫面擷取檔；Chrome 測試 tab 已關閉，本機 HTTP server 已停止，使用者原有 tabs 保留。
 
