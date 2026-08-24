@@ -207,7 +207,9 @@
     validateCatalog(catalog);
     const svg = svgElement(documentRef, "svg", {
       viewBox: "0 0 960 520",
-      role: "img",
+      width: 960,
+      height: 520,
+      role: "group",
       "aria-label": "森林綠公路車完整側視零件互動圖",
       "data-bike-svg": "true",
       style: "touch-action: none"
@@ -216,7 +218,12 @@
       "data-bike-viewport": "true",
       transform: "translate(0 0) scale(1)"
     });
-    createBicycle(documentRef, viewport);
+    const visual = svgElement(documentRef, "g", {
+      "data-bike-visual": "true",
+      "aria-hidden": "true"
+    });
+    createBicycle(documentRef, visual);
+    viewport.append(visual);
 
     const leaderLayer = svgElement(documentRef, "g", { "aria-hidden": "true" });
     catalog.parts.forEach(part => {
@@ -238,7 +245,7 @@
     });
     viewport.append(leaderLayer);
 
-    const hotspotLayer = svgElement(documentRef, "g");
+    const hotspotLayer = svgElement(documentRef, "g", { "data-bike-hotspot-layer": "true" });
     catalog.parts.forEach(part => {
       const hotspot = svgElement(documentRef, "g", {
         id: `bike-hotspot-${part.id}`,
