@@ -74,10 +74,14 @@ test("百科控制符合 44px 且手機切換為編號熱點", () => {
   assert.match(componentsCss, /@media\s*\(max-width:\s*40rem\)[\s\S]*\.bike-leader__label[\s\S]*display:\s*none/);
 });
 
-test("極窄手機不以固定 20rem 根寬製造水平溢位", () => {
+test("全站保留 20rem 根寬且只有百科解除極窄手機限制", () => {
   const baseCss = fs.readFileSync(path.join(__dirname, "..", "css", "base.css"), "utf8");
+  const componentsCss = fs.readFileSync(path.join(__dirname, "..", "css", "components.css"), "utf8");
   const htmlRule = /html\s*\{([\s\S]*?)\}/.exec(baseCss);
+  const bikePartsException = /html:has\(\.bike-parts-page\)\s*\{([\s\S]*?)\}/.exec(componentsCss);
 
   assert.ok(htmlRule, "找不到 html 根規則");
-  assert.match(htmlRule[1], /min-width:\s*0/);
+  assert.match(htmlRule[1], /min-width:\s*20rem/);
+  assert.ok(bikePartsException, "找不到百科 route-scoped 根寬例外");
+  assert.match(bikePartsException[1], /min-width:\s*0/);
 });

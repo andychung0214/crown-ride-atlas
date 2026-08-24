@@ -5,7 +5,7 @@
 }
 
 html {
-  min-width: 0;
+  min-width: 20rem;
   scroll-behavior: smooth;
   background: var(--color-paper);
 }

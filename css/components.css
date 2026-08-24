@@ -1407,6 +1407,10 @@
 }
 
 /* 公路車百科：森林綠公路車的維修手冊解剖頁 */
+html:has(.bike-parts-page) {
+  min-width: 0;
+}
+
 .bike-parts-page .page-intro::after {
   border-color: rgba(36, 92, 67, 0.58);
   box-shadow:
