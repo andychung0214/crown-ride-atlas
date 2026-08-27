@@ -586,7 +586,10 @@
     }
 
     listen(diagramSurface, "click", event => {
-      if (suppressNextClick) {
+      const keyboardOrProgrammaticClick = event.detail === 0;
+      if (keyboardOrProgrammaticClick) {
+        suppressNextClick = false;
+      } else if (suppressNextClick) {
         suppressNextClick = false;
         return;
       }

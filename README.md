@@ -77,7 +77,7 @@ npm run tracks:validate
 npm run verify
 ```
 
-測試不依賴大型框架，使用 Node.js 內建 `node:test`。目前 `npm run verify` 共 314 項測試，會檢查 JavaScript 入口、GPS Art catalog／分段 GPX／runtime 單件降級／軌跡 provenance 契約、32 筆公路車部件圖解、靜態 fallback、screen-space marker 與 gesture，以及 23 個公開軌跡 bundle（共 68 條正式路線）；GPS Art 與部件百科均不加入正式 manifest。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，來源帳見 [`docs/route-research/taiwan-gps-art.md`](docs/route-research/taiwan-gps-art.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
+測試不依賴大型框架，使用 Node.js 內建 `node:test`。目前 `npm run verify` 共 317 項測試，會檢查 JavaScript 入口、GPS Art catalog／分段 GPX／runtime 單件降級／軌跡 provenance 契約、32 筆公路車部件圖解、靜態 fallback、screen-space marker 與 gesture，以及 23 個公開軌跡 bundle（共 68 條正式路線）；GPS Art 與部件百科均不加入正式 manifest。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，來源帳見 [`docs/route-research/taiwan-gps-art.md`](docs/route-research/taiwan-gps-art.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
 
 ## 靜態網站託管
 

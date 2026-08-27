@@ -619,8 +619,78 @@ test("mouse 背景拖曳後的合成 click 不選零件且下一次正常 click 
   assert.equal(announcements.length, 1);
 });
 
-test("multi、cancel、lost capture 與 touch direct selection 都只吞下一個合成 click", () => {
-  const scenarios = ["multi", "cancel", "lost", "touch-direct"];
+test("pointercancel 後的 native marker 鍵盤 click 第一次即可選取", () => {
+  const fixture = interactiveFixture();
+  const announcements = [];
+  BikeAnatomy.mount(fixture.root, {
+    catalog: BikeParts,
+    announce: message => announcements.push(message)
+  });
+  const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
+  const chain = byData(fixture.root, "bike-mobile-marker", "chain");
+
+  surface.dispatch("pointerdown", {
+    target: surface,
+    pointerId: 101,
+    pointerType: "mouse",
+    clientX: 10,
+    clientY: 10
+  });
+  surface.dispatch("pointercancel", {
+    target: surface,
+    pointerId: 101,
+    pointerType: "mouse",
+    clientX: 10,
+    clientY: 10
+  });
+  surface.dispatch("click", {
+    target: chain,
+    pointerType: "",
+    detail: 0,
+    clientX: 0,
+    clientY: 0
+  });
+
+  assert.equal(fixture.detail.querySelector("h2").textContent, "鏈條");
+  assert.deepEqual(announcements, ["已選取 22 鏈條。"]);
+});
+
+test("unexpected lostpointercapture 後的 native marker 鍵盤 click 第一次即可選取", () => {
+  const fixture = interactiveFixture();
+  const announcements = [];
+  BikeAnatomy.mount(fixture.root, {
+    catalog: BikeParts,
+    announce: message => announcements.push(message)
+  });
+  const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
+  const saddle = byData(fixture.root, "bike-mobile-marker", "saddle");
+
+  surface.dispatch("pointerdown", {
+    target: surface,
+    pointerId: 102,
+    pointerType: "mouse",
+    clientX: 10,
+    clientY: 10
+  });
+  surface.dispatch("lostpointercapture", {
+    target: surface,
+    pointerId: 102,
+    pointerType: "mouse"
+  });
+  surface.dispatch("click", {
+    target: saddle,
+    pointerType: "",
+    detail: 0,
+    clientX: 0,
+    clientY: 0
+  });
+
+  assert.equal(fixture.detail.querySelector("h2").textContent, "座墊");
+  assert.deepEqual(announcements, ["已選取 14 座墊。"]);
+});
+
+test("moved、multi 與 touch direct gesture 都只吞下一個 pointer 合成 click", () => {
+  const scenarios = ["moved", "multi", "touch-direct"];
   scenarios.forEach((scenario, index) => {
     const fixture = interactiveFixture();
     const announcements = [];
@@ -630,7 +700,7 @@ test("multi、cancel、lost capture 與 touch direct selection 都只吞下一�
     });
     const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
     const chain = byData(fixture.root, "bike-mobile-marker", "chain");
-    const pointerId = 101 + index * 2;
+    const pointerId = 111 + index * 2;
 
     surface.dispatch("pointerdown", {
       target: scenario === "touch-direct" ? chain : surface,
@@ -639,7 +709,22 @@ test("multi、cancel、lost capture 與 touch direct selection 都只吞下一�
       clientX: 10,
       clientY: 10
     });
-    if (scenario === "multi") {
+    if (scenario === "moved") {
+      surface.dispatch("pointermove", {
+        target: surface,
+        pointerId,
+        pointerType: "mouse",
+        clientX: 30,
+        clientY: 10
+      });
+      surface.dispatch("pointerup", {
+        target: surface,
+        pointerId,
+        pointerType: "mouse",
+        clientX: 30,
+        clientY: 10
+      });
+    } else if (scenario === "multi") {
       surface.dispatch("pointerdown", {
         target: surface,
         pointerId: pointerId + 1,
@@ -661,21 +746,67 @@ test("multi、cancel、lost capture 與 touch direct selection 都只吞下一�
         clientX: 10,
         clientY: 10
       });
-    } else if (scenario === "cancel") {
-      surface.dispatch("pointercancel", { target: surface, pointerId, pointerType: "mouse", clientX: 10, clientY: 10 });
-    } else if (scenario === "lost") {
-      surface.dispatch("lostpointercapture", { target: surface, pointerId, pointerType: "mouse", clientX: 10, clientY: 10 });
     } else {
       surface.dispatch("pointerup", { target: chain, pointerId, pointerType: "touch", clientX: 10, clientY: 10 });
     }
 
     const beforeClick = announcements.length;
-    surface.dispatch("click", { target: chain, pointerType: "mouse", clientX: 0, clientY: 0 });
+    surface.dispatch("click", { target: chain, pointerType: "mouse", detail: 1, clientX: 0, clientY: 0 });
     assert.equal(announcements.length, beforeClick, `${scenario} 後的合成 click 必須被吞掉`);
 
-    surface.dispatch("click", { target: chain, pointerType: "mouse", clientX: 0, clientY: 0 });
+    surface.dispatch("click", { target: chain, pointerType: "mouse", detail: 1, clientX: 0, clientY: 0 });
     assert.equal(announcements.length, beforeClick + 1, `${scenario} 不可永久吞掉後續正常 click`);
   });
+});
+
+test("cancel 後的新 pointerdown 會清除 stale suppression 並完成普通 pointer 選取", () => {
+  const fixture = interactiveFixture();
+  const announcements = [];
+  BikeAnatomy.mount(fixture.root, {
+    catalog: BikeParts,
+    announce: message => announcements.push(message)
+  });
+  const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
+  const cassette = byData(fixture.root, "bike-mobile-marker", "cassette");
+
+  surface.dispatch("pointerdown", {
+    target: surface,
+    pointerId: 121,
+    pointerType: "mouse",
+    clientX: 10,
+    clientY: 10
+  });
+  surface.dispatch("pointercancel", {
+    target: surface,
+    pointerId: 121,
+    pointerType: "mouse",
+    clientX: 10,
+    clientY: 10
+  });
+  surface.dispatch("pointerdown", {
+    target: cassette,
+    pointerId: 122,
+    pointerType: "mouse",
+    clientX: 0,
+    clientY: 0
+  });
+  surface.dispatch("pointerup", {
+    target: cassette,
+    pointerId: 122,
+    pointerType: "mouse",
+    clientX: 0,
+    clientY: 0
+  });
+  surface.dispatch("click", {
+    target: cassette,
+    pointerType: "mouse",
+    detail: 1,
+    clientX: 0,
+    clientY: 0
+  });
+
+  assert.equal(fixture.detail.querySelector("h2").textContent, "飛輪");
+  assert.deepEqual(announcements, ["已選取 23 飛輪。"]);
 });
 
 test("mouse 直接點擊 hotspot 不被 diagram gesture 搶走 pointer capture", () => {

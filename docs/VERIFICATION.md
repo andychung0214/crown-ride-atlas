@@ -8,8 +8,8 @@
 
 | 檢查 | 結果 | 實際證據 |
 |---|---|---|
-| Focused 回歸 | 通過 | `node --test tests/app.test.js tests/render.test.js tests/bike-anatomy.test.js tests/bike-parts.test.js tests/css.test.js tests/pages-workflow.test.js` exit code 0；87 項通過、0 項失敗 |
-| 完整驗證 | 通過 | `npm run verify` exit code 0；314 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
+| Focused 回歸 | 通過 | `node --test tests/app.test.js tests/render.test.js tests/bike-anatomy.test.js tests/bike-parts.test.js tests/css.test.js tests/pages-workflow.test.js` exit code 0；90 項通過、0 項失敗 |
+| 完整驗證 | 通過 | `npm run verify` exit code 0；317 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
 | Git 空白檢查 | 通過 | `git diff --check` exit code 0；沒有空白錯誤，只有工作樹既有 LF→CRLF 行尾轉換警告 |
 | 敏感資訊掃描 | 通過 | 受版控敏感檔名掃描為 0 筆；指定內容掃描的命中均為文件中的掃描命令／安全說明與測試 DOM guard，沒有憑證值、私人金鑰或 production 危險 DOM sink |
 | 正式資料隔離 | 通過 | `git diff --name-only -- js/data/routes.js js/data/track-manifest.js js/data/tracks` 無輸出；沒有修改 routes、`Data.routes`、`TrackManifest` 或正式 tracks |
