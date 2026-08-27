@@ -66,7 +66,7 @@
 
 - 現場命令前後 `Test-Path js/data/route-art-downloads.js` 均為 `False`。
 - `js/data/route-art-downloads.js*.tmp` 無檔案。
-- 離線測試先放入「既有安全產物」，再令第二件來源失敗；`verifyAndWriteDownloads` 回傳完整失敗 ID／原因，既有內容逐位元組不變，目錄內沒有部分暫存檔。
+- 離線測試先放入「既有安全產物」，再令第十件來源失敗；`verifyAndWriteDownloads` 回傳完整失敗 ID／原因，既有內容逐位元組不變，目錄內沒有部分暫存檔。
 - 未建立空白、部分或人工摘要產物。
 
 ## 驗證、掃描與 guard
@@ -91,3 +91,46 @@
 - 依本 Task 安全邊界，不能加入登入狀態或憑證來通過 401。
 - 目前 0 件 `source-download`，19 件候選只存在於可重跑 registry，未加入正式 catalog。
 - 必須由來源端恢復匿名公開存取，或由上層規格提供另一組明確公開、可納入 exact allowlist 的端點後，才能重新執行現場查核並產生 19/19 原子 UMD 摘要。
+
+## Fix round 1（2026-08-28）
+
+- 修正 commit：`61c52ef`（`fix: 強化 GPS Art 下載驗證安全邊界`）
+
+### 根因窄 probe
+
+- stalled fetch 超過 40 ms 仍未結束，且 fake fetch 收到的 `signal` 為空，證實 fetch 未受 timeout 約束。
+- `HTTP 401` 早退後 fake response body 的 `cancel` 仍為 `false`，證實早退未清理 body。
+- 上游任意錯誤文字及多值 Cookie 尾端秘密可進入 failure reason，證實遮蔽規則不能形成安全輸出邊界。
+- hostile fake record 的 `segments`、`<trkpt/>` 會被 serializer 原樣寫入，重複 ID 亦被接受，證實缺少明確欄位 allowlist 與唯一性檢查。
+- 注入的 filesystem boundary 未被呼叫；原先操作仍成功且改寫既有內容，證實 write／rename failure 路徑沒有可測邊界。
+
+### 分組 TDD RED／GREEN
+
+1. timeout、body cleanup 與大小上限
+   - RED：stalled fetch 由測試 guard 判定仍未結束；無 stream body 仍呼叫 `arrayBuffer()`；HTTP／redirect 等早退 body 未取消；超大 chunk 未先通過 byte-length gate。
+   - GREEN：單一 `AbortController` 的 signal 涵蓋 manual redirects、fetch 及完整 body read；所有早退與讀取失敗路徑取消 body；拒絕無受限 reader 的 body；複製前先檢查 chunk byte length。focused 5/5 pass。
+2. 受控錯誤分類
+   - RED：HTTP failure 沒有穩定 `code`；任意上游 message／cause 及多值 Cookie、Authorization 秘密可外洩。
+   - GREEN：failure 僅輸出受控 `{ id, code, reason }`；HTTP、timeout、network 與 unknown verification 分類不發布任意上游文字。相關 focused tests 全數通過。
+3. serializer 明確 allowlist
+   - RED：geometry／coordinate／XML、不完整或多餘 shape、重複 ID 均被接受。
+   - GREEN：19 個摘要欄位逐欄投影及完整 shape 驗證、ShapeMiles URL allowlist、台灣 bounds、唯一 ID；合法 fake records 仍產生排序且深度凍結的無座標 UMD。serializer 4/4 pass。
+4. 真實原子寫入行為
+   - RED：write／rename failure 注入未被 production 使用，操作意外成功並改寫既有內容。
+   - GREEN：窄 filesystem boundary 驗證 all-success 覆寫 19 件完整 UMD；partial write 與 rename failure 均保留既有內容並移除 temp；來源任一失敗仍不建立或改寫產物。atomic tests 4/4 pass。
+
+### Round 1 最終驗證
+
+| 查核 | 結果 |
+|---|---|
+| `node --test tests/route-art-downloads.test.js` | 21/21 pass，0 fail，0 skip |
+| `node --test tests/route-art-source.test.js tests/route-art-downloads.test.js` | 39/39 pass，0 fail，0 skip |
+| `node --test tests/route-art-downloads.test.js tests/route-art-source.test.js tests/route-art-catalog.test.js` | 56/56 pass，0 fail，0 skip |
+| `npm run verify` | exit 0；359/359 tests pass；23 bundles／68 routes validate pass |
+| `node --check scripts/verify-route-art-downloads.mjs` | exit 0 |
+| protected route／catalog／tracks／Task 1 parser guard | exit 0，無差異 |
+| `git diff --check` | exit 0 |
+| 正式 artifact／temp | `js/data/route-art-downloads.js` 不存在；相符 temp 為 0 |
+| 安全掃描 | production serializer 僅允許無座標摘要欄位；behavior tests 拒絕 geometry、coordinate、GPX XML 與任意敏感上游文字 |
+
+本輪依 ruling 未重跑 ShapeMiles live，也未使用登入狀態或憑證。Concern 不變：19/19 匿名端點為 `HTTP 401`、官方頁明示 subscription-required，目前仍為 0 件 `source-download`，19 件候選維持未上架。
