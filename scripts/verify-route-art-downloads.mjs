@@ -294,16 +294,24 @@ const DOWNLOAD_RECORD_FIELDS = Object.freeze([
 ]);
 const DOWNLOAD_RECORD_FIELD_SET = new Set(DOWNLOAD_RECORD_FIELDS);
 const BOUNDS_FIELDS = Object.freeze(["minLat", "maxLat", "minLng", "maxLng"]);
+const DOWNLOAD_SOURCE_BY_ID = Object.freeze(ROUTE_ART_DOWNLOAD_SOURCES.reduce((sources, source) => {
+  sources[source.id] = source;
+  return sources;
+}, Object.create(null)));
+const SOURCE_METADATA_FIELDS = Object.freeze([
+  "name",
+  "shapeLabel",
+  "regionId",
+  "regionName",
+  "activityType",
+  "activityLabel",
+  "distanceKm",
+  "sourcePlatform"
+]);
 
 function assertPlainText(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(`${label} 必須是非空白文字`);
   if (value.includes("<") || value.includes(">")) throw new Error(`${label} 不接受 XML 或 HTML`);
-}
-
-function assertDownloadUrl(value, label, pathPrefix) {
-  const parsed = parseRestrictedUrl(value, label);
-  if (!parsed.pathname.startsWith(pathPrefix)) throw new Error(`${label} 路徑不在 allowlist`);
-  return parsed.href;
 }
 
 function projectDownloadRecord(record) {
@@ -318,7 +326,17 @@ function projectDownloadRecord(record) {
   for (const field of ["id", "name", "shapeLabel", "regionName", "activityLabel", "summary"]) {
     assertPlainText(record[field], `下載摘要 ${field}`);
   }
-  if (!record.id.startsWith("gps-art-shapemiles-")) throw new Error("下載摘要 ID 格式無效");
+  const source = DOWNLOAD_SOURCE_BY_ID[record.id];
+  if (!source) throw new Error("下載摘要 ID 不在候選 allowlist");
+  for (const field of SOURCE_METADATA_FIELDS) {
+    if (record[field] !== source[field]) throw new Error(`下載摘要 ${field} 與候選 metadata 不一致`);
+  }
+  const expectedSummary = `${source.name} 是 ShapeMiles 公開的台北 GPS Art 跑步路線。`;
+  if (record.summary !== expectedSummary) throw new Error("下載摘要 summary 與候選 metadata 不一致");
+  if (record.sourceUrl !== source.sourceUrl) throw new Error("下載摘要來源頁不在候選 allowlist");
+  if (record.externalDownloadUrl !== source.downloadUrl) {
+    throw new Error("下載摘要外部下載不在候選 allowlist");
+  }
   if (record.regionId !== "taipei" || record.regionName !== "台北市"
     || record.activityType !== "running" || record.activityLabel !== "跑步"
     || record.status !== "source-download" || record.sourcePlatform !== "ShapeMiles"
@@ -346,20 +364,6 @@ function projectDownloadRecord(record) {
     || minLng < LIMITS.taiwan.minLng || maxLng > LIMITS.taiwan.maxLng) {
     throw new Error("下載摘要 bounds 範圍無效");
   }
-  const sourceUrl = assertDownloadUrl(
-    record.sourceUrl,
-    "下載摘要來源頁",
-    "/en/city/taipei/art-gps-routes/"
-  );
-  const externalDownloadUrl = assertDownloadUrl(
-    record.externalDownloadUrl,
-    "下載摘要外部下載",
-    "/api/art-routes/taipei/"
-  );
-  if (!new URL(externalDownloadUrl).pathname.endsWith("/gpx")) {
-    throw new Error("下載摘要外部下載路徑不在 allowlist");
-  }
-
   return {
     id: record.id,
     name: record.name,
@@ -372,8 +376,8 @@ function projectDownloadRecord(record) {
     distanceKm: record.distanceKm,
     summary: record.summary,
     sourcePlatform: record.sourcePlatform,
-    sourceUrl,
-    externalDownloadUrl,
+    sourceUrl: source.sourceUrl,
+    externalDownloadUrl: source.downloadUrl,
     verifiedAt: record.verifiedAt,
     sourceFormat: record.sourceFormat,
     sourceSha256: record.sourceSha256,

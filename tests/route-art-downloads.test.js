@@ -76,27 +76,28 @@ async function loadModules() {
   ]);
 }
 
-function createVerifiedRecord(id, name = "台北 Test") {
+function createVerifiedRecord(source, overrides = {}) {
   return {
-    id,
-    name,
-    shapeLabel: "測試圖形",
-    regionId: "taipei",
-    regionName: "台北市",
-    activityType: "running",
-    activityLabel: "跑步",
+    id: source.id,
+    name: source.name,
+    shapeLabel: source.shapeLabel,
+    regionId: source.regionId,
+    regionName: source.regionName,
+    activityType: source.activityType,
+    activityLabel: source.activityLabel,
     status: "source-download",
-    distanceKm: 1,
-    summary: `${name} 是 ShapeMiles 公開的台北 GPS Art 跑步路線。`,
-    sourcePlatform: "ShapeMiles",
-    sourceUrl: `https://shapemiles.com/en/city/taipei/art-gps-routes/${id}-1-0km`,
-    externalDownloadUrl: `https://shapemiles.com/api/art-routes/taipei/${id}-1-0km/gpx`,
+    distanceKm: source.distanceKm,
+    summary: `${source.name} 是 ShapeMiles 公開的台北 GPS Art 跑步路線。`,
+    sourcePlatform: source.sourcePlatform,
+    sourceUrl: source.sourceUrl,
+    externalDownloadUrl: source.downloadUrl,
     verifiedAt: "2026-08-28",
     sourceFormat: "gpx",
     sourceSha256: "a".repeat(64),
     segmentCount: 1,
     totalPoints: 2,
-    bounds: { minLat: 25, maxLat: 25.001, minLng: 121.5, maxLng: 121.501 }
+    bounds: { minLat: 25, maxLat: 25.001, minLng: 121.5, maxLng: 121.501 },
+    ...overrides
   };
 }
 
@@ -558,10 +559,10 @@ test("rename failure 保留既有產物並移除完整 temp", async t => {
 });
 
 test("下載摘要 serializer 產生排序且深度凍結的無座標 UMD", async () => {
-  const [, { serializeDownloads }] = await loadModules();
+  const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { serializeDownloads }] = await loadModules();
   const artifactSource = serializeDownloads([
-    createVerifiedRecord("gps-art-shapemiles-zeta", "台北 Zeta"),
-    createVerifiedRecord("gps-art-shapemiles-alpha", "台北 Alpha")
+    createVerifiedRecord(ROUTE_ART_DOWNLOAD_SOURCES[1]),
+    createVerifiedRecord(ROUTE_ART_DOWNLOAD_SOURCES[0])
   ]);
   const module = { exports: {} };
   vm.runInNewContext(artifactSource, { module, globalThis: {} });
@@ -586,8 +587,8 @@ test("下載摘要 serializer 產生排序且深度凍結的無座標 UMD", asyn
 });
 
 test("下載摘要 serializer 拒絕 geometry、coordinate 與允許欄位內的 XML", async () => {
-  const [, { serializeDownloads }] = await loadModules();
-  const base = createVerifiedRecord("gps-art-shapemiles-hostile");
+  const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { serializeDownloads }] = await loadModules();
+  const base = createVerifiedRecord(ROUTE_ART_DOWNLOAD_SOURCES[0]);
   const hostileRecords = [
     { ...base, segments: [[{ lat: 25, lng: 121.5 }]] },
     { ...base, coordinates: [{ lat: 25, lng: 121.5 }] },
@@ -599,12 +600,12 @@ test("下載摘要 serializer 拒絕 geometry、coordinate 與允許欄位內的
 });
 
 test("下載摘要 serializer 拒絕不完整、多餘或無效 record shape", async () => {
-  const [, { serializeDownloads }] = await loadModules();
-  const missing = createVerifiedRecord("gps-art-shapemiles-missing");
+  const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { serializeDownloads }] = await loadModules();
+  const missing = createVerifiedRecord(ROUTE_ART_DOWNLOAD_SOURCES[0]);
   delete missing.totalPoints;
-  const extra = { ...createVerifiedRecord("gps-art-shapemiles-extra"), unexpected: true };
+  const extra = { ...createVerifiedRecord(ROUTE_ART_DOWNLOAD_SOURCES[1]), unexpected: true };
   const invalidBounds = {
-    ...createVerifiedRecord("gps-art-shapemiles-bounds"),
+    ...createVerifiedRecord(ROUTE_ART_DOWNLOAD_SOURCES[2]),
     bounds: { minLat: 25, maxLat: 24, minLng: 121.5, maxLng: 121.501 }
   };
   for (const record of [missing, extra, invalidBounds]) {
@@ -613,9 +614,48 @@ test("下載摘要 serializer 拒絕不完整、多餘或無效 record shape", a
 });
 
 test("下載摘要 serializer 拒絕重複 ID", async () => {
-  const [, { serializeDownloads }] = await loadModules();
+  const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { serializeDownloads }] = await loadModules();
   assert.throws(() => serializeDownloads([
-    createVerifiedRecord("gps-art-shapemiles-duplicate", "台北 First"),
-    createVerifiedRecord("gps-art-shapemiles-duplicate", "台北 Second")
+    createVerifiedRecord(ROUTE_ART_DOWNLOAD_SOURCES[0]),
+    createVerifiedRecord(ROUTE_ART_DOWNLOAD_SOURCES[0])
   ]), /重複|ID/i);
+});
+
+test("下載摘要 serializer 只接受 registry ID 對應的逐字來源 URL", async () => {
+  const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { serializeDownloads }] = await loadModules();
+  const [airplane, bicycle] = ROUTE_ART_DOWNLOAD_SOURCES;
+  const base = createVerifiedRecord(airplane);
+  const hostileRecords = [
+    {
+      ...base,
+      externalDownloadUrl: `https://shapemiles.com/api/art-routes/taipei/${airplane.slug}/nested/gpx`
+    },
+    {
+      ...base,
+      sourceUrl: "https://shapemiles.com/en/city/taipei/art-gps-routes/"
+    },
+    { ...base, externalDownloadUrl: bicycle.downloadUrl },
+    { ...base, sourceUrl: bicycle.sourceUrl },
+    { ...base, id: "gps-art-shapemiles-unapproved" }
+  ];
+
+  for (const record of hostileRecords) {
+    assert.throws(() => serializeDownloads([record]), /allowlist|候選|來源|下載|ID/i);
+  }
+});
+
+test("下載摘要 serializer 要求固定 metadata 與 registry 候選一致", async () => {
+  const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { serializeDownloads }] = await loadModules();
+  const [airplane, bicycle] = ROUTE_ART_DOWNLOAD_SOURCES;
+  const base = createVerifiedRecord(airplane);
+  const hostileRecords = [
+    { ...base, name: bicycle.name },
+    { ...base, shapeLabel: bicycle.shapeLabel },
+    { ...base, distanceKm: bicycle.distanceKm },
+    { ...base, summary: `${bicycle.name} 是 ShapeMiles 公開的台北 GPS Art 跑步路線。` }
+  ];
+
+  for (const record of hostileRecords) {
+    assert.throws(() => serializeDownloads([record]), /候選|metadata|固定|一致/i);
+  }
 });
