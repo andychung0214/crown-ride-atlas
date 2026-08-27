@@ -38,11 +38,76 @@ function response(body, { status = 200, headers = {} } = {}) {
   return new Response(body, { status, headers });
 }
 
+async function within(promise, timeoutMs = 300) {
+  let timer;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error("測試等待超時，驗證器仍未結束")), timeoutMs);
+      })
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function cancelableResponse({ status = 200, headers = {}, chunks = [], stall = false } = {}) {
+  let cancelled = false;
+  const body = new ReadableStream({
+    start(controller) {
+      for (const chunk of chunks) controller.enqueue(chunk);
+      if (!stall) controller.close();
+    },
+    cancel() {
+      cancelled = true;
+    }
+  });
+  return {
+    response: new Response(body, { status, headers }),
+    wasCancelled: () => cancelled
+  };
+}
+
 async function loadModules() {
   return Promise.all([
     import("../scripts/route-art-download-sources.mjs"),
     import("../scripts/verify-route-art-downloads.mjs")
   ]);
+}
+
+function createVerifiedRecord(id, name = "台北 Test") {
+  return {
+    id,
+    name,
+    shapeLabel: "測試圖形",
+    regionId: "taipei",
+    regionName: "台北市",
+    activityType: "running",
+    activityLabel: "跑步",
+    status: "source-download",
+    distanceKm: 1,
+    summary: `${name} 是 ShapeMiles 公開的台北 GPS Art 跑步路線。`,
+    sourcePlatform: "ShapeMiles",
+    sourceUrl: `https://shapemiles.com/en/city/taipei/art-gps-routes/${id}-1-0km`,
+    externalDownloadUrl: `https://shapemiles.com/api/art-routes/taipei/${id}-1-0km/gpx`,
+    verifiedAt: "2026-08-28",
+    sourceFormat: "gpx",
+    sourceSha256: "a".repeat(64),
+    segmentCount: 1,
+    totalPoints: 2,
+    bounds: { minLat: 25, maxLat: 25.001, minLng: 121.5, maxLng: 121.501 }
+  };
+}
+
+function filesystemBoundary(overrides = {}) {
+  return {
+    mkdir: (...args) => fsPromises.mkdir(...args),
+    writeFile: (...args) => fsPromises.writeFile(...args),
+    rename: (...args) => fsPromises.rename(...args),
+    rm: (...args) => fsPromises.rm(...args),
+    ...overrides
+  };
 }
 
 test("ShapeMiles 候選精確包含 19 個台北公開 GPX 頁", async () => {
@@ -152,6 +217,148 @@ test("驗證器拒絕 HTML、超大標頭、超大實際回應與空檔", async 
   }
 });
 
+test("單一 timeout signal 涵蓋 stalled fetch 與 stalled body", async () => {
+  const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { verifyDownloadSource }] = await loadModules();
+  const source = ROUTE_ART_DOWNLOAD_SOURCES[0];
+  let fetchSignal;
+  await assert.rejects(() => within(verifyDownloadSource(source, {
+    verifiedAt: "2026-08-28",
+    timeoutMs: 20,
+    fetchImpl: async (_url, options) => {
+      fetchSignal = options.signal;
+      return new Promise(() => {});
+    }
+  })), /逾時/);
+  assert.equal(fetchSignal?.aborted, true);
+
+  const stalled = cancelableResponse({
+    headers: { "content-type": "application/gpx+xml" },
+    stall: true
+  });
+  await assert.rejects(() => within(verifyDownloadSource(source, {
+    verifiedAt: "2026-08-28",
+    timeoutMs: 20,
+    fetchImpl: async () => stalled.response
+  })), /逾時/);
+  assert.equal(stalled.wasCancelled(), true);
+});
+
+test("驗證器在複製前拒絕單一超大 chunk 並取消 body", async () => {
+  const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { verifyDownloadSource }] = await loadModules();
+  const oversized = cancelableResponse({
+    headers: { "content-type": "application/octet-stream" },
+    chunks: [new Uint8Array(5_000_001)],
+    stall: true
+  });
+  await assert.rejects(() => verifyDownloadSource(ROUTE_ART_DOWNLOAD_SOURCES[0], {
+    verifiedAt: "2026-08-28",
+    fetchImpl: async () => oversized.response
+  }), /5 MB|大小/);
+  assert.equal(oversized.wasCancelled(), true);
+});
+
+test("驗證器先檢查 chunk byteLength 才嘗試 Buffer 轉換", async () => {
+  const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { verifyDownloadSource }] = await loadModules();
+  let cancelled = false;
+  const oversizedBeforeCopy = {
+    byteLength: 5_000_001,
+    get length() {
+      throw new Error("chunk 在大小 gate 前被複製");
+    }
+  };
+  const body = {
+    getReader() {
+      let delivered = false;
+      return {
+        async read() {
+          if (delivered) return { done: true };
+          delivered = true;
+          return { done: false, value: oversizedBeforeCopy };
+        },
+        cancel() { cancelled = true; },
+        releaseLock() {}
+      };
+    }
+  };
+  await assert.rejects(() => verifyDownloadSource(ROUTE_ART_DOWNLOAD_SOURCES[0], {
+    verifiedAt: "2026-08-28",
+    fetchImpl: async () => ({
+      status: 200,
+      statusText: "OK",
+      headers: new Headers({ "content-type": "application/octet-stream" }),
+      body
+    })
+  }), /5 MB|大小/);
+  assert.equal(cancelled, true);
+});
+
+test("驗證器拒絕無受限 reader 的 body 而不呼叫 arrayBuffer fallback", async () => {
+  const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { verifyDownloadSource }] = await loadModules();
+  let fallbackCalls = 0;
+  await assert.rejects(() => verifyDownloadSource(ROUTE_ART_DOWNLOAD_SOURCES[0], {
+    verifiedAt: "2026-08-28",
+    fetchImpl: async () => ({
+      status: 200,
+      statusText: "OK",
+      headers: new Headers({ "content-type": "application/gpx+xml" }),
+      body: null,
+      async arrayBuffer() {
+        fallbackCalls += 1;
+        return Buffer.alloc(5_000_001);
+      }
+    })
+  }), /body|串流|讀取/i);
+  assert.equal(fallbackCalls, 0);
+});
+
+test("redirect、HTTP、HTML 與 Content-Length 早退都取消回應 body", async () => {
+  const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { verifyDownloadSource }] = await loadModules();
+  const source = ROUTE_ART_DOWNLOAD_SOURCES[0];
+  const scenarios = [
+    {
+      expected: /主機|allowlist|redirect/i,
+      tracked: cancelableResponse({ status: 302, headers: { location: "https://evil.example/file.gpx" }, stall: true })
+    },
+    { expected: /HTTP 401/, tracked: cancelableResponse({ status: 401, stall: true }) },
+    {
+      expected: /HTML/,
+      tracked: cancelableResponse({ headers: { "content-type": "text/html" }, stall: true })
+    },
+    {
+      expected: /5 MB|大小/,
+      tracked: cancelableResponse({ headers: {
+        "content-type": "application/gpx+xml", "content-length": "5000001"
+      }, stall: true })
+    }
+  ];
+
+  for (const scenario of scenarios) {
+    await assert.rejects(() => verifyDownloadSource(source, {
+      verifiedAt: "2026-08-28",
+      fetchImpl: async () => scenario.tracked.response
+    }), scenario.expected);
+    assert.equal(scenario.tracked.wasCancelled(), true);
+  }
+
+  const redirected = cancelableResponse({
+    status: 302,
+    headers: { location: source.downloadUrl },
+    stall: true
+  });
+  let calls = 0;
+  const record = await verifyDownloadSource(source, {
+    verifiedAt: "2026-08-28",
+    fetchImpl: async () => {
+      calls += 1;
+      return calls === 1
+        ? redirected.response
+        : response(VALID_GPX, { headers: { "content-type": "application/gpx+xml" } });
+    }
+  });
+  assert.equal(record.id, source.id);
+  assert.equal(redirected.wasCancelled(), true);
+});
+
 test("驗證器只跟隨核准位置且最多三次重新導向", async () => {
   const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { verifyDownloadSource }] = await loadModules();
   const source = ROUTE_ART_DOWNLOAD_SOURCES[0];
@@ -194,7 +401,7 @@ test("驗證器沿用 Task 1 的格式、台灣範圍與 500m 同段跳點 gate"
   }
 });
 
-test("整批驗證保留每件成功與完整非敏感失敗證據", async () => {
+test("整批驗證保留每件成功與受控 HTTP 失敗分類", async () => {
   const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { verifyAllSources }] = await loadModules();
   const sources = ROUTE_ART_DOWNLOAD_SOURCES.slice(0, 2);
   const result = await verifyAllSources(sources, {
@@ -206,25 +413,40 @@ test("整批驗證保留每件成功與完整非敏感失敗證據", async () =>
 
   assert.equal(result.records.length, 1);
   assert.equal(result.records[0].id, sources[0].id);
-  assert.deepEqual(result.failures.map(failure => failure.id), [sources[1].id]);
-  assert.match(result.failures[0].reason, /HTTP 503/);
+  assert.deepEqual(result.failures, [{
+    id: sources[1].id,
+    code: "http-status",
+    reason: "HTTP 503"
+  }]);
   assert.doesNotMatch(JSON.stringify(result), /cookie|authorization|bearer|token|secret/i);
 });
 
-test("整批失敗證據遮蔽 Cookie、Authorization 與權杖值", async () => {
+test("整批失敗分類不發布任意上游 message、cause 或多值敏感標頭", async () => {
   const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { verifyAllSources }] = await loadModules();
-  const result = await verifyAllSources(ROUTE_ART_DOWNLOAD_SOURCES.slice(0, 1), {
-    verifiedAt: "2026-08-28",
-    fetchImpl: async () => {
-      throw new Error("upstream rejected Authorization: Bearer top-secret Cookie: sid=private token=hidden");
-    }
-  });
+  const source = ROUTE_ART_DOWNLOAD_SOURCES[0];
+  const upstreamErrors = [
+    new Error('upstream-internal Cookie: sid=first; session="second-secret"; theme=dark'),
+    new Error("upstream-internal Authorization: Bearer first-secret, Basic second-secret"),
+    new TypeError("arbitrary-message-secret", {
+      cause: Object.assign(new Error("arbitrary-cause-secret Cookie: private=value; tail=hidden"), {
+        code: "ECONNRESET"
+      })
+    })
+  ];
 
-  assert.equal(result.failures.length, 1);
-  assert.match(result.failures[0].reason, /upstream rejected/);
-  assert.match(result.failures[0].reason, /\[REDACTED\]/);
-  assert.doesNotMatch(result.failures[0].reason,
-    /cookie|authorization|bearer|\btoken\b|top-secret|sid=private|hidden/i);
+  for (const upstreamError of upstreamErrors) {
+    const result = await verifyAllSources([source], {
+      verifiedAt: "2026-08-28",
+      fetchImpl: async () => { throw upstreamError; }
+    });
+    assert.deepEqual(result.failures, [{
+      id: source.id,
+      code: "network-error",
+      reason: "來源網路請求失敗"
+    }]);
+    assert.doesNotMatch(JSON.stringify(result),
+      /upstream|cookie|authorization|bearer|first-secret|second-secret|arbitrary|private|hidden|ECONNRESET/i);
+  }
 });
 
 test("19 件任一來源失敗時不建立或改寫產物且不留下部分暫存檔", async t => {
@@ -259,32 +481,87 @@ test("19 件任一來源失敗時不建立或改寫產物且不留下部分暫�
   assert.deepEqual(await fsPromises.readdir(temporaryRoot), ["route-art-downloads.js"]);
 });
 
+test("19 件全成功時以完整 UMD 原子覆寫既有產物", async t => {
+  const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { verifyAndWriteDownloads }] = await loadModules();
+  const temporaryRoot = await fsPromises.mkdtemp(path.join(os.tmpdir(), "route-art-success-"));
+  t.after(() => fsPromises.rm(temporaryRoot, { recursive: true, force: true }));
+  const outputPath = path.join(temporaryRoot, "route-art-downloads.js");
+  await fsPromises.writeFile(outputPath, "既有安全產物", "utf8");
+
+  const records = await verifyAndWriteDownloads({
+    sources: ROUTE_ART_DOWNLOAD_SOURCES,
+    verifiedAt: "2026-08-28",
+    outputPath,
+    fetchImpl: async () => response(VALID_GPX, {
+      headers: { "content-type": "application/gpx+xml" }
+    })
+  });
+
+  assert.equal(records.length, 19);
+  const artifactSource = await fsPromises.readFile(outputPath, "utf8");
+  const module = { exports: {} };
+  vm.runInNewContext(artifactSource, { module, globalThis: {} });
+  assert.deepEqual(Object.keys(module.exports), [...Object.keys(module.exports)].sort());
+  assert.equal(Object.keys(module.exports).length, 19);
+  assert.deepEqual(await fsPromises.readdir(temporaryRoot), ["route-art-downloads.js"]);
+});
+
+test("write failure 保留既有產物並移除部分 temp", async t => {
+  const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { verifyAndWriteDownloads }] = await loadModules();
+  const temporaryRoot = await fsPromises.mkdtemp(path.join(os.tmpdir(), "route-art-write-fail-"));
+  t.after(() => fsPromises.rm(temporaryRoot, { recursive: true, force: true }));
+  const outputPath = path.join(temporaryRoot, "route-art-downloads.js");
+  await fsPromises.writeFile(outputPath, "既有安全產物", "utf8");
+  const fsImpl = filesystemBoundary({
+    async writeFile(filePath) {
+      await fsPromises.writeFile(filePath, "部分暫存內容", "utf8");
+      throw new Error("injected write failure");
+    }
+  });
+
+  await assert.rejects(() => verifyAndWriteDownloads({
+    sources: ROUTE_ART_DOWNLOAD_SOURCES.slice(0, 1),
+    verifiedAt: "2026-08-28",
+    outputPath,
+    fsImpl,
+    fetchImpl: async () => response(VALID_GPX, {
+      headers: { "content-type": "application/gpx+xml" }
+    })
+  }), /write failure/);
+  assert.equal(await fsPromises.readFile(outputPath, "utf8"), "既有安全產物");
+  assert.deepEqual(await fsPromises.readdir(temporaryRoot), ["route-art-downloads.js"]);
+});
+
+test("rename failure 保留既有產物並移除完整 temp", async t => {
+  const [{ ROUTE_ART_DOWNLOAD_SOURCES }, { verifyAndWriteDownloads }] = await loadModules();
+  const temporaryRoot = await fsPromises.mkdtemp(path.join(os.tmpdir(), "route-art-rename-fail-"));
+  t.after(() => fsPromises.rm(temporaryRoot, { recursive: true, force: true }));
+  const outputPath = path.join(temporaryRoot, "route-art-downloads.js");
+  await fsPromises.writeFile(outputPath, "既有安全產物", "utf8");
+  const fsImpl = filesystemBoundary({
+    async rename() {
+      throw new Error("injected rename failure");
+    }
+  });
+
+  await assert.rejects(() => verifyAndWriteDownloads({
+    sources: ROUTE_ART_DOWNLOAD_SOURCES.slice(0, 1),
+    verifiedAt: "2026-08-28",
+    outputPath,
+    fsImpl,
+    fetchImpl: async () => response(VALID_GPX, {
+      headers: { "content-type": "application/gpx+xml" }
+    })
+  }), /rename failure/);
+  assert.equal(await fsPromises.readFile(outputPath, "utf8"), "既有安全產物");
+  assert.deepEqual(await fsPromises.readdir(temporaryRoot), ["route-art-downloads.js"]);
+});
+
 test("下載摘要 serializer 產生排序且深度凍結的無座標 UMD", async () => {
   const [, { serializeDownloads }] = await loadModules();
-  const createRecord = (id, name) => ({
-    id,
-    name,
-    shapeLabel: "測試圖形",
-    regionId: "taipei",
-    regionName: "台北市",
-    activityType: "running",
-    activityLabel: "跑步",
-    status: "source-download",
-    distanceKm: 1,
-    summary: `${name} 是 ShapeMiles 公開的台北 GPS Art 跑步路線。`,
-    sourcePlatform: "ShapeMiles",
-    sourceUrl: `https://shapemiles.com/en/city/taipei/art-gps-routes/${id}-1-0km`,
-    externalDownloadUrl: `https://shapemiles.com/api/art-routes/taipei/${id}-1-0km/gpx`,
-    verifiedAt: "2026-08-28",
-    sourceFormat: "gpx",
-    sourceSha256: "a".repeat(64),
-    segmentCount: 1,
-    totalPoints: 2,
-    bounds: { minLat: 25, maxLat: 25.001, minLng: 121.5, maxLng: 121.501 }
-  });
   const artifactSource = serializeDownloads([
-    createRecord("gps-art-shapemiles-zeta", "台北 Zeta"),
-    createRecord("gps-art-shapemiles-alpha", "台北 Alpha")
+    createVerifiedRecord("gps-art-shapemiles-zeta", "台北 Zeta"),
+    createVerifiedRecord("gps-art-shapemiles-alpha", "台北 Alpha")
   ]);
   const module = { exports: {} };
   vm.runInNewContext(artifactSource, { module, globalThis: {} });
@@ -306,4 +583,39 @@ test("下載摘要 serializer 產生排序且深度凍結的無座標 UMD", asyn
   }
   assert.doesNotMatch(artifactSource,
     /<trkpt|<coordinates|\bsegments\b|\bcoordinates\b|cookie|authorization|bearer|client_secret|\btoken\b/i);
+});
+
+test("下載摘要 serializer 拒絕 geometry、coordinate 與允許欄位內的 XML", async () => {
+  const [, { serializeDownloads }] = await loadModules();
+  const base = createVerifiedRecord("gps-art-shapemiles-hostile");
+  const hostileRecords = [
+    { ...base, segments: [[{ lat: 25, lng: 121.5 }]] },
+    { ...base, coordinates: [{ lat: 25, lng: 121.5 }] },
+    { ...base, summary: "<trkpt lat=\"25\" lon=\"121.5\"/>" }
+  ];
+  for (const record of hostileRecords) {
+    assert.throws(() => serializeDownloads([record]), /欄位|軌跡|XML|文字|允許/i);
+  }
+});
+
+test("下載摘要 serializer 拒絕不完整、多餘或無效 record shape", async () => {
+  const [, { serializeDownloads }] = await loadModules();
+  const missing = createVerifiedRecord("gps-art-shapemiles-missing");
+  delete missing.totalPoints;
+  const extra = { ...createVerifiedRecord("gps-art-shapemiles-extra"), unexpected: true };
+  const invalidBounds = {
+    ...createVerifiedRecord("gps-art-shapemiles-bounds"),
+    bounds: { minLat: 25, maxLat: 24, minLng: 121.5, maxLng: 121.501 }
+  };
+  for (const record of [missing, extra, invalidBounds]) {
+    assert.throws(() => serializeDownloads([record]), /欄位|record|bounds|範圍|完整/i);
+  }
+});
+
+test("下載摘要 serializer 拒絕重複 ID", async () => {
+  const [, { serializeDownloads }] = await loadModules();
+  assert.throws(() => serializeDownloads([
+    createVerifiedRecord("gps-art-shapemiles-duplicate", "台北 First"),
+    createVerifiedRecord("gps-art-shapemiles-duplicate", "台北 Second")
+  ]), /重複|ID/i);
 });
