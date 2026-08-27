@@ -134,3 +134,28 @@
 | 安全掃描 | production serializer 僅允許無座標摘要欄位；behavior tests 拒絕 geometry、coordinate、GPX XML 與任意敏感上游文字 |
 
 本輪依 ruling 未重跑 ShapeMiles live，也未使用登入狀態或憑證。Concern 不變：19/19 匿名端點為 `HTTP 401`、官方頁明示 subscription-required，目前仍為 0 件 `source-download`，19 件候選維持未上架。
+
+## Fix round 2（2026-08-28）
+
+- 修正 commit：`e416fd3`（`fix: 鎖定 GPS Art 摘要來源 allowlist`）
+
+### 根因與 TDD 證據
+
+- 窄 probe 以 `gps-art-shapemiles-airplane` 摘要搭配無 slug 來源頁及未核准 nested `/gpx` 路徑呼叫真實 serializer，舊實作回傳 `ACCEPTED`。根因是 serializer 僅檢查 path `startsWith`／`endsWith`，沒有把 ID 與 19 件 frozen registry 的精確 URL 配對。
+- RED：先新增 hostile behavior tests，再執行 `node --test tests/route-art-downloads.test.js`；21 pass、2 fail。兩項失敗均為 `Missing expected exception`，分別證明無 slug、nested `/gpx`、airplane／bicycle 來源與下載 URL cross-wire、未知 ID，以及固定 metadata tamper 尚未被拒絕。
+- GREEN：由 frozen `ROUTE_ART_DOWNLOAD_SOURCES` 建立 frozen、無 prototype 的 ID map；record ID 必須存在，`sourceUrl` 與 `externalDownloadUrl` 必須逐字等於該候選，名稱、圖形標籤、地區、活動、距離、來源平台及衍生摘要亦逐欄一致。合法 fake verified records 仍保留日期、SHA、`segmentCount`／`totalPoints` 與 bounds 的動態摘要欄位。
+- 原有 serializer tests 改用實際 registry 候選作為合法 fixture，不再以 registry 外的假 ID 弱化 allowlist 契約；未使用 source regex、skip 或 mock assertion。
+
+### Round 2 最終驗證
+
+| 查核 | 結果 |
+|---|---|
+| `node --test tests/route-art-downloads.test.js` | 23/23 pass，0 fail，0 skip |
+| `node --test tests/route-art-source.test.js tests/route-art-downloads.test.js` | 41/41 pass，0 fail，0 skip |
+| `npm run verify` | exit 0；361/361 tests pass；23 bundles／68 routes validate pass |
+| protected registry／route／catalog／tracks／Task 1 parser guard | exit 0，無差異 |
+| `git diff --check` 與 staged diff check | exit 0 |
+| 正式 artifact／temp | `js/data/route-art-downloads.js` 不存在；相符 temp 為 0 |
+| serializer 安全契約 | 拒絕未核准 nested `/gpx`、無 slug 來源頁、cross-wire URL、未知 ID、geometry／coordinate／XML 與固定 metadata tamper |
+
+本輪未執行任何 live fetch，未使用登入狀態或憑證，也未建立正式 artifact。Concern 不變：ShapeMiles 匿名端點仍為 19/19 `HTTP 401` 且官方頁明示 subscription-required，目前 0 件 `source-download`，19 件候選維持未上架。
