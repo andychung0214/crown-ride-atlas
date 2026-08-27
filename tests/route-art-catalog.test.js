@@ -18,6 +18,16 @@ function loadBrowserCatalog(routeArtTracks) {
   return browserWindow.CrownRideAtlas.RouteArtCatalog;
 }
 
+function createFetchResponse(body, { url, contentType = "text/plain", status = 200 } = {}) {
+  const response = new Response(body, {
+    status,
+    statusText: status === 200 ? "OK" : "FAIL",
+    headers: { "content-type": contentType }
+  });
+  Object.defineProperty(response, "url", { value: url });
+  return response;
+}
+
 test("圖鑑固定收錄 22 件有公開來源的台灣 GPS Art", () => {
   assert.equal(Catalog.length, 22);
   assert.equal(new Set(Catalog.map(item => item.id)).size, 22);
@@ -231,6 +241,69 @@ test("公開來源 TLS 失敗警告包含安全且可理解的原因", async () 
     describeDownloadError(error),
     "fetch failed（ECONNRESET：secure TLS connection was not established）"
   );
+});
+
+test("站內匯入器只接受 allowlist 內的 HTTPS final URL", async () => {
+  const { importTracks, SOURCES } = await import("../scripts/import-route-art-tracks.mjs");
+  const gpx = `<gpx><trk><trkseg>
+    <trkpt lat="25" lon="121.5"/><trkpt lat="25.001" lon="121.501"/>
+  </trkseg></trk></gpx>`;
+
+  async function runScenario(finalUrl) {
+    const originalFetch = global.fetch;
+    const originalConsole = { log: console.log, warn: console.warn, error: console.error };
+    const output = { logs: [], warnings: [], errors: [] };
+    global.fetch = async requestUrl => {
+      const source = SOURCES.find(item => item.url === String(requestUrl));
+      if (source?.id === "gps-art-xinzhuang-tiger") {
+        return createFetchResponse(gpx, {
+          url: finalUrl,
+          contentType: "application/gpx+xml"
+        });
+      }
+      return createFetchResponse("failure", { url: source?.url || String(requestUrl), status: 503 });
+    };
+    console.log = value => output.logs.push(String(value));
+    console.warn = value => output.warnings.push(String(value));
+    console.error = value => output.errors.push(String(value));
+    try {
+      await assert.rejects(() => importTracks(), /必要公開軌跡匯入失敗/);
+      return output;
+    } finally {
+      global.fetch = originalFetch;
+      Object.assign(console, originalConsole);
+    }
+  }
+
+  const allowed = await runScenario(SOURCES[0].url);
+  assert.ok(allowed.logs.some(line => line.startsWith("gps-art-xinzhuang-tiger:")));
+
+  for (const scenario of [
+    { url: "https://evil.example/route.gpx", expected: /主機|allowlist/i },
+    { url: "http://cdnrunningfiles.biji.co/route.gpx", expected: /HTTPS/i },
+    { url: "https://user:secret@cdnrunningfiles.biji.co/route.gpx", expected: /認證|credentials/i }
+  ]) {
+    const rejected = await runScenario(scenario.url);
+    assert.equal(rejected.logs.some(line => line.startsWith("gps-art-xinzhuang-tiger:")), false);
+    const warning = rejected.warnings.find(line => line.includes("gps-art-xinzhuang-tiger")) || "";
+    assert.match(warning, scenario.expected);
+    assert.doesNotMatch(warning, /user|secret/);
+  }
+});
+
+test("站內下載器在 fetch 前拒絕不安全 initial URL", async () => {
+  const { downloadSource, SOURCES } = await import("../scripts/import-route-art-tracks.mjs");
+  for (const url of [
+    "http://cdnrunningfiles.biji.co/route.gpx",
+    "https://evil.example/route.gpx",
+    "https://user:secret@cdnrunningfiles.biji.co/route.gpx"
+  ]) {
+    let fetchCalls = 0;
+    await assert.rejects(() => downloadSource({ ...SOURCES[0], url }, {
+      fetchImpl: async () => { fetchCalls += 1; }
+    }), /HTTPS|主機|allowlist|認證|credentials/i);
+    assert.equal(fetchCalls, 0);
+  }
 });
 
 test("圖鑑與每件作品皆不可被改寫", () => {

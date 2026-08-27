@@ -34,11 +34,34 @@ export const SOURCES = Object.freeze([
     url: "https://www.google.com/maps/d/kml?mid=1thheW0QAsTO65i6iOZ90-yZWA4M7Pqej&forcekml=1"
   })
 ]);
+export const ALLOWED_SOURCE_HOSTS = Object.freeze([
+  "cdnrunningfiles.biji.co",
+  "www.google.com"
+]);
 
 const OUTPUT_PATH = resolve(dirname(fileURLToPath(import.meta.url)), "../js/data/route-art-tracks.js");
 
-async function downloadSource(source) {
-  const response = await fetch(source.url);
+function validateSourceUrl(value, label) {
+  let parsed;
+  try {
+    parsed = new URL(String(value));
+  } catch (error) {
+    throw new Error(`${label} URL 格式無效`, { cause: error });
+  }
+  if (parsed.username || parsed.password) throw new Error(`${label} URL 不接受認證資訊`);
+  if (parsed.protocol !== "https:") throw new Error(`${label} URL 必須使用 HTTPS`);
+  if (!ALLOWED_SOURCE_HOSTS.includes(parsed.hostname)) {
+    throw new Error(`${label} URL 主機不在 allowlist：${parsed.hostname}`);
+  }
+  return parsed;
+}
+
+export async function downloadSource(source, options = {}) {
+  const fetchImpl = options.fetchImpl ?? globalThis.fetch;
+  if (typeof fetchImpl !== "function") throw new TypeError("fetchImpl 必須是函式");
+  const initialUrl = validateSourceUrl(source.url, `${source.id} 初始來源`);
+  const response = await fetchImpl(initialUrl.href);
+  const finalUrl = validateSourceUrl(response.url, `${source.id} 最終來源`);
   if (response.status < 200 || response.status >= 300) {
     throw new Error(`HTTP ${response.status} ${response.statusText}`.trim());
   }
@@ -46,7 +69,7 @@ async function downloadSource(source) {
   const parsed = parseTrackPayload({
     buffer: payload,
     contentType: response.headers.get("content-type") || "",
-    url: source.url
+    url: finalUrl.href
   });
   if (parsed.sourceFormat !== source.format) {
     throw new Error(`${source.id} 格式不符：預期 ${source.format}，收到 ${parsed.sourceFormat}`);

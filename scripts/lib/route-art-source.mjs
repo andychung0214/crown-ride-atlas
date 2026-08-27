@@ -1,6 +1,7 @@
 "use strict";
 
 import { createHash } from "node:crypto";
+import { TextDecoder } from "node:util";
 import { inflateRawSync } from "node:zlib";
 
 export const LIMITS = Object.freeze({
@@ -16,6 +17,8 @@ const ZIP_SIGNATURES = Object.freeze({
   centralFile: 0x02014b50,
   endOfCentralDirectory: 0x06054b50
 });
+const ZIP_ALLOWED_FLAGS = 0x0800;
+const UTF8_DECODER = new TextDecoder("utf-8", { fatal: true });
 
 function parseNumber(value, label) {
   if (String(value).trim() === "") throw new Error(`${label} 不是有限數值`);
@@ -40,10 +43,183 @@ function assertSafeXml(text, label) {
   return xml;
 }
 
-function extractAttribute(attributes, name) {
-  const match = new RegExp(`\\b${name}\\s*=\\s*(["'])(.*?)\\1`, "i").exec(attributes);
-  if (!match) throw new Error(`GPX trkpt 缺少 ${name} 屬性`);
-  return parseNumber(match[2], `GPX ${name}`);
+function decodeXmlEntities(value, label) {
+  const predefined = Object.freeze({ amp: "&", apos: "'", gt: ">", lt: "<", quot: '"' });
+  let decoded = "";
+  let cursor = 0;
+  while (cursor < value.length) {
+    const entityStart = value.indexOf("&", cursor);
+    if (entityStart < 0) return decoded + value.slice(cursor);
+    decoded += value.slice(cursor, entityStart);
+    const entityEnd = value.indexOf(";", entityStart + 1);
+    if (entityEnd < 0) throw new Error(`${label} XML entity 格式無效`);
+    const entity = value.slice(entityStart + 1, entityEnd);
+    if (Object.hasOwn(predefined, entity)) {
+      decoded += predefined[entity];
+    } else if (/^#\d+$/.test(entity) || /^#x[\da-f]+$/i.test(entity)) {
+      const codePoint = entity[1].toLowerCase() === "x"
+        ? Number.parseInt(entity.slice(2), 16)
+        : Number.parseInt(entity.slice(1), 10);
+      if (!Number.isInteger(codePoint) || codePoint <= 0 || codePoint > 0x10ffff
+        || (codePoint >= 0xd800 && codePoint <= 0xdfff)) {
+        throw new Error(`${label} XML entity 字元無效`);
+      }
+      decoded += String.fromCodePoint(codePoint);
+    } else {
+      throw new Error(`${label} 不接受自訂 XML entity`);
+    }
+    cursor = entityEnd + 1;
+  }
+  return decoded;
+}
+
+function readXmlName(source, offset) {
+  const match = /^[A-Za-z_][A-Za-z0-9_.:-]*/.exec(source.slice(offset));
+  return match ? match[0] : "";
+}
+
+function findXmlTagEnd(xml, offset, label) {
+  let quote = "";
+  for (let cursor = offset; cursor < xml.length; cursor += 1) {
+    const character = xml[cursor];
+    if (quote) {
+      if (character === quote) quote = "";
+    } else if (character === '"' || character === "'") {
+      quote = character;
+    } else if (character === ">") {
+      return cursor;
+    }
+  }
+  throw new Error(`${label} XML 標籤未完整關閉`);
+}
+
+function parseXmlStartTag(source, label) {
+  const selfClosing = /\/\s*$/.test(source);
+  const body = selfClosing ? source.replace(/\/\s*$/, "") : source;
+  const name = readXmlName(body, 0);
+  if (!name) throw new Error(`${label} XML 起始標籤無效`);
+
+  const attributes = new Map();
+  let cursor = name.length;
+  while (cursor < body.length) {
+    while (/\s/.test(body[cursor] || "")) cursor += 1;
+    if (cursor >= body.length) break;
+    const attributeName = readXmlName(body, cursor);
+    if (!attributeName) throw new Error(`${label} XML 屬性名稱無效`);
+    cursor += attributeName.length;
+    while (/\s/.test(body[cursor] || "")) cursor += 1;
+    if (body[cursor] !== "=") throw new Error(`${label} XML 屬性缺少等號`);
+    cursor += 1;
+    while (/\s/.test(body[cursor] || "")) cursor += 1;
+    const quote = body[cursor];
+    if (quote !== '"' && quote !== "'") throw new Error(`${label} XML 屬性必須使用引號`);
+    const valueStart = cursor + 1;
+    const valueEnd = body.indexOf(quote, valueStart);
+    if (valueEnd < 0) throw new Error(`${label} XML 屬性未完整關閉`);
+    const rawValue = body.slice(valueStart, valueEnd);
+    if (rawValue.includes("<")) throw new Error(`${label} XML 屬性包含無效字元`);
+    if (attributes.has(attributeName)) throw new Error(`${label} XML 屬性重複：${attributeName}`);
+    attributes.set(attributeName, decodeXmlEntities(rawValue, label));
+    cursor = valueEnd + 1;
+  }
+  return { name, attributes, selfClosing };
+}
+
+function parseXmlDocument(text, label) {
+  const xml = assertSafeXml(text, label);
+  const stack = [];
+  let root = null;
+  let cursor = 0;
+
+  function appendText(value, decodeEntities = true) {
+    if (stack.length === 0) {
+      if (value.trim() !== "") throw new Error(`${label} XML 根節點外含有文字`);
+      return;
+    }
+    stack[stack.length - 1].text += decodeEntities ? decodeXmlEntities(value, label) : value;
+  }
+
+  while (cursor < xml.length) {
+    if (xml[cursor] !== "<") {
+      const nextTag = xml.indexOf("<", cursor);
+      const textEnd = nextTag < 0 ? xml.length : nextTag;
+      appendText(xml.slice(cursor, textEnd));
+      cursor = textEnd;
+      continue;
+    }
+    if (xml.startsWith("<!--", cursor)) {
+      const commentEnd = xml.indexOf("-->", cursor + 4);
+      if (commentEnd < 0 || xml.slice(cursor + 4, commentEnd).includes("--")) {
+        throw new Error(`${label} XML 註解未完整關閉或格式無效`);
+      }
+      cursor = commentEnd + 3;
+      continue;
+    }
+    if (xml.startsWith("<![CDATA[", cursor)) {
+      const cdataEnd = xml.indexOf("]]>", cursor + 9);
+      if (cdataEnd < 0) throw new Error(`${label} XML CDATA 未完整關閉`);
+      appendText(xml.slice(cursor + 9, cdataEnd), false);
+      cursor = cdataEnd + 3;
+      continue;
+    }
+    if (xml.startsWith("<?", cursor)) {
+      const instructionEnd = xml.indexOf("?>", cursor + 2);
+      if (instructionEnd < 0) throw new Error(`${label} XML processing instruction 未完整關閉`);
+      cursor = instructionEnd + 2;
+      continue;
+    }
+    if (xml.startsWith("</", cursor)) {
+      const tagEnd = findXmlTagEnd(xml, cursor + 2, label);
+      const closingName = xml.slice(cursor + 2, tagEnd).trim();
+      if (!closingName || closingName !== readXmlName(closingName, 0)
+        || stack.length === 0 || stack[stack.length - 1].name !== closingName) {
+        throw new Error(`${label} XML 關閉標籤不一致`);
+      }
+      stack.pop();
+      cursor = tagEnd + 1;
+      continue;
+    }
+    if (xml.startsWith("<!", cursor)) {
+      throw new Error(`${label} 不接受 DTD、entity 或其他 XML 宣告`);
+    }
+
+    const tagEnd = findXmlTagEnd(xml, cursor + 1, label);
+    const parsed = parseXmlStartTag(xml.slice(cursor + 1, tagEnd), label);
+    const node = { name: parsed.name, attributes: parsed.attributes, children: [], text: "" };
+    if (stack.length === 0) {
+      if (root) throw new Error(`${label} XML 只能有一個根節點`);
+      root = node;
+    } else {
+      stack[stack.length - 1].children.push(node);
+    }
+    if (!parsed.selfClosing) stack.push(node);
+    cursor = tagEnd + 1;
+  }
+
+  if (!root) throw new Error(`${label} XML 缺少根節點`);
+  if (stack.length > 0) throw new Error(`${label} XML 標籤未完整關閉`);
+  return root;
+}
+
+function xmlLocalName(node) {
+  return node.name.slice(node.name.lastIndexOf(":") + 1);
+}
+
+function directXmlChildren(node, localName) {
+  return node.children.filter(child => xmlLocalName(child) === localName);
+}
+
+function findXmlDescendants(node, localName) {
+  const matches = [];
+  const pending = [...node.children].reverse();
+  while (pending.length > 0) {
+    const child = pending.pop();
+    if (xmlLocalName(child) === localName) matches.push(child);
+    for (let index = child.children.length - 1; index >= 0; index -= 1) {
+      pending.push(child.children[index]);
+    }
+  }
+  return matches;
 }
 
 function parseKmlTuple(tuple) {
@@ -63,12 +239,18 @@ function parseGeoJsonPoint(coordinate) {
   if (!Array.isArray(coordinate) || coordinate.length < 2) {
     throw new Error("GeoJSON LineString 座標格式無效");
   }
-  const point = {
-    lat: parseNumber(coordinate[1], "GeoJSON latitude"),
-    lng: parseNumber(coordinate[0], "GeoJSON longitude")
+  const parseCoordinate = (value, label) => {
+    if (typeof value !== "number" || !Number.isFinite(value)) {
+      throw new Error(`${label} 必須是有限 number 數值`);
+    }
+    return value;
   };
-  if (coordinate.length >= 3 && coordinate[2] !== null && coordinate[2] !== "") {
-    point.ele = parseNumber(coordinate[2], "GeoJSON elevation");
+  const point = {
+    lat: parseCoordinate(coordinate[1], "GeoJSON latitude"),
+    lng: parseCoordinate(coordinate[0], "GeoJSON longitude")
+  };
+  if (coordinate.length >= 3) {
+    point.ele = parseCoordinate(coordinate[2], "GeoJSON elevation");
   }
   return point;
 }
@@ -103,6 +285,26 @@ function assertZipPath(name) {
     || /^[A-Za-z]:\//.test(normalized)
     || normalized.split("/").includes("..")) {
     throw new Error(`KMZ entry 路徑不安全：${name}`);
+  }
+}
+
+function decodeZipFilename(bytes) {
+  try {
+    return UTF8_DECODER.decode(bytes);
+  } catch (error) {
+    throw new Error("KMZ entry 檔名不是有效 UTF-8", { cause: error });
+  }
+}
+
+function assertSupportedZipFlags(flags, name) {
+  if ((flags & 0x0001) !== 0 || (flags & 0x0040) !== 0) {
+    throw new Error(`KMZ 不接受加密 entry：${name}`);
+  }
+  if ((flags & 0x0008) !== 0) {
+    throw new Error(`KMZ 不支援 data descriptor flag：${name}`);
+  }
+  if ((flags & ~ZIP_ALLOWED_FLAGS) !== 0) {
+    throw new Error(`KMZ 不支援 general-purpose flag 0x${flags.toString(16)}：${name}`);
   }
 }
 
@@ -155,11 +357,10 @@ function readCentralEntries(buffer) {
     const nextCursor = cursor + 46 + filenameLength + extraLength + entryCommentLength;
     if (nextCursor > eocdOffset) throw new Error("KMZ ZIP entry 範圍無效");
 
-    const name = buffer.subarray(cursor + 46, cursor + 46 + filenameLength).toString("utf8");
+    const filenameBytes = Buffer.from(buffer.subarray(cursor + 46, cursor + 46 + filenameLength));
+    const name = decodeZipFilename(filenameBytes);
     assertZipPath(name);
-    if ((flags & 0x0001) !== 0 || (flags & 0x0040) !== 0) {
-      throw new Error(`KMZ 不接受加密 entry：${name}`);
-    }
+    assertSupportedZipFlags(flags, name);
     if (method !== 0 && method !== 8) {
       throw new Error(`KMZ 不支援壓縮方法 ${method}`);
     }
@@ -169,6 +370,7 @@ function readCentralEntries(buffer) {
     }
     entries.push({
       name,
+      filenameBytes,
       flags,
       method,
       compressedSize,
@@ -199,13 +401,13 @@ function extractEntryPayload(buffer, entry) {
   const payloadEnd = payloadStart + entry.compressedSize;
   if (payloadEnd > entry.centralOffset) throw new Error("KMZ ZIP payload 範圍無效");
 
-  const localName = buffer.subarray(filenameStart, filenameStart + filenameLength).toString("utf8");
-  if (localName !== entry.name || localFlags !== entry.flags || localMethod !== entry.method) {
+  const localFilenameBytes = buffer.subarray(filenameStart, filenameStart + filenameLength);
+  if (!localFilenameBytes.equals(entry.filenameBytes)
+    || localFlags !== entry.flags || localMethod !== entry.method) {
     throw new Error("KMZ ZIP local header 與 central directory 不一致");
   }
-  if ((entry.flags & 0x0008) === 0
-    && (localCompressedSize !== entry.compressedSize
-      || localUncompressedSize !== entry.uncompressedSize)) {
+  if (localCompressedSize !== entry.compressedSize
+    || localUncompressedSize !== entry.uncompressedSize) {
     throw new Error("KMZ ZIP entry 大小不一致");
   }
   if (entry.compressedSize > LIMITS.maxBytes || entry.uncompressedSize > LIMITS.maxBytes) {
@@ -232,46 +434,39 @@ function extractEntryPayload(buffer, entry) {
 }
 
 export function parseGpxSegments(text) {
-  const xml = assertSafeXml(text, "GPX");
-  const segmentBodies = [];
-  const segmentPattern = /<(?:[\w-]+:)?trkseg\b[^>]*>([\s\S]*?)<\/(?:[\w-]+:)?trkseg\s*>/gi;
-  let segmentMatch;
-  while ((segmentMatch = segmentPattern.exec(xml))) segmentBodies.push(segmentMatch[1]);
-  if (segmentBodies.length === 0) segmentBodies.push(xml);
+  const root = parseXmlDocument(text, "GPX");
+  if (xmlLocalName(root) !== "gpx") throw new Error("GPX XML 根節點必須是 gpx");
+  const segmentNodes = directXmlChildren(root, "trk")
+    .flatMap(track => directXmlChildren(track, "trkseg"));
+  if (segmentNodes.length === 0) throw new Error("GPX 未包含 trkseg 軌跡");
 
-  return segmentBodies.map(segmentBody => {
-    const segment = [];
-    const pointPattern = /<(?:[\w-]+:)?trkpt\b([^>]*?)(?:\/\s*>|>([\s\S]*?)<\/(?:[\w-]+:)?trkpt\s*>)/gi;
-    let pointMatch;
-    while ((pointMatch = pointPattern.exec(segmentBody))) {
+  return segmentNodes.map(segmentNode => directXmlChildren(segmentNode, "trkpt").map(pointNode => {
       const point = {
-        lat: extractAttribute(pointMatch[1], "lat"),
-        lng: extractAttribute(pointMatch[1], "lon")
+        lat: parseNumber(pointNode.attributes.get("lat") ?? "", "GPX lat"),
+        lng: parseNumber(pointNode.attributes.get("lon") ?? "", "GPX lon")
       };
-      const elevationMatch = /<(?:[\w-]+:)?ele\b[^>]*>([\s\S]*?)<\/(?:[\w-]+:)?ele\s*>/i.exec(pointMatch[2] || "");
-      if (elevationMatch) point.ele = parseNumber(elevationMatch[1], "GPX elevation");
-      segment.push(point);
-    }
-    return segment;
-  });
+      const elevations = directXmlChildren(pointNode, "ele");
+      if (elevations.length > 1) throw new Error("GPX trkpt 不得包含多個 ele");
+      if (elevations.length === 1) point.ele = parseNumber(elevations[0].text, "GPX elevation");
+      return point;
+    }));
 }
 
 export function parseKmlSegments(text) {
-  const xml = assertSafeXml(text, "KML");
-  const segments = [];
-  const linePattern = /<(?:[\w-]+:)?LineString\b[^>]*>([\s\S]*?)<\/(?:[\w-]+:)?LineString\s*>/gi;
-  let lineMatch;
+  const root = parseXmlDocument(text, "KML");
+  if (xmlLocalName(root) !== "kml") throw new Error("KML XML 根節點必須是 kml");
+  const lineStrings = findXmlDescendants(root, "LineString");
+  if (lineStrings.length === 0) throw new Error("KML 未包含 LineString 軌跡");
 
-  while ((lineMatch = linePattern.exec(xml))) {
-    const coordinateMatch = /<(?:[\w-]+:)?coordinates\b[^>]*>([\s\S]*?)<\/(?:[\w-]+:)?coordinates\s*>/i.exec(lineMatch[1]);
-    if (!coordinateMatch) throw new Error("KML LineString 缺少 coordinates");
-    const tuples = coordinateMatch[1].trim().split(/\s+/).filter(Boolean);
+  return lineStrings.map(lineString => {
+    const coordinates = directXmlChildren(lineString, "coordinates");
+    if (coordinates.length !== 1 || coordinates[0].children.length > 0) {
+      throw new Error("KML LineString 必須包含單一純文字 coordinates");
+    }
+    const tuples = coordinates[0].text.trim().split(/\s+/).filter(Boolean);
     if (tuples.length < 2) throw new Error("KML LineString 必須至少包含兩個座標");
-    segments.push(tuples.map(parseKmlTuple));
-  }
-
-  if (segments.length === 0) throw new Error("KML 未包含 LineString 軌跡");
-  return segments;
+    return tuples.map(parseKmlTuple);
+  });
 }
 
 export function parseGeoJsonSegments(text) {
@@ -303,29 +498,16 @@ export function extractKmzKml(buffer) {
   return extractEntryPayload(buffer, kmlEntries[0]);
 }
 
-export function detectFormat({ buffer, contentType = "", url = "" }) {
-  assertBuffer(buffer, "來源檔案");
-  if (buffer.length === 0) throw new Error("來源檔案為空，無法判斷格式");
+function contentTypeFormatHint(contentType) {
+  const normalized = String(contentType).split(";", 1)[0].trim().toLowerCase();
+  if (normalized === "application/gpx+xml") return "gpx";
+  if (normalized === "application/vnd.google-earth.kml+xml") return "kml";
+  if (normalized === "application/vnd.google-earth.kmz") return "kmz";
+  if (normalized === "application/geo+json" || normalized === "application/json") return "geojson";
+  return "";
+}
 
-  const normalizedContentType = String(contentType).split(";", 1)[0].trim().toLowerCase();
-  const text = buffer.subarray(0, Math.min(buffer.length, 16_384)).toString("utf8")
-    .replace(/^\uFEFF/, "").trimStart();
-  if (normalizedContentType.includes("html")
-    || /^(?:<!doctype\s+html\b|<html\b)/i.test(text)) {
-    throw new Error("來源回應為 HTML，不是支援的軌跡格式");
-  }
-  if (buffer.length >= 4 && buffer.readUInt32LE(0) === ZIP_SIGNATURES.localFile) return "kmz";
-  if (/<(?:[\w-]+:)?gpx\b/i.test(text)) return "gpx";
-  if (/<(?:[\w-]+:)?kml\b/i.test(text)) return "kml";
-  if (text.startsWith("{") || text.startsWith("[")) return "geojson";
-
-  if (normalizedContentType === "application/gpx+xml") return "gpx";
-  if (normalizedContentType === "application/vnd.google-earth.kml+xml") return "kml";
-  if (normalizedContentType === "application/vnd.google-earth.kmz") return "kmz";
-  if (normalizedContentType === "application/geo+json" || normalizedContentType === "application/json") {
-    return "geojson";
-  }
-
+function urlFormatHint(url) {
   let pathname;
   try {
     pathname = new URL(String(url)).pathname.toLowerCase();
@@ -336,7 +518,47 @@ export function detectFormat({ buffer, contentType = "", url = "" }) {
   if (pathname.endsWith(".kml")) return "kml";
   if (pathname.endsWith(".kmz")) return "kmz";
   if (pathname.endsWith(".geojson") || pathname.endsWith(".json")) return "geojson";
-  throw new Error("無法判斷來源軌跡格式");
+  return "";
+}
+
+function detectContentFormat(buffer) {
+  if (buffer.length >= 4 && buffer.readUInt32LE(0) === ZIP_SIGNATURES.localFile) return "kmz";
+  const text = buffer.toString("utf8").replace(/^\uFEFF/, "").trimStart();
+  if (/^(?:<!doctype\s+html\b|<html\b)/i.test(text)) {
+    throw new Error("來源回應為 HTML，不是支援的軌跡格式");
+  }
+  if (text.startsWith("<")) {
+    const root = parseXmlDocument(text, "來源");
+    const rootName = xmlLocalName(root);
+    if (rootName === "gpx" || rootName === "kml") return rootName;
+    throw new Error(`來源 XML 根節點 ${rootName} 不是 GPX 或 KML 格式`);
+  }
+  if (text.startsWith("{") || text.startsWith("[")) {
+    parseGeoJsonSegments(text);
+    return "geojson";
+  }
+  throw new Error("無法由實際內容判斷來源軌跡格式");
+}
+
+export function detectFormat({ buffer, contentType = "", url = "" }) {
+  assertBuffer(buffer, "來源檔案");
+  if (buffer.length === 0) throw new Error("來源檔案為空，無法判斷格式");
+
+  const normalizedContentType = String(contentType).split(";", 1)[0].trim().toLowerCase();
+  if (normalizedContentType.includes("html")) {
+    throw new Error("來源回應為 HTML，不是支援的軌跡格式");
+  }
+  const sourceFormat = detectContentFormat(buffer);
+  const hints = [
+    ["Content-Type", contentTypeFormatHint(contentType)],
+    ["URL", urlFormatHint(url)]
+  ];
+  for (const [label, hint] of hints) {
+    if (hint && hint !== sourceFormat) {
+      throw new Error(`${label} 格式 hint ${hint} 與實際內容 ${sourceFormat} 衝突`);
+    }
+  }
+  return sourceFormat;
 }
 
 export function parseTrackPayload({ buffer, contentType = "", url = "" }) {
