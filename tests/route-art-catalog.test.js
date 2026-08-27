@@ -154,6 +154,15 @@ test("公開軌跡產物鎖定來源與 canonical geometry provenance", () => {
   }
 });
 
+test("站內匯入器維持共用解析與驗證函式的相容匯出", async () => {
+  const importer = await import("../scripts/import-route-art-tracks.mjs");
+  const source = await import("../scripts/lib/route-art-source.mjs");
+
+  assert.strictEqual(importer.parseGpxSegments, source.parseGpxSegments);
+  assert.strictEqual(importer.parseKmlSegments, source.parseKmlSegments);
+  assert.strictEqual(importer.validateSegments, source.validateSegments);
+});
+
 test("KML 匯入依文件順序保留 LineString 段界並忽略 Point 地標", async () => {
   const { parseKmlSegments } = await import("../scripts/import-route-art-tracks.mjs");
   const kml = `<?xml version="1.0"?>
@@ -180,22 +189,27 @@ test("KML 匯入依文件順序保留 LineString 段界並忽略 Point 地標", 
 });
 
 test("KML 匯入允許跨段距離超過 500 公尺", async () => {
-  const { parseKmlSegments } = await import("../scripts/import-route-art-tracks.mjs");
+  const { parseKmlSegments, validateSegments } = await import("../scripts/import-route-art-tracks.mjs");
   const kml = `<kml><Document>
     <LineString><coordinates>121.5000,25.0000 121.5010,25.0010</coordinates></LineString>
     <LineString><coordinates>121.5100,25.0100 121.5110,25.0110</coordinates></LineString>
   </Document></kml>`;
 
-  assert.equal(parseKmlSegments(kml).length, 2);
+  const segments = parseKmlSegments(kml);
+  assert.equal(validateSegments(segments, {
+    sourceId: "cross-segment", maxSegmentGapMeters: 500
+  }).length, 2);
 });
 
 test("KML 匯入拒絕同一 LineString 內達 500 公尺的跳點", async () => {
-  const { parseKmlSegments } = await import("../scripts/import-route-art-tracks.mjs");
+  const { parseKmlSegments, validateSegments } = await import("../scripts/import-route-art-tracks.mjs");
   const kml = `<kml><Document><LineString><coordinates>
     121.5000,25.0000 121.5100,25.0100
   </coordinates></LineString></Document></kml>`;
 
-  assert.throws(() => parseKmlSegments(kml), /500/);
+  assert.throws(() => validateSegments(parseKmlSegments(kml), {
+    sourceId: "same-segment", maxSegmentGapMeters: 500
+  }), /500/);
 });
 
 test("KML 匯入拒絕來源提供的非有限海拔", async () => {
