@@ -7,7 +7,23 @@
   const RouteArtTracks = typeof module === "object" && module.exports
     ? require("./route-art-tracks.js")
     : root.CrownRideAtlas.RouteArtTracks;
-  const api = factory(RouteArt, RouteArtTracks);
+  let RouteArtDownloads;
+  let hasRouteArtDownloads = false;
+  if (typeof module === "object" && module.exports) {
+    try {
+      RouteArtDownloads = require("./route-art-downloads.js");
+      hasRouteArtDownloads = true;
+    } catch (error) {
+      if (!error || error.code !== "MODULE_NOT_FOUND" || !String(error.message).includes("route-art-downloads.js")) {
+        throw error;
+      }
+    }
+  } else {
+    const namespace = root && root.CrownRideAtlas;
+    hasRouteArtDownloads = Boolean(namespace && Object.hasOwn(namespace, "RouteArtDownloads"));
+    RouteArtDownloads = hasRouteArtDownloads ? namespace.RouteArtDownloads : undefined;
+  }
+  const api = factory(RouteArt, RouteArtTracks, RouteArtDownloads, hasRouteArtDownloads);
 
   if (typeof module === "object" && module.exports) {
     module.exports = api;
@@ -16,18 +32,34 @@
   if (root) {
     root.CrownRideAtlas = Object.assign(root.CrownRideAtlas || {}, { RouteArtCatalog: api });
   }
-})(typeof window !== "undefined" ? window : globalThis, function (RouteArt, RouteArtTracks) {
+})(typeof window !== "undefined" ? window : globalThis, function (
+  RouteArt, RouteArtTracks, RouteArtDownloads, hasRouteArtDownloads
+) {
   const mobile01Url = "https://www.mobile01.com/topicdetail.php?f=377&t=5800991";
   const mobile01Author = "CS72";
   const verifiedAt = "2026-08-14";
+  const MOBILE01_ROUTE_SOURCES = Object.freeze({
+    "gps-art-north-taoyuan-raptor": "https://www.strava.com/routes/17223910",
+    "gps-art-fenggui-rabbit": "https://www.strava.com/routes/17581713",
+    "gps-art-taoyuan-red-bull": "https://www.strava.com/activities/2263949784",
+    "gps-art-yilan-cherry-duck": "https://www.strava.com/routes/17035427",
+    "gps-art-tianmu-whale": "https://www.strava.com/routes/16721519",
+    "gps-art-qingpu-cat": "https://www.strava.com/routes/17110234",
+    "gps-art-tainan-lion": "https://www.strava.com/routes/16676205",
+    "gps-art-youth-park-shark": "https://www.strava.com/activities/2241587445",
+    "gps-art-douliu-turtle": "https://www.strava.com/routes/16663550",
+    "gps-art-taoyuan-horse": "https://www.strava.com/routes/16463220",
+    "gps-art-pig-year": "https://www.strava.com/routes/16488963",
+    "gps-art-valentine-love": "https://www.strava.com/routes/16780021"
+  });
 
   const items = [
     { id: "gps-art-north-taoyuan-raptor", name: "北桃迅猛龍", shapeLabel: "迅猛龍", regionName: "桃園市／新北市", activityType: "cycling", activityLabel: "單車", status: "source-only", distanceKm: 101, elevationGainM: 1254, summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「北桃迅猛龍」。", sourcePlatform: "Mobile01", sourceUrl: mobile01Url, verifiedAt },
     { id: "gps-art-fenggui-rabbit", name: "風櫃兔", shapeLabel: "兔", regionId: "taipei", regionName: "台北市", activityType: "cycling", activityLabel: "單車", status: "source-only", distanceKm: 45, elevationGainM: 1420, summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「風櫃兔」。", sourcePlatform: "Mobile01", sourceUrl: mobile01Url, verifiedAt },
     { id: "gps-art-taoyuan-red-bull", name: "桃園紅牛 RED BULL", shapeLabel: "紅牛", regionId: "taoyuan", regionName: "桃園市", activityType: "cycling", activityLabel: "單車", status: "source-only", distanceKm: 45, summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「桃園紅牛 RED BULL」。", sourcePlatform: "Mobile01", sourceUrl: mobile01Url, verifiedAt },
     { id: "gps-art-yilan-cherry-duck", name: "宜蘭櫻桃鴨", shapeLabel: "櫻桃鴨", regionId: "yilan", regionName: "宜蘭縣", activityType: "cycling", activityLabel: "單車", status: "source-only", summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「宜蘭櫻桃鴨」。", sourcePlatform: "Mobile01", sourceUrl: mobile01Url, verifiedAt },
-    { id: "gps-art-tianmu-whale", name: "台北天母鯨魚", shapeLabel: "鯨魚", regionId: "taipei", regionName: "台北市", activityType: "cycling", activityLabel: "單車", status: "source-only", summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「台北天母鯨魚」。", sourcePlatform: "Mobile01", sourceUrl: mobile01Url, verifiedAt },
-    { id: "gps-art-qingpu-cat", name: "桃園青埔小貓", shapeLabel: "小貓", regionId: "taoyuan", regionName: "桃園市", activityType: "cycling", activityLabel: "單車", status: "source-only", summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「桃園青埔小貓」。", sourcePlatform: "Mobile01", sourceUrl: mobile01Url, verifiedAt },
+    { id: "gps-art-tianmu-whale", name: "台北天母鯨魚", shapeLabel: "鯨魚", regionId: "taipei", regionName: "台北市", activityType: "cycling", activityLabel: "單車", status: "source-only", summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「台北天母鯨魚」；保留逆向路段與較適合跑步的警告。", sourcePlatform: "Mobile01", sourceUrl: mobile01Url, verifiedAt },
+    { id: "gps-art-qingpu-cat", name: "桃園青埔小貓", shapeLabel: "小貓", regionId: "taoyuan", regionName: "桃園市", activityType: "cycling", activityLabel: "單車", status: "source-only", summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「桃園青埔小貓」；保留門禁社區、田地／非鋪面與狹窄通道警告。", sourcePlatform: "Mobile01", sourceUrl: mobile01Url, verifiedAt },
     { id: "gps-art-tainan-lion", name: "台南林老獅卡好", shapeLabel: "獅", regionId: "tainan", regionName: "台南市", activityType: "cycling", activityLabel: "單車", status: "source-only", summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「台南林老獅卡好」。", sourcePlatform: "Mobile01", sourceUrl: mobile01Url, verifiedAt },
     { id: "gps-art-youth-park-shark", name: "青年公園有鯊魚", shapeLabel: "鯊魚", regionId: "taipei", regionName: "台北市", activityType: "cycling", activityLabel: "單車", status: "source-only", summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「青年公園有鯊魚」。", sourcePlatform: "Mobile01", sourceUrl: mobile01Url, verifiedAt },
     { id: "gps-art-dadaocheng-lady", name: "大稻埕碼頭姑娘", shapeLabel: "姑娘", regionId: "taipei", regionName: "台北市", activityType: "cycling", activityLabel: "單車", status: "source-only", summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「大稻埕碼頭姑娘」。", sourcePlatform: "Mobile01", sourceUrl: mobile01Url, verifiedAt },
@@ -46,7 +78,12 @@
     { id: "gps-art-yangmingshan-buddha-hand", name: "陽明山佛手", shapeLabel: "佛手", regionName: "台北市／新北市", activityType: "cycling", activityLabel: "單車", status: "source-only", distanceKm: 135, elevationGainLabel: "3,000 m 以上", summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「陽明山佛手」。", sourcePlatform: "Reddit r/Strava", sourceUrl: "https://www.reddit.com/r/Strava/comments/1d3qhxn/waving_hello_from_taipei/", verifiedAt }
   ].map(item => {
     const catalogItem = item.sourcePlatform === "Mobile01"
-      ? Object.assign({}, item, { author: mobile01Author })
+      ? Object.assign({}, item, {
+        author: mobile01Author,
+        ...(MOBILE01_ROUTE_SOURCES[item.id]
+          ? { routeSourceUrl: MOBILE01_ROUTE_SOURCES[item.id], routeSourceAccess: "login-required" }
+          : {})
+      })
       : item;
     const track = RouteArtTracks && RouteArtTracks[catalogItem.id];
     return track && RouteArt.hasUsableSegments(track.segments)
@@ -54,7 +91,17 @@
       : catalogItem;
   });
 
-  items.forEach(item => RouteArt.validateItem(item));
+  if (hasRouteArtDownloads && (!RouteArtDownloads || typeof RouteArtDownloads !== "object"
+    || Array.isArray(RouteArtDownloads))) {
+    throw new TypeError("RouteArtDownloads 必須是物件");
+  }
+  const downloadItems = hasRouteArtDownloads ? Object.values(RouteArtDownloads) : [];
+  const catalog = items.concat(downloadItems);
+  if (new Set(catalog.map(item => item && item.id)).size !== catalog.length) {
+    throw new TypeError("GPS Art catalog 不可有重複 id");
+  }
+
+  catalog.forEach(item => RouteArt.validateItem(item));
 
   function deepFreeze(value) {
     if (!value || typeof value !== "object" || Object.isFrozen(value)) return value;
@@ -63,5 +110,5 @@
     return value;
   }
 
-  return deepFreeze(items);
+  return deepFreeze(catalog);
 });

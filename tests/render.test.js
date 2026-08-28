@@ -271,7 +271,7 @@ test("路線美學顯示來源卡且只有 track-ready 可下載 GPX", () => {
   });
 });
 
-test("路線美學提供四個篩選、aria-live 結果與空結果清除操作", () => {
+test("路線美學提供五個篩選、aria-live 結果與空結果清除操作", () => {
   let nextFilter = null;
   const page = Render.routeArtPage(fakeDocument(), {
     routeArt: [fixtureArt({ activityType: "cycling", activityLabel: "單車" })],
@@ -285,7 +285,7 @@ test("路線美學提供四個篩選、aria-live 結果與空結果清除操作"
   const result = nodes.find(node => node.attributes && node.attributes["aria-live"] === "polite");
   const clear = nodes.find(node => node.name === "button" && node.textContent === "顯示全部作品");
 
-  assert.deepEqual(filters.map(node => node.dataset.artFilter), ["all", "cycling", "foot", "track-ready"]);
+  assert.deepEqual(filters.map(node => node.dataset.artFilter), ["all", "cycling", "foot", "downloadable", "track-ready"]);
   assert.equal(result.textContent, "目前顯示 0 件作品");
   assert.ok(clear);
   clear.handlers.click();

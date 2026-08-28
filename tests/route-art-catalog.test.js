@@ -11,11 +11,53 @@ const Tracks = require("../js/data/route-art-tracks.js");
 const Data = require("../js/data/routes.js");
 const TrackManifest = require("../js/data/track-manifest.js");
 
-function loadBrowserCatalog(routeArtTracks) {
+function loadBrowserCatalog(routeArtTracks, routeArtDownloads) {
   const source = fs.readFileSync(require.resolve("../js/data/route-art-catalog.js"), "utf8");
-  const browserWindow = { CrownRideAtlas: { RouteArt, RouteArtTracks: routeArtTracks } };
+  const browserWindow = {
+    CrownRideAtlas: {
+      RouteArt,
+      RouteArtTracks: routeArtTracks,
+      ...(routeArtDownloads === undefined ? {} : { RouteArtDownloads: routeArtDownloads })
+    }
+  };
   vm.runInNewContext(source, { window: browserWindow, globalThis: browserWindow });
   return browserWindow.CrownRideAtlas.RouteArtCatalog;
+}
+
+function loadNodeCatalog(routeArtDownloads, { downloadsPresent = true } = {}) {
+  const source = fs.readFileSync(require.resolve("../js/data/route-art-catalog.js"), "utf8");
+  const module = { exports: {} };
+  const missingModule = Object.assign(new Error("Cannot find module './route-art-downloads.js'"), {
+    code: "MODULE_NOT_FOUND"
+  });
+  vm.runInNewContext(source, {
+    module,
+    require(request) {
+      if (request === "../core/route-art.js") return RouteArt;
+      if (request === "./route-art-tracks.js") return Tracks;
+      if (request === "./route-art-downloads.js") {
+        if (!downloadsPresent) throw missingModule;
+        return routeArtDownloads;
+      }
+      throw new Error(`unexpected require: ${request}`);
+    },
+    globalThis: {}
+  });
+  return module.exports;
+}
+
+function sourceDownloadFixture() {
+  return {
+    id: "gps-art-shapemiles-guitar", name: "台北 Guitar", shapeLabel: "吉他",
+    regionId: "taipei", regionName: "台北市", activityType: "running", activityLabel: "跑步",
+    status: "source-download", distanceKm: 11.3, summary: "來源端驗證摘要。",
+    sourcePlatform: "ShapeMiles",
+    sourceUrl: "https://shapemiles.com/en/city/taipei/art-gps-routes/guitar-11-3km",
+    externalDownloadUrl: "https://shapemiles.com/api/art-routes/taipei/guitar-11-3km/gpx",
+    verifiedAt: "2026-08-28", sourceFormat: "gpx", sourceSha256: "a".repeat(64),
+    segmentCount: 1, totalPoints: 200,
+    bounds: { minLat: 24.9, maxLat: 25.1, minLng: 121.4, maxLng: 121.6 }
+  };
 }
 
 function createFetchResponse(body, { url, contentType = "text/plain", status = 200 } = {}) {
@@ -53,7 +95,9 @@ test("圖鑑保留來源已明示的數值與作者，且不把下限當作精�
     author: "CS72",
     sourcePlatform: "Mobile01",
     sourceUrl: "https://www.mobile01.com/topicdetail.php?f=377&t=5800991",
-    verifiedAt: "2026-08-14"
+    verifiedAt: "2026-08-14",
+    routeSourceUrl: "https://www.strava.com/routes/17223910",
+    routeSourceAccess: "login-required"
   });
   assert.equal(byId.get("gps-art-xinzhuang-tiger").author, "Heigo Chang");
   assert.equal(byId.get("gps-art-yangmingshan-buddha-hand").distanceKm, 135);
@@ -162,6 +206,60 @@ test("公開軌跡產物鎖定來源與 canonical geometry provenance", () => {
     assert.deepEqual(segmentPointCounts, expected.segmentPointCounts, id);
     assert.equal(segmentPointCounts.reduce((total, count) => total + count, 0), expected.totalPoints, id);
   }
+});
+
+test("正式圖鑑的三種狀態反映目前驗證結果", () => {
+  assert.deepEqual(RouteArt.stats(Catalog), {
+    total: 22, trackReady: 2, sourceDownload: 0, sourceOnly: 20
+  });
+  assert.equal(Data.routes.length, 68);
+  assert.equal(new Set(Object.values(TrackManifest).map(entry => entry.bundleId)).size, 23);
+});
+
+test("下載摘要模組缺失時保留 22 件，存在時才合併並驗證每一筆", () => {
+  const withoutDownloads = loadBrowserCatalog(Tracks);
+  const validDownload = sourceDownloadFixture();
+  const withDownload = loadBrowserCatalog(Tracks, { [validDownload.id]: validDownload });
+
+  assert.equal(withoutDownloads.length, 22);
+  assert.equal(withDownload.length, 23);
+  assert.equal(withDownload.find(item => item.id === validDownload.id).status, "source-download");
+  assert.throws(() => loadBrowserCatalog(Tracks, {
+    "gps-art-shapemiles-malformed": { ...validDownload, id: "gps-art-shapemiles-malformed", sourceSha256: "bad" }
+  }), /SHA-256/);
+});
+
+test("Node 載入器只對不存在的下載摘要 fail-soft，malformed 摘要照常失敗", () => {
+  const validDownload = sourceDownloadFixture();
+  assert.equal(loadNodeCatalog(undefined, { downloadsPresent: false }).length, 22);
+  assert.equal(loadNodeCatalog({ [validDownload.id]: validDownload }).length, 23);
+  assert.throws(() => loadNodeCatalog(null), /RouteArtDownloads/);
+});
+
+test("十二件 CS72 作品保留登入限定的精確 Strava 原始路線", () => {
+  const expectedUrls = {
+    "gps-art-north-taoyuan-raptor": "https://www.strava.com/routes/17223910",
+    "gps-art-fenggui-rabbit": "https://www.strava.com/routes/17581713",
+    "gps-art-taoyuan-red-bull": "https://www.strava.com/activities/2263949784",
+    "gps-art-yilan-cherry-duck": "https://www.strava.com/routes/17035427",
+    "gps-art-tianmu-whale": "https://www.strava.com/routes/16721519",
+    "gps-art-qingpu-cat": "https://www.strava.com/routes/17110234",
+    "gps-art-tainan-lion": "https://www.strava.com/routes/16676205",
+    "gps-art-youth-park-shark": "https://www.strava.com/activities/2241587445",
+    "gps-art-douliu-turtle": "https://www.strava.com/routes/16663550",
+    "gps-art-taoyuan-horse": "https://www.strava.com/routes/16463220",
+    "gps-art-pig-year": "https://www.strava.com/routes/16488963",
+    "gps-art-valentine-love": "https://www.strava.com/routes/16780021"
+  };
+
+  for (const [id, routeSourceUrl] of Object.entries(expectedUrls)) {
+    const item = Catalog.find(candidate => candidate.id === id);
+    assert.equal(item.routeSourceUrl, routeSourceUrl, id);
+    assert.equal(item.routeSourceAccess, "login-required", id);
+    assert.equal(item.status, "source-only", id);
+  }
+  assert.match(Catalog.find(item => item.id === "gps-art-qingpu-cat").summary, /門禁社區|田地|非鋪面|狹窄通道/);
+  assert.match(Catalog.find(item => item.id === "gps-art-tianmu-whale").summary, /逆向|跑步/);
 });
 
 test("站內匯入器維持共用解析與驗證函式的相容匯出", async () => {

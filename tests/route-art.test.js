@@ -20,9 +20,59 @@ test("GPS Art 篩選不修改來源陣列", () => {
 test("GPS Art 統計區分總數與站內軌跡", () => {
   assert.deepEqual(RouteArt.stats([
     { status: "track-ready" },
+    { status: "source-download" },
     { status: "source-only" },
     { status: "source-only" }
-  ]), { total: 3, trackReady: 1, sourceOnly: 2 });
+  ]), { total: 4, trackReady: 1, sourceDownload: 1, sourceOnly: 2 });
+});
+
+test("GPS Art 篩選區分站內與來源端下載", () => {
+  const items = [
+    { id: "ready", activityType: "walking", status: "track-ready" },
+    { id: "external", activityType: "running", status: "source-download" },
+    { id: "source", activityType: "cycling", status: "source-only" }
+  ];
+
+  assert.deepEqual(RouteArt.FILTERS, ["all", "cycling", "foot", "downloadable", "track-ready"]);
+  assert.deepEqual(RouteArt.filter(items, "downloadable").map(item => item.id), ["ready", "external"]);
+  assert.deepEqual(RouteArt.filter(items, "track-ready").map(item => item.id), ["ready"]);
+});
+
+test("來源端下載狀態要求摘要、禁止站內座標並限制下載網址", () => {
+  const item = {
+    id: "taipei-guitar", name: "台北 Guitar", activityType: "running",
+    status: "source-download", sourceUrl: "https://shapemiles.com/en/city/taipei/art-gps-routes/guitar-11-3km",
+    sourcePlatform: "ShapeMiles", verifiedAt: "2026-08-28",
+    externalDownloadUrl: "https://shapemiles.com/api/art-routes/taipei/guitar-11-3km/gpx",
+    sourceFormat: "gpx", sourceSha256: "a".repeat(64), segmentCount: 1, totalPoints: 200,
+    bounds: { minLat: 24.9, maxLat: 25.1, minLng: 121.4, maxLng: 121.6 }
+  };
+
+  assert.doesNotThrow(() => RouteArt.validateItem(item));
+  assert.throws(() => RouteArt.validateItem({
+    ...item,
+    segments: [[{ lat: 25, lng: 121 }, { lat: 25.01, lng: 121.01 }]]
+  }), /source-download/);
+  assert.throws(() => RouteArt.validateItem({
+    ...item, externalDownloadUrl: "https://evil.example/file.gpx"
+  }), /下載來源/);
+  assert.throws(() => RouteArt.validateItem({ ...item, sourceSha256: "bad" }), /SHA-256/);
+});
+
+test("來源限定作品不得攜帶下載摘要，原始路線連結必須是受限 HTTPS", () => {
+  const item = {
+    id: "source", name: "來源作品", activityType: "cycling", status: "source-only",
+    sourceUrl: "https://example.com/source", sourcePlatform: "測試", verifiedAt: "2026-08-28"
+  };
+
+  assert.throws(() => RouteArt.validateItem({ ...item, sourceFormat: "gpx" }), /source-only/);
+  assert.doesNotThrow(() => RouteArt.validateItem({
+    ...item,
+    routeSourceUrl: "https://www.strava.com/routes/17223910",
+    routeSourceAccess: "login-required"
+  }));
+  assert.throws(() => RouteArt.validateItem({ ...item, routeSourceUrl: "http://example.com" }), /routeSourceUrl/);
+  assert.throws(() => RouteArt.validateItem({ ...item, routeSourceAccess: "private" }), /routeSourceAccess/);
 });
 
 test("GPS Art schema 拒絕非 HTTPS 與假的 source-only 座標", () => {
