@@ -7,7 +7,7 @@
 - 主題與單一工作：台灣公路車 GPS Art 圖鑑，供騎士快速辨識軌跡資料狀態，並選擇站內下載、來源端下載或查閱來源等安全動作。
 - 色彩：沿用墨色 `#24271F`、柔墨 `#5F6258`、紙張 `#EEE9DC`、浮起紙面 `#F7F3E9`、鍵盤焦點 `#1A5F8A`，主題強調色繼續由四套領騎衫 CSS Variable 提供；不增加另一套品牌色。
 - 字體：卡片標題沿用 `Noto Serif TC / Yu Mincho / Georgia`；內文與按鈕沿用 `Noto Sans TC / PingFang TC / Microsoft JhengHei`；狀態、資料與檔案註記沿用 `IBM Plex Mono / Consolas`。
-- 版面：桌機維持兩欄卡片與左右「標本／說明」分區；72rem 以下卡片改為上下堆疊；40rem 以下圖鑑、卡片與動作皆為單欄，五個篩選在兩欄中換行，320px／390px 不產生水平溢位。
+- 版面：桌機維持兩欄卡片與左右「標本／說明」分區；72rem 以下卡片改為上下堆疊；40rem 以下圖鑑、卡片與動作皆為單欄，五個篩選在兩欄中換行。支援界線是最小 320 CSS client px；Windows 非 overlay scrollbar 下的 320 outer px 只有 305 client px，受既有全站根寬限制，不能宣稱無水平溢位。
 
   ```text
   桌機  [ 路線標本／真實地圖 ][ 狀態章・名稱・資料・安全動作 ]
@@ -29,7 +29,7 @@
 
 ### RED
 
-- 先在 `tests/css.test.js` 加入六組契約，覆蓋來源端狀態 selector、非色彩辨識、長網址斷行、五個篩選換行與 44px、390px／320px 收縮、track/source 一致高度、焦點及 reduced-motion。
+- 先在 `tests/css.test.js` 加入六組契約，覆蓋來源端狀態 selector、非色彩辨識、長網址斷行、五個篩選換行與 44px、40rem 以下及最小 320 CSS client px 的收縮規則、track/source 一致高度、焦點及 reduced-motion。
 - `node --test tests/css.test.js`：12/17 通過、5 項失敗。
 - 失敗原因符合預期：缺少 `.art-card__status--source-download`、`.art-card__external-note`、篩選按鈕收縮屬性、40rem 卡片寬度契約與圖鑑 scoped reduced-motion。
 
@@ -63,9 +63,11 @@
 | 安全掃描 | 本任務三個程式檔沒有 Authorization、Bearer、私人金鑰或 API key 樣式字串。 |
 | 範圍 | 只改 `css/layout.css`、`css/components.css`、`tests/css.test.js`；另建立本報告。 |
 
-本任務的自動測試驗證 CSS 契約與 synthetic `source-download` Render 行為，但沒有控制 Chrome，因此不宣稱真瀏覽器的 computed layout、觸控或四主題視覺已人工確認。controller 後續需在 Chrome 查核：
+controller 已使用 Windows in-app Browser 補做真瀏覽器檢查，證據界線如下：
 
-- 390px 與 320px 的 `document.documentElement.scrollWidth === clientWidth`，五個篩選皆可見且換行，computed `min-height` 至少 44px。
-- 鍵盤焦點在四套領騎衫主題下清楚可見，狀態章不只靠色彩，長來源網址不撐開卡片。
-- production 只能看到 2 張站內軌跡與 20 張來源標本，不能宣稱存在來源端下載卡片；`source-download` 的視覺只能用受控 synthetic fixture 驗證。
-- 不使用登入中的瀏覽器狀態繞過來源平台限制，也不把跨來源下載成功列為本任務證據。
+- 390 outer px：`clientWidth = 375`、`scrollWidth = 375`，無水平溢位。
+- 335 outer px：`clientWidth = 320`、`scrollWidth = 320`，卡片寬 288px，篩選按鈕高度 47.6px，無水平溢位且符合至少 44px。
+- 320 outer px：`clientWidth = 305`、`scrollWidth = 320`，有 15px 水平差。根因是本任務前已存在的 `base.css` `html { min-width: 20rem; }`，在 Windows 非 overlay scrollbar 下，320 outer px 扣除 15px scrollbar 後低於 320 CSS client px；不是本次 CSS diff 引入。Task 5 不擴大範圍修改 `base.css`，因此準確支援界線為最小 320 CSS client px，而非所有環境的 320 outer px。
+- controller 逐一切換 `yellow`、`green`、`polka`、`white` 四套領騎衫主題；五個篩選皆維持可見與換行，啟用狀態可辨識，鍵盤 `:focus-visible` 外框清楚可見。
+- production 實際只有 2 張 `track-ready` 與 20 張 `source-only`，沒有 `source-download`。因此真瀏覽器證據不冒稱已檢視來源端下載卡片；該 selector 與視覺契約只由受控 synthetic fixture 及自動測試覆蓋。
+- 驗證未使用登入狀態繞過來源平台限制，也未把跨來源下載成功列為本任務證據。
