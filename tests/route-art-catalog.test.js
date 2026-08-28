@@ -4,6 +4,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const { createHash } = require("node:crypto");
 const fs = require("node:fs");
+const os = require("node:os");
 const path = require("node:path");
 const vm = require("node:vm");
 const RouteArt = require("../js/core/route-art.js");
@@ -53,6 +54,30 @@ function loadNodeCatalog(routeArtDownloads, { downloadsPresent = true } = {}) {
     globalThis: {}
   });
   return module.exports;
+}
+
+function createIsolatedCatalogGraph(t, routeArtDownloadsSource) {
+  const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "crown-route-art-catalog-"));
+  const fixtureCatalogPath = path.join(fixtureRoot, "js", "data", "route-art-catalog.js");
+  const fixtureDataPath = path.dirname(fixtureCatalogPath);
+  const sourceRoot = path.join(__dirname, "..");
+  fs.mkdirSync(path.join(fixtureRoot, "js", "core"), { recursive: true });
+  fs.mkdirSync(fixtureDataPath, { recursive: true });
+  for (const relativePath of [
+    path.join("js", "core", "route-art.js"),
+    path.join("js", "data", "route-art-catalog.js"),
+    path.join("js", "data", "route-art-tracks.js")
+  ]) {
+    fs.copyFileSync(path.join(sourceRoot, relativePath), path.join(fixtureRoot, relativePath));
+  }
+  if (routeArtDownloadsSource !== undefined) {
+    fs.writeFileSync(path.join(fixtureDataPath, "route-art-downloads.js"), routeArtDownloadsSource, "utf8");
+  }
+  t.after(() => {
+    delete require.cache[fixtureCatalogPath];
+    fs.rmSync(fixtureRoot, { recursive: true, force: true });
+  });
+  return fixtureCatalogPath;
 }
 
 function sourceDownloadFixture() {
@@ -246,22 +271,17 @@ test("Node 載入器只對不存在的下載摘要 fail-soft，malformed 摘要�
 });
 
 test("Node 只在精確下載摘要目標不存在時 fail-soft", t => {
-  const catalogPath = require.resolve("../js/data/route-art-catalog.js");
-  const downloadPath = path.join(__dirname, "..", "js", "data", "route-art-downloads.js");
-  assert.equal(fs.existsSync(downloadPath), false);
-  t.after(() => {
-    delete require.cache[catalogPath];
-    fs.rmSync(downloadPath, { force: true });
-  });
-
-  fs.writeFileSync(downloadPath,
+  const productionDownloadPath = path.join(__dirname, "..", "js", "data", "route-art-downloads.js");
+  const missingTargetCatalogPath = createIsolatedCatalogGraph(t);
+  const nestedMissingCatalogPath = createIsolatedCatalogGraph(t,
     'module.exports = require("./fixture-nested/route-art-downloads.js");\n',
-    "utf8"
   );
-  delete require.cache[catalogPath];
-  assert.throws(() => require(catalogPath), error => error
+  assert.equal(fs.existsSync(productionDownloadPath), false);
+  assert.equal(require(missingTargetCatalogPath).length, 22);
+  assert.throws(() => require(nestedMissingCatalogPath), error => error
     && error.code === "MODULE_NOT_FOUND"
     && /fixture-nested[\\/]route-art-downloads\.js/.test(error.message));
+  assert.equal(fs.existsSync(productionDownloadPath), false);
 });
 
 test("淺凍結下載摘要仍會深度凍結 bounds", () => {

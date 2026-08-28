@@ -68,3 +68,22 @@
 | 正式下載摘要／暫存檔 | `route-art-downloads.js` 不存在，`.tmp` 為 0 |
 
 此次 fix 未改變正式 catalog 22 = 2／0／20，沒有修改 routes、manifest 或既有 GPS Art track，亦未新增 index script 或使用憑證。
+
+## Fix round 2（2026-08-28）
+
+### Characterization／隔離修正
+
+- Characterization：round 1 的 Node nested-dependency regression 直接把 fixture 寫入正式 `js/data/route-art-downloads.js`，即使有 `t.after` 清理，在平行執行或處理序中斷時仍可能污染 production path。
+- 修正：改以 `mkdtemp` 建立 OS 暫存目錄中的完整 module graph，複製 `route-art.js`、`route-art-tracks.js`、`route-art-catalog.js`，只在隔離的 `js/data/route-art-downloads.js` 建立 nested-missing fixture。
+- 真實 Node behavior：隔離圖中精確目標缺失時回退為 22 件；精確目標存在但要求不存在的 `./fixture-nested/route-art-downloads.js` 時，`MODULE_NOT_FOUND` 會傳遞。測試前後均確認 production `js/data/route-art-downloads.js` 不存在。
+
+### 驗證
+
+| 查核 | 結果 |
+|---|---|
+| `node --test tests/route-art-catalog.test.js` | 23/23 pass |
+| focused GPS Art／render／資料／軌跡／頁面測試 | 72/72 pass |
+| `npm run verify` | exit 0；370/370 tests pass；23 個 bundle／68 條路線驗證通過 |
+| 正式下載摘要／暫存檔 | `route-art-downloads.js` 不存在，`.tmp` 為 0 |
+
+此次 fix 僅調整測試隔離；production fail-soft／hard-fail 契約、正式 catalog 22 = 2／0／20、routes、manifest 與既有 GPS Art track 均未改變。
