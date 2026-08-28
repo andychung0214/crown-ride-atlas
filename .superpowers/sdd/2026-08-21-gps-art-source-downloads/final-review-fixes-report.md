@@ -1,17 +1,18 @@
 # GPS Art Source Downloads Whole-plan 最終審查修正報告
 
-日期：2026-08-28
+日期：2026-08-29
 工作樹：`F:\Codex\Projects\crown-ride-atlas\.worktrees\feature-bike-parts-gps-art`
 
 ## 結果摘要
 
-Whole-plan review `8bc75de..11a3ddb` 的 2 項 Important 與 1 項 Minor 已在唯一 final fix wave 處理：站內 GPS Art 匯入器改用受限下載；正式軌跡輸出改為同目錄唯一暫存檔加原子 rename；設計規格第 3 行尾端空白已移除。沒有執行 live fetch、沒有重產 geometry，也沒有修改正式 `route-art-tracks.js`、路線、manifest、catalog 或下載摘要產物。
+Whole-plan review `8bc75de..11a3ddb` 的 2 項 Important 與 1 項 Minor 已在唯一 final fix wave 處理：站內 GPS Art 匯入器改用受限下載；正式軌跡輸出改為同目錄唯一暫存檔加原子 rename；設計規格第 3 行尾端空白已移除。後續 scoped re-review 找到 deadline timer `unref` 造成 entrypoint 假成功退出；使用者已核准超出單次修正波上限的窄範圍例外，只移除 `unref` 並加入真實 child-process liveness 回歸。沒有執行 live fetch、沒有重產 geometry，也沒有修改正式 `route-art-tracks.js`、路線、manifest、catalog 或下載摘要產物。
 
 ## 根因
 
 1. `downloadSource` 只驗證初始與平台自動跟隨後的 `response.url`，但呼叫 `fetch` 時沒有 `redirect: "manual"`、abort signal 或串流大小 gate；`arrayBuffer()` 可無上限等待並配置完整 body，redirect／HTTP／讀取失敗也沒有一致 cleanup。`describeDownloadError` 另會輸出上游任意 `message`／`cause`。
 2. `importTracks` 直接 `writeFile(OUTPUT_PATH, ...)`，中途中斷可能破壞既有正式產物，且沒有可在暫存目錄驗證 write／rename failure 的窄 seam。
 3. 設計規格日期行保留 Markdown hard-break 的兩個尾端空白，造成 whole-branch `git diff --check` 失敗。
+4. deadline timer 呼叫 `unref` 後不再維持事件迴圈；當 entrypoint 的 fetch 永不 settle 且沒有其他 referenced handle 時，Node 可在 deadline 觸發前以 0 結束。既有單元測試的 `within` timer 自身維持事件迴圈，因此遮蔽了這個真實 CLI liveness 缺陷。
 
 ## 分組 TDD RED → GREEN
 
@@ -39,13 +40,20 @@ Whole-plan review `8bc75de..11a3ddb` 的 2 項 Important 與 1 項 Minor 已在�
 - 移除 `docs/superpowers/specs/2026-08-21-bike-anatomy-and-gps-art-downloads-design.md` 第 3 行尾端兩個空白。
 - branch-level gate 使用 reviewer 指定基準：`git diff --check 8bc75de..HEAD`。
 
+### 4. 使用者核准的 entrypoint liveness 窄例外
+
+- Ruling: user approved one narrowly scoped exception beyond the final-review one-wave cap to remove unref and add child-process liveness regression; no other code scope. Cost if wrong: process behavior may still differ on some Node versions, but it avoids known false-success exits.
+- RED：真實 child process 以 `--import` 離線注入 never-settling fetch，直接執行匯入器 entrypoint；預期受控 exit 1，修正前實際 exit 0，因此測試精確失敗。父測試的 5 秒 guard 只負責偵測 hang，不替 child 維持 deadline。
+- GREEN：只移除 deadline timer 的 `unref`；同一測試在 deadline 後收到受控「來源下載逾時」與整批失敗訊息，以 exit 1 結束，1 項通過、0 項失敗、31 項略過。
+
 ## 最終驗證
 
 | 命令／guard | 結果 |
 |---|---|
 | `node --check scripts/import-route-art-tracks.mjs` | exit 0 |
-| `node --test tests/route-art-catalog.test.js tests/route-art-source.test.js tests/route-art-downloads.test.js` | 72 項通過、0 項失敗、0 項略過 |
-| `npm run verify` | exit 0；386 項通過、0 項失敗；23 個 bundle／68 條路線 |
+| `node --test tests/route-art-catalog.test.js tests/route-art-source.test.js tests/route-art-downloads.test.js` | 73 項通過、0 項失敗、0 項略過 |
+| GPS Art focused 12 檔集合 | 192 項通過、0 項失敗、0 項略過 |
+| `npm run verify` | exit 0；387 項通過、0 項失敗；23 個 bundle／68 條路線 |
 | `git diff --check 8bc75de..HEAD` | exit 0，whole branch 無空白錯誤 |
 | 受保護 diff／hash guard | `route-art-tracks.js`、routes、manifest、正式 tracks 與 catalog 無 final-wave diff；22／2／0／20、23／68 不變 |
 | 正式下載摘要 artifact guard | `js/data/route-art-downloads.js` 不存在；相符 temp 為 0 |
@@ -59,10 +67,12 @@ Whole-plan review `8bc75de..11a3ddb` 的 2 項 Important 與 1 項 Minor 已在�
 | Important：匯入器 restricted fetch | manual redirect、3 跳上限、逐跳 URL policy、單一 fetch/body timeout、stream-only 5 MB cap、全早退 cleanup、受控錯誤；惡意 redirect、stall、超大標頭／chunk、cleanup、options 與 Google query 行為測試均通過 |
 | Important：正式輸出非原子 | 同目錄 PID＋UUID temp、exclusive write、rename、失敗 cleanup；all-success／write failure／rename failure 暫存目錄測試均通過，舊產物保留 |
 | Minor：規格 trailing whitespace | 第 3 行尾端空白移除，branch-level `git diff --check 8bc75de..HEAD` 通過 |
+| Residual Important：deadline timer `unref` 假成功退出 | 使用者核准窄例外；真實 entrypoint child-process RED 證明 exit 0，移除 `unref` 後在受控 deadline 路徑 exit 1；production 程式碼沒有其他範圍 |
 
 ## Concerns 與證據界線
 
 - 依 controller 指示，本輪沒有重新執行 ShapeMiles 或既有 KML／GPX live fetch；先前 19/19 匿名 ShapeMiles 端點 HTTP 401、0 件 `source-download` 的 ruling 不變。
 - 受控錯誤刻意不顯示底層 TLS／fetch／reader 任意訊息；這降低 CLI 現場診斷細節，但避免發布 Cookie、Authorization、權杖或來源端敏感文字。程式內 `SourceDownloadError.code` 保留穩定分類供呼叫端判斷。
 - cleanup 採 fire-and-forget `cancel()` 且吞掉 cleanup 自身失敗，確保主要驗證錯誤不被次要清理錯誤覆蓋；行為測試證明可取消 body 的路徑都有呼叫 cleanup。
+- child-process 回歸在測試 preload 中把 deadline 壓縮至 30 ms，沿用真實 `Timeout` ref 行為但不等待 production 的 30 秒；不同 Node 版本的處理序時序仍可能略有差異，受控非零退出契約由測試固定。
 - 沒有 push、merge、Pages workflow 或公開站重驗；本報告不宣稱部署完成。

@@ -2,6 +2,7 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const { spawn } = require("node:child_process");
 const { createHash } = require("node:crypto");
 const fs = require("node:fs");
 const fsPromises = require("node:fs/promises");
@@ -507,6 +508,48 @@ test("站內下載器最多跟隨三次核准重新導向並清理每個 body", 
   }), /3|重新導向|redirect/i);
   assert.equal(calls, 4);
   assert.ok(tracked.every(item => item.wasCancelled()));
+});
+
+test("匯入器 entrypoint 在 never-settling fetch 的 deadline 後受控非零退出", async () => {
+  const importerPath = path.join(__dirname, "..", "scripts", "import-route-art-tracks.mjs");
+  const preloadSource = [
+    "const nativeSetTimeout = globalThis.setTimeout;",
+    "globalThis.setTimeout = (callback, delay, ...args) =>",
+    "  nativeSetTimeout(callback, Math.min(Number(delay) || 0, 30), ...args);",
+    "globalThis.fetch = async () => new Promise(() => {});"
+  ].join("\n");
+  const preloadUrl = `data:text/javascript,${encodeURIComponent(preloadSource)}`;
+
+  const result = await new Promise((resolvePromise, rejectPromise) => {
+    const child = spawn(process.execPath, ["--import", preloadUrl, importerPath], {
+      stdio: ["ignore", "pipe", "pipe"],
+      windowsHide: true
+    });
+    let stdout = "";
+    let stderr = "";
+    const guard = setTimeout(() => {
+      child.kill();
+      rejectPromise(new Error("匯入器 child process 未在 deadline 後結束"));
+    }, 5_000);
+    child.stdout.setEncoding("utf8");
+    child.stderr.setEncoding("utf8");
+    child.stdout.on("data", chunk => { stdout += chunk; });
+    child.stderr.on("data", chunk => { stderr += chunk; });
+    child.once("error", error => {
+      clearTimeout(guard);
+      rejectPromise(error);
+    });
+    child.once("close", (code, signal) => {
+      clearTimeout(guard);
+      resolvePromise({ code, signal, stdout, stderr });
+    });
+  });
+
+  assert.equal(result.signal, null);
+  assert.equal(result.code, 1);
+  assert.equal(result.stdout, "");
+  assert.match(result.stderr, /來源下載逾時/);
+  assert.match(result.stderr, /必要公開軌跡匯入失敗/);
 });
 
 test("站內下載器的單一逾時涵蓋 stalled fetch 與 stalled body", async () => {

@@ -171,7 +171,6 @@ export async function downloadSource(source, options = {}) {
   const initialUrl = validateSourceUrl(source.url, `${source.id} 初始來源`);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
-  timer.unref?.();
   let currentUrl = initialUrl;
   let redirectCount = 0;
   let response;
