@@ -148,3 +148,80 @@ test("頭管與其餘森林綠車架使用同一條精確規則", () => {
   const declarations = ruleBody(readCss("components.css"), ".bike-parts-page [data-bike-svg] [data-bike-shape=\"head-tube\"]");
   assert.match(declarations, /stroke:\s*#245c43\s*;/);
 });
+
+test("來源端下載狀態以文字、雙線與外連角記號辨識", () => {
+  const css = readCss("components.css");
+  const status = ruleBody(css, ".art-card__status--source-download");
+  const mark = ruleBody(css, ".art-card__status--source-download::after");
+
+  assert.match(status, /border-style:\s*double\s*;/);
+  assert.match(mark, /content:\s*"↗"\s*;/);
+});
+
+test("來源端提示與卡片動作允許長網址在容器內斷行", () => {
+  const css = readCss("components.css");
+  const note = ruleBody(css, ".art-card__external-note");
+  const actionLink = ruleBody(css, ".art-card__actions .text-link");
+
+  assert.match(note, /min-width:\s*0\s*;/);
+  assert.match(note, /max-width:\s*100%\s*;/);
+  assert.match(note, /overflow-wrap:\s*anywhere\s*;/);
+  assert.match(actionLink, /max-width:\s*100%\s*;/);
+  assert.match(actionLink, /overflow-wrap:\s*anywhere\s*;/);
+});
+
+test("五個圖鑑篩選可換行、符合 44px 且有鍵盤焦點", () => {
+  const css = readCss("components.css");
+  const filters = ruleBody(css, ".art-catalog__filters");
+  const button = ruleBody(css, ".art-catalog__filters .button");
+  const focus = ruleBody(css, ".art-catalog__filters .button:focus-visible");
+
+  assert.match(filters, /flex-wrap:\s*wrap\s*;/);
+  assert.match(button, /min-width:\s*0\s*;/);
+  assert.match(button, /min-height:\s*2\.75rem\s*;/);
+  assert.match(button, /max-width:\s*100%\s*;/);
+  assert.match(button, /white-space:\s*normal\s*;/);
+  assert.match(focus, /outline:\s*0\.18rem solid var\(--color-focus\)\s*;/);
+});
+
+test("390px 與 320px 圖鑑維持收縮式單欄且兩欄篩選不溢位", () => {
+  const components = readCss("components.css");
+  const layout = readCss("layout.css");
+  const query = "(max-width: 40rem)";
+  const filters = ruleInMedia(components, query, ".art-catalog__filters");
+  const filterButton = ruleInMedia(components, query, ".art-catalog__filters .button");
+  const card = ruleInMedia(layout, query, ".art-card");
+
+  assert.match(filters, /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)\s*;/);
+  assert.match(filterButton, /width:\s*100%\s*;/);
+  assert.match(filterButton, /min-width:\s*0\s*;/);
+  assert.match(card, /grid-template-columns:\s*minmax\(0,\s*1fr\)\s*;/);
+  assert.match(card, /width:\s*100%\s*;/);
+});
+
+test("站內軌跡與來源標本在桌機、平板、手機使用一致高度", () => {
+  const layout = readCss("layout.css");
+  const desktopMap = ruleBody(layout, ".art-card__map");
+  const desktopSource = ruleBody(layout, ".art-card__source-mark");
+  const tabletMap = ruleInMedia(layout, "(max-width: 72rem)", ".art-card__map");
+  const tabletSource = ruleInMedia(layout, "(max-width: 72rem)", ".art-card__source-mark");
+  const mobileMap = ruleInMedia(layout, "(max-width: 40rem)", ".art-card__map");
+  const mobileSource = ruleInMedia(layout, "(max-width: 40rem)", ".art-card__source-mark");
+
+  assert.match(desktopMap, /min-height:\s*22rem\s*;/);
+  assert.match(desktopSource, /min-height:\s*22rem\s*;/);
+  assert.match(tabletMap, /min-height:\s*18rem\s*;/);
+  assert.match(tabletSource, /min-height:\s*18rem\s*;/);
+  assert.match(mobileMap, /min-height:\s*16rem\s*;/);
+  assert.match(mobileSource, /min-height:\s*16rem\s*;/);
+});
+
+test("減少動態效果時圖鑑按鈕不位移且轉場近乎即時", () => {
+  const declarations = ruleInMedia(
+    readCss("components.css"),
+    "(prefers-reduced-motion: reduce)",
+    ".art-catalog__filters .button"
+  );
+  assert.match(declarations, /transform:\s*none\s*!important\s*;/);
+  assert.match(declarations, /transition-duration:\s*0\.01ms\s*!important\s*;/);
+});
