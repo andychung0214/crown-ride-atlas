@@ -1,13 +1,14 @@
 "use strict";
 
-import { createHash } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
+import { createHash, randomUUID } from "node:crypto";
+import * as fsPromises from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   parseGpxSegments,
   parseKmlSegments,
   parseTrackPayload,
+  LIMITS,
   summarizeTrack,
   validateSegments
 } from "./lib/route-art-source.mjs";
@@ -40,6 +41,55 @@ export const ALLOWED_SOURCE_HOSTS = Object.freeze([
 ]);
 
 const OUTPUT_PATH = resolve(dirname(fileURLToPath(import.meta.url)), "../js/data/route-art-tracks.js");
+const REDIRECT_STATUSES = Object.freeze(new Set([301, 302, 303, 307, 308]));
+const MAX_REDIRECTS = 3;
+const DEFAULT_TIMEOUT_MS = 15_000;
+const MAX_TIMEOUT_MS = 60_000;
+const DEFAULT_FS = Object.freeze({
+  mkdir: fsPromises.mkdir,
+  writeFile: fsPromises.writeFile,
+  rename: fsPromises.rename,
+  rm: fsPromises.rm
+});
+
+class SourceDownloadError extends Error {
+  constructor(code, message) {
+    super(message);
+    this.name = "SourceDownloadError";
+    this.code = code;
+  }
+}
+
+function cancelWithoutWaiting(cancelable) {
+  if (!cancelable || typeof cancelable.cancel !== "function") return;
+  try {
+    Promise.resolve(cancelable.cancel()).catch(() => {});
+  } catch {
+    // 清理失敗不得取代受控下載錯誤。
+  }
+}
+
+function awaitWithSignal(promise, signal, sourceId) {
+  if (signal.aborted) {
+    return Promise.reject(new SourceDownloadError("timeout", `${sourceId} 來源下載逾時`));
+  }
+  return new Promise((resolvePromise, rejectPromise) => {
+    const onAbort = () => rejectPromise(
+      new SourceDownloadError("timeout", `${sourceId} 來源下載逾時`)
+    );
+    signal.addEventListener("abort", onAbort, { once: true });
+    Promise.resolve(promise).then(
+      value => {
+        signal.removeEventListener("abort", onAbort);
+        resolvePromise(value);
+      },
+      error => {
+        signal.removeEventListener("abort", onAbort);
+        rejectPromise(error);
+      }
+    );
+  });
+}
 
 function validateSourceUrl(value, label) {
   let parsed;
@@ -56,37 +106,144 @@ function validateSourceUrl(value, label) {
   return parsed;
 }
 
+function validateRedirectUrl(location, currentUrl, sourceId) {
+  let target;
+  try {
+    target = new URL(String(location), currentUrl);
+  } catch {
+    throw new Error(`${sourceId} 重新導向 URL 格式無效`);
+  }
+  return validateSourceUrl(target.href, `${sourceId} 重新導向`);
+}
+
+async function readRestrictedBody(response, sourceId, signal) {
+  let reader;
+  try {
+    const contentLength = response.headers.get("content-length");
+    if (contentLength !== null) {
+      if (!/^\d+$/.test(contentLength.trim())) {
+        throw new SourceDownloadError("invalid-content-length", `${sourceId} Content-Length 格式無效`);
+      }
+      if (Number(contentLength) > LIMITS.maxBytes) {
+        throw new SourceDownloadError("response-too-large", `${sourceId} 回應大小不得超過 5 MB`);
+      }
+    }
+    if (!response.body || typeof response.body.getReader !== "function") {
+      throw new SourceDownloadError("unreadable-body", `${sourceId} 回應 body 必須提供可受限讀取的串流`);
+    }
+
+    reader = response.body.getReader();
+    const chunks = [];
+    let totalBytes = 0;
+    while (true) {
+      const { done, value } = await awaitWithSignal(reader.read(), signal, sourceId);
+      if (done) break;
+      const chunkBytes = value?.byteLength;
+      if (!Number.isInteger(chunkBytes) || chunkBytes < 0) {
+        throw new SourceDownloadError("invalid-body-chunk", `${sourceId} 回應 body chunk 格式無效`);
+      }
+      if (chunkBytes > LIMITS.maxBytes - totalBytes) {
+        throw new SourceDownloadError("response-too-large", `${sourceId} 回應大小不得超過 5 MB`);
+      }
+      if (!ArrayBuffer.isView(value)) {
+        throw new SourceDownloadError("invalid-body-chunk", `${sourceId} 回應 body chunk 格式無效`);
+      }
+      chunks.push(Buffer.from(value.buffer, value.byteOffset, value.byteLength));
+      totalBytes += chunkBytes;
+    }
+    return Buffer.concat(chunks, totalBytes);
+  } catch (error) {
+    cancelWithoutWaiting(reader ?? response.body);
+    if (error instanceof SourceDownloadError) throw error;
+    throw new SourceDownloadError("body-read", `${sourceId} 來源回應讀取失敗`);
+  } finally {
+    if (reader && typeof reader.releaseLock === "function") reader.releaseLock();
+  }
+}
+
 export async function downloadSource(source, options = {}) {
   const fetchImpl = options.fetchImpl ?? globalThis.fetch;
   if (typeof fetchImpl !== "function") throw new TypeError("fetchImpl 必須是函式");
+  const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  if (!Number.isInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > MAX_TIMEOUT_MS) {
+    throw new Error(`timeoutMs 必須是 1 至 ${MAX_TIMEOUT_MS} 的整數`);
+  }
   const initialUrl = validateSourceUrl(source.url, `${source.id} 初始來源`);
-  const response = await fetchImpl(initialUrl.href);
-  const finalUrl = validateSourceUrl(response.url, `${source.id} 最終來源`);
-  if (response.status < 200 || response.status >= 300) {
-    throw new Error(`HTTP ${response.status} ${response.statusText}`.trim());
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  timer.unref?.();
+  let currentUrl = initialUrl;
+  let redirectCount = 0;
+  let response;
+
+  try {
+    while (true) {
+      try {
+        response = await awaitWithSignal(fetchImpl(currentUrl.href, {
+          redirect: "manual",
+          signal: controller.signal,
+          headers: {
+            accept: "application/gpx+xml, application/vnd.google-earth.kml+xml, application/vnd.google-earth.kmz, application/geo+json, application/octet-stream;q=0.8"
+          }
+        }), controller.signal, source.id);
+      } catch (error) {
+        if (error instanceof SourceDownloadError) throw error;
+        throw new SourceDownloadError("network-error", `${source.id} 來源網路請求失敗`);
+      }
+      if (!response || typeof response.status !== "number"
+        || !response.headers || typeof response.headers.get !== "function") {
+        cancelWithoutWaiting(response?.body);
+        throw new SourceDownloadError("invalid-response", `${source.id} fetch 回應格式無效`);
+      }
+      if (!REDIRECT_STATUSES.has(response.status)) break;
+      cancelWithoutWaiting(response.body);
+      if (redirectCount >= MAX_REDIRECTS) {
+        throw new SourceDownloadError("too-many-redirects", `${source.id} 重新導向超過 ${MAX_REDIRECTS} 次`);
+      }
+      const location = response.headers.get("location");
+      if (!location) {
+        throw new SourceDownloadError("missing-location", `${source.id} 重新導向缺少 Location`);
+      }
+      currentUrl = validateRedirectUrl(location, currentUrl, source.id);
+      redirectCount += 1;
+    }
+
+    if (response.status < 200 || response.status >= 300) {
+      cancelWithoutWaiting(response.body);
+      throw new SourceDownloadError("http-status", `HTTP ${response.status}`);
+    }
+    const contentType = response.headers.get("content-type") || "";
+    if (/html/i.test(contentType)) {
+      cancelWithoutWaiting(response.body);
+      throw new SourceDownloadError("html-response", `${source.id} 回應為 HTML，不是軌跡格式`);
+    }
+    const payload = await readRestrictedBody(response, source.id, controller.signal);
+    let parsed;
+    let segments;
+    try {
+      parsed = parseTrackPayload({ buffer: payload, contentType, url: currentUrl.href });
+      if (parsed.sourceFormat !== source.format) {
+        throw new Error("來源格式不符");
+      }
+      segments = validateSegments(parsed.segments, {
+        sourceId: source.id,
+        maxSegmentGapMeters: LIMITS.maxSegmentGapMeters
+      });
+    } catch {
+      throw new SourceDownloadError("invalid-payload", `${source.id} 來源軌跡格式或內容驗證失敗`);
+    }
+    const summary = summarizeTrack(payload, parsed.sourceFormat, segments);
+    return {
+      routeId: source.id,
+      sourceFormat: summary.sourceFormat,
+      sourceUrl: source.url,
+      sourceSha256: summary.sourceSha256,
+      geometrySha256: createHash("sha256").update(JSON.stringify(segments)).digest("hex"),
+      segments
+    };
+  } finally {
+    clearTimeout(timer);
   }
-  const payload = Buffer.from(await response.arrayBuffer());
-  const parsed = parseTrackPayload({
-    buffer: payload,
-    contentType: response.headers.get("content-type") || "",
-    url: finalUrl.href
-  });
-  if (parsed.sourceFormat !== source.format) {
-    throw new Error(`${source.id} 格式不符：預期 ${source.format}，收到 ${parsed.sourceFormat}`);
-  }
-  const segments = validateSegments(parsed.segments, {
-    sourceId: source.id,
-    maxSegmentGapMeters: 500
-  });
-  const summary = summarizeTrack(payload, parsed.sourceFormat, segments);
-  return {
-    routeId: source.id,
-    sourceFormat: summary.sourceFormat,
-    sourceUrl: source.url,
-    sourceSha256: summary.sourceSha256,
-    geometrySha256: createHash("sha256").update(JSON.stringify(segments)).digest("hex"),
-    segments
-  };
 }
 
 function serializeTracks(tracks) {
@@ -106,12 +263,29 @@ function serializeTracks(tracks) {
 }
 
 export function describeDownloadError(error) {
-  const message = error instanceof Error ? error.message : String(error);
-  const cause = error && typeof error === "object" ? error.cause : null;
-  if (!cause || typeof cause !== "object") return message;
-  const code = typeof cause.code === "string" ? cause.code : "";
-  const causeMessage = cause instanceof Error ? cause.message : "";
-  return code && causeMessage ? `${message}（${code}：${causeMessage}）` : message;
+  return error instanceof SourceDownloadError ? error.message : "來源下載失敗";
+}
+
+export async function writeTracksAtomically(tracks, options = {}) {
+  const outputPath = resolve(options.outputPath ?? OUTPUT_PATH);
+  const fsImpl = options.fsImpl ?? DEFAULT_FS;
+  for (const method of ["mkdir", "writeFile", "rename", "rm"]) {
+    if (typeof fsImpl[method] !== "function") throw new TypeError(`fsImpl.${method} 必須是函式`);
+  }
+
+  await fsImpl.mkdir(dirname(outputPath), { recursive: true });
+  const temporaryPath = `${outputPath}.${process.pid}.${randomUUID()}.tmp`;
+  try {
+    await fsImpl.writeFile(temporaryPath, serializeTracks(tracks), { encoding: "utf8", flag: "wx" });
+    await fsImpl.rename(temporaryPath, outputPath);
+  } catch (error) {
+    try {
+      await fsImpl.rm(temporaryPath, { force: true });
+    } catch {
+      // 保留原始寫入或重新命名失敗，讓呼叫端取得主要原因。
+    }
+    throw error;
+  }
 }
 
 export async function importTracks() {
@@ -138,8 +312,7 @@ export async function importTracks() {
     throw new Error(`必要公開軌跡匯入失敗；未改寫產物。${requiredFailures.join("；")}`);
   }
 
-  await mkdir(dirname(OUTPUT_PATH), { recursive: true });
-  await writeFile(OUTPUT_PATH, serializeTracks(tracks), "utf8");
+  await writeTracksAtomically(tracks);
   return tracks;
 }
 

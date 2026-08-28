@@ -4,6 +4,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const { createHash } = require("node:crypto");
 const fs = require("node:fs");
+const fsPromises = require("node:fs/promises");
 const os = require("node:os");
 const path = require("node:path");
 const vm = require("node:vm");
@@ -102,6 +103,47 @@ function createFetchResponse(body, { url, contentType = "text/plain", status = 2
   });
   Object.defineProperty(response, "url", { value: url });
   return response;
+}
+
+async function within(promise, timeoutMs = 300) {
+  let timer;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error("測試等待逾時，下載器仍未結束")), timeoutMs);
+      })
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function cancelableResponse({ status = 200, headers = {}, chunks = [], stall = false } = {}) {
+  let cancelled = false;
+  const body = new ReadableStream({
+    start(controller) {
+      for (const chunk of chunks) controller.enqueue(chunk);
+      if (!stall) controller.close();
+    },
+    cancel() {
+      cancelled = true;
+    }
+  });
+  return {
+    response: new Response(body, { status, headers }),
+    wasCancelled: () => cancelled
+  };
+}
+
+function filesystemBoundary(overrides = {}) {
+  return {
+    mkdir: (...args) => fsPromises.mkdir(...args),
+    writeFile: (...args) => fsPromises.writeFile(...args),
+    rename: (...args) => fsPromises.rename(...args),
+    rm: (...args) => fsPromises.rm(...args),
+    ...overrides
+  };
 }
 
 test("圖鑑固定收錄 22 件有公開來源的台灣 GPS Art", () => {
@@ -393,64 +435,174 @@ test("KML 匯入拒絕來源提供的非有限海拔", async () => {
   assert.throws(() => parseKmlSegments(kml), /有限數值/);
 });
 
-test("公開來源 TLS 失敗警告包含安全且可理解的原因", async () => {
+test("公開來源錯誤不發布任意上游訊息或敏感標頭", async () => {
   const { describeDownloadError } = await import("../scripts/import-route-art-tracks.mjs");
-  const error = new TypeError("fetch failed", {
-    cause: Object.assign(new Error("secure TLS connection was not established"), { code: "ECONNRESET" })
+  const error = new TypeError("upstream Cookie: sid=first; session=second-secret", {
+    cause: Object.assign(new Error("Authorization: Bearer arbitrary-cause-secret"), { code: "ECONNRESET" })
   });
 
-  assert.equal(
-    describeDownloadError(error),
-    "fetch failed（ECONNRESET：secure TLS connection was not established）"
-  );
+  const detail = describeDownloadError(error);
+  assert.equal(detail, "來源下載失敗");
+  assert.doesNotMatch(detail, /cookie|authorization|bearer|first|second|arbitrary|ECONNRESET/i);
 });
 
-test("站內匯入器只接受 allowlist 內的 HTTPS final URL", async () => {
-  const { importTracks, SOURCES } = await import("../scripts/import-route-art-tracks.mjs");
-  const gpx = `<gpx><trk><trkseg>
-    <trkpt lat="25" lon="121.5"/><trkpt lat="25.001" lon="121.501"/>
-  </trkseg></trk></gpx>`;
-
-  async function runScenario(finalUrl) {
-    const originalFetch = global.fetch;
-    const originalConsole = { log: console.log, warn: console.warn, error: console.error };
-    const output = { logs: [], warnings: [], errors: [] };
-    global.fetch = async requestUrl => {
-      const source = SOURCES.find(item => item.url === String(requestUrl));
-      if (source?.id === "gps-art-xinzhuang-tiger") {
-        return createFetchResponse(gpx, {
-          url: finalUrl,
-          contentType: "application/gpx+xml"
-        });
-      }
-      return createFetchResponse("failure", { url: source?.url || String(requestUrl), status: 503 });
-    };
-    console.log = value => output.logs.push(String(value));
-    console.warn = value => output.warnings.push(String(value));
-    console.error = value => output.errors.push(String(value));
-    try {
-      await assert.rejects(() => importTracks(), /必要公開軌跡匯入失敗/);
-      return output;
-    } finally {
-      global.fetch = originalFetch;
-      Object.assign(console, originalConsole);
+test("站內下載器使用 manual redirect、單一 signal 並保留合法 Google KML query", async () => {
+  const { downloadSource, SOURCES } = await import("../scripts/import-route-art-tracks.mjs");
+  const source = SOURCES[1];
+  const kml = `<kml><Document><LineString><coordinates>
+    121.5,25 121.501,25.001
+  </coordinates></LineString></Document></kml>`;
+  const calls = [];
+  await downloadSource(source, {
+    fetchImpl: async (url, options) => {
+      calls.push({ url: String(url), options });
+      return createFetchResponse(kml, {
+        url: String(url), contentType: "application/vnd.google-earth.kml+xml"
+      });
     }
+  });
+
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].url, source.url);
+  assert.equal(new URL(calls[0].url).search, "?mid=1XFfh9ZGnEVTth4D4cyZ3oQuy3fLymWU&forcekml=1");
+  assert.equal(calls[0].options.redirect, "manual");
+  assert.equal(calls[0].options.signal instanceof AbortSignal, true);
+  const headers = new Headers(calls[0].options.headers);
+  assert.equal(headers.has("cookie"), false);
+  assert.equal(headers.has("authorization"), false);
+});
+
+test("站內下載器拒絕惡意重新導向且不讓 fetch 跟隨", async () => {
+  const { downloadSource, SOURCES } = await import("../scripts/import-route-art-tracks.mjs");
+  const tracked = cancelableResponse({
+    status: 302,
+    headers: { location: "https://evil.example/private.gpx" },
+    stall: true
+  });
+  const calls = [];
+  await assert.rejects(() => downloadSource(SOURCES[0], {
+    fetchImpl: async (url, options) => {
+      calls.push({ url: String(url), options });
+      return tracked.response;
+    }
+  }), /主機|allowlist|重新導向|redirect/i);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].options.redirect, "manual");
+  assert.equal(tracked.wasCancelled(), true);
+});
+
+test("站內下載器最多跟隨三次核准重新導向並清理每個 body", async () => {
+  const { downloadSource, SOURCES } = await import("../scripts/import-route-art-tracks.mjs");
+  const tracked = [];
+  let calls = 0;
+  await assert.rejects(() => downloadSource(SOURCES[0], {
+    fetchImpl: async () => {
+      calls += 1;
+      const redirect = cancelableResponse({
+        status: 302, headers: { location: SOURCES[0].url }, stall: true
+      });
+      tracked.push(redirect);
+      return redirect.response;
+    }
+  }), /3|重新導向|redirect/i);
+  assert.equal(calls, 4);
+  assert.ok(tracked.every(item => item.wasCancelled()));
+});
+
+test("站內下載器的單一逾時涵蓋 stalled fetch 與 stalled body", async () => {
+  const { downloadSource, SOURCES } = await import("../scripts/import-route-art-tracks.mjs");
+  let fetchSignal;
+  await assert.rejects(() => within(downloadSource(SOURCES[0], {
+    timeoutMs: 20,
+    fetchImpl: async (_url, options) => {
+      fetchSignal = options.signal;
+      return new Promise(() => {});
+    }
+  })), /逾時/);
+  assert.equal(fetchSignal?.aborted, true);
+
+  const stalled = cancelableResponse({
+    headers: { "content-type": "application/gpx+xml" }, stall: true
+  });
+  await assert.rejects(() => within(downloadSource(SOURCES[0], {
+    timeoutMs: 20,
+    fetchImpl: async () => stalled.response
+  })), /逾時/);
+  assert.equal(stalled.wasCancelled(), true);
+});
+
+test("站內下載器拒絕 Content-Length、逐 chunk 超過 5 MB 與無 reader body", async () => {
+  const { downloadSource, SOURCES } = await import("../scripts/import-route-art-tracks.mjs");
+  const oversizedHeader = cancelableResponse({
+    headers: { "content-type": "application/gpx+xml", "content-length": "5000001" },
+    stall: true
+  });
+  const oversizedChunk = cancelableResponse({
+    headers: { "content-type": "application/octet-stream" },
+    chunks: [new Uint8Array(5_000_001)],
+    stall: true
+  });
+  for (const tracked of [oversizedHeader, oversizedChunk]) {
+    await assert.rejects(() => downloadSource(SOURCES[0], {
+      fetchImpl: async () => tracked.response
+    }), /5 MB|大小/);
+    assert.equal(tracked.wasCancelled(), true);
   }
 
-  const allowed = await runScenario(SOURCES[0].url);
-  assert.ok(allowed.logs.some(line => line.startsWith("gps-art-xinzhuang-tiger:")));
+  let fallbackCalls = 0;
+  await assert.rejects(() => downloadSource(SOURCES[0], {
+    fetchImpl: async () => ({
+      status: 200,
+      headers: new Headers({ "content-type": "application/gpx+xml" }),
+      body: null,
+      async arrayBuffer() {
+        fallbackCalls += 1;
+        return new Uint8Array(0);
+      }
+    })
+  }), /body|串流|讀取/i);
+  assert.equal(fallbackCalls, 0);
+});
 
-  for (const scenario of [
-    { url: "https://evil.example/route.gpx", expected: /主機|allowlist/i },
-    { url: "http://cdnrunningfiles.biji.co/route.gpx", expected: /HTTPS/i },
-    { url: "https://user:secret@cdnrunningfiles.biji.co/route.gpx", expected: /認證|credentials/i }
-  ]) {
-    const rejected = await runScenario(scenario.url);
-    assert.equal(rejected.logs.some(line => line.startsWith("gps-art-xinzhuang-tiger:")), false);
-    const warning = rejected.warnings.find(line => line.includes("gps-art-xinzhuang-tiger")) || "";
-    assert.match(warning, scenario.expected);
-    assert.doesNotMatch(warning, /user|secret/);
+test("站內下載器在 HTTP 早退與 body 讀取失敗時取消 body", async () => {
+  const { downloadSource, SOURCES } = await import("../scripts/import-route-art-tracks.mjs");
+  const earlyFailures = [
+    { tracked: cancelableResponse({ status: 503, stall: true }), expected: /HTTP 503/ },
+    {
+      tracked: cancelableResponse({
+        headers: { "content-type": "text/html" }, stall: true
+      }),
+      expected: /HTML/
+    }
+  ];
+  for (const { tracked, expected } of earlyFailures) {
+    await assert.rejects(() => downloadSource(SOURCES[0], {
+      fetchImpl: async () => tracked.response
+    }), expected);
+    assert.equal(tracked.wasCancelled(), true);
   }
+
+  let cancelled = false;
+  const readFailureBody = {
+    getReader() {
+      return {
+        async read() { throw new Error("upstream body secret"); },
+        cancel() { cancelled = true; },
+        releaseLock() {}
+      };
+    }
+  };
+  await assert.rejects(() => downloadSource(SOURCES[0], {
+    fetchImpl: async () => ({
+      status: 200,
+      headers: new Headers({ "content-type": "application/gpx+xml" }),
+      body: readFailureBody
+    })
+  }), error => {
+    assert.doesNotMatch(error.message, /upstream|secret/i);
+    return true;
+  });
+  assert.equal(cancelled, true);
 });
 
 test("站內下載器在 fetch 前拒絕不安全 initial URL", async () => {
@@ -466,6 +618,58 @@ test("站內下載器在 fetch 前拒絕不安全 initial URL", async () => {
     }), /HTTPS|主機|allowlist|認證|credentials/i);
     assert.equal(fetchCalls, 0);
   }
+});
+
+test("站內軌跡全成功時以同目錄 temp 原子覆寫指定產物", async t => {
+  const { writeTracksAtomically } = await import("../scripts/import-route-art-tracks.mjs");
+  const temporaryRoot = await fsPromises.mkdtemp(path.join(os.tmpdir(), "route-art-import-success-"));
+  t.after(() => fsPromises.rm(temporaryRoot, { recursive: true, force: true }));
+  const outputPath = path.join(temporaryRoot, "route-art-tracks.js");
+  await fsPromises.writeFile(outputPath, "既有安全產物", "utf8");
+
+  await writeTracksAtomically(Object.values(Tracks), { outputPath });
+  const artifactSource = await fsPromises.readFile(outputPath, "utf8");
+  const module = { exports: {} };
+  vm.runInNewContext(artifactSource, { module, globalThis: {} });
+  assert.deepEqual(Object.keys(module.exports), Object.keys(Tracks));
+  assert.deepEqual(await fsPromises.readdir(temporaryRoot), ["route-art-tracks.js"]);
+});
+
+test("站內軌跡 write failure 保留舊產物並清除部分 temp", async t => {
+  const { writeTracksAtomically } = await import("../scripts/import-route-art-tracks.mjs");
+  const temporaryRoot = await fsPromises.mkdtemp(path.join(os.tmpdir(), "route-art-import-write-fail-"));
+  t.after(() => fsPromises.rm(temporaryRoot, { recursive: true, force: true }));
+  const outputPath = path.join(temporaryRoot, "route-art-tracks.js");
+  await fsPromises.writeFile(outputPath, "既有安全產物", "utf8");
+  const fsImpl = filesystemBoundary({
+    async writeFile(filePath) {
+      await fsPromises.writeFile(filePath, "部分暫存內容", "utf8");
+      throw new Error("injected write failure");
+    }
+  });
+
+  await assert.rejects(() => writeTracksAtomically(Object.values(Tracks), {
+    outputPath, fsImpl
+  }), /write failure/);
+  assert.equal(await fsPromises.readFile(outputPath, "utf8"), "既有安全產物");
+  assert.deepEqual(await fsPromises.readdir(temporaryRoot), ["route-art-tracks.js"]);
+});
+
+test("站內軌跡 rename failure 保留舊產物並清除完整 temp", async t => {
+  const { writeTracksAtomically } = await import("../scripts/import-route-art-tracks.mjs");
+  const temporaryRoot = await fsPromises.mkdtemp(path.join(os.tmpdir(), "route-art-import-rename-fail-"));
+  t.after(() => fsPromises.rm(temporaryRoot, { recursive: true, force: true }));
+  const outputPath = path.join(temporaryRoot, "route-art-tracks.js");
+  await fsPromises.writeFile(outputPath, "既有安全產物", "utf8");
+  const fsImpl = filesystemBoundary({
+    async rename() { throw new Error("injected rename failure"); }
+  });
+
+  await assert.rejects(() => writeTracksAtomically(Object.values(Tracks), {
+    outputPath, fsImpl
+  }), /rename failure/);
+  assert.equal(await fsPromises.readFile(outputPath, "utf8"), "既有安全產物");
+  assert.deepEqual(await fsPromises.readdir(temporaryRoot), ["route-art-tracks.js"]);
 });
 
 test("圖鑑與每件作品皆不可被改寫", () => {
