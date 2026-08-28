@@ -17,32 +17,32 @@
 
 ## Production catalog：22 件來源與存取矩陣
 
-下列兩張表以 ID 一一對應，合併構成每件作品的完整矩陣。`原始路線／來源檔` 是作品頁之外的路線或核准來源檔；`來源端 GPX` 只記錄外站匿名端點，不把本站由核准 KML 建立的 GPX 誤稱為外站下載。`—` 表示沒有可驗證值，不代表來源平台從未保存相關資料。
+下列兩張表以 ID 一一對應，合併構成每件作品的完整矩陣。`作品查核日` 逐字對應 production catalog 的 `verifiedAt`；`原始路線連結查核日` 只記錄 12 個後補 Strava `routeSourceUrl` 的 2026-08-28 查核，其餘精確標示 `—`，不與作品日期混用。`原始路線／來源檔` 是作品頁之外的路線或核准來源檔；`來源端 GPX` 只記錄外站匿名端點，不把本站由核准 KML 建立的 GPX 誤稱為外站下載。`—` 表示沒有該欄可驗證值，不代表來源平台從未保存相關資料。
 
-| ID | 作品名／圖形 | 活動／地區 | 狀態 | 作者／平台 | 作品頁 | 原始路線／來源檔 | 來源端 GPX | 需登入 | 查核日 |
-|---|---|---|---|---|---|---|---|---|---|
-| `gps-art-north-taoyuan-raptor` | 北桃迅猛龍／迅猛龍 | 單車／桃園市、新北市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 17223910](https://www.strava.com/routes/17223910) | — | 是 | 2026-08-28 |
-| `gps-art-fenggui-rabbit` | 風櫃兔／兔 | 單車／台北市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 17581713](https://www.strava.com/routes/17581713) | — | 是 | 2026-08-28 |
-| `gps-art-taoyuan-red-bull` | 桃園紅牛 RED BULL／紅牛 | 單車／桃園市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava activity 2263949784](https://www.strava.com/activities/2263949784) | — | 是 | 2026-08-28 |
-| `gps-art-yilan-cherry-duck` | 宜蘭櫻桃鴨／櫻桃鴨 | 單車／宜蘭縣 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 17035427](https://www.strava.com/routes/17035427) | — | 是 | 2026-08-28 |
-| `gps-art-tianmu-whale` | 台北天母鯨魚／鯨魚 | 單車／台北市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 16721519](https://www.strava.com/routes/16721519) | — | 是 | 2026-08-28 |
-| `gps-art-qingpu-cat` | 桃園青埔小貓／小貓 | 單車／桃園市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 17110234](https://www.strava.com/routes/17110234) | — | 是 | 2026-08-28 |
-| `gps-art-tainan-lion` | 台南林老獅卡好／獅 | 單車／台南市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 16676205](https://www.strava.com/routes/16676205) | — | 是 | 2026-08-28 |
-| `gps-art-youth-park-shark` | 青年公園有鯊魚／鯊魚 | 單車／台北市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava activity 2241587445](https://www.strava.com/activities/2241587445) | — | 是 | 2026-08-28 |
-| `gps-art-dadaocheng-lady` | 大稻埕碼頭姑娘／姑娘 | 單車／台北市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | — | — | 否／不適用 | 2026-08-14 |
-| `gps-art-daan-wolf` | 大安森林大野狼／大野狼 | 單車／台北市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | — | — | 否／不適用 | 2026-08-14 |
-| `gps-art-douliu-turtle` | 雲林斗六綠蠵龜／綠蠵龜 | 單車／雲林縣 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 16663550](https://www.strava.com/routes/16663550) | — | 是 | 2026-08-28 |
-| `gps-art-taoyuan-horse` | 桃園藝文小馬／小馬 | 單車／桃園市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 16463220](https://www.strava.com/routes/16463220) | — | 是 | 2026-08-28 |
-| `gps-art-pig-year` | 豬年騎小豬／小豬 | 單車／來源未明示 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 16488963](https://www.strava.com/routes/16488963) | — | 是 | 2026-08-28 |
-| `gps-art-valentine-love` | 情人節 LOVE／LOVE | 單車／來源未明示 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 16780021](https://www.strava.com/routes/16780021) | — | 是 | 2026-08-28 |
-| `gps-art-taoyuan-dazhu-morning` | 桃園大竹早安／早安 | 單車／桃園市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | — | — | 否／不適用 | 2026-08-14 |
-| `gps-art-zhongli-elephant` | 中壢小象／小象 | 單車／桃園市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | — | — | 否／不適用 | 2026-08-14 |
-| `gps-art-yongan-sheep` | 桃園永安漁港喜羊羊／喜羊羊 | 單車／桃園市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | — | — | 否／不適用 | 2026-08-14 |
-| `gps-art-xinzhuang-tiger` | 新莊足跡＿壬寅臥虎／臥虎 | 跑步／新北市 | `source-only` | Heigo Chang／運動筆記 | [BIJI-TIGER](https://running.biji.co/index.php?act=single&id=DD24D4B6-04C9-423B-9BA3-485C7C9B04E8&q=route) | — | [GPX（TLS 失敗，未納入）](https://cdnrunningfiles.biji.co/running_a2be3611d8381712167a98e1075fa017.gpx) | 否 | 2026-08-14 |
-| `gps-art-heigo-elephant` | Heigo Chang 大象作品示例／大象 | 跑步／來源未明示 | `source-only` | Heigo Chang／運動筆記 | [BIJI-HEIGO](https://running.biji.co/index.php?act=info&id=106950&q=news) | — | — | 否／不適用 | 2026-08-14 |
-| `gps-art-taipei-cherry-blossom` | 台北櫻花 16K／櫻花 | 步行／台北市 | `track-ready` | 來源未明示／GPS ART Japan | [GPSART-CHERRY](https://gpsart.info/en/asia-2/cherry-blossom-in-taipei-taiwan-16km/) | [公開 KML](https://www.google.com/maps/d/kml?mid=1XFfh9ZGnEVTth4D4cyZ3oQuy3fLymWU&forcekml=1) | —（本站由核准 KML 建立） | 否 | 2026-08-14 |
-| `gps-art-taipei-circle-walk` | 台北圓環 40K／圓環 | 步行／台北市 | `track-ready` | 來源未明示／GPS ART Japan | [GPSART-CIRCLE](https://gpsart.info/en/asia-2/taipei-circle-walk-40km/) | [公開 KML](https://www.google.com/maps/d/kml?mid=1thheW0QAsTO65i6iOZ90-yZWA4M7Pqej&forcekml=1) | —（本站由核准 KML 建立） | 否 | 2026-08-14 |
-| `gps-art-yangmingshan-buddha-hand` | 陽明山佛手／佛手 | 單車／台北市、新北市 | `source-only` | 來源未明示／Reddit r/Strava | [REDDIT-BUDDHA](https://www.reddit.com/r/Strava/comments/1d3qhxn/waving_hello_from_taipei/) | — | — | 否／不適用 | 2026-08-14 |
+| ID | 作品名／圖形 | 活動／地區 | 狀態 | 作者／平台 | 作品頁 | 原始路線／來源檔 | 來源端 GPX | 需登入 | 作品查核日 | 原始路線連結查核日 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `gps-art-north-taoyuan-raptor` | 北桃迅猛龍／迅猛龍 | 單車／桃園市、新北市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 17223910](https://www.strava.com/routes/17223910) | — | 是 | 2026-08-14 | 2026-08-28 |
+| `gps-art-fenggui-rabbit` | 風櫃兔／兔 | 單車／台北市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 17581713](https://www.strava.com/routes/17581713) | — | 是 | 2026-08-14 | 2026-08-28 |
+| `gps-art-taoyuan-red-bull` | 桃園紅牛 RED BULL／紅牛 | 單車／桃園市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava activity 2263949784](https://www.strava.com/activities/2263949784) | — | 是 | 2026-08-14 | 2026-08-28 |
+| `gps-art-yilan-cherry-duck` | 宜蘭櫻桃鴨／櫻桃鴨 | 單車／宜蘭縣 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 17035427](https://www.strava.com/routes/17035427) | — | 是 | 2026-08-14 | 2026-08-28 |
+| `gps-art-tianmu-whale` | 台北天母鯨魚／鯨魚 | 單車／台北市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 16721519](https://www.strava.com/routes/16721519) | — | 是 | 2026-08-14 | 2026-08-28 |
+| `gps-art-qingpu-cat` | 桃園青埔小貓／小貓 | 單車／桃園市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 17110234](https://www.strava.com/routes/17110234) | — | 是 | 2026-08-14 | 2026-08-28 |
+| `gps-art-tainan-lion` | 台南林老獅卡好／獅 | 單車／台南市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 16676205](https://www.strava.com/routes/16676205) | — | 是 | 2026-08-14 | 2026-08-28 |
+| `gps-art-youth-park-shark` | 青年公園有鯊魚／鯊魚 | 單車／台北市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava activity 2241587445](https://www.strava.com/activities/2241587445) | — | 是 | 2026-08-14 | 2026-08-28 |
+| `gps-art-dadaocheng-lady` | 大稻埕碼頭姑娘／姑娘 | 單車／台北市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | — | — | 否／不適用 | 2026-08-14 | — |
+| `gps-art-daan-wolf` | 大安森林大野狼／大野狼 | 單車／台北市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | — | — | 否／不適用 | 2026-08-14 | — |
+| `gps-art-douliu-turtle` | 雲林斗六綠蠵龜／綠蠵龜 | 單車／雲林縣 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 16663550](https://www.strava.com/routes/16663550) | — | 是 | 2026-08-14 | 2026-08-28 |
+| `gps-art-taoyuan-horse` | 桃園藝文小馬／小馬 | 單車／桃園市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 16463220](https://www.strava.com/routes/16463220) | — | 是 | 2026-08-14 | 2026-08-28 |
+| `gps-art-pig-year` | 豬年騎小豬／小豬 | 單車／來源未明示 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 16488963](https://www.strava.com/routes/16488963) | — | 是 | 2026-08-14 | 2026-08-28 |
+| `gps-art-valentine-love` | 情人節 LOVE／LOVE | 單車／來源未明示 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | [Strava route 16780021](https://www.strava.com/routes/16780021) | — | 是 | 2026-08-14 | 2026-08-28 |
+| `gps-art-taoyuan-dazhu-morning` | 桃園大竹早安／早安 | 單車／桃園市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | — | — | 否／不適用 | 2026-08-14 | — |
+| `gps-art-zhongli-elephant` | 中壢小象／小象 | 單車／桃園市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | — | — | 否／不適用 | 2026-08-14 | — |
+| `gps-art-yongan-sheep` | 桃園永安漁港喜羊羊／喜羊羊 | 單車／桃園市 | `source-only` | CS72／Mobile01 | [M01](https://www.mobile01.com/topicdetail.php?f=377&t=5800991) | — | — | 否／不適用 | 2026-08-14 | — |
+| `gps-art-xinzhuang-tiger` | 新莊足跡＿壬寅臥虎／臥虎 | 跑步／新北市 | `source-only` | Heigo Chang／運動筆記 | [BIJI-TIGER](https://running.biji.co/index.php?act=single&id=DD24D4B6-04C9-423B-9BA3-485C7C9B04E8&q=route) | — | [GPX（TLS 失敗，未納入）](https://cdnrunningfiles.biji.co/running_a2be3611d8381712167a98e1075fa017.gpx) | 否 | 2026-08-14 | — |
+| `gps-art-heigo-elephant` | Heigo Chang 大象作品示例／大象 | 跑步／來源未明示 | `source-only` | Heigo Chang／運動筆記 | [BIJI-HEIGO](https://running.biji.co/index.php?act=info&id=106950&q=news) | — | — | 否／不適用 | 2026-08-14 | — |
+| `gps-art-taipei-cherry-blossom` | 台北櫻花 16K／櫻花 | 步行／台北市 | `track-ready` | 來源未明示／GPS ART Japan | [GPSART-CHERRY](https://gpsart.info/en/asia-2/cherry-blossom-in-taipei-taiwan-16km/) | [公開 KML](https://www.google.com/maps/d/kml?mid=1XFfh9ZGnEVTth4D4cyZ3oQuy3fLymWU&forcekml=1) | —（本站由核准 KML 建立） | 否 | 2026-08-14 | — |
+| `gps-art-taipei-circle-walk` | 台北圓環 40K／圓環 | 步行／台北市 | `track-ready` | 來源未明示／GPS ART Japan | [GPSART-CIRCLE](https://gpsart.info/en/asia-2/taipei-circle-walk-40km/) | [公開 KML](https://www.google.com/maps/d/kml?mid=1thheW0QAsTO65i6iOZ90-yZWA4M7Pqej&forcekml=1) | —（本站由核准 KML 建立） | 否 | 2026-08-14 | — |
+| `gps-art-yangmingshan-buddha-hand` | 陽明山佛手／佛手 | 單車／台北市、新北市 | `source-only` | 來源未明示／Reddit r/Strava | [REDDIT-BUDDHA](https://www.reddit.com/r/Strava/comments/1d3qhxn/waving_hello_from_taipei/) | — | — | 否／不適用 | 2026-08-14 | — |
 
 ### Production 軌跡摘要矩陣
 

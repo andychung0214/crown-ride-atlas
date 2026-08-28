@@ -9,6 +9,8 @@
 | 檢查 | 結果 | 實際證據 |
 |---|---|---|
 | 文件／資料矩陣 | 通過 | ESM 唯讀檢查比對 `route-art-catalog.js`、19 件候選 registry 與 `taiwan-gps-art.md`；精確得到 22 個 production ID、19 個 rejected candidate ID，無缺漏 |
+| 日期契約 RED／GREEN | 通過 | 修改前 probe 以 `production matrix 必須有獨立作品查核日欄` 如預期失敗；拆欄後 22 件 `作品查核日` 逐字匹配 catalog `verifiedAt=2026-08-14`，12 個 Strava `原始路線連結查核日=2026-08-28`，其餘 10 件為 `—`；19 件候選仍各自維持 2026-08-28，未混入 production 日期 |
+| Fix round 1 focused 回歸 | 通過 | `node --test tests/route-art.test.js tests/route-art-catalog.test.js tests/route-art-downloads.test.js tests/data.test.js tests/track-data.test.js` exit code 0；66 項通過、0 項失敗；另以唯讀矩陣 probe 逐件核對 22 件 production、12 個 Strava 連結與 19 件候選 |
 | GPS Art focused 回歸 | 通過 | `node --test tests/route-art-source.test.js tests/route-art-downloads.test.js tests/route-art.test.js tests/route-art-catalog.test.js tests/render.test.js tests/app.test.js tests/gpx.test.js tests/map.test.js tests/css.test.js tests/data.test.js tests/track-data.test.js tests/pages-workflow.test.js` exit code 0；183 項通過、0 項失敗 |
 | 完整驗證 | 通過 | `npm run verify` exit code 0；378 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
 | Production catalog | 通過 | Node 契約與 controller 瀏覽器 DOM 都是 22／2／0／20；12 個精確 Strava route/activity 連結皆顯示可能要求登入；production 外站下載連結為 0 |
