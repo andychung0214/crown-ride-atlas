@@ -10,14 +10,18 @@
 |---|---|---|
 | 文件／資料矩陣 | 通過 | ESM 唯讀檢查比對 `route-art-catalog.js`、19 件候選 registry 與 `taiwan-gps-art.md`；精確得到 22 個 production ID、19 個 rejected candidate ID，無缺漏 |
 | 日期契約 RED／GREEN | 通過 | 修改前 probe 以 `production matrix 必須有獨立作品查核日欄` 如預期失敗；拆欄後 22 件 `作品查核日` 逐字匹配 catalog `verifiedAt=2026-08-14`，12 個 Strava `原始路線連結查核日=2026-08-28`，其餘 10 件為 `—`；19 件候選仍各自維持 2026-08-28，未混入 production 日期 |
+| Whole-plan final fix RED／GREEN | 通過 | 匯入器安全／原子輸出 focused RED：1 項通過、10 項失敗、20 項略過，明確暴露任意上游訊息、缺少 manual redirect／signal／逾時／5 MB 串流 gate／cleanup，以及缺少 `writeTracksAtomically`；最小修正後同一命令 11 項通過、0 項失敗、20 項略過 |
+| 匯入器 restricted fetch | 通過 | 初始及每跳 URL 均檢查 HTTPS、認證資訊與 host allowlist；`redirect: "manual"`、最多 3 跳、單一 `AbortController` 涵蓋 fetch 與完整 body；拒絕無 reader body，同時檢查 `Content-Length` 與逐 chunk 5 MB 上限；redirect、HTTP、HTML、大小早退及讀取失敗均取消 body；Google KML 的合法 `mid`／`forcekml` query 由行為測試保留 |
+| 匯入器原子輸出 | 通過 | `writeTracksAtomically` 只接受窄 `outputPath`／`fsImpl` seam，使用目標同目錄、PID＋UUID 唯一 temp、`flag: "wx"` 與 rename；暫存目錄行為測試證明全成功覆寫，以及 write／rename failure 都保留舊產物並清除 temp，未觸碰正式 `route-art-tracks.js` |
 | Fix round 1 focused 回歸 | 通過 | `node --test tests/route-art.test.js tests/route-art-catalog.test.js tests/route-art-downloads.test.js tests/data.test.js tests/track-data.test.js` exit code 0；66 項通過、0 項失敗；另以唯讀矩陣 probe 逐件核對 22 件 production、12 個 Strava 連結與 19 件候選 |
-| GPS Art focused 回歸 | 通過 | `node --test tests/route-art-source.test.js tests/route-art-downloads.test.js tests/route-art.test.js tests/route-art-catalog.test.js tests/render.test.js tests/app.test.js tests/gpx.test.js tests/map.test.js tests/css.test.js tests/data.test.js tests/track-data.test.js tests/pages-workflow.test.js` exit code 0；183 項通過、0 項失敗 |
-| 完整驗證 | 通過 | `npm run verify` exit code 0；378 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
+| Parser／verifier／importer focused 回歸 | 通過 | `node --test tests/route-art-catalog.test.js tests/route-art-source.test.js tests/route-art-downloads.test.js` exit code 0；72 項通過、0 項失敗、0 項略過 |
+| GPS Art focused 回歸 | 通過 | 原 Task 6 指定 focused 集合加上本輪 8 項回歸後為 191 項；parser／verifier／importer 的 72 項精確集合另列於上一列 |
+| 完整驗證 | 通過 | `npm run verify` exit code 0；386 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
 | Production catalog | 通過 | Node 契約與 controller 瀏覽器 DOM 都是 22／2／0／20；12 個精確 Strava route/activity 連結皆顯示可能要求登入；production 外站下載連結為 0 |
-| Git 空白檢查 | 通過 | `git diff --check` exit code 0，無空白錯誤 |
-| 敏感內容掃描 | 已逐行審查 | Task 6 指定 `rg` 模式在 `scripts`、`docs/route-research`、`README.md` 唯一命中為 README 的 `.env` 安全提醒；沒有憑證值、Bearer 指派、私人金鑰、GPX XML 或座標標籤 |
+| Git 空白檢查 | 通過 | `git diff --check 8bc75de..HEAD` exit code 0；whole branch 無空白錯誤，設計規格第 3 行尾端空白已移除 |
+| 敏感內容掃描 | 已逐行審查 | Task 6 指定 `rg` 模式在 `scripts`、`docs/route-research`、`README.md` 唯一命中為 README 的 `.env` 安全提醒；final wave 另掃描敏感檔名與 `11a3ddb` 後的憑證值模式，均為 0 筆。測試中的 Cookie／Authorization／secret counterexample 是明示假值，用來證明不會輸出上游文字；沒有真實憑證值、Bearer 指派、私人金鑰、GPX XML 或座標產物 |
 | 下載摘要產物 | 不存在（符合現況） | `js/data/route-art-downloads.js` 不存在，匹配暫存檔為 0；因此不能把「檔案不存在」寫成產物內容安全掃描通過。無座標 serializer 與拒絕 geometry／coordinate／GPX XML 的行為由 focused tests 覆蓋 |
-| 受保護資料 | 通過 | 本輪只修改五份指定文件；`js/data/routes.js`、`js/data/track-manifest.js`、`js/data/route-art-tracks.js`、正式 `js/data/tracks` 與 GPS Art production 程式／測試沒有 diff |
+| 受保護資料 | 通過 | final fix 只修改匯入器、其行為測試、規格空白與本驗證紀錄；`js/data/routes.js`、`js/data/track-manifest.js`、`js/data/route-art-tracks.js`、正式 `js/data/tracks` 與 `js/data/route-art-catalog.js` 均無本輪 diff；production 維持 22／2／0／20，正式軌跡維持 23 個 bundle／68 條路線 |
 
 ### 來源與權利結論
 
