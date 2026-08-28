@@ -427,6 +427,46 @@ test("路線美學只掛載 track-ready 作品並支援篩選與 GPX 下載", ()
   assert.equal(downloadedName, "台北櫻花-16K.gpx");
 });
 
+test("來源端 GPX 卡片永不掛載站內地圖或建立本機 Blob", () => {
+  const trackReadyArt = {
+    id: "gps-art-ready",
+    name: "站內軌跡",
+    activityType: "walking",
+    status: "track-ready",
+    segments: [[{ lat: 25, lng: 121 }, { lat: 25.01, lng: 121.01 }]]
+  };
+  const sourceDownloads = Array.from({ length: 19 }, (_value, index) => ({
+    id: `gps-art-external-${index + 1}`,
+    name: `來源端作品 ${index + 1}`,
+    activityType: "cycling",
+    status: "source-download",
+    externalDownloadUrl: `https://shapemiles.com/api/art-routes/taipei/art-${index + 1}/gpx`
+  }));
+  const mountedIds = [];
+  const downloadedNames = [];
+  const originalCreateDownload = Gpx.createDownload;
+  let createDownloadCount = 0;
+  Gpx.createDownload = (...args) => {
+    createDownloadCount += 1;
+    return originalCreateDownload(...args);
+  };
+  try {
+    const app = bootRouteArtCatalog(
+      [trackReadyArt, ...sourceDownloads],
+      (_element, art) => mountedIds.push(art.id),
+      filename => downloadedNames.push(filename)
+    );
+
+    sourceDownloads.forEach(art => app.actions.downloadArtGpx(art));
+
+    assert.deepEqual(mountedIds, ["gps-art-ready"]);
+    assert.equal(createDownloadCount, 0);
+    assert.deepEqual(downloadedNames, []);
+  } finally {
+    Gpx.createDownload = originalCreateDownload;
+  }
+});
+
 test("缺少百科資料時沿用既有 fatal-error 契約", () => {
   const fatalErrors = [];
   const root = {

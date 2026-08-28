@@ -257,8 +257,7 @@ test("路線美學顯示來源卡且只有 track-ready 可下載 GPX", () => {
   assert.equal(downloadButtons.length, 1);
   downloadButtons[0].handlers.click();
   assert.equal(downloaded, items[0]);
-  assert.match(text, /2 件公開作品/);
-  assert.match(text, /1 件可預覽軌跡/);
+  assert.match(text, /2 件公開作品 · 1 件站內地圖 · 0 件來源端 GPX · 1 件待取得/);
   assert.match(text, /軌跡待取得/);
   assert.match(text, /台北市/);
   assert.match(text, /16 km/);
@@ -269,6 +268,58 @@ test("路線美學顯示來源卡且只有 track-ready 可下載 GPX", () => {
     assert.equal(link.attributes.target, "_blank");
     assert.equal(link.attributes.rel, "noopener noreferrer");
   });
+});
+
+test("路線美學分開呈現站內與來源端 GPX", () => {
+  const ready = fixtureArt({
+    id: "ready",
+    status: "track-ready",
+    segments: [[{ lat: 25, lng: 121 }, { lat: 25.01, lng: 121.01 }]]
+  });
+  const external = fixtureArt({
+    id: "external",
+    status: "source-download",
+    externalDownloadUrl: "https://shapemiles.com/api/art-routes/taipei/guitar-11-3km/gpx",
+    sourceFormat: "gpx",
+    sourceSha256: "a".repeat(64),
+    segmentCount: 1,
+    totalPoints: 200,
+    bounds: { minLat: 24.9, maxLat: 25.1, minLng: 121.4, maxLng: 121.6 }
+  });
+  const source = fixtureArt({
+    id: "source",
+    status: "source-only",
+    routeSourceUrl: "https://www.strava.com/routes/17035427",
+    routeSourceAccess: "login-required"
+  });
+  let downloaded = null;
+  const page = Render.routeArtPage(fakeDocument(), {
+    routeArt: [ready, external, source],
+    routeArtFilter: "all"
+  }, {
+    setRouteArtFilter() {},
+    downloadArtGpx(art) { downloaded = art; }
+  });
+  const nodes = descendants(page);
+  const externalLink = nodes.find(node => node.name === "a" && node.textContent === "從來源下載 GPX");
+  const downloadButtons = nodes.filter(node => node.name === "button" && node.textContent === "下載 GPX");
+  const text = nodes.map(node => node.textContent).filter(Boolean).join(" ");
+
+  assert.equal(nodes.filter(node => node.dataset && node.dataset.artMap).length, 1);
+  assert.equal(downloadButtons.length, 1);
+  downloadButtons[0].handlers.click();
+  assert.equal(downloaded, ready);
+  assert.ok(externalLink);
+  assert.equal(externalLink.attributes.href, external.externalDownloadUrl);
+  assert.equal(externalLink.attributes.target, "_blank");
+  assert.equal(externalLink.attributes.rel, "noopener noreferrer");
+  assert.equal(externalLink.attributes.download, undefined);
+  assert.equal(externalLink.handlers, undefined);
+  assert.match(text, /站內軌跡可預覽/);
+  assert.match(text, /來源端 GPX 可下載/);
+  assert.match(text, /公開軌跡待取得/);
+  assert.match(text, /來源平台可能要求登入/);
+  assert.match(text, /3 件公開作品 · 1 件站內地圖 · 1 件來源端 GPX · 1 件待取得/);
 });
 
 test("路線美學提供五個篩選、aria-live 結果與空結果清除操作", () => {

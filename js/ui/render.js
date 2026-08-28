@@ -933,9 +933,15 @@
     const stats = RouteArt.stats(state.routeArt);
     const filterLabels = {
       all: "全部",
-      cycling: "單車",
+      cycling: "自行車",
       foot: "跑步／步行",
-      "track-ready": "有站內軌跡"
+      downloadable: "可下載 GPX",
+      "track-ready": "站內地圖"
+    };
+    const statusLabels = {
+      "track-ready": "站內軌跡可預覽",
+      "source-download": "來源端 GPX 可下載",
+      "source-only": "公開軌跡待取得"
     };
     const cards = entries.map(art => {
       const facts = [
@@ -962,7 +968,7 @@
         node(documentRef, "div", { className: "art-card__copy" }, [
           node(documentRef, "p", {
             className: `art-card__status art-card__status--${art.status}`,
-            text: art.status === "track-ready" ? "站內軌跡可預覽" : "軌跡待取得"
+            text: statusLabels[art.status] || statusLabels["source-only"]
           }),
           node(documentRef, "h2", { text: art.name }),
           node(documentRef, "p", { className: "art-card__shape", text: `圖形主題：${art.shapeLabel}` }),
@@ -977,12 +983,34 @@
                 on: { click: () => actions.downloadArtGpx(art) }
               })
               : null,
+            art.status === "source-download"
+              ? node(documentRef, "a", {
+                className: "button",
+                href: art.externalDownloadUrl,
+                text: "從來源下載 GPX",
+                attributes: { target: "_blank", rel: "noopener noreferrer" }
+              })
+              : null,
             node(documentRef, "a", {
               className: "text-link",
               href: art.sourceUrl,
               text: "查看原始作品",
               attributes: { target: "_blank", rel: "noopener noreferrer" }
-            })
+            }),
+            art.routeSourceUrl
+              ? node(documentRef, "a", {
+                className: "text-link",
+                href: art.routeSourceUrl,
+                text: "查看原始路線",
+                attributes: { target: "_blank", rel: "noopener noreferrer" }
+              })
+              : null,
+            art.routeSourceAccess === "login-required"
+              ? node(documentRef, "span", {
+                className: "art-card__source-access",
+                text: "來源平台可能要求登入"
+              })
+              : null
           ])
         ])
       ]);
@@ -997,7 +1025,7 @@
         }),
         node(documentRef, "p", {
           className: "art-catalog__stats",
-          text: `${stats.total} 件公開作品 · ${stats.trackReady} 件可預覽軌跡`
+          text: `${stats.total} 件公開作品 · ${stats.trackReady} 件站內地圖 · ${stats.sourceDownload} 件來源端 GPX · ${stats.sourceOnly} 件待取得`
         }),
         node(documentRef, "div", {
           className: "art-catalog__filters",
