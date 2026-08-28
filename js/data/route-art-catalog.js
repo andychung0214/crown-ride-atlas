@@ -10,13 +10,18 @@
   let RouteArtDownloads;
   let hasRouteArtDownloads = false;
   if (typeof module === "object" && module.exports) {
+    let routeArtDownloadsPath;
     try {
-      RouteArtDownloads = require("./route-art-downloads.js");
-      hasRouteArtDownloads = true;
+      routeArtDownloadsPath = require.resolve("./route-art-downloads.js");
     } catch (error) {
-      if (!error || error.code !== "MODULE_NOT_FOUND" || !String(error.message).includes("route-art-downloads.js")) {
+      if (!error || error.code !== "MODULE_NOT_FOUND"
+        || !String(error.message).startsWith("Cannot find module './route-art-downloads.js'")) {
         throw error;
       }
+    }
+    if (routeArtDownloadsPath) {
+      RouteArtDownloads = require(routeArtDownloadsPath);
+      hasRouteArtDownloads = true;
     }
   } else {
     const namespace = root && root.CrownRideAtlas;
@@ -104,10 +109,9 @@
   catalog.forEach(item => RouteArt.validateItem(item));
 
   function deepFreeze(value) {
-    if (!value || typeof value !== "object" || Object.isFrozen(value)) return value;
-    Object.freeze(value);
+    if (!value || typeof value !== "object") return value;
     Object.values(value).forEach(deepFreeze);
-    return value;
+    return Object.freeze(value);
   }
 
   return deepFreeze(catalog);

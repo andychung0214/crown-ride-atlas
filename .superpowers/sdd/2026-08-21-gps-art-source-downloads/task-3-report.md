@@ -48,3 +48,23 @@
 
 - Task 2 於 2026-08-28 查核 19/19 ShapeMiles 匿名端點皆為 HTTP 401；在來源恢復匿名公開下載並產生正式、無座標摘要前，production catalog 必須維持 0 件 `source-download`。
 - 本次未使用登入狀態、Cookie、Authorization、OAuth 或任何憑證，也未把 Strava 路線宣稱為公開 GPX。
+
+## Fix round 1（2026-08-28）
+
+### 根因與 TDD RED／GREEN
+
+- RED：新增真實暫存 fixture，讓精確 `js/data/route-art-downloads.js` 成功 resolve 後要求不存在的 `./fixture-nested/route-art-downloads.js`。舊邏輯只以錯誤訊息包含目標檔名判斷，錯誤 fail-soft；另以 shallow `Object.freeze(record)` fixture 證實已凍結父 record 會讓未凍結的 `bounds` 略過遞迴。
+- RED command：`node --test tests/route-art-catalog.test.js`，23 項中 21 項通過、2 項失敗；分別是 `Missing expected exception` 與 `Object.isFrozen(bounds) === false`。
+- GREEN：Node 先以 `require.resolve("./route-art-downloads.js")` 判定精確目標是否不存在；resolve 成功後的 `require` 不予吞掉。`deepFreeze` 無論父物件是否已凍結，都先遞迴凍結所有 descendant，再凍結自身。
+- 加強 Minor：青埔小貓逐項驗證門禁社區、田地、非鋪面、狹窄通道；天母鯨魚逐項驗證逆向路段、較適合跑步。
+
+### Fix round 1 驗證
+
+| 查核 | 結果 |
+|---|---|
+| `node --test tests/route-art-catalog.test.js` | 23/23 pass |
+| focused GPS Art／render／資料／軌跡／頁面測試 | 72/72 pass |
+| `npm run verify` | exit 0；370/370 tests pass；23 個 bundle／68 條路線驗證通過 |
+| 正式下載摘要／暫存檔 | `route-art-downloads.js` 不存在，`.tmp` 為 0 |
+
+此次 fix 未改變正式 catalog 22 = 2／0／20，沒有修改 routes、manifest 或既有 GPS Art track，亦未新增 index script 或使用憑證。

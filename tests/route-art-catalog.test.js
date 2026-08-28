@@ -4,6 +4,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const { createHash } = require("node:crypto");
 const fs = require("node:fs");
+const path = require("node:path");
 const vm = require("node:vm");
 const RouteArt = require("../js/core/route-art.js");
 const Catalog = require("../js/data/route-art-catalog.js");
@@ -30,17 +31,25 @@ function loadNodeCatalog(routeArtDownloads, { downloadsPresent = true } = {}) {
   const missingModule = Object.assign(new Error("Cannot find module './route-art-downloads.js'"), {
     code: "MODULE_NOT_FOUND"
   });
+  function requireImpl(request) {
+    if (request === "../core/route-art.js") return RouteArt;
+    if (request === "./route-art-tracks.js") return Tracks;
+    if (request === "./route-art-downloads.js") {
+      if (!downloadsPresent) throw missingModule;
+      return routeArtDownloads;
+    }
+    throw new Error(`unexpected require: ${request}`);
+  }
+  requireImpl.resolve = request => {
+    if (request === "./route-art-downloads.js") {
+      if (!downloadsPresent) throw missingModule;
+      return request;
+    }
+    throw new Error(`unexpected require.resolve: ${request}`);
+  };
   vm.runInNewContext(source, {
     module,
-    require(request) {
-      if (request === "../core/route-art.js") return RouteArt;
-      if (request === "./route-art-tracks.js") return Tracks;
-      if (request === "./route-art-downloads.js") {
-        if (!downloadsPresent) throw missingModule;
-        return routeArtDownloads;
-      }
-      throw new Error(`unexpected require: ${request}`);
-    },
+    require: requireImpl,
     globalThis: {}
   });
   return module.exports;
@@ -236,6 +245,35 @@ test("Node 載入器只對不存在的下載摘要 fail-soft，malformed 摘要�
   assert.throws(() => loadNodeCatalog(null), /RouteArtDownloads/);
 });
 
+test("Node 只在精確下載摘要目標不存在時 fail-soft", t => {
+  const catalogPath = require.resolve("../js/data/route-art-catalog.js");
+  const downloadPath = path.join(__dirname, "..", "js", "data", "route-art-downloads.js");
+  assert.equal(fs.existsSync(downloadPath), false);
+  t.after(() => {
+    delete require.cache[catalogPath];
+    fs.rmSync(downloadPath, { force: true });
+  });
+
+  fs.writeFileSync(downloadPath,
+    'module.exports = require("./fixture-nested/route-art-downloads.js");\n',
+    "utf8"
+  );
+  delete require.cache[catalogPath];
+  assert.throws(() => require(catalogPath), error => error
+    && error.code === "MODULE_NOT_FOUND"
+    && /fixture-nested[\\/]route-art-downloads\.js/.test(error.message));
+});
+
+test("淺凍結下載摘要仍會深度凍結 bounds", () => {
+  const validDownload = Object.freeze(sourceDownloadFixture());
+  const catalog = loadBrowserCatalog(Tracks, { [validDownload.id]: validDownload });
+  const item = catalog.find(candidate => candidate.id === validDownload.id);
+
+  assert.equal(Object.isFrozen(item), true);
+  assert.equal(Object.isFrozen(item.bounds), true);
+  assert.throws(() => { item.bounds.minLat = 24; }, TypeError);
+});
+
 test("十二件 CS72 作品保留登入限定的精確 Strava 原始路線", () => {
   const expectedUrls = {
     "gps-art-north-taoyuan-raptor": "https://www.strava.com/routes/17223910",
@@ -258,8 +296,14 @@ test("十二件 CS72 作品保留登入限定的精確 Strava 原始路線", () 
     assert.equal(item.routeSourceAccess, "login-required", id);
     assert.equal(item.status, "source-only", id);
   }
-  assert.match(Catalog.find(item => item.id === "gps-art-qingpu-cat").summary, /門禁社區|田地|非鋪面|狹窄通道/);
-  assert.match(Catalog.find(item => item.id === "gps-art-tianmu-whale").summary, /逆向|跑步/);
+  const qingpuWarning = Catalog.find(item => item.id === "gps-art-qingpu-cat").summary;
+  const tianmuWarning = Catalog.find(item => item.id === "gps-art-tianmu-whale").summary;
+  for (const warning of ["門禁社區", "田地", "非鋪面", "狹窄通道"]) {
+    assert.match(qingpuWarning, new RegExp(warning));
+  }
+  for (const warning of ["逆向路段", "較適合跑步"]) {
+    assert.match(tianmuWarning, new RegExp(warning));
+  }
 });
 
 test("站內匯入器維持共用解析與驗證函式的相容匯出", async () => {
