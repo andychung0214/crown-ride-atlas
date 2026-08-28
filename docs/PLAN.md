@@ -8,7 +8,19 @@
 
 **Tech Stack:** HTML5、CSS、Vanilla JavaScript、Leaflet（CDN，可降級）、Web Storage、Canvas、Node.js 內建測試執行器。
 
-## 2026-08-14 GPS Art 圖鑑增補
+## 2026-08-28 GPS Art 來源下載現況
+
+- 正式 production catalog 維持 22 件，三狀態實際分布為 2 件 `track-ready`、0 件 `source-download`、20 件 `source-only`；不以原訂 41 件目標取代現場驗證結果。
+- 12 件 CS72 作品加入精確 Strava route/activity 頁並標示 `login-required`。這些連結只供查看原始路線，不能視為匿名 GPX，也不使用使用者登入狀態下載。
+- 19 件 ShapeMiles 候選已建立精確 registry 與受限驗證器，但 2026-08-28 匿名 HTTPS 查核為 19/19 HTTP 401，官方頁顯示 GPX 下載需訂閱。因此候選全部未上架，`js/data/route-art-downloads.js` 未建立，production 外站下載為 0。
+- 三狀態 schema、來源網址 allowlist、多格式解析器、無座標摘要 serializer、原子寫入、來源端安全 anchor 與 App 防護已完成；production 沒有 `source-download` 卡片，相關 UI 只由 synthetic fixture 與自動測試驗證。
+- 圖鑑現行提供全部、自行車、跑步／步行、可下載 GPX、站內地圖五種篩選；實際數量分別為 22、18、4、2、2。正式路線仍為 23 個 bundle／68 條路線，GPS Art 不進入 manifest。
+- 響應式支援界線為最小 320 CSS client px。390 outer／375 client px 與 335 outer／320 client px 無水平溢位；320 outer／305 client px 受既有全站 `20rem` 根寬限制，保留 15px 水平差，不在本輪擴大修改全站樣式。
+- 現行 `npm run verify` 基準為 378 項測試；來源矩陣、權利界線、瀏覽器證據與未驗證邊界同步記錄於 `docs/route-research/taiwan-gps-art.md`、`docs/TEST-PLAN.md` 與 `docs/VERIFICATION.md`。
+
+## 歷史快照：2026-08-14 GPS Art 圖鑑增補
+
+> 本節保留 2026-08-14 的四篩選與來源查核紀錄，不代表 2026-08-28 現行介面或測試數字；現況以上一節為準。
 
 - 新增獨立、唯讀的台灣 GPS Art catalog，共 22 件公開來源作品：18 件單車、2 件跑步、2 件步行。
 - 台北櫻花 16K 與台北圓環 40K 的公開 Google My Maps KML 已匯入；分別保留 6 段／1,036 點與 12 段／2,459 點，地圖與 GPX 共用相同 `segments`。
@@ -44,7 +56,7 @@
 ### 首版包含
 
 - 66 條地區路線、2 條完整挑戰路線、22 個台灣縣市／區域。
-- 8 項經典挑戰與 22 件獨立 GPS Art 公開來源圖鑑；其中 2 件具站內軌跡。
+- 8 項經典挑戰與 22 件獨立 GPS Art 公開來源圖鑑；現況為 2 件 `track-ready`、0 件 `source-download`、20 件 `source-only`。
 - 首頁、路線索引、地區頁、路線詳情、經典挑戰、路線美學、本機編輯器。
 - 黃衫、衝刺綠、登山圓點與白衫四套主題。
 - 搜尋、地區／難度篩選、排序、收藏。
@@ -73,7 +85,7 @@ crown-ride-atlas/
 │  └─ components.css             # 路線卡、地圖、對話框、通知
 ├─ js/
 │  ├─ data/routes.js             # 68 條正式路線、8 項挑戰與圖鑑掛載點
-│  ├─ data/route-art-catalog.js  # 22 件 GPS Art 公開來源圖鑑
+│  ├─ data/route-art-catalog.js  # 22 件 GPS Art 三狀態公開來源圖鑑
 │  ├─ data/route-art-tracks.js   # 兩件公開 KML 的凍結分段軌跡
 │  ├─ core/filter.js             # 搜尋、篩選與排序純函式
 │  ├─ core/store.js              # 本機資料合併、備份與匯入
@@ -734,7 +746,9 @@ Expected: `main -> main`，並建立 upstream。
 
 ---
 
-## 2026-08-25 公路車部件百科里程碑
+## 歷史快照：2026-08-25 公路車部件百科里程碑
+
+> 本節的 317 項測試是百科里程碑當日證據；2026-08-28 現行基準為 378 項。
 
 - [x] 新增獨立 `#/bike-parts` 路由與首頁／導覽入口。
 - [x] 建立 4 個分類、32 筆內容的部件百科；Render 預先輸出 32 個 native `<details>`，每筆保留七類完整內容，BikeAnatomy 只作可選的 progressive enhancement。
@@ -768,7 +782,7 @@ Expected: `main -> main`，並建立 upstream。
 - [x] 靜態伺服器下 Leaflet 正常，失敗時 SVG 正常。
 - [x] 四主題可切換並持久化。
 - [x] 68 條正式路線可搜尋、篩選與檢視。
-- [x] 路線美學顯示 22 件公開來源作品，2 件站內軌跡可依原始 segment 顯示與輸出 GPX，其餘不建立假幾何。
+- [x] 路線美學顯示 22 件公開來源作品，2 件站內軌跡可依原始 segment 顯示與輸出 GPX；0 件來源端匿名 GPX，20 件 `source-only` 不建立假幾何。
 - [x] 每條路線可下載有效 GPX。
 - [x] 本機新增、編輯、刪除、備份、匯入與重設可用。
 - [x] 桌機、平板、手機與鍵盤操作通過。

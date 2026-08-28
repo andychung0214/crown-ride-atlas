@@ -1,8 +1,52 @@
 # 狂輪誌首版驗證紀錄
 
-## 現行驗證：2026-08-25 公路車部件百科
+## 現行驗證：2026-08-28 GPS Art 來源下載
 
-本節只記錄公路車部件百科最終審查修正後的 fresh 命令與 Chrome 證據。現況為 4 個分類、32 筆內容、`#/bike-parts`、23 個公開 bundle 與 68 條正式路線；部件百科不改動 routes 或 `TrackManifest`。較早版本的數字與瀏覽器結果均移至「歷史驗證快照」。
+本節記錄 GPS Art 來源下載計畫在 Task 6 的實際發布候選證據。production catalog 精確為 22 件＝2 `track-ready`＋0 `source-download`＋20 `source-only`；另有 19 件 ShapeMiles 遭拒候選，未加入 catalog。正式路線維持 23 個公開 bundle／68 條路線，公路車部件百科維持 4 個分類／32 筆內容。
+
+### 本輪自動驗證
+
+| 檢查 | 結果 | 實際證據 |
+|---|---|---|
+| 文件／資料矩陣 | 通過 | ESM 唯讀檢查比對 `route-art-catalog.js`、19 件候選 registry 與 `taiwan-gps-art.md`；精確得到 22 個 production ID、19 個 rejected candidate ID，無缺漏 |
+| GPS Art focused 回歸 | 通過 | `node --test tests/route-art-source.test.js tests/route-art-downloads.test.js tests/route-art.test.js tests/route-art-catalog.test.js tests/render.test.js tests/app.test.js tests/gpx.test.js tests/map.test.js tests/css.test.js tests/data.test.js tests/track-data.test.js tests/pages-workflow.test.js` exit code 0；183 項通過、0 項失敗 |
+| 完整驗證 | 通過 | `npm run verify` exit code 0；378 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
+| Production catalog | 通過 | Node 契約與 controller 瀏覽器 DOM 都是 22／2／0／20；12 個精確 Strava route/activity 連結皆顯示可能要求登入；production 外站下載連結為 0 |
+| Git 空白檢查 | 通過 | `git diff --check` exit code 0，無空白錯誤 |
+| 敏感內容掃描 | 已逐行審查 | Task 6 指定 `rg` 模式在 `scripts`、`docs/route-research`、`README.md` 唯一命中為 README 的 `.env` 安全提醒；沒有憑證值、Bearer 指派、私人金鑰、GPX XML 或座標標籤 |
+| 下載摘要產物 | 不存在（符合現況） | `js/data/route-art-downloads.js` 不存在，匹配暫存檔為 0；因此不能把「檔案不存在」寫成產物內容安全掃描通過。無座標 serializer 與拒絕 geometry／coordinate／GPX XML 的行為由 focused tests 覆蓋 |
+| 受保護資料 | 通過 | 本輪只修改五份指定文件；`js/data/routes.js`、`js/data/track-manifest.js`、`js/data/route-art-tracks.js`、正式 `js/data/tracks` 與 GPS Art production 程式／測試沒有 diff |
+
+### 來源與權利結論
+
+- 2026-08-28 現場匿名查核對 19 個 ShapeMiles 精確 allowlist 端點得到 19/19 HTTP 401；官方頁面顯示 GPX 下載需要訂閱。驗證器依全成才規則未建立正式摘要或暫存檔，沒有格式、SHA-256、segments、points、bounds 或座標可記錄。
+- 本輪沒有使用登入 Cookie、Authorization、OAuth、私人活動或瀏覽器既有登入狀態，也沒有停用 TLS、放寬 allowlist、台灣 bounds 或 500m 同段跳點閘門。
+- 正式圖鑑的 12 個 Strava route/activity 頁全部維持 `login-required` 與 `source-only`，只提供查看原始路線，不宣稱匿名 GPX。
+- 三狀態與來源端下載 UI 已以 synthetic fixture 驗證；production 沒有 `source-download` 卡片，所以本輪沒有、也不能宣稱 production 跨來源下載成功。
+
+### Controller 真瀏覽器證據
+
+- Production `#/route-art` DOM：22 張卡＝2 `track-ready`＋0 `source-download`＋20 `source-only`；有 2 張站內地圖、2 個本站 GPX 下載控制、12 個原始 route/activity 連結與登入提示、0 個來源端下載連結。
+- 五個篩選控制全部可見；「可下載 GPX」實際顯示 2 件。production 沒有來源端卡片，因此此數字由兩件 `track-ready` 組成。
+- 390 outer px：`clientWidth=375`、`scrollWidth=375`，無水平溢位，篩選控制至少 44px。
+- 335 outer px：`clientWidth=320`、`scrollWidth=320`，無水平溢位，篩選控制高度約 47.6px。
+- 320 outer px：`clientWidth=305`、`scrollWidth=320`，有 15px 水平差。這是既有全站 `html { min-width: 20rem; }` 在 Windows 非 overlay 捲軸下的界線；準確支援承諾是最小 320 CSS client px，不宣稱 320 outer px 無溢位。
+- 1440px 逐一實點 `yellow`、`green`、`polka`、`white` 四套領騎衫主題；五個篩選維持可見，啟用狀態可辨識，鍵盤 `:focus-visible` 外框清楚。
+- 本輪沒有真實 touch 裝置操作，也沒有 `prefers-reduced-motion` media emulation；44px 與 reduced-motion 只有 computed layout／CSS 及自動測試證據，不冒稱為實機通過。
+- 本輪沒有重做 production 外站下載、登入後 GPX、`file://`、圖磚斷線或所有既有路由的逐頁瀏覽器回歸；對應程式路徑由 focused／完整自動測試覆蓋，但不把自動測試改寫成瀏覽器實測。
+
+### 審查與發布界線
+
+- 依 Task 6 規格逐項自我審查來源權利、三狀態互斥、網址 allowlist、解析限制、產物幾何界線、站內 map／GPX 同源、22 與 68／23 隔離、百科回歸及外部連結安全。controller 明確禁止子代理，因此沒有獨立 reviewer；不將自我審查冒稱為獨立 code review。
+- 本輪未執行 push、merge、GitHub Pages workflow 或公開站重驗；歷史 Pages 紀錄保留在下方封存快照，不代表本次提交已部署。
+
+## 歷史驗證快照
+
+以下章節皆為各日期當次版本的封存證據，不代表 2026-08-28 的現行數量、功能或部署狀態；歷史資料保留原值供追溯。
+
+### 2026-08-25 公路車部件百科
+
+本節只記錄公路車部件百科當日最終審查修正後的命令與 Chrome 證據。當時為 4 個分類、32 筆內容、`#/bike-parts`、23 個公開 bundle 與 68 條正式路線；部件百科不改動 routes 或 `TrackManifest`。
 
 ### 本輪自動驗證
 
@@ -31,10 +75,6 @@
 - 主控台：本機頁面沒有 fatal error；Chrome log 另有一筆 `chrome-extension://` 翻譯擴充功能 token error，來源不是本站，未把它隱藏或記成本站通過訊息。
 - Reduced Motion 證據邊界：Chrome runtime 沒有 `emulateMedia` 能力，因此未執行真實 `prefers-reduced-motion` media emulation。精確 CSS media-block 測試鎖定縮減動態效果規則；此項不宣稱已完成實機 media 驗證。
 - 本輪沒有建立畫面擷取檔；Chrome 測試 tab 已關閉，本機 HTTP server 已停止，使用者原有 tabs 保留。
-
-## 歷史驗證快照
-
-以下章節皆為各日期當次版本的封存證據，不代表 2026-08-25 公路車部件百科的現行數量、功能或部署狀態；歷史數據保留原值供追溯。
 
 ### 2026-08-14 台灣 GPS Art 圖鑑候選版
 

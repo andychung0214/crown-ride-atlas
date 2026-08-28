@@ -2,9 +2,41 @@
 
 首版執行結果與未驗證項目請見 [`VERIFICATION.md`](VERIFICATION.md)。
 
-## 現行基準：公路車部件百科（2026-08-25）
+## 現行基準：GPS Art 來源下載與公路車部件百科（2026-08-28）
 
-現行 `npm run verify` 基準為 317 項測試、23 個公開 bundle 與 68 條正式路線；部件百科固定為 4 個分類、32 筆內容，且不寫入 `TrackManifest` 或正式路線資料。
+現行 `npm run verify` 基準為 378 項測試、23 個公開 bundle 與 68 條正式路線。GPS Art production catalog 精確為 22 件＝2 `track-ready`＋0 `source-download`＋20 `source-only`；公路車部件百科維持 4 個分類、32 筆內容。兩者都不寫入 `TrackManifest` 或正式路線資料。
+
+### GPS Art 自動測試
+
+| 測試項目 | 測試方式 | 預期結果 |
+|---|---|---|
+| 三狀態與 production 數量 | `node --test tests/route-art.test.js tests/route-art-catalog.test.js` | 三狀態互斥；正式 catalog 為 22／2／0／20；12 個 Strava route/activity 連結精確且皆標示 `login-required` |
+| 五種篩選與統計 | `node --test tests/route-art.test.js tests/render.test.js` | 全部 22、自行車 18、跑步／步行 4、可下載 GPX 2、站內地圖 2；四項狀態統計為 22／2／0／20 |
+| 三種卡片行為 | `node --test tests/render.test.js tests/app.test.js tests/gpx.test.js tests/map.test.js` | `track-ready` 才掛載地圖與建立本站 GPX；synthetic `source-download` 只建立安全外部 anchor，不掛地圖、不建立 Blob；`source-only` 無下載按鈕 |
+| 安全多格式來源解析 | `node --test tests/route-art-source.test.js` | GPX／KML／KMZ／GeoJSON 依內容解析；拒絕 HTML、壓縮異常、過大內容、非有限／台灣外座標與同段異常跳點 |
+| 19 件 ShapeMiles 候選 | `node --test tests/route-art-downloads.test.js` | 精確 registry、HTTPS allowlist、逾時／大小／錯誤遮蔽、無座標 serializer 與真正原子寫入受測；一般測試不呼叫現場網路 |
+| 現場匿名查核 | 需要重新查核時獨立執行 `npm run art:verify-downloads` | 只有 19/19 全數成功才產生摘要；任一 HTTP／TLS／格式／座標失敗都保留既有產物或維持不存在，不建立部分檔 |
+| 正式路線與百科隔離 | `npm run verify` | GPS Art 維持 22 件獨立 catalog，部件百科維持 32 筆；published validator 仍為 23 個 bundle／68 條正式路線 |
+
+### GPS Art 真瀏覽器驗收與證據界線
+
+| 測試項目 | 測試方式 | 預期結果／記錄原則 |
+|---|---|---|
+| Production DOM 與五篩選 | 本機 HTTP 開啟 `#/route-art`，依序點選五個篩選 | 全部 22、自行車 18、跑步／步行 4、可下載 GPX 2、站內地圖 2；production 卡片為 2／0／20，只有 2 張地圖與 2 個本站下載控制 |
+| 原始路線登入提示 | 抽查 12 個 Strava route/activity 連結 | 12 個連結存在並顯示來源平台可能要求登入；不得使用既有登入狀態抓取 GPX，也不得把頁面誤稱為匿名下載 |
+| Production 外站下載界線 | 檢查卡片與連結類型 | production 外站下載連結精確為 0；不得宣稱已測 production `source-download` 或跨來源下載。相關行為只由 synthetic fixture／自動測試證明 |
+| 1440px 與四主題 | 逐一點選 `yellow`、`green`、`polka`、`white` | 五篩選、狀態文字、啟用狀態與焦點外框可辨識；不只依賴顏色 |
+| 390 outer px | Windows in-app Browser，量測 document 與篩選控制 | `clientWidth=375`、`scrollWidth=375`，無水平溢位；控制至少 44px |
+| 最小 320 CSS client px | 使用 335 outer px 取得 320 client px | `clientWidth=320`、`scrollWidth=320`，無水平溢位；篩選控制實測約 47.6px |
+| 320 outer px 界線 | Windows 非 overlay 捲軸，量測既有根寬 | `clientWidth=305`、`scrollWidth=320`，保留 15px 水平差；根因是既有 `html { min-width: 20rem; }`，不得記成 320 outer px 無溢位 |
+| 真實 touch | 使用真實觸控裝置操作篩選與下載 | 本輪 controller 未提供真實 touch 證據；viewport mouse 點選與 CSS 44px 量測不能取代實機 touch，完成前必須明記未執行 |
+| Reduced Motion | 以支援 media emulation 的瀏覽器設定 `prefers-reduced-motion: reduce` | 本輪未執行真實 media emulation；精確 CSS／自動測試只證明規則存在，不得冒稱實機通過 |
+
+## 歷史快照：2026-08-25 公路車部件百科
+
+> 以下 317 項測試與百科瀏覽器結果是 2026-08-25 的封存基準，不代表目前測試數；現行數字以上方 2026-08-28 基準為準。
+
+當日 `npm run verify` 基準為 317 項測試、23 個公開 bundle 與 68 條正式路線；部件百科固定為 4 個分類、32 筆內容，且不寫入 `TrackManifest` 或正式路線資料。
 
 ### 自動測試
 
@@ -31,7 +63,7 @@
 
 ## 歷史快照：2026-08-14 GPS Art 圖鑑增補
 
-> 以下 264 項測試與 GPS Art 數值是 2026-08-14 的封存基準，不代表目前版本；現行數字以上方公路車部件百科基準為準。
+> 以下 264 項測試與 GPS Art 數值是 2026-08-14 的封存基準，不代表目前版本；現行數字以上方 2026-08-28 基準為準。
 
 目前候選版完整基準為 `npm run verify` 264 項測試通過，正式 validator 維持 23 個 bundle／68 條路線。
 
