@@ -1,10 +1,22 @@
 # 狂輪誌首版驗證紀錄
 
-## 現行驗證：2026-08-28 GPS Art 來源下載
+## 現行驗證：2026-08-30 公路車零件定位校正
 
-本節記錄 GPS Art 來源下載計畫在 Task 6 的實際發布候選證據。production catalog 精確為 22 件＝2 `track-ready`＋0 `source-download`＋20 `source-only`；另有 19 件 ShapeMiles 遭拒候選，未加入 catalog。正式路線維持 23 個公開 bundle／68 條路線，公路車部件百科維持 4 個分類／32 筆內容。
+本節記錄 32 個公路車零件位置逐一校正後的發布候選證據，並保留 GPS Art 來源下載狀態的回歸結果。production catalog 精確為 22 件＝2 `track-ready`＋0 `source-download`＋20 `source-only`；另有 19 件 ShapeMiles 遭拒候選，未加入 catalog。正式路線維持 23 個公開 bundle／68 條路線，公路車部件百科維持 4 個分類／32 筆內容。
 
-### 本輪自動驗證
+### 零件定位校正證據
+
+| 檢查 | 結果 | 實際證據 |
+|---|---|---|
+| 32 項圖形與錨點契約 | 通過 | `tests/bike-anatomy.test.js` 逐一要求 32 個唯一 `data-bike-part-shape`，並實際解析 line／circle／rect／Q/C path，計入 stroke 寬度、填色與旋轉後驗證錨點命中著色區；上／下管、車架座管、座桿、前後變速器、吊耳、導輪、飛輪、貫通軸、碟盤、卡鉗、氣嘴與輻條均有獨立可見圖形 |
+| Focused 回歸 | 通過 | `node --test tests/bike-parts.test.js tests/bike-anatomy.test.js tests/render.test.js tests/app.test.js tests/css.test.js tests/pages-workflow.test.js` exit code 0；100 項通過、0 項失敗 |
+| 重疊觸控解算 | 通過 | 237px 實際比例下，以最上層貫通軸 marker 作 DOM target、觸控座標置於飛輪中心；修正後 pointerup 依最近熱點選到飛輪，與 mouse click 策略一致 |
+| 行動版標記 TDD | 通過 | RED 精確暴露行動版 marker 缺少獨立可見編號；GREEN 後 44×44px 按鈕保留，內部改為 30px 編號圓，結構與 CSS focused 合計 51／51 通過 |
+| Edge 實際渲染 | 通過 | 本機靜態站 `#/bike-parts` 以 Edge headless 390×1600 實際渲染；32 個 30px 編號圓可見，車架與輪組較原 44px 實心圓清楚；此證據為畫面渲染，不冒稱真實觸控裝置操作 |
+| 完整驗證 | 通過 | `npm run verify` exit code 0；389 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
+| 正式資料隔離 | 通過 | 本輪不修改 `js/data/routes.js`、`js/data/track-manifest.js`、`js/data/route-art-catalog.js`、`js/data/route-art-tracks.js` 或正式 `js/data/tracks` |
+
+### GPS Art 來源下載回歸
 
 | 檢查 | 結果 | 實際證據 |
 |---|---|---|
@@ -17,7 +29,7 @@
 | Fix round 1 focused 回歸 | 通過 | `node --test tests/route-art.test.js tests/route-art-catalog.test.js tests/route-art-downloads.test.js tests/data.test.js tests/track-data.test.js` exit code 0；66 項通過、0 項失敗；另以唯讀矩陣 probe 逐件核對 22 件 production、12 個 Strava 連結與 19 件候選 |
 | Parser／verifier／importer focused 回歸 | 通過 | `node --test tests/route-art-catalog.test.js tests/route-art-source.test.js tests/route-art-downloads.test.js` exit code 0；73 項通過、0 項失敗、0 項略過 |
 | GPS Art focused 回歸 | 通過 | 原 Task 6 指定 focused 集合加上本輪 9 項回歸後為 192 項；parser／verifier／importer 的 73 項精確集合另列於上一列 |
-| 完整驗證 | 通過 | `npm run verify` exit code 0；387 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
+| 完整驗證 | 通過 | `npm run verify` exit code 0；389 項通過、0 項失敗；published validator 為 23 個 bundle／68 條路線 |
 | Production catalog | 通過 | Node 契約與 controller 瀏覽器 DOM 都是 22／2／0／20；12 個精確 Strava route/activity 連結皆顯示可能要求登入；production 外站下載連結為 0 |
 | Git 空白檢查 | 通過 | `git diff --check 8bc75de..HEAD` exit code 0；whole branch 無空白錯誤，設計規格第 3 行尾端空白已移除 |
 | 敏感內容掃描 | 已逐行審查 | Task 6 指定 `rg` 模式在 `scripts`、`docs/route-research`、`README.md` 唯一命中為 README 的 `.env` 安全提醒；final wave 另掃描敏感檔名與 `11a3ddb` 後的憑證值模式，均為 0 筆。測試中的 Cookie／Authorization／secret counterexample 是明示假值，用來證明不會輸出上游文字；沒有真實憑證值、Bearer 指派、私人金鑰、GPX XML 或座標產物 |

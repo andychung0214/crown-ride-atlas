@@ -133,6 +133,11 @@ test("40rem 以下只顯示 44px HTML marker 並隱藏 SVG 互動層", () => {
   assert.match(marker, /min-width:\s*2\.75rem\s*;/);
   assert.match(marker, /min-height:\s*2\.75rem\s*;/);
   assert.match(marker, /position:\s*absolute\s*;/);
+  assert.match(marker, /background:\s*transparent\s*;/);
+  const glyph = ruleBody(css, ".bike-parts-page [data-bike-mobile-marker-glyph]");
+  assert.match(glyph, /width:\s*1\.875rem\s*;/);
+  assert.match(glyph, /height:\s*1\.875rem\s*;/);
+  assert.match(glyph, /border-radius:\s*50%\s*;/);
 });
 
 test("百科 40rem 單欄與全站 20rem 根寬例外各自精確 scoped", () => {

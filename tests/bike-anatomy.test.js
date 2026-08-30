@@ -25,6 +25,122 @@ function matchesSelector(element, selector) {
   return element.name === selector.toLowerCase();
 }
 
+function distanceToSegment(point, start, end) {
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  const lengthSquared = dx * dx + dy * dy;
+  const ratio = lengthSquared === 0
+    ? 0
+    : Math.max(0, Math.min(1, ((point.x - start.x) * dx + (point.y - start.y) * dy) / lengthSquared));
+  return Math.hypot(point.x - (start.x + dx * ratio), point.y - (start.y + dy * ratio));
+}
+
+function sampledPathPoints(pathData) {
+  const tokens = String(pathData || "").match(/[MLQCZ]|-?\d+(?:\.\d+)?/g) || [];
+  const points = [];
+  let cursor = 0;
+  let command = null;
+  let current = null;
+  let first = null;
+  const number = () => Number(tokens[cursor++]);
+  const add = point => {
+    points.push(point);
+    current = point;
+    if (!first) first = point;
+  };
+  while (cursor < tokens.length) {
+    if (/^[MLQCZ]$/.test(tokens[cursor])) command = tokens[cursor++];
+    if (command === "M" || command === "L") {
+      add({ x: number(), y: number() });
+      command = command === "M" ? "L" : command;
+    } else if (command === "Q") {
+      const start = current;
+      const control = { x: number(), y: number() };
+      const end = { x: number(), y: number() };
+      for (let step = 1; step <= 48; step += 1) {
+        const t = step / 48;
+        const inverse = 1 - t;
+        add({
+          x: inverse * inverse * start.x + 2 * inverse * t * control.x + t * t * end.x,
+          y: inverse * inverse * start.y + 2 * inverse * t * control.y + t * t * end.y
+        });
+      }
+    } else if (command === "C") {
+      const start = current;
+      const firstControl = { x: number(), y: number() };
+      const secondControl = { x: number(), y: number() };
+      const end = { x: number(), y: number() };
+      for (let step = 1; step <= 64; step += 1) {
+        const t = step / 64;
+        const inverse = 1 - t;
+        add({
+          x: inverse ** 3 * start.x + 3 * inverse * inverse * t * firstControl.x + 3 * inverse * t * t * secondControl.x + t ** 3 * end.x,
+          y: inverse ** 3 * start.y + 3 * inverse * inverse * t * firstControl.y + 3 * inverse * t * t * secondControl.y + t ** 3 * end.y
+        });
+      }
+    } else if (command === "Z") {
+      if (first) add(first);
+      command = null;
+    } else {
+      throw new Error(`不支援的 SVG path command：${command}`);
+    }
+  }
+  return points;
+}
+
+function pointInPolygon(point, polygon) {
+  let inside = false;
+  for (let index = 0, previous = polygon.length - 1; index < polygon.length; previous = index++) {
+    const a = polygon[index];
+    const b = polygon[previous];
+    if (((a.y > point.y) !== (b.y > point.y)) &&
+      point.x < ((b.x - a.x) * (point.y - a.y)) / (b.y - a.y) + a.x) inside = !inside;
+  }
+  return inside;
+}
+
+function anchorHitsPaintedShape(shape, point) {
+  const stroke = shape.getAttribute("stroke");
+  const fill = shape.getAttribute("fill");
+  const strokeRadius = Number(shape.getAttribute("stroke-width") || 0) / 2 + 0.75;
+  if (shape.name === "line") {
+    return distanceToSegment(point, {
+      x: Number(shape.getAttribute("x1")), y: Number(shape.getAttribute("y1"))
+    }, {
+      x: Number(shape.getAttribute("x2")), y: Number(shape.getAttribute("y2"))
+    }) <= strokeRadius;
+  }
+  if (shape.name === "circle") {
+    const distance = Math.hypot(point.x - Number(shape.getAttribute("cx")), point.y - Number(shape.getAttribute("cy")));
+    const radius = Number(shape.getAttribute("r"));
+    return fill && fill !== "none" ? distance <= radius + 0.75 : Math.abs(distance - radius) <= strokeRadius;
+  }
+  if (shape.name === "rect") {
+    const x = Number(shape.getAttribute("x"));
+    const y = Number(shape.getAttribute("y"));
+    const width = Number(shape.getAttribute("width"));
+    const height = Number(shape.getAttribute("height"));
+    const rotate = /rotate\((-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\)/.exec(shape.getAttribute("transform") || "");
+    let local = point;
+    if (rotate) {
+      const angle = -Number(rotate[1]) * Math.PI / 180;
+      const cx = Number(rotate[2]);
+      const cy = Number(rotate[3]);
+      local = {
+        x: cx + Math.cos(angle) * (point.x - cx) - Math.sin(angle) * (point.y - cy),
+        y: cy + Math.sin(angle) * (point.x - cx) + Math.cos(angle) * (point.y - cy)
+      };
+    }
+    return local.x >= x - 0.75 && local.x <= x + width + 0.75 && local.y >= y - 0.75 && local.y <= y + height + 0.75;
+  }
+  if (shape.name === "path") {
+    const points = sampledPathPoints(shape.getAttribute("d"));
+    if (fill && fill !== "none" && pointInPolygon(point, points)) return true;
+    return points.slice(1).some((end, index) => distanceToSegment(point, points[index], end) <= strokeRadius);
+  }
+  return false;
+}
+
 class FakeClassList {
   constructor(element) {
     this.element = element;
@@ -295,6 +411,69 @@ test("SVG 是固定檢視框且具完整側視公路車結構", () => {
   });
 });
 
+test("32 個零件的熱點逐一命中人工核對的獨立圖形", () => {
+  const expectedAnchors = {
+    "top-tube": [520, 190],
+    "down-tube": [535, 267],
+    "head-tube": [621, 220],
+    "seat-tube": [438, 272],
+    "seat-stay": [340, 263],
+    "chain-stay": [355, 350],
+    fork: [676, 299],
+    "derailleur-hanger": [259, 370],
+    "drop-handlebar": [680, 142],
+    stem: [636, 166],
+    headset: [613, 196],
+    "bar-tape": [698, 142],
+    "shift-brake-lever": [714, 170],
+    saddle: [410, 151],
+    seatpost: [415, 173],
+    pedal: [520, 384],
+    "crank-arm": [480, 368],
+    chainring: [455, 310],
+    "bottom-bracket": [455, 350],
+    "front-derailleur": [437, 306],
+    "rear-derailleur": [272, 402],
+    chain: [365, 380],
+    cassette: [272, 350],
+    "jockey-wheel": [299, 413],
+    rim: [715, 218],
+    tire: [245, 205],
+    valve: [647, 469],
+    hub: [715, 350],
+    spoke: [760, 324],
+    axle: [245, 350],
+    "disc-rotor": [673, 350],
+    "brake-caliper": [673, 315]
+  };
+  const documentRef = new FakeDocument();
+  const svg = BikeAnatomy.createSvg(documentRef, BikeParts, () => {});
+  const shapes = svg.querySelectorAll("[data-bike-part-shape]");
+
+  assert.equal(shapes.length, 32);
+  assert.deepEqual(
+    shapes.map(shape => shape.dataset.bikePartShape).sort(),
+    Object.keys(expectedAnchors).sort()
+  );
+
+  BikeParts.parts.forEach(part => {
+    const expected = expectedAnchors[part.id];
+    const shape = byData(svg, "bike-part-shape", part.id);
+    assert.ok(expected, `缺少 ${part.id} 的人工核對錨點`);
+    assert.deepEqual(part.hotspot, { x: expected[0], y: expected[1] }, `${part.name} 熱點位置錯誤`);
+    assert.ok(shape, `${part.name} 缺少獨立可見圖形`);
+    assert.equal(Number(shape.getAttribute("data-bike-anchor-x")), expected[0], `${part.name} 圖形 X 錨點錯誤`);
+    assert.equal(Number(shape.getAttribute("data-bike-anchor-y")), expected[1], `${part.name} 圖形 Y 錨點錯誤`);
+    const stroke = shape.getAttribute("stroke");
+    const fill = shape.getAttribute("fill");
+    assert.ok(
+      (stroke && stroke !== "none") || (fill && fill !== "none"),
+      `${part.name} 圖形不可完全透明`
+    );
+    assert.ok(anchorHitsPaintedShape(shape, part.hotspot), `${part.name} 熱點未命中實際著色圖形`);
+  });
+});
+
 test("SVG 以具名 group 容納可達熱點並只隱藏純車體視覺層", () => {
   const documentRef = new FakeDocument();
   const svg = BikeAnatomy.createSvg(documentRef, BikeParts, () => {});
@@ -361,15 +540,17 @@ test("增強建立 32 個 screen-space HTML marker 並以 hotspot 百分比定�
   markers.forEach((marker, index) => {
     const part = BikeParts.parts[index];
     const markerNumber = String(part.number).padStart(2, "0");
+    const glyph = marker.querySelector("[data-bike-mobile-marker-glyph]");
     assert.equal(marker.name, "button");
     assert.equal(marker.getAttribute("type"), "button");
     assert.equal(marker.getAttribute("aria-label"), `${markerNumber} ${part.name}`);
-    assert.equal(marker.textContent, markerNumber);
+    assert.ok(glyph, `${part.id} 缺少與 44px 觸控區分離的可見編號`);
+    assert.equal(glyph.textContent, markerNumber);
   });
   const chain = byData(fixture.root, "bike-mobile-marker", "chain");
-  assert.match(chain.getAttribute("style"), /left:\s*38\.020833%;\s*top:\s*72\.692308%/);
+  assert.match(chain.getAttribute("style"), /left:\s*38\.020833%;\s*top:\s*73\.076923%/);
   byData(fixture.root, "bike-view-action", "zoom-in").dispatch("click");
-  assert.match(chain.getAttribute("style"), /left:\s*47\.526042%;\s*top:\s*90\.865385%/);
+  assert.match(chain.getAttribute("style"), /left:\s*47\.526042%;\s*top:\s*91\.346154%/);
 });
 
 test("mobile marker 的 click、Enter、Space 由原生合成 click 委派至 surface", () => {
@@ -397,8 +578,8 @@ test("mobile marker 的 click、Enter、Space 由原生合成 click 委派至 su
 
 test("diagram hotspot 與 marker 的 bubbled click 各只選取及播報一次", () => {
   [
-    ["bike-hotspot", "chain", 365, 378],
-    ["bike-mobile-marker", "cassette", 252, 362]
+    ["bike-hotspot", "chain", 365, 380],
+    ["bike-mobile-marker", "cassette", 272, 350]
   ].forEach(([attribute, partId, clientX, clientY]) => {
     const fixture = interactiveFixture();
     const announcements = [];
@@ -425,8 +606,8 @@ test("重疊 marker 的 mouse click 以座標最近 hotspot 覆蓋最上層 DOM 
   surface.dispatch("click", {
     target: coveringAxle,
     pointerType: "mouse",
-    clientX: 252,
-    clientY: 362
+    clientX: 272,
+    clientY: 350
   });
 
   assert.equal(fixture.detail.querySelector("h2").textContent, "飛輪");
@@ -484,6 +665,26 @@ test("touch direct marker 與 SVG hotspot 都由 diagram surface 記錄並選取
     assert.equal(fixture.detail.querySelector("h2").textContent, expectedName);
     assert.deepEqual(surface.pointerCaptureCalls, [pointerId]);
   });
+});
+
+test("237px 窄版重疊 marker 的 touch 依座標最近熱點選取飛輪", () => {
+  const fixture = interactiveFixture();
+  BikeAnatomy.mount(fixture.root, { catalog: BikeParts, announce() {} });
+  const surface = fixture.root.querySelector("[data-bike-diagram-surface]");
+  const svg = fixture.root.querySelector("[data-bike-svg]");
+  const coveringAxle = byData(fixture.root, "bike-mobile-marker", "axle");
+  svg.clientRect = { left: 0, top: 0, width: 237, height: 128.375 };
+  const clientX = 272 * 237 / 960;
+  const clientY = 350 * 128.375 / 520;
+
+  surface.dispatch("pointerdown", {
+    target: coveringAxle, pointerId: 58, pointerType: "touch", clientX, clientY
+  });
+  surface.dispatch("pointerup", {
+    target: coveringAxle, pointerId: 58, pointerType: "touch", clientX, clientY
+  });
+
+  assert.equal(fixture.detail.querySelector("h2").textContent, "飛輪");
 });
 
 test("marker＋背景、marker＋marker、SVG hotspot＋背景的雙指組合都不誤選", () => {

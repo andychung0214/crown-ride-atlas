@@ -2,9 +2,9 @@
 
 首版執行結果與未驗證項目請見 [`VERIFICATION.md`](VERIFICATION.md)。
 
-## 現行基準：GPS Art 來源下載與公路車部件百科（2026-08-28）
+## 現行基準：GPS Art 來源下載與公路車部件百科（2026-08-30）
 
-現行 `npm run verify` 基準為 378 項測試、23 個公開 bundle 與 68 條正式路線。GPS Art production catalog 精確為 22 件＝2 `track-ready`＋0 `source-download`＋20 `source-only`；公路車部件百科維持 4 個分類、32 筆內容。兩者都不寫入 `TrackManifest` 或正式路線資料。
+現行 `npm run verify` 基準為 389 項測試、23 個公開 bundle 與 68 條正式路線。GPS Art production catalog 精確為 22 件＝2 `track-ready`＋0 `source-download`＋20 `source-only`；公路車部件百科維持 4 個分類、32 筆內容。兩者都不寫入 `TrackManifest` 或正式路線資料。
 
 ### GPS Art 自動測試
 
@@ -32,9 +32,25 @@
 | 真實 touch | 使用真實觸控裝置操作篩選與下載 | 本輪 controller 未提供真實 touch 證據；viewport mouse 點選與 CSS 44px 量測不能取代實機 touch，完成前必須明記未執行 |
 | Reduced Motion | 以支援 media emulation 的瀏覽器設定 `prefers-reduced-motion: reduce` | 本輪未執行真實 media emulation；精確 CSS／自動測試只證明規則存在，不得冒稱實機通過 |
 
+### 公路車部件百科現行測試
+
+| 測試項目 | 測試方式 | 預期結果 |
+|---|---|---|
+| 資料契約與內容 | 執行 `node --test tests/bike-parts.test.js` | 精確 4 個分類、32 筆部件、ID／編號唯一；每筆具名稱、用途、保養、注意事項與相關部件，不以重複模板替代內容 |
+| 路由與渲染 | 執行 `node --test tests/router.test.js tests/render.test.js tests/app.test.js` | `#/bike-parts` 可解析；只缺 BikeAnatomy 或 mount 失敗時不 fatal；32 個 native details 各有名稱與七類完整內容 |
+| 圖解定位與互動 | 執行 `node --test tests/bike-anatomy.test.js` | 32 個零件各有唯一可見圖形；測試解析 line／circle／rect／Q/C path 並考慮 stroke、fill、旋轉，逐一確認資料熱點命中實際著色區；桌機 SVG 與行動版 HTML marker 使用相同 ID；click／Enter／Space、重疊 marker 最近點、237px touch 解算、拖曳／雙指與 fallback lifecycle 均受測 |
+| 專屬樣式隔離 | 執行 `node --test tests/css.test.js` | 以精確 rule／media helper 鎖定 hidden fallback、44px 觸控區與 30px 可見編號、窄版隱藏 SVG 互動層、hover 非色彩狀態及 reduced-motion |
+| 正式路線隔離 | 執行 `npm run verify` | 389 項測試通過；23 個公開 bundle／68 條正式路線維持不變；部件百科不改動 routes 或 `TrackManifest` |
+
+| 真瀏覽器項目 | 測試方式 | 預期結果／記錄原則 |
+|---|---|---|
+| 1440px 桌機 | Edge 開啟 `#/bike-parts` | 32 個熱點、導引線與名稱對應正確；車架、操控接觸點、傳動系統、輪組與煞車的標記落在對應圖形，無水平溢位 |
+| 390px 窄版 | Edge 開啟 `#/bike-parts` | 原 SVG hotspot／leader／label 隱藏；32 個 HTML 觸控區至少 44×44px，內部 30px 編號可見，車架與輪組仍可辨識 |
+| 重疊觸控 | 以 237px SVG 比例測試飛輪／貫通軸重疊 | 即使 DOM target 是貫通軸，座標位於飛輪中心時仍依最近熱點選到飛輪；真實 touch 裝置仍列為未執行，不以事件測試冒稱實機通過 |
+
 ## 歷史快照：2026-08-25 公路車部件百科
 
-> 以下 317 項測試與百科瀏覽器結果是 2026-08-25 的封存基準，不代表目前測試數；現行數字以上方 2026-08-28 基準為準。
+> 以下 317 項測試與百科瀏覽器結果是 2026-08-25 的封存基準，不代表目前測試數；現行數字以上方 2026-08-30 基準為準。
 
 當日 `npm run verify` 基準為 317 項測試、23 個公開 bundle 與 68 條正式路線；部件百科固定為 4 個分類、32 筆內容，且不寫入 `TrackManifest` 或正式路線資料。
 
@@ -63,7 +79,7 @@
 
 ## 歷史快照：2026-08-14 GPS Art 圖鑑增補
 
-> 以下 264 項測試與 GPS Art 數值是 2026-08-14 的封存基準，不代表目前版本；現行數字以上方 2026-08-28 基準為準。
+> 以下 264 項測試與 GPS Art 數值是 2026-08-14 的封存基準，不代表目前版本；現行數字以上方 2026-08-30 基準為準。
 
 目前候選版完整基準為 `npm run verify` 264 項測試通過，正式 validator 維持 23 個 bundle／68 條路線。
 

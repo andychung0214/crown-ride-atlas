@@ -68,17 +68,32 @@
     return element;
   }
 
-  function appendSpokes(documentRef, group, centerX, centerY) {
+  function partShapeAttributes(partId, anchorX, anchorY, attributes) {
+    return Object.assign({
+      "data-bike-part-shape": partId,
+      "data-bike-anchor-x": anchorX,
+      "data-bike-anchor-y": anchorY
+    }, attributes);
+  }
+
+  function appendSpokes(documentRef, group, centerX, centerY, markedSpoke) {
     for (let index = 0; index < 12; index += 1) {
       const angle = (Math.PI * 2 * index) / 12;
-      group.append(svgElement(documentRef, "line", {
+      const attributes = {
         x1: centerX,
         y1: centerY,
         x2: centerX + Math.cos(angle) * 126,
         y2: centerY + Math.sin(angle) * 126,
         stroke: "#54615b",
         "stroke-width": 1.5
-      }));
+      };
+      group.append(svgElement(
+        documentRef,
+        "line",
+        markedSpoke && markedSpoke.index === index
+          ? partShapeAttributes(markedSpoke.id, markedSpoke.anchorX, markedSpoke.anchorY, attributes)
+          : attributes
+      ));
     }
   }
 
@@ -87,43 +102,75 @@
     const green = "#17633f";
     const metal = "#68756e";
     const wheels = svgElement(documentRef, "g", { "data-bike-shape": "wheelset" });
-    [[245, 350], [715, 350]].forEach(([cx, cy]) => {
-      wheels.append(svgElement(documentRef, "circle", {
-        cx, cy, r: 145, fill: "none", stroke: ink, "stroke-width": 12
-      }));
-      wheels.append(svgElement(documentRef, "circle", {
-        cx, cy, r: 132, fill: "none", stroke: metal, "stroke-width": 3
-      }));
-      appendSpokes(documentRef, wheels, cx, cy);
-      wheels.append(svgElement(documentRef, "circle", {
-        cx, cy, r: 9, fill: ink, stroke: "#f1eee4", "stroke-width": 2
-      }));
+    [[245, 350], [715, 350]].forEach(([cx, cy], wheelIndex) => {
+      const tireAttributes = { cx, cy, r: 145, fill: "none", stroke: ink, "stroke-width": 12 };
+      const rimAttributes = { cx, cy, r: 132, fill: "none", stroke: metal, "stroke-width": 3 };
+      wheels.append(svgElement(
+        documentRef,
+        "circle",
+        wheelIndex === 0 ? partShapeAttributes("tire", 245, 205, tireAttributes) : tireAttributes
+      ));
+      wheels.append(svgElement(
+        documentRef,
+        "circle",
+        wheelIndex === 1 ? partShapeAttributes("rim", 715, 218, rimAttributes) : rimAttributes
+      ));
+      appendSpokes(documentRef, wheels, cx, cy, wheelIndex === 1
+        ? { id: "spoke", index: 11, anchorX: 760, anchorY: 324 }
+        : null);
+      wheels.append(svgElement(documentRef, "circle", partShapeAttributes(
+        wheelIndex === 0 ? "axle" : "hub",
+        cx,
+        cy,
+        { cx, cy, r: 9, fill: ink, stroke: "#f1eee4", "stroke-width": 2 }
+      )));
     });
+    wheels.append(svgElement(documentRef, "line", partShapeAttributes("valve", 647, 469, {
+      x1: 650, y1: 462, x2: 643, y2: 477,
+      stroke: ink, "stroke-width": 5, "stroke-linecap": "round"
+    })));
     viewport.append(wheels);
 
-    viewport.append(svgElement(documentRef, "path", {
-      "data-bike-shape": "frame-front-triangle",
-      d: "M 420 190 L 610 190 L 455 350 Z",
-      fill: "none", stroke: green, "stroke-width": 17,
-      "stroke-linecap": "round", "stroke-linejoin": "round"
-    }));
-    viewport.append(svgElement(documentRef, "path", {
-      "data-bike-shape": "frame-rear-triangle",
-      d: "M 420 190 L 245 350 L 455 350 Z",
-      fill: "none", stroke: green, "stroke-width": 13,
-      "stroke-linecap": "round", "stroke-linejoin": "round"
-    }));
-    viewport.append(svgElement(documentRef, "line", {
+    const frontTriangle = svgElement(documentRef, "g", { "data-bike-shape": "frame-front-triangle" });
+    frontTriangle.append(svgElement(documentRef, "line", partShapeAttributes("top-tube", 520, 190, {
+      x1: 420, y1: 190, x2: 610, y2: 190,
+      stroke: green, "stroke-width": 17, "stroke-linecap": "round"
+    })));
+    frontTriangle.append(svgElement(documentRef, "line", partShapeAttributes("down-tube", 535, 267, {
+      x1: 610, y1: 190, x2: 455, y2: 350,
+      stroke: green, "stroke-width": 17, "stroke-linecap": "round"
+    })));
+    frontTriangle.append(svgElement(documentRef, "line", partShapeAttributes("seat-tube", 438, 272, {
+      x1: 420, y1: 190, x2: 455, y2: 350,
+      stroke: green, "stroke-width": 17, "stroke-linecap": "round"
+    })));
+    viewport.append(frontTriangle);
+
+    const rearTriangle = svgElement(documentRef, "g", { "data-bike-shape": "frame-rear-triangle" });
+    rearTriangle.append(svgElement(documentRef, "line", partShapeAttributes("seat-stay", 340, 263, {
+      x1: 420, y1: 190, x2: 245, y2: 350,
+      stroke: green, "stroke-width": 13, "stroke-linecap": "round"
+    })));
+    rearTriangle.append(svgElement(documentRef, "line", partShapeAttributes("chain-stay", 355, 350, {
+      x1: 245, y1: 350, x2: 455, y2: 350,
+      stroke: green, "stroke-width": 13, "stroke-linecap": "round"
+    })));
+    rearTriangle.append(svgElement(documentRef, "circle", partShapeAttributes("derailleur-hanger", 259, 370, {
+      cx: 259, cy: 370, r: 7, fill: "#f1eee4", stroke: metal, "stroke-width": 4
+    })));
+    viewport.append(rearTriangle);
+
+    viewport.append(svgElement(documentRef, "line", partShapeAttributes("head-tube", 621, 220, {
       "data-bike-shape": "head-tube",
       x1: 610, y1: 190, x2: 632, y2: 250,
       stroke: green, "stroke-width": 19, "stroke-linecap": "round"
-    }));
+    })));
 
     const fork = svgElement(documentRef, "g", { "data-bike-shape": "fork" });
-    fork.append(svgElement(documentRef, "path", {
+    fork.append(svgElement(documentRef, "path", partShapeAttributes("fork", 676, 299, {
       d: "M 622 205 Q 650 272 715 350",
       fill: "none", stroke: green, "stroke-width": 13, "stroke-linecap": "round"
-    }));
+    })));
     fork.append(svgElement(documentRef, "path", {
       d: "M 632 242 Q 670 300 715 350",
       fill: "none", stroke: ink, "stroke-width": 5, "stroke-linecap": "round"
@@ -131,63 +178,91 @@
     viewport.append(fork);
 
     const cockpit = svgElement(documentRef, "g");
-    cockpit.append(svgElement(documentRef, "path", {
+    cockpit.append(svgElement(documentRef, "path", partShapeAttributes("drop-handlebar", 680, 142, {
       "data-bike-shape": "drop-handlebar",
       d: "M 660 151 C 690 137 716 139 718 158 C 720 181 702 194 686 182 C 674 173 683 158 704 158",
       fill: "none", stroke: ink, "stroke-width": 10,
       "stroke-linecap": "round", "stroke-linejoin": "round"
-    }));
-    cockpit.append(svgElement(documentRef, "line", {
+    })));
+    cockpit.append(svgElement(documentRef, "path", partShapeAttributes("bar-tape", 698, 142, {
+      d: "M 684 143 C 699 139 714 143 718 157 C 720 171 714 182 706 186",
+      fill: "none", stroke: "#68756e", "stroke-width": 4,
+      "stroke-linecap": "round", "stroke-dasharray": "3 3"
+    })));
+    cockpit.append(svgElement(documentRef, "path", partShapeAttributes("shift-brake-lever", 714, 170, {
+      d: "M 704 156 L 716 162 L 711 180",
+      fill: "none", stroke: ink, "stroke-width": 7,
+      "stroke-linecap": "round", "stroke-linejoin": "round"
+    })));
+    cockpit.append(svgElement(documentRef, "line", partShapeAttributes("stem", 636, 166, {
       x1: 608, y1: 180, x2: 666, y2: 151,
       stroke: metal, "stroke-width": 11, "stroke-linecap": "round"
-    }));
+    })));
+    cockpit.append(svgElement(documentRef, "circle", partShapeAttributes("headset", 613, 196, {
+      cx: 613, cy: 196, r: 9, fill: "#f1eee4", stroke: metal, "stroke-width": 4
+    })));
     viewport.append(cockpit);
 
     const saddle = svgElement(documentRef, "g", { "data-bike-shape": "saddle" });
-    saddle.append(svgElement(documentRef, "line", {
+    saddle.append(svgElement(documentRef, "line", partShapeAttributes("seatpost", 415, 173, {
       x1: 420, y1: 190, x2: 410, y2: 157,
       stroke: metal, "stroke-width": 9, "stroke-linecap": "round"
-    }));
-    saddle.append(svgElement(documentRef, "path", {
+    })));
+    saddle.append(svgElement(documentRef, "path", partShapeAttributes("saddle", 410, 151, {
       d: "M 374 151 Q 409 140 446 150 Q 447 161 428 164 L 382 162 Q 373 159 374 151 Z",
       fill: ink
-    }));
+    })));
     viewport.append(saddle);
 
     const drivetrain = svgElement(documentRef, "g", { "data-bike-shape": "drivetrain" });
-    drivetrain.append(svgElement(documentRef, "circle", {
+    drivetrain.append(svgElement(documentRef, "circle", partShapeAttributes("chainring", 455, 310, {
       cx: 455, cy: 350, r: 42, fill: "#f1eee4", stroke: ink, "stroke-width": 6
-    }));
+    })));
     drivetrain.append(svgElement(documentRef, "circle", {
       cx: 455, cy: 350, r: 31, fill: "none", stroke: metal, "stroke-width": 3, "stroke-dasharray": "3 4"
     }));
-    drivetrain.append(svgElement(documentRef, "line", {
+    drivetrain.append(svgElement(documentRef, "circle", partShapeAttributes("bottom-bracket", 455, 350, {
+      cx: 455, cy: 350, r: 8, fill: metal, stroke: ink, "stroke-width": 2
+    })));
+    drivetrain.append(svgElement(documentRef, "line", partShapeAttributes("crank-arm", 480, 368, {
       x1: 455, y1: 350, x2: 505, y2: 385, stroke: ink, "stroke-width": 8, "stroke-linecap": "round"
-    }));
-    drivetrain.append(svgElement(documentRef, "line", {
+    })));
+    drivetrain.append(svgElement(documentRef, "line", partShapeAttributes("pedal", 520, 384, {
       x1: 501, y1: 384, x2: 535, y2: 384, stroke: ink, "stroke-width": 8, "stroke-linecap": "round"
-    }));
-    drivetrain.append(svgElement(documentRef, "path", {
+    })));
+    drivetrain.append(svgElement(documentRef, "rect", partShapeAttributes("front-derailleur", 437, 306, {
+      x: 429, y: 297, width: 16, height: 18, rx: 4,
+      fill: metal, stroke: ink, "stroke-width": 2
+    })));
+    drivetrain.append(svgElement(documentRef, "path", partShapeAttributes("chain", 365, 380, {
       d: "M 247 334 L 456 310 M 247 367 L 457 391",
       fill: "none", stroke: "#424b46", "stroke-width": 5
-    }));
-    drivetrain.append(svgElement(documentRef, "circle", {
+    })));
+    drivetrain.append(svgElement(documentRef, "circle", partShapeAttributes("cassette", 272, 350, {
       cx: 247, cy: 350, r: 25, fill: "none", stroke: metal, "stroke-width": 7
-    }));
-    drivetrain.append(svgElement(documentRef, "path", {
+    })));
+    drivetrain.append(svgElement(documentRef, "path", partShapeAttributes("rear-derailleur", 272, 402, {
       d: "M 252 371 Q 268 395 279 413 Q 288 425 299 413",
       fill: "none", stroke: ink, "stroke-width": 7, "stroke-linecap": "round"
-    }));
+    })));
     drivetrain.append(svgElement(documentRef, "circle", {
       cx: 299, cy: 413, r: 9, fill: "none", stroke: ink, "stroke-width": 4
     }));
+    drivetrain.append(svgElement(documentRef, "circle", partShapeAttributes("jockey-wheel", 299, 413, {
+      cx: 299, cy: 413, r: 3.5, fill: ink
+    })));
     viewport.append(drivetrain);
 
     const rotors = svgElement(documentRef, "g", { "data-bike-shape": "disc-rotor" });
-    [[245, 350], [715, 350]].forEach(([cx, cy]) => {
-      rotors.append(svgElement(documentRef, "circle", {
+    [[245, 350], [715, 350]].forEach(([cx, cy], rotorIndex) => {
+      const rotorAttributes = {
         cx, cy, r: 42, fill: "none", stroke: metal, "stroke-width": 5, "stroke-dasharray": "7 5"
-      }));
+      };
+      rotors.append(svgElement(
+        documentRef,
+        "circle",
+        rotorIndex === 1 ? partShapeAttributes("disc-rotor", 673, 350, rotorAttributes) : rotorAttributes
+      ));
       rotors.append(svgElement(documentRef, "circle", {
         cx, cy, r: 15, fill: "none", stroke: metal, "stroke-width": 3
       }));
@@ -195,10 +270,10 @@
     viewport.append(rotors);
 
     const calipers = svgElement(documentRef, "g", { "data-bike-shape": "brake-caliper" });
-    calipers.append(svgElement(documentRef, "rect", {
+    calipers.append(svgElement(documentRef, "rect", partShapeAttributes("brake-caliper", 673, 315, {
       x: 662, y: 298, width: 22, height: 34, rx: 7,
       fill: ink, transform: "rotate(-28 673 315)"
-    }));
+    })));
     calipers.append(svgElement(documentRef, "rect", {
       x: 276, y: 311, width: 21, height: 32, rx: 7,
       fill: ink, transform: "rotate(30 286 327)"
@@ -334,12 +409,17 @@
     });
     catalog.parts.forEach(part => {
       const markerNumber = String(part.number).padStart(2, "0");
-      overlay.append(htmlElement(documentRef, "button", {
+      const marker = htmlElement(documentRef, "button", {
         type: "button",
         "data-bike-mobile-marker": part.id,
         "aria-label": `${markerNumber} ${part.name}`,
         "aria-pressed": "false"
+      });
+      marker.append(htmlElement(documentRef, "span", {
+        "data-bike-mobile-marker-glyph": "true",
+        "aria-hidden": "true"
       }, markerNumber));
+      overlay.append(marker);
     });
     return overlay;
   }
@@ -643,7 +723,7 @@
         event.type === "pointerup" && pointer && pointer.pointerType !== "mouse" &&
         !pointer.moved && !pointer.hadMultiple && pointers.size === 1
       ) {
-        const part = partById.get(pointer.directPartId) || nearestHotspot(event.clientX, event.clientY);
+        const part = nearestHotspot(event.clientX, event.clientY) || partById.get(pointer.directPartId);
         if (part) {
           select(part.id);
           selectedFromPointer = true;

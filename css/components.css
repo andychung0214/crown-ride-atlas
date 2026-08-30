@@ -1581,23 +1581,39 @@ html:has(.bike-parts-page) {
   align-items: center;
   justify-content: center;
   padding: 0;
-  border: 1px solid #245c43;
+  border: 0;
   border-radius: 50%;
   color: #245c43;
-  background: #f7f3e9;
-  box-shadow: 0 0 0 1px rgba(247, 243, 233, 0.88);
+  background: transparent;
   font: 800 0.78rem/1 var(--font-data);
   transform: translate(-50%, -50%);
   pointer-events: auto;
 }
 
+.bike-parts-page [data-bike-mobile-marker-glyph] {
+  display: inline-flex;
+  width: 1.875rem;
+  height: 1.875rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #245c43;
+  border-radius: 50%;
+  background: #f7f3e9;
+  box-shadow: 0 0 0 1px rgba(247, 243, 233, 0.88);
+  pointer-events: none;
+}
+
 .bike-parts-page [data-bike-mobile-marker]:focus-visible,
 .bike-parts-page [data-bike-mobile-marker].is-selected {
-  border-width: 3px;
-  border-color: #24271f;
   color: #24271f;
   outline: 0.18rem solid var(--color-accent);
-  outline-offset: 0.08rem;
+  outline-offset: -0.12rem;
+}
+
+.bike-parts-page [data-bike-mobile-marker]:focus-visible [data-bike-mobile-marker-glyph],
+.bike-parts-page [data-bike-mobile-marker].is-selected [data-bike-mobile-marker-glyph] {
+  border-width: 2px;
+  border-color: #24271f;
 }
 
 .bike-parts-page .bike-anatomy-controls {

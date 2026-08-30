@@ -16,11 +16,11 @@
 - 三狀態 schema、來源網址 allowlist、多格式解析器、無座標摘要 serializer、原子寫入、來源端安全 anchor 與 App 防護已完成；production 沒有 `source-download` 卡片，相關 UI 只由 synthetic fixture 與自動測試驗證。
 - 圖鑑現行提供全部、自行車、跑步／步行、可下載 GPX、站內地圖五種篩選；實際數量分別為 22、18、4、2、2。正式路線仍為 23 個 bundle／68 條路線，GPS Art 不進入 manifest。
 - 響應式支援界線為最小 320 CSS client px。390 outer／375 client px 與 335 outer／320 client px 無水平溢位；320 outer／305 client px 受既有全站 `20rem` 根寬限制，保留 15px 水平差，不在本輪擴大修改全站樣式。
-- 現行 `npm run verify` 基準為 378 項測試；來源矩陣、權利界線、瀏覽器證據與未驗證邊界同步記錄於 `docs/route-research/taiwan-gps-art.md`、`docs/TEST-PLAN.md` 與 `docs/VERIFICATION.md`。
+- 現行 `npm run verify` 基準為 389 項測試；來源矩陣、權利界線、瀏覽器證據與未驗證邊界同步記錄於 `docs/route-research/taiwan-gps-art.md`、`docs/TEST-PLAN.md` 與 `docs/VERIFICATION.md`。
 
 ## 歷史快照：2026-08-14 GPS Art 圖鑑增補
 
-> 本節保留 2026-08-14 的四篩選與來源查核紀錄，不代表 2026-08-28 現行介面或測試數字；現況以上一節為準。
+> 本節保留 2026-08-14 的四篩選與來源查核紀錄，不代表 2026-08-30 現行介面或測試數字；現況以上一節為準。
 
 - 新增獨立、唯讀的台灣 GPS Art catalog，共 22 件公開來源作品：18 件單車、2 件跑步、2 件步行。
 - 台北櫻花 16K 與台北圓環 40K 的公開 Google My Maps KML 已匯入；分別保留 6 段／1,036 點與 12 段／2,459 點，地圖與 GPX 共用相同 `segments`。
@@ -748,7 +748,7 @@ Expected: `main -> main`，並建立 upstream。
 
 ## 歷史快照：2026-08-25 公路車部件百科里程碑
 
-> 本節的 317 項測試是百科里程碑當日證據；2026-08-28 現行基準為 378 項。
+> 本節的 317 項測試是百科里程碑當日證據；2026-08-30 現行基準為 389 項。
 
 - [x] 新增獨立 `#/bike-parts` 路由與首頁／導覽入口。
 - [x] 建立 4 個分類、32 筆內容的部件百科；Render 預先輸出 32 個 native `<details>`，每筆保留七類完整內容，BikeAnatomy 只作可選的 progressive enhancement。
