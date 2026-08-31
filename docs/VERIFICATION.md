@@ -12,7 +12,7 @@
 | 真瀏覽器桌機 | 通過 | Chrome 1440×900：全部 25 件為 12／12／1 三頁；站內地圖篩選精確顯示 5 件、5 張 Leaflet 地圖與 5 個下載控制；河濱海馬、野雁西飛、汐鴿按鈕逐一產生「已準備下載…GPX」狀態；主控台 warn／error 0 |
 | GPX 下載證據界線 | 通過／有界線 | Chrome 控制介面未捕捉程式建立 Blob 的 download event，因此不將事件攔截列為通過；`tests/gpx.test.js` 會把三份站內 GPX 重新解析並與地圖 `segments` 逐段逐點比對，按鈕點擊與狀態播報由真瀏覽器驗證 |
 | 真瀏覽器窄版 | 通過既定界線 | 390 outer／375 client px：`scrollWidth=375`，五個篩選均 47.6px；320 outer／305 client px：`scrollWidth=320`，保留既有 `html min-width:20rem` 所致 15px 差；兩者皆為單欄且顯示 5 張地圖 |
-| GitHub Pages | 待推送 | 推送前顯示 remote、branch、commit；Actions 完成後記錄公開網址與 HTTP 結果 |
+| GitHub Pages | 通過 | 功能提交 `85f69a96f0950e51006636a87ed95476373d9f94` 的 [Actions run 33451038125](https://github.com/andychung0214/crown-ride-atlas/actions/runs/33451038125) 結論為 `success`；首頁、catalog、tracks 均為 HTTP 200；公開 `#/route-art` 實測 25 件、12／12／1 三頁、5 張地圖與三件新增作品下載狀態 |
 
 ## 歷史快照：2026-08-30 公路車零件定位校正
 
