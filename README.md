@@ -2,7 +2,7 @@
 
 > 沿著山脈與海風，收藏島嶼上每一道值得騎乘的曲線。
 
-狂輪誌是一座桌機優先、支援行動觸控的台灣公路車路線百科與騎乘圖鑑。目前收錄全台 22 個地區、68 條已發布道路軌跡（66 條地區路線＋2 條完整挑戰）、8 項經典挑戰、22 件公開來源的台灣 GPS Art 作品，以及 4 個分類、32 筆內容的公路車部件百科；提供搜尋、篩選、排序、分頁、完成標記、路線詳情、互動地圖、GPX 下載，以及不需後端的本機編輯功能。
+狂輪誌是一座桌機優先、支援行動觸控的台灣公路車路線百科與騎乘圖鑑。目前收錄全台 22 個地區、68 條已發布道路軌跡（66 條地區路線＋2 條完整挑戰）、8 項經典挑戰、25 件公開來源的台灣 GPS Art 作品，以及 4 個分類、32 筆內容的公路車部件百科；提供搜尋、篩選、排序、分頁、完成標記、路線詳情、互動地圖、GPX 下載，以及不需後端的本機編輯功能。
 
 線上版本：[https://andychung0214.github.io/crown-ride-atlas/](https://andychung0214.github.io/crown-ride-atlas/)
 
@@ -13,8 +13,8 @@
 - 依關鍵字、區域、縣市、難度、最陡坡度、行程時間與排序探索台灣公路車路線；每頁 24 條並可切換頁碼。
 - 路線卡可標記「騎過此路線」，完成狀態只儲存在目前瀏覽器。
 - 北高與一日雙塔使用獨立完整 point-to-point 軌跡；挑戰卡片會明確顯示起點、終點與補充分段。
-- 路線美學頁收錄 22 件台灣 GPS Art 正式圖鑑，現況為 2 件 `track-ready`、0 件 `source-download`、20 件 `source-only`。兩件站內作品使用核准公開 KML，可檢視分段地圖並下載同源 GPX；其餘作品不補畫幾何。
-- GPS Art 提供全部、自行車、跑步／步行、可下載 GPX、站內地圖五種篩選。12 件 `source-only` 另有精確 Strava route/activity 頁並明示可能需要登入；本站不使用登入狀態取得 GPX。19 件 ShapeMiles 候選因 2026-08-28 匿名查核皆為 HTTP 401、官方頁顯示需訂閱，未加入正式圖鑑或公開下載。
+- 路線美學頁收錄 25 件台灣 GPS Art 正式圖鑑，現況為 5 件 `track-ready`、0 件 `source-download`、20 件 `source-only`。河濱海馬、野雁西飛、汐鴿與原有兩件作品都可檢視站內軌跡並一鍵下載同源 GPX；其餘作品不補畫幾何。
+- GPS Art 提供全部、自行車、跑步／步行、可下載 GPX、站內地圖五種篩選，篩選後以每頁 12 件分頁。12 件 `source-only` 另有精確 Strava route/activity 頁並明示可能需要登入；本站不使用登入狀態取得 GPX。19 件 ShapeMiles 候選因 2026-08-28 匿名查核皆為 HTTP 401、官方頁顯示需訂閱，未加入正式圖鑑或公開下載。
 - GPS Art 軌跡產物保存來源檔與 canonical geometry SHA-256，CI 同時鎖定逐段點數與總點數；來源變動須人工重新查核。瀏覽器遇到單件軌跡缺失時只降級該件，不會阻斷其餘圖鑑。
 - Leaflet 互動地圖；離線或直接開啟 HTML 時自動改用 SVG 路線圖。
 - 68 條已發布內建路線皆以 BRouter `fastbike` 吸附至道路，搭配 SRTM 海拔、路線級平滑與持續坡度分析；卡片坡度欄位直接取自對應軌跡摘要。
@@ -32,7 +32,7 @@
 4. 從頁首切換四種領騎衫主題。
 5. 在「我的路線」新增或編輯內容；可上傳 JPEG、PNG、WebP 與 GPX。
 6. 編輯完成後下載 JSON 備份，以便跨瀏覽器還原。
-7. 從「路線美學」檢視 GPS Art 圖鑑；使用五種活動／資料狀態篩選，並由作品卡查閱公開來源。目前「可下載 GPX」與「站內地圖」都精確顯示 2 件 `track-ready`；`source-only` 不提供下載按鈕。
+7. 從「路線美學」檢視 GPS Art 圖鑑；使用五種活動／資料狀態篩選與分頁，並由作品卡查閱公開來源。目前「可下載 GPX」與「站內地圖」都精確顯示 5 件 `track-ready`；`source-only` 不提供下載按鈕。
 8. 從「公路車百科」或 `#/bike-parts` 開啟部件圖解。桌機可沿導引線閱讀標籤，滑過熱點或分類清單會同步標示同一部件；窄版可點選 01–32 的編號觸控區或下方分類清單。可用前一筆／下一筆、放大／縮小與重設控制；圖解縮放範圍為 1 至 3 倍。
 
 百科的桌機 SVG 熱點、行動版 HTML marker、控制項與分類按鈕支援 Tab、Enter、Space 與 Pointer Events；diagram surface 會同時接收 marker 與背景 gesture，觸控先以 22 CSS px 半徑的座標最近熱點選取，再以 direct part 作後備，拖曳與雙指不會誤選。diagram 內的滑鼠與原生 marker click 統一由 surface 委派，拖曳後的合成 click 只會被抑制一次，不會誤選或永久吞掉下一次正常點擊。client CSS px 會依實際 SVG rect／viewBox 換算為圖面位移。互動模組缺少、建立失敗或被銷毀時，32 個原生 `<details>` 仍各自保留名稱與七類完整內容。
@@ -77,7 +77,7 @@ npm run tracks:validate
 npm run verify
 ```
 
-測試不依賴大型框架，使用 Node.js 內建 `node:test`。目前 `npm run verify` 共 389 項測試，會檢查 JavaScript 入口、GPS Art 三狀態 catalog／安全多格式來源解析／分段 GPX／來源端 synthetic 防護／runtime 單件降級／軌跡 provenance 契約、32 筆公路車部件圖解與實際 SVG 幾何命中、靜態 fallback、screen-space marker 與 gesture，以及 23 個公開軌跡 bundle（共 68 條正式路線）；GPS Art 與部件百科均不加入正式 manifest。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，來源帳見 [`docs/route-research/taiwan-gps-art.md`](docs/route-research/taiwan-gps-art.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
+測試不依賴大型框架，使用 Node.js 內建 `node:test`。目前 `npm run verify` 共 396 項測試，會檢查 JavaScript 入口、GPS Art 三狀態 catalog／安全多格式來源解析／分段 GPX／分頁／來源端 synthetic 防護／runtime 單件降級／軌跡 provenance 與地圖－GPX 逐點一致契約、32 筆公路車部件圖解與實際 SVG 幾何命中、靜態 fallback、screen-space marker 與 gesture，以及 23 個公開軌跡 bundle（共 68 條正式路線）；GPS Art 與部件百科均不加入正式 manifest。完整手動、RWD、無障礙與 SEO 清單請見 [`docs/TEST-PLAN.md`](docs/TEST-PLAN.md)，來源帳見 [`docs/route-research/taiwan-gps-art.md`](docs/route-research/taiwan-gps-art.md)，實際結果記錄於 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)。
 
 `npm run art:verify-downloads` 是獨立的現場網路查核，不屬於一般測試。它只對精確 allowlist 的候選做匿名 HTTPS 驗證；目前 19 件 ShapeMiles 候選全部失敗，因此不會產生部分或空白下載摘要檔。
 
@@ -95,7 +95,7 @@ npm run verify
 - SRTM 海拔適合行程規劃，並非測量級資料；橋梁、深谷、山壁與海岸可能產生誤差，本站以可追溯的路線級視窗降低短波雜訊。
 - 未串接即時路況、會員系統、雲端資料庫或多人協作。
 - OpenStreetMap 圖磚不可當作大量離線下載服務。
-- GPS Art 公開來源可能失效或更改；目前 22 件 production catalog 中只有 2 件具站內軌跡，來源端匿名 GPX 為 0 件。其餘 20 件只保留可稽核來源，不提供猜測座標、假地圖或 GPX。
+- GPS Art 公開來源可能失效或更改；目前 25 件 production catalog 中有 5 件具站內軌跡，只有外站下載而沒有站內地圖的 `source-download` 為 0 件。其餘 20 件只保留可稽核來源，不提供猜測座標、假地圖或 GPX。野雁西飛使用公開行程節點與參考圖經 BRouter `fastbike` 重建可騎道路，並非宣稱複製原 Strava 座標。
 - GPS Art 響應式支援界線為最小 320 CSS client px。Windows 非 overlay 捲軸下，320 outer px 只剩 305 client px，會受既有全站 `20rem` 根寬限制出現 15px 水平差；335 outer／320 client px 與 390 outer／375 client px 均無水平溢位。
 - GPS Art 的跑步與步行作品不代表適合公路車騎乘；使用者應依活動類型、道路現況與管制自行評估。
 - 公路車百科的圖解是操作與辨識輔助，不是組裝、維修或騎乘安全指示；遇到鬆動、裂痕、煞車或傳動異常時，應由合格技師檢查。

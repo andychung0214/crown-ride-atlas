@@ -20,7 +20,7 @@ test("正式資料由 66 條地區路線與 2 條挑戰路線組成", () => {
   assert.equal(regularRoutes.length, 66);
   assert.equal(challengeRoutes.length, 2);
   assert.equal(routeArt.length, 0);
-  assert.equal(Data.routeArt.length, 22);
+  assert.equal(Data.routeArt.length, 25);
   assert.equal(Data.routes.length, 68);
   assert.deepEqual(Object.keys(manifest).sort(), Data.routes.map(route => route.id).sort());
 });

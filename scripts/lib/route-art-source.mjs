@@ -477,6 +477,13 @@ export function parseGeoJsonSegments(text) {
   } catch (error) {
     throw new Error("GeoJSON 格式無效", { cause: error });
   }
+  if (document?.type === "FeatureCollection") {
+    if (!Array.isArray(document.features) || document.features.length !== 1
+      || document.features[0]?.type !== "Feature") {
+      throw new Error("GeoJSON FeatureCollection 必須包含單一 LineString Feature");
+    }
+    document = document.features[0];
+  }
   const geometry = document?.type === "Feature" ? document.geometry : document;
   if (!geometry || (geometry.type !== "LineString" && geometry.type !== "MultiLineString")) {
     throw new Error("GeoJSON 只接受 LineString 或 MultiLineString 及其 Feature 包裝");

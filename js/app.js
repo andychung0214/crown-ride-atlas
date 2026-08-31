@@ -65,7 +65,8 @@
       challenges: app.Data.challenges,
       routeArt: app.Data.routeArt,
       bikeParts: app.BikeParts,
-      routeArtFilter: "all"
+      routeArtFilter: "all",
+      routeArtPage: 1
     };
     let interactiveHandles = [];
     let interactiveGeneration = 0;
@@ -373,8 +374,17 @@
       },
       setRouteArtFilter(filterKey) {
         state.routeArtFilter = app.RouteArt.FILTERS.includes(filterKey) ? filterKey : "all";
+        state.routeArtPage = 1;
         render();
         announce(`目前顯示 ${app.RouteArt.filter(state.routeArt, state.routeArtFilter).length} 件作品。`);
+      },
+      setRouteArtPage(page) {
+        const entries = app.RouteArt.filter(state.routeArt, state.routeArtFilter);
+        const totalPages = Math.max(1, Math.ceil(entries.length / 12));
+        const requestedPage = Number.isInteger(Number(page)) ? Number(page) : 1;
+        state.routeArtPage = Math.min(Math.max(requestedPage, 1), totalPages);
+        render();
+        announce(`目前顯示路線美學第 ${state.routeArtPage} 頁。`);
       },
       downloadArtGpx(art) {
         if (!art || art.status !== "track-ready" || !app.RouteArt.hasUsableSegments(art.segments)) {

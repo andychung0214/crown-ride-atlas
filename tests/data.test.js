@@ -12,7 +12,7 @@ test("首版涵蓋 22 個地區與至少 60 條路線", () => {
 
 test("首版包含 8 條經典挑戰，GPS Art 圖鑑獨立於正式路線", () => {
   assert.equal(Data.challenges.length, 8);
-  assert.equal(Data.routeArt.length, 22);
+  assert.equal(Data.routeArt.length, 25);
   assert.equal(Data.routes.some(route => route.id === "route-art-little-taiwan"), false);
   assert.equal(Data.routeArt.every(art => !Data.routes.some(route => route.id === art.id)), true);
 });
@@ -81,6 +81,6 @@ test("北高與雙塔使用完整 point-to-point 挑戰路線", () => {
 });
 
 test("公開 GPS Art 圖鑑不會讓不相符人工圖形重回正式路線", () => {
-  assert.equal(Data.routeArt.length, 22);
+  assert.equal(Data.routeArt.length, 25);
   assert.equal(Data.routes.filter(route => route.category === "路線美學").length, 0);
 });

@@ -1,23 +1,27 @@
 # 台灣 GPS Art 公開來源研究
 
-現行查核日：2026-08-28
+現行查核日：2026-08-31
 
-本文件是「路線美學」正式圖鑑與未上架候選的來源帳。正式 production catalog 精確為 22 件：2 件 `track-ready`、0 件 `source-download`、20 件 `source-only`。另有 19 件 ShapeMiles 候選因匿名 HTTPS 查核全部回傳 HTTP 401，且官方頁面顯示 GPX 下載需要訂閱，未加入 production catalog，也不列為公開下載。
+本文件是「路線美學」正式圖鑑與未上架候選的來源帳。正式 production catalog 精確為 25 件：5 件 `track-ready`、0 件 `source-download`、20 件 `source-only`。另有 19 件 ShapeMiles 候選因匿名 HTTPS 查核全部回傳 HTTP 401，且官方頁面顯示 GPX 下載需要訂閱，未加入 production catalog，也不列為公開下載。
 
-本站未複製或 hotlink 外站作品圖片，不使用登入後資料、Cookie、權杖、私人活動或會員資料。`track-ready` 的站內地圖與 GPX 只使用兩件已核准 KML；`source-only` 沒有匿名公開軌跡摘要，不補畫座標；未來若有 `source-download`，本站也只保存格式、雜湊、點數與 bounds 等摘要並連到來源平台，不鏡像第三方 GPX。第三方權利仍屬各來源及作者，本站 MIT 授權不改變其授權。
+本站未複製或 hotlink 外站作品圖片，不使用登入後資料、Cookie、權杖、私人活動或會員資料。`track-ready` 的站內地圖與 GPX 使用兩件已核准 KML、兩件匿名公開 GPX，以及一件依公開行程節點與參考圖經 BRouter `fastbike` 重建的道路軌跡；重建件不冒稱為原 Strava 座標。`source-only` 沒有匿名公開軌跡摘要，不補畫座標；未來若有 `source-download`，本站也只保存格式、雜湊、點數與 bounds 等摘要並連到來源平台，不鏡像第三方 GPX。第三方權利仍屬各來源及作者，本站 MIT 授權不改變其授權。
 
 ## 來源代號
 
 - [M01：CS72 的台灣單車 GPS Art 整理頁](https://www.mobile01.com/topicdetail.php?f=377&t=5800991)
 - [BIJI-TIGER：新莊足跡＿壬寅臥虎](https://running.biji.co/index.php?act=single&id=DD24D4B6-04C9-423B-9BA3-485C7C9B04E8&q=route)
+- [THREADS-TRIO：河濱海馬、野雁西飛、汐鴿貼文](https://www.threads.com/@jjmm.jjmm/post/C_wh2RuSQNR?hl=zh-tw)
+- [BIJI-SEAHORSE：河濱海馬公開 GPX 頁](https://hiking.biji.co/index.php?act=gpx_detail&id=1107811&q=trail)
+- [ADDICYCLE-GOOSE：野雁西飛路線分享](https://addicycle.wordpress.com/2019/05/02/cycling%EF%BD%9C%E9%87%8E%E9%9B%81%E8%A5%BF%E9%A3%9B%E5%96%AE%E8%BB%8A%E8%B7%AF%E7%B7%9A%E5%88%86%E4%BA%AB/)
+- [XIZHI-PIGEON：汐鴿官方自主認證頁](https://www.webpage.idv.tw/bikepigeon/order.htm)
 - [BIJI-HEIGO：Heigo Chang GPS Art 專訪](https://running.biji.co/index.php?act=info&id=106950&q=news)
 - [GPSART-CHERRY：Cherry Blossom in Taipei, Taiwan 16km](https://gpsart.info/en/asia-2/cherry-blossom-in-taipei-taiwan-16km/)
 - [GPSART-CIRCLE：Taipei Circle Walk 40km](https://gpsart.info/en/asia-2/taipei-circle-walk-40km/)
 - [REDDIT-BUDDHA：Waving hello from Taipei](https://www.reddit.com/r/Strava/comments/1d3qhxn/waving_hello_from_taipei/)
 
-## Production catalog：22 件來源與存取矩陣
+## Production catalog：25 件來源與存取矩陣
 
-下列兩張表以 ID 一一對應，合併構成每件作品的完整矩陣。`作品查核日` 逐字對應 production catalog 的 `verifiedAt`；`原始路線連結查核日` 只記錄 12 個後補 Strava `routeSourceUrl` 的 2026-08-28 查核，其餘精確標示 `—`，不與作品日期混用。`原始路線／來源檔` 是作品頁之外的路線或核准來源檔；`來源端 GPX` 只記錄外站匿名端點，不把本站由核准 KML 建立的 GPX 誤稱為外站下載。`—` 表示沒有該欄可驗證值，不代表來源平台從未保存相關資料。
+下列兩張表以 ID 一一對應，合併構成每件作品的完整矩陣。`作品查核日` 逐字對應 production catalog 的 `verifiedAt`；`原始路線連結查核日` 記錄 12 個後補 Strava 連結與野雁西飛參考活動的查核，其餘精確標示 `—`，不與作品日期混用。`原始路線／來源檔` 是作品頁之外的路線或核准來源檔；`來源端 GPX` 只記錄外站匿名端點。河濱海馬與汐鴿雖有公開 GPX，已匯入為 `track-ready`，因此介面的「僅來源端下載」數量不包含它們。`—` 表示沒有該欄可驗證值，不代表來源平台從未保存相關資料。
 
 | ID | 作品名／圖形 | 活動／地區 | 狀態 | 作者／平台 | 作品頁 | 原始路線／來源檔 | 來源端 GPX | 需登入 | 作品查核日 | 原始路線連結查核日 |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -43,6 +47,9 @@
 | `gps-art-taipei-cherry-blossom` | 台北櫻花 16K／櫻花 | 步行／台北市 | `track-ready` | 來源未明示／GPS ART Japan | [GPSART-CHERRY](https://gpsart.info/en/asia-2/cherry-blossom-in-taipei-taiwan-16km/) | [公開 KML](https://www.google.com/maps/d/kml?mid=1XFfh9ZGnEVTth4D4cyZ3oQuy3fLymWU&forcekml=1) | —（本站由核准 KML 建立） | 否 | 2026-08-14 | — |
 | `gps-art-taipei-circle-walk` | 台北圓環 40K／圓環 | 步行／台北市 | `track-ready` | 來源未明示／GPS ART Japan | [GPSART-CIRCLE](https://gpsart.info/en/asia-2/taipei-circle-walk-40km/) | [公開 KML](https://www.google.com/maps/d/kml?mid=1thheW0QAsTO65i6iOZ90-yZWA4M7Pqej&forcekml=1) | —（本站由核准 KML 建立） | 否 | 2026-08-14 | — |
 | `gps-art-yangmingshan-buddha-hand` | 陽明山佛手／佛手 | 單車／台北市、新北市 | `source-only` | 來源未明示／Reddit r/Strava | [REDDIT-BUDDHA](https://www.reddit.com/r/Strava/comments/1d3qhxn/waving_hello_from_taipei/) | — | — | 否／不適用 | 2026-08-14 | — |
+| `gps-art-riverside-seahorse` | 河濱海馬／海馬 | 單車／台北市、新北市 | `track-ready` | 林宏勳／健行筆記 | [BIJI-SEAHORSE](https://hiking.biji.co/index.php?act=gpx_detail&id=1107811&q=trail) | [公開 GPX](https://cdntwrunning.biji.co/hiking_gpx/hiking_9ef6cbd10b3803c689787b0f7df752e9.gpx) | —（本站由核准 GPX 建立） | 否 | 2026-08-31 | — |
+| `gps-art-wild-goose-west` | 野雁西飛／西飛野雁 | 單車／台北市 | `track-ready` | Holly's Cycling／AddiCycle | [ADDICYCLE-GOOSE](https://addicycle.wordpress.com/2019/05/02/cycling%EF%BD%9C%E9%87%8E%E9%9B%81%E8%A5%BF%E9%A3%9B%E5%96%AE%E8%BB%8A%E8%B7%AF%E7%B7%9A%E5%88%86%E4%BA%AB/) | [Strava activity 2285766025](https://www.strava.com/activities/2285766025)；本站依公開行程節點以 BRouter 重建 | —（非來源端 GPX） | 是（原 Strava）；本站重建不需登入 | 2026-08-31 | 2026-08-31 |
+| `gps-art-xizhi-pigeon` | 汐鴿／展翅飛鴿 | 單車／台北市、新北市 | `track-ready` | 李文能（LEO）／汐鴿自主認證 | [XIZHI-PIGEON](https://www.webpage.idv.tw/bikepigeon/order.htm) | [官方公開 GPX](https://www.webpage.idv.tw/bikepigeon/download/order.gpx) | —（本站由核准 GPX 建立） | 否 | 2026-08-31 | — |
 
 ### Production 軌跡摘要矩陣
 
@@ -70,6 +77,9 @@
 | `gps-art-taipei-cherry-blossom` | KML | `aa9ce71997e0e81f84783be37a2bc493238264df0749625ec1dd2d285c9186f0` | 6 | 1,036 | `25.030100／25.051700／121.500560／121.526470` |
 | `gps-art-taipei-circle-walk` | KML | `60b4b710b9460719aff0dcffbdffdfbb1542b45e7f46acdc68629f7eefea696f` | 12 | 2,459 | `25.016910／25.073890／121.488408／121.550987` |
 | `gps-art-yangmingshan-buddha-hand` | — | — | — | — | —（無匿名公開軌跡摘要） |
+| `gps-art-riverside-seahorse` | GPX | `426a612745820dff0e0c3f26bfcdbb3df48e73e3e0df91bedf4b9600507c6738` | 1 | 4,221 | `25.005787／25.126977／121.451452／121.533446` |
+| `gps-art-wild-goose-west` | GeoJSON（BRouter） | `0b2843a85422a1703abc27c896d7eb962fb29ef21053e3da9d078bc828249bef` | 1 | 2,436 | `25.056469／25.160671／121.466798／121.604320` |
+| `gps-art-xizhi-pigeon` | GPX | `be80d4bd58d13ae6e2761f8b22cfd2afcc35551ced73be74949567422e5ce3e3` | 1 | 7,028 | `25.024066／25.074890／121.608833／121.665910` |
 
 ## 19 件 ShapeMiles 遭拒候選（未上架）
 
@@ -99,14 +109,17 @@
 
 ## 站內軌跡稽核
 
-兩件 `track-ready` 作品直接來自公開 Google My Maps KML。每個原始 `LineString` 保留為獨立 segment，維持文件順序與段內點序；沒有重排、反轉、補點或跨段連線。地圖與 GPX 使用同一份凍結 `segments`，GPX 每段輸出為獨立 `<trkseg>`。產物保存來源檔 SHA-256，並以 UTF-8 `JSON.stringify(segments)` 計算 canonical geometry SHA-256。
+五件 `track-ready` 作品共用同一個嚴格匯入與 provenance 契約。兩件 Google My Maps KML 的每個原始 `LineString` 保留為獨立 segment，維持文件順序與段內點序；河濱海馬與汐鴿各保存公開 GPX 的單一 segment。野雁西飛因原 Strava 活動需要登入，本站只依 AddiCycle 公開行程節點與參考圖，使用 BRouter `fastbike` 重建真實道路；沒有使用登入資料，也不宣稱復原原始座標。所有地圖與 GPX 使用同一份凍結 `segments`，GPX 每段輸出為獨立 `<trkseg>`。產物保存來源回應 SHA-256，並以 UTF-8 `JSON.stringify(segments)` 計算 canonical geometry SHA-256。
 
 | ID | 各 segment 點數 | 總點數 | 來源檔 SHA-256 | canonical geometry SHA-256 |
 |---|---|---:|---|---|
 | `gps-art-taipei-cherry-blossom` | 202／266／63／134／87／284 | 1,036 | `aa9ce71997e0e81f84783be37a2bc493238264df0749625ec1dd2d285c9186f0` | `e2e3f0434e3f18e7a246105e1e48dbf227197b94d0be98f4cc61972d82e6f2bd` |
 | `gps-art-taipei-circle-walk` | 165／454／139／63／130／547／562／249／83／30／16／21 | 2,459 | `60b4b710b9460719aff0dcffbdffdfbb1542b45e7f46acdc68629f7eefea696f` | `a788714f69fd805bfc3fecde54b0146f6526275d5f7574f5090b189679b93433` |
+| `gps-art-riverside-seahorse` | 4,221 | 4,221 | `426a612745820dff0e0c3f26bfcdbb3df48e73e3e0df91bedf4b9600507c6738` | `79c66e55ffdbdc630cb1edf1526d0c3f9e63da64c53f284d88aa7395021f501e` |
+| `gps-art-wild-goose-west` | 2,436 | 2,436 | `0b2843a85422a1703abc27c896d7eb962fb29ef21053e3da9d078bc828249bef` | `5bcacb276ac5a5627791a9fdc181bdb164bc0dbafcfa753bc68172bfe22399d9` |
+| `gps-art-xizhi-pigeon` | 7,028 | 7,028 | `be80d4bd58d13ae6e2761f8b22cfd2afcc35551ced73be74949567422e5ce3e3` | `a6449c7d8f93b5492837b407581e4722b67527186205eb3b1e844fc1c2305c51` |
 
-上述來源與幾何 provenance、逐段點數及總點數是 2026-08-14 人工核准常數。來源重新下載後若任何值改變，測試與 CI 必須失敗；重新檢視公開來源、段界與點序並取得人工核准後，才能更新常數。
+上述來源與幾何 provenance、逐段點數及總點數是人工核准常數；前兩件查核日為 2026-08-14，新增三件為 2026-08-31。來源重新下載後若任何值改變，測試與 CI 必須失敗；重新檢視公開來源、段界與點序並取得人工核准後，才能更新常數。野雁西飛匯入仍受同段相鄰點不得超過 500 公尺的閘門約束；為避免路由服務簡化一段約 713 公尺的道路，控制點加入既有可騎道路，不放寬閘門也不以直線補點。
 
 ## 限制與重新查核
 
@@ -116,4 +129,4 @@
 - 作品頁、公開 KML／GPX 與道路狀態可能改變；查核日是最後證據日期，不是持續可用保證。
 - 步行與跑步作品只標示原活動，不宣稱適合公路車導航。
 - Google My Maps KML 的 LineString 段界是來源幾何的一部分，即使段尾與下一段首點相距較遠，也不得為了外觀自行接線。
-- 瀏覽器若只缺少其中一件站內軌跡，該件會降級為 `source-only`，其他作品仍顯示；發布用匯入器仍要求兩件必要 KML 與上述 provenance 全部通過。
+- 瀏覽器若只缺少其中一件站內軌跡，該件會降級為 `source-only`，其他作品仍顯示；發布用匯入器仍要求五件必要來源與上述 provenance 全部通過。

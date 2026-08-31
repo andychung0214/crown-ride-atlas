@@ -129,6 +129,36 @@ test("GeoJSON 只接受線資料並轉成 lat/lng", () => {
   assert.throws(() => source.parseGeoJsonSegments("not json"), /GeoJSON/);
 });
 
+test("GeoJSON 接受 BRouter 的單一 LineString FeatureCollection", () => {
+  const segments = source.parseGeoJsonSegments(JSON.stringify({
+    type: "FeatureCollection",
+    features: [{
+      type: "Feature",
+      properties: { creator: "BRouter" },
+      geometry: {
+        type: "LineString",
+        coordinates: [[121.5, 25, 10], [121.501, 25.001, 11]]
+      }
+    }]
+  }));
+
+  assert.deepEqual(segments, [[
+    { lat: 25, lng: 121.5, ele: 10 },
+    { lat: 25.001, lng: 121.501, ele: 11 }
+  ]]);
+  assert.throws(() => source.parseGeoJsonSegments(JSON.stringify({
+    type: "FeatureCollection",
+    features: []
+  })), /單一|LineString/);
+  assert.throws(() => source.parseGeoJsonSegments(JSON.stringify({
+    type: "FeatureCollection",
+    features: [
+      { type: "Feature", geometry: { type: "LineString", coordinates: [[121.5, 25], [121.501, 25.001]] } },
+      { type: "Feature", geometry: { type: "LineString", coordinates: [[121.6, 25.1], [121.601, 25.101]] } }
+    ]
+  })), /單一|LineString/);
+});
+
 test("GeoJSON 座標只接受有限 number，不強制轉換其他型別", () => {
   const invalidValues = ["121.5", true, false, null];
   for (const value of invalidValues) {

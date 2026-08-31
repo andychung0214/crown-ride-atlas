@@ -600,8 +600,10 @@
     return form;
   }
 
-  function paginationControls(documentRef, pageView, actions) {
+  function paginationControls(documentRef, pageView, actions, options) {
     if (!pageView || pageView.totalPages <= 1) return null;
+    const settings = options || {};
+    const setPage = settings.setPage || actions.setPage;
     const pageButtons = [];
     for (let page = 1; page <= pageView.totalPages; page += 1) {
       pageButtons.push(node(documentRef, "button", {
@@ -610,19 +612,19 @@
         text: String(page),
         label: `第 ${page} 頁`,
         current: page === pageView.page ? "page" : null,
-        on: { click: () => actions.setPage(page) }
+        on: { click: () => setPage(page) }
       }));
     }
     return node(documentRef, "nav", {
       className: "pager",
-      label: "路線結果分頁"
+      label: settings.label || "路線結果分頁"
     }, [
       node(documentRef, "button", {
         className: "pager__button pager__button--previous",
         type: "button",
         text: "上一頁",
         disabled: pageView.page <= 1,
-        on: { click: () => actions.setPage(pageView.page - 1) }
+        on: { click: () => setPage(pageView.page - 1) }
       }),
       node(documentRef, "span", {
         className: "pager__summary",
@@ -634,7 +636,7 @@
         type: "button",
         text: "下一頁",
         disabled: pageView.page >= pageView.totalPages,
-        on: { click: () => actions.setPage(pageView.page + 1) }
+        on: { click: () => setPage(pageView.page + 1) }
       })
     ]);
   }
@@ -930,6 +932,17 @@
   function routeArtPage(documentRef, state, actions) {
     const filterKey = RouteArt.FILTERS.includes(state.routeArtFilter) ? state.routeArtFilter : "all";
     const entries = routeArtEntries(state.routeArt, filterKey);
+    const pageSize = 12;
+    const totalPages = Math.max(1, Math.ceil(entries.length / pageSize));
+    const requestedPage = Number.isInteger(Number(state.routeArtPage)) ? Number(state.routeArtPage) : 1;
+    const page = Math.min(Math.max(requestedPage, 1), totalPages);
+    const pageView = {
+      items: entries.slice((page - 1) * pageSize, page * pageSize),
+      page,
+      pageSize,
+      total: entries.length,
+      totalPages
+    };
     const stats = RouteArt.stats(state.routeArt);
     const filterLabels = {
       all: "全部",
@@ -943,7 +956,7 @@
       "source-download": "來源端 GPX 可下載",
       "source-only": "公開軌跡待取得"
     };
-    const cards = entries.map(art => {
+    const cards = pageView.items.map(art => {
       const facts = [
         art.regionName || "地區未公開",
         art.activityLabel,
@@ -1025,7 +1038,7 @@
         }),
         node(documentRef, "p", {
           className: "art-catalog__stats",
-          text: `${stats.total} 件公開作品 · ${stats.trackReady} 件站內地圖 · ${stats.sourceDownload} 件來源端 GPX · ${stats.sourceOnly} 件待取得`
+          text: `${stats.total} 件公開作品 · ${stats.trackReady} 件站內地圖 · ${stats.sourceDownload} 件僅來源端下載 · ${stats.sourceOnly} 件待取得`
         }),
         node(documentRef, "div", {
           className: "art-catalog__filters",
@@ -1041,7 +1054,7 @@
         }))),
         node(documentRef, "p", {
           className: "art-catalog__result",
-          text: `目前顯示 ${entries.length} 件作品`,
+          text: `共 ${entries.length} 件作品 · 第 ${pageView.page} / ${pageView.totalPages} 頁`,
           attributes: { "aria-live": "polite", "aria-atomic": "true" }
         })
       ]),
@@ -1056,7 +1069,11 @@
             text: "顯示全部作品",
             on: { click: () => actions.setRouteArtFilter("all") }
           })
-        ])
+        ]),
+      cards.length ? paginationControls(documentRef, pageView, actions, {
+        label: "路線美學分頁",
+        setPage: actions.setRouteArtPage
+      }) : null
     ]);
   }
 

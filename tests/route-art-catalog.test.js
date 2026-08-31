@@ -147,12 +147,45 @@ function filesystemBoundary(overrides = {}) {
   };
 }
 
-test("圖鑑固定收錄 22 件有公開來源的台灣 GPS Art", () => {
-  assert.equal(Catalog.length, 22);
-  assert.equal(new Set(Catalog.map(item => item.id)).size, 22);
+test("圖鑑固定收錄 25 件有公開來源的台灣 GPS Art", () => {
+  assert.equal(Catalog.length, 25);
+  assert.equal(new Set(Catalog.map(item => item.id)).size, 25);
   assert.ok(Catalog.every(item => /^https:\/\//.test(item.sourceUrl)));
   assert.deepEqual(new Set(Catalog.map(item => item.activityType)),
     new Set(["cycling", "running", "walking"]));
+});
+
+test("河濱海馬、野雁西飛與汐鴿都有站內軌跡及公開來源", () => {
+  const expected = {
+    "gps-art-riverside-seahorse": {
+      name: "河濱海馬",
+      sourceUrl: "https://hiking.biji.co/index.php?act=gpx_detail&id=1107811&q=trail",
+      routeSourceUrl: "https://cdntwrunning.biji.co/hiking_gpx/hiking_9ef6cbd10b3803c689787b0f7df752e9.gpx"
+    },
+    "gps-art-wild-goose-west": {
+      name: "野雁西飛",
+      sourceUrl: "https://addicycle.wordpress.com/2019/05/02/cycling%EF%BD%9C%E9%87%8E%E9%9B%81%E8%A5%BF%E9%A3%9B%E5%96%AE%E8%BB%8A%E8%B7%AF%E7%B7%9A%E5%88%86%E4%BA%AB/",
+      routeSourceUrl: "https://www.strava.com/activities/2285766025",
+      routeSourceAccess: "login-required"
+    },
+    "gps-art-xizhi-pigeon": {
+      name: "汐鴿",
+      sourceUrl: "https://www.webpage.idv.tw/bikepigeon/order.htm",
+      routeSourceUrl: "https://www.webpage.idv.tw/bikepigeon/download/order.gpx"
+    }
+  };
+
+  for (const [id, detail] of Object.entries(expected)) {
+    const item = Catalog.find(candidate => candidate.id === id);
+    assert.ok(item, id);
+    assert.equal(item.name, detail.name, id);
+    assert.equal(item.status, "track-ready", id);
+    assert.equal(item.activityType, "cycling", id);
+    assert.equal(item.sourceUrl, detail.sourceUrl, id);
+    assert.equal(item.routeSourceUrl, detail.routeSourceUrl, id);
+    assert.equal(item.routeSourceAccess, detail.routeSourceAccess || "public-page", id);
+    assert.strictEqual(item.segments, Tracks[id].segments, id);
+  }
 });
 
 test("圖鑑保留來源已明示的數值與作者，且不把下限當作精確數值", () => {
@@ -195,6 +228,9 @@ test("GPS Art 不污染正式路線與 track manifest", () => {
   assert.equal(Object.keys(TrackManifest).length, 68);
   assert.equal(new Set(Object.values(TrackManifest).map(entry => entry.bundleId)).size, 23);
   assert.equal(Object.hasOwn(TrackManifest, "gps-art-xinzhuang-tiger"), false);
+  assert.equal(Object.hasOwn(TrackManifest, "gps-art-riverside-seahorse"), false);
+  assert.equal(Object.hasOwn(TrackManifest, "gps-art-wild-goose-west"), false);
+  assert.equal(Object.hasOwn(TrackManifest, "gps-art-xizhi-pigeon"), false);
 });
 
 test("沒有公開軌跡的作品不帶座標或虛構零值", () => {
@@ -241,7 +277,7 @@ test("catalog 對單件必要軌跡缺失或 segments 無效採逐件降級", ()
     const cherry = catalog.find(item => item.id === "gps-art-taipei-cherry-blossom");
     const circle = catalog.find(item => item.id === "gps-art-taipei-circle-walk");
 
-    assert.equal(catalog.length, 22, scenario.name);
+    assert.equal(catalog.length, 25, scenario.name);
     assert.equal(cherry.status, "source-only", scenario.name);
     assert.equal(Object.hasOwn(cherry, "segments"), false, scenario.name);
     assert.equal(Object.hasOwn(cherry, "coordinates"), false, scenario.name);
@@ -263,8 +299,28 @@ test("公開軌跡產物鎖定來源與 canonical geometry provenance", () => {
       geometrySha256: "a788714f69fd805bfc3fecde54b0146f6526275d5f7574f5090b189679b93433",
       segmentPointCounts: [165, 454, 139, 63, 130, 547, 562, 249, 83, 30, 16, 21],
       totalPoints: 2459
+    },
+    "gps-art-riverside-seahorse": {
+      sourceSha256: "426a612745820dff0e0c3f26bfcdbb3df48e73e3e0df91bedf4b9600507c6738",
+      geometrySha256: "79c66e55ffdbdc630cb1edf1526d0c3f9e63da64c53f284d88aa7395021f501e",
+      segmentPointCounts: [4221],
+      totalPoints: 4221
+    },
+    "gps-art-wild-goose-west": {
+      sourceSha256: "0b2843a85422a1703abc27c896d7eb962fb29ef21053e3da9d078bc828249bef",
+      geometrySha256: "5bcacb276ac5a5627791a9fdc181bdb164bc0dbafcfa753bc68172bfe22399d9",
+      segmentPointCounts: [2436],
+      totalPoints: 2436
+    },
+    "gps-art-xizhi-pigeon": {
+      sourceSha256: "be80d4bd58d13ae6e2761f8b22cfd2afcc35551ced73be74949567422e5ce3e3",
+      geometrySha256: "a6449c7d8f93b5492837b407581e4722b67527186205eb3b1e844fc1c2305c51",
+      segmentPointCounts: [7028],
+      totalPoints: 7028
     }
   };
+
+  assert.equal(Object.keys(Tracks).length, 5);
 
   for (const track of Object.values(Tracks)) {
     assert.match(track.sourceSha256, /^[a-f0-9]{64}$/);
@@ -287,19 +343,19 @@ test("公開軌跡產物鎖定來源與 canonical geometry provenance", () => {
 
 test("正式圖鑑的三種狀態反映目前驗證結果", () => {
   assert.deepEqual(RouteArt.stats(Catalog), {
-    total: 22, trackReady: 2, sourceDownload: 0, sourceOnly: 20
+    total: 25, trackReady: 5, sourceDownload: 0, sourceOnly: 20
   });
   assert.equal(Data.routes.length, 68);
   assert.equal(new Set(Object.values(TrackManifest).map(entry => entry.bundleId)).size, 23);
 });
 
-test("下載摘要模組缺失時保留 22 件，存在時才合併並驗證每一筆", () => {
+test("下載摘要模組缺失時保留 25 件，存在時才合併並驗證每一筆", () => {
   const withoutDownloads = loadBrowserCatalog(Tracks);
   const validDownload = sourceDownloadFixture();
   const withDownload = loadBrowserCatalog(Tracks, { [validDownload.id]: validDownload });
 
-  assert.equal(withoutDownloads.length, 22);
-  assert.equal(withDownload.length, 23);
+  assert.equal(withoutDownloads.length, 25);
+  assert.equal(withDownload.length, 26);
   assert.equal(withDownload.find(item => item.id === validDownload.id).status, "source-download");
   assert.throws(() => loadBrowserCatalog(Tracks, {
     "gps-art-shapemiles-malformed": { ...validDownload, id: "gps-art-shapemiles-malformed", sourceSha256: "bad" }
@@ -308,8 +364,8 @@ test("下載摘要模組缺失時保留 22 件，存在時才合併並驗證每�
 
 test("Node 載入器只對不存在的下載摘要 fail-soft，malformed 摘要照常失敗", () => {
   const validDownload = sourceDownloadFixture();
-  assert.equal(loadNodeCatalog(undefined, { downloadsPresent: false }).length, 22);
-  assert.equal(loadNodeCatalog({ [validDownload.id]: validDownload }).length, 23);
+  assert.equal(loadNodeCatalog(undefined, { downloadsPresent: false }).length, 25);
+  assert.equal(loadNodeCatalog({ [validDownload.id]: validDownload }).length, 26);
   assert.throws(() => loadNodeCatalog(null), /RouteArtDownloads/);
 });
 
@@ -320,7 +376,7 @@ test("Node 只在精確下載摘要目標不存在時 fail-soft", t => {
     'module.exports = require("./fixture-nested/route-art-downloads.js");\n',
   );
   assert.equal(fs.existsSync(productionDownloadPath), false);
-  assert.equal(require(missingTargetCatalogPath).length, 22);
+  assert.equal(require(missingTargetCatalogPath).length, 25);
   assert.throws(() => require(nestedMissingCatalogPath), error => error
     && error.code === "MODULE_NOT_FOUND"
     && /fixture-nested[\\/]route-art-downloads\.js/.test(error.message));
@@ -376,6 +432,33 @@ test("站內匯入器維持共用解析與驗證函式的相容匯出", async ()
   assert.strictEqual(importer.parseGpxSegments, source.parseGpxSegments);
   assert.strictEqual(importer.parseKmlSegments, source.parseKmlSegments);
   assert.strictEqual(importer.validateSegments, source.validateSegments);
+});
+
+test("新增三件站內軌跡都由必要 HTTPS allowlist 來源匯入", async () => {
+  const { SOURCES, ALLOWED_SOURCE_HOSTS } = await import("../scripts/import-route-art-tracks.mjs");
+  const expectedFormats = new Map([
+    ["gps-art-riverside-seahorse", "gpx"],
+    ["gps-art-wild-goose-west", "geojson"],
+    ["gps-art-xizhi-pigeon", "gpx"]
+  ]);
+
+  for (const [id, format] of expectedFormats) {
+    const source = SOURCES.find(candidate => candidate.id === id);
+    assert.ok(source, id);
+    assert.equal(source.required, true, id);
+    assert.equal(source.format, format, id);
+    const url = new URL(source.url);
+    assert.equal(url.protocol, "https:", id);
+    assert.ok(ALLOWED_SOURCE_HOSTS.includes(url.hostname), id);
+    assert.equal(Tracks[id].sourceUrl, source.url, id);
+  }
+
+  const wildGoose = SOURCES.find(source => source.id === "gps-art-wild-goose-west");
+  const wildGooseUrl = new URL(wildGoose.url);
+  assert.equal(wildGooseUrl.hostname, "brouter.de");
+  assert.equal(wildGooseUrl.searchParams.get("profile"), "fastbike");
+  assert.equal(wildGooseUrl.searchParams.get("format"), "geojson");
+  assert.match(wildGooseUrl.searchParams.get("lonlats"), /121\.5488,25\.0902/);
 });
 
 test("KML 匯入依文件順序保留 LineString 段界並忽略 Point 地標", async () => {

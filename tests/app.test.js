@@ -423,8 +423,26 @@ test("路線美學只掛載 track-ready 作品並支援篩選與 GPX 下載", ()
   assert.equal(app.state.bikeParts, BikeParts);
   app.actions.setRouteArtFilter("foot");
   assert.equal(app.state.routeArtFilter, "foot");
+  assert.equal(app.state.routeArtPage, 1);
   app.actions.downloadArtGpx(trackReadyArt);
   assert.equal(downloadedName, "台北櫻花-16K.gpx");
+});
+
+test("路線美學換頁獨立於正式路線分頁且篩選會回到第一頁", () => {
+  const items = Array.from({ length: 25 }, (_value, index) => ({
+    id: `gps-art-${index + 1}`,
+    name: `作品 ${index + 1}`,
+    activityType: index < 13 ? "cycling" : "walking",
+    status: "source-only"
+  }));
+  const app = bootRouteArtCatalog(items, () => {}, () => {});
+
+  app.actions.setRouteArtPage(3);
+  assert.equal(app.state.routeArtPage, 3);
+  assert.equal(app.state.filters.page, 1);
+  app.actions.setRouteArtFilter("foot");
+  assert.equal(app.state.routeArtFilter, "foot");
+  assert.equal(app.state.routeArtPage, 1);
 });
 
 test("來源端 GPX 卡片永不掛載站內地圖或建立本機 Blob", () => {

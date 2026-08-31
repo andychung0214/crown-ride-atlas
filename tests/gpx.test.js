@@ -106,3 +106,25 @@ test("作品 GPX 與地圖共用同一份座標", () => {
     lat: point.lat, lng: point.lng, ele: Number.isFinite(point.ele) ? point.ele : 0
   }))));
 });
+
+test("新增三件 GPS Art 的站內 GPX 與各自地圖逐點一致", () => {
+  for (const id of [
+    "gps-art-riverside-seahorse",
+    "gps-art-wild-goose-west",
+    "gps-art-xizhi-pigeon"
+  ]) {
+    const art = Catalog.find(item => item.id === id);
+    const download = Gpx.createDownload(art, { segments: art.segments });
+    const parsed = Gpx.parse(download.text);
+    const expected = art.segments.map(segment => segment.map(point => ({
+      lat: point.lat,
+      lng: point.lng,
+      ele: Number.isFinite(point.ele) ? point.ele : 0
+    })));
+
+    assert.equal(art.status, "track-ready", id);
+    assert.match(download.filename, /\.gpx$/);
+    assert.deepEqual(parsed.segments, expected, id);
+    assert.equal(parsed.coordinates.length, art.segments.flat().length, id);
+  }
+});

@@ -33,11 +33,32 @@ export const SOURCES = Object.freeze([
     format: "kml",
     required: true,
     url: "https://www.google.com/maps/d/kml?mid=1thheW0QAsTO65i6iOZ90-yZWA4M7Pqej&forcekml=1"
+  }),
+  Object.freeze({
+    id: "gps-art-riverside-seahorse",
+    format: "gpx",
+    required: true,
+    url: "https://cdntwrunning.biji.co/hiking_gpx/hiking_9ef6cbd10b3803c689787b0f7df752e9.gpx"
+  }),
+  Object.freeze({
+    id: "gps-art-wild-goose-west",
+    format: "geojson",
+    required: true,
+    url: "https://brouter.de/brouter?lonlats=121.528052%2C25.068379%7C121.5074%2C25.0565%7C121.477%2C25.089%7C121.4668%2C25.1087%7C121.488%2C25.104%7C121.51318%2C25.09842%7C121.52656%2C25.125%7C121.52095%2C25.14358%7C121.52929%2C25.15496%7C121.538118%2C25.160024%7C121.55863%2C25.14774%7C121.57279%2C25.13518%7C121.56%2C25.108%7C121.5488%2C25.0902%7C121.60234%2C25.08376%7C121.57201%2C25.06478%7C121.528052%2C25.068379&profile=fastbike&alternativeidx=0&format=geojson"
+  }),
+  Object.freeze({
+    id: "gps-art-xizhi-pigeon",
+    format: "gpx",
+    required: true,
+    url: "https://www.webpage.idv.tw/bikepigeon/download/order.gpx"
   })
 ]);
 export const ALLOWED_SOURCE_HOSTS = Object.freeze([
+  "brouter.de",
+  "cdntwrunning.biji.co",
   "cdnrunningfiles.biji.co",
-  "www.google.com"
+  "www.google.com",
+  "www.webpage.idv.tw"
 ]);
 
 const OUTPUT_PATH = resolve(dirname(fileURLToPath(import.meta.url)), "../js/data/route-art-tracks.js");

@@ -257,7 +257,7 @@ test("路線美學顯示來源卡且只有 track-ready 可下載 GPX", () => {
   assert.equal(downloadButtons.length, 1);
   downloadButtons[0].handlers.click();
   assert.equal(downloaded, items[0]);
-  assert.match(text, /2 件公開作品 · 1 件站內地圖 · 0 件來源端 GPX · 1 件待取得/);
+  assert.match(text, /2 件公開作品 · 1 件站內地圖 · 0 件僅來源端下載 · 1 件待取得/);
   assert.match(text, /軌跡待取得/);
   assert.match(text, /台北市/);
   assert.match(text, /16 km/);
@@ -319,7 +319,7 @@ test("路線美學分開呈現站內與來源端 GPX", () => {
   assert.match(text, /來源端 GPX 可下載/);
   assert.match(text, /公開軌跡待取得/);
   assert.match(text, /來源平台可能要求登入/);
-  assert.match(text, /3 件公開作品 · 1 件站內地圖 · 1 件來源端 GPX · 1 件待取得/);
+  assert.match(text, /3 件公開作品 · 1 件站內地圖 · 1 件僅來源端下載 · 1 件待取得/);
 });
 
 test("路線美學提供五個篩選、aria-live 結果與空結果清除操作", () => {
@@ -337,10 +337,58 @@ test("路線美學提供五個篩選、aria-live 結果與空結果清除操作"
   const clear = nodes.find(node => node.name === "button" && node.textContent === "顯示全部作品");
 
   assert.deepEqual(filters.map(node => node.dataset.artFilter), ["all", "cycling", "foot", "downloadable", "track-ready"]);
-  assert.equal(result.textContent, "目前顯示 0 件作品");
+  assert.equal(result.textContent, "共 0 件作品 · 第 1 / 1 頁");
   assert.ok(clear);
   clear.handlers.click();
   assert.equal(nextFilter, "all");
+});
+
+test("路線美學每頁 12 件並提供獨立可存取分頁", () => {
+  let nextPage = null;
+  const items = Array.from({ length: 25 }, (_value, index) => fixtureArt({
+    id: `art-${index + 1}`,
+    name: `作品 ${index + 1}`
+  }));
+  const page = Render.routeArtPage(fakeDocument(), {
+    routeArt: items,
+    routeArtFilter: "all",
+    routeArtPage: 2
+  }, {
+    setRouteArtFilter() {},
+    setRouteArtPage(value) { nextPage = value; },
+    downloadArtGpx() {}
+  });
+  const nodes = descendants(page);
+  const headings = nodes.filter(node => node.name === "h2").map(node => node.textContent);
+  const pager = nodes.find(node => node.name === "nav" && node.attributes?.["aria-label"] === "路線美學分頁");
+  const result = nodes.find(node => node.className === "art-catalog__result");
+  const next = nodes.find(node => node.name === "button" && node.textContent === "下一頁");
+
+  assert.deepEqual(headings, Array.from({ length: 12 }, (_value, index) => `作品 ${index + 13}`));
+  assert.ok(pager);
+  assert.equal(result.textContent, "共 25 件作品 · 第 2 / 3 頁");
+  next.handlers.click();
+  assert.equal(nextPage, 3);
+});
+
+test("路線美學分頁會把越界頁碼校正到最後一頁", () => {
+  const items = Array.from({ length: 13 }, (_value, index) => fixtureArt({
+    id: `art-${index + 1}`,
+    name: `作品 ${index + 1}`
+  }));
+  const page = Render.routeArtPage(fakeDocument(), {
+    routeArt: items,
+    routeArtFilter: "all",
+    routeArtPage: 99
+  }, {
+    setRouteArtFilter() {},
+    setRouteArtPage() {},
+    downloadArtGpx() {}
+  });
+  const nodes = descendants(page);
+  assert.equal(nodes.find(node => node.className === "art-catalog__result").textContent,
+    "共 13 件作品 · 第 2 / 2 頁");
+  assert.deepEqual(nodes.filter(node => node.name === "h2").map(node => node.textContent), ["作品 13"]);
 });
 
 function fixtureArt(overrides) {

@@ -1,8 +1,22 @@
 # 狂輪誌首版驗證紀錄
 
-## 現行驗證：2026-08-30 公路車零件定位校正
+## 現行驗證：2026-08-31 三條 GPS Art 站內軌跡與分頁
 
-本節記錄 32 個公路車零件位置逐一校正後的發布候選證據，並保留 GPS Art 來源下載狀態的回歸結果。production catalog 精確為 22 件＝2 `track-ready`＋0 `source-download`＋20 `source-only`；另有 19 件 ShapeMiles 遭拒候選，未加入 catalog。正式路線維持 23 個公開 bundle／68 條路線，公路車部件百科維持 4 個分類／32 筆內容。
+本輪新增河濱海馬、野雁西飛、汐鴿三件 GPS Art，production catalog 現為 25 件＝5 `track-ready`＋0 `source-download`＋20 `source-only`。三件都有站內軌跡與一鍵 GPX；全部圖鑑每頁 12 件，篩選與正式路線分頁狀態相互獨立。正式路線維持 23 個公開 bundle／68 條路線，公路車部件百科維持 4 個分類／32 筆內容。
+
+| 驗證項目 | 結果 | 證據 |
+|---|---|---|
+| 完整自動測試 | 通過 | `npm test`：396／396；含三件新增軌跡 provenance、地圖－GPX 逐段逐點一致、圖鑑 12 件分頁／重設／頁碼限制 |
+| 真實來源匯入 | 通過 | 河濱海馬公開 GPX 4,221 點；野雁西飛 BRouter 道路重建 2,436 點；汐鴿官方 GPX 7,028 點；必要來源皆符合台灣 bounds 與 500 公尺相鄰點閘門 |
+| 正式資料隔離 | 通過 | GPS Art 未加入 `TrackManifest`；published validator 仍由 `npm run verify` 檢查 23 bundle／68 路線 |
+| 真瀏覽器桌機 | 通過 | Chrome 1440×900：全部 25 件為 12／12／1 三頁；站內地圖篩選精確顯示 5 件、5 張 Leaflet 地圖與 5 個下載控制；河濱海馬、野雁西飛、汐鴿按鈕逐一產生「已準備下載…GPX」狀態；主控台 warn／error 0 |
+| GPX 下載證據界線 | 通過／有界線 | Chrome 控制介面未捕捉程式建立 Blob 的 download event，因此不將事件攔截列為通過；`tests/gpx.test.js` 會把三份站內 GPX 重新解析並與地圖 `segments` 逐段逐點比對，按鈕點擊與狀態播報由真瀏覽器驗證 |
+| 真瀏覽器窄版 | 通過既定界線 | 390 outer／375 client px：`scrollWidth=375`，五個篩選均 47.6px；320 outer／305 client px：`scrollWidth=320`，保留既有 `html min-width:20rem` 所致 15px 差；兩者皆為單欄且顯示 5 張地圖 |
+| GitHub Pages | 待推送 | 推送前顯示 remote、branch、commit；Actions 完成後記錄公開網址與 HTTP 結果 |
+
+## 歷史快照：2026-08-30 公路車零件定位校正
+
+本節記錄 2026-08-30 當時 32 個公路車零件位置逐一校正後的發布候選證據，並保留當時 GPS Art 來源下載狀態的回歸結果。production catalog 當時為 22 件＝2 `track-ready`＋0 `source-download`＋20 `source-only`；另有 19 件 ShapeMiles 遭拒候選，未加入 catalog。正式路線當時維持 23 個公開 bundle／68 條路線，公路車部件百科維持 4 個分類／32 筆內容。
 
 ### 零件定位校正證據
 
