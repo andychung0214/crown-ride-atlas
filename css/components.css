@@ -1886,3 +1886,11 @@ html:has(.bike-parts-page) {
     transition-duration: 0.01ms !important;
   }
 }
+.route-verification-warning {
+  padding: 1rem;
+  border-inline-start: 4px solid #984e31;
+  background: #f6e3d4;
+  color: #532b1d;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}

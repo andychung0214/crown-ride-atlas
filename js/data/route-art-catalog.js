@@ -59,6 +59,19 @@
   });
 
   const items = [
+    ...[
+      ["gps-art-zhishan-big-dinosaur", "芝山的大恐龍", "長頸恐龍", "taipei", "台北市士林區", 5.52, "ZhishanBigDinosaur"],
+      ["gps-art-zhishan-little-dinosaur", "芝山的小恐龍", "小恐龍", "taipei", "台北市士林區", 4.73, "ZhishanLittleDinosaur"],
+      ["gps-art-zhishan-2024", "芝山 2024", "2024", "taipei", "台北市士林區", 3.23, "Zhishan2024"],
+      ["gps-art-kaohsiung-little-dinosaur", "高雄的小恐龍", "小恐龍", "kaohsiung", "高雄市三民區", 7.39, "KaohsiungLittleDinosaur"]
+    ].map(([id, name, shapeLabel, regionId, regionName, distanceKm, filename]) => ({
+      id, name, shapeLabel, regionId, regionName, distanceKm,
+      activityType: "running", activityLabel: "跑步", status: "source-only", author: "Janice",
+      summary: `Janice 公開分享的${name}運動路線；保留作者 GPX 的道路轉折與點序，適合以跑步或步行完成。路口、校園與共用空間須依現場開放及交通標誌，不宣稱可全程騎車。`,
+      sourcePlatform: "Janice's Sport Blog", sourceUrl: "https://janice880624.github.io/janice_sport_blog/map/map.html",
+      routeSourceUrl: `https://janice880624.github.io/janice_sport_blog/map/gpx/${filename}.gpx`,
+      routeSourceAccess: "public-page", verifiedAt: "2026-09-14"
+    })),
     { id: "gps-art-north-taoyuan-raptor", name: "北桃迅猛龍", shapeLabel: "迅猛龍", regionName: "桃園市／新北市", activityType: "cycling", activityLabel: "單車", status: "source-only", distanceKm: 101, elevationGainM: 1254, summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「北桃迅猛龍」。", sourcePlatform: "Mobile01", sourceUrl: mobile01Url, verifiedAt },
     { id: "gps-art-fenggui-rabbit", name: "風櫃兔", shapeLabel: "兔", regionId: "taipei", regionName: "台北市", activityType: "cycling", activityLabel: "單車", status: "source-only", distanceKm: 45, elevationGainM: 1420, summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「風櫃兔」。", sourcePlatform: "Mobile01", sourceUrl: mobile01Url, verifiedAt },
     { id: "gps-art-taoyuan-red-bull", name: "桃園紅牛 RED BULL", shapeLabel: "紅牛", regionId: "taoyuan", regionName: "桃園市", activityType: "cycling", activityLabel: "單車", status: "source-only", distanceKm: 45, summary: "公開來源收錄的單車 GPS Art 作品，作品名稱為「桃園紅牛 RED BULL」。", sourcePlatform: "Mobile01", sourceUrl: mobile01Url, verifiedAt },

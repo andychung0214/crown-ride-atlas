@@ -65,6 +65,24 @@ test("完整挑戰卡片連到正式挑戰路線並顯示端點", () => {
   assert.match(texts, /補充參考：中社路/);
 });
 
+test("僅有來源的挑戰顯示行程與缺軌跡狀態，不把參考短段相加冒充全程", () => {
+  const page = Render.challengesPage(fakeDocument(), {
+    challenges: [{
+      id: "source-challenge", name: "環島（含四極點）", description: "四極點版本",
+      routeIds: [], routeMode: "source-only", itinerary: ["富貴角", "國聖港", "鵝鑾鼻", "三貂角", "富貴角"],
+      sourceUrl: "https://example.com/route", sourceLabel: "活動原始來源",
+      caution: "尚未取得可驗證完整 GPX；出發前查核交通管制。"
+    }], allRoutes: []
+  });
+  const nodes = descendants(page);
+  const texts = nodes.map(node => node.textContent).filter(Boolean).join(" ");
+  assert.match(texts, /尚未取得可驗證完整 GPX/);
+  assert.match(texts, /富貴角 → 國聖港 → 鵝鑾鼻 → 三貂角 → 富貴角/);
+  assert.doesNotMatch(texts, /約 0 km|0 段參考路線|開啟完整 GPX/);
+  assert.ok(nodes.some(node => node.name === "a" && node.attributes.href === "https://example.com/route"));
+  assert.match(texts, /01 CHALLENGES/);
+});
+
 test("缺少海拔資料時回傳可理解的說明", () => {
   assert.deepEqual(Render.elevationSummary([{ lat: 25, lng: 121 }, { lat: 25.1, lng: 121.1 }]), {
     available: false,
@@ -556,7 +574,7 @@ test("路線資料來源只呈現實際提供的 BRouter、SRTM 與審核欄位"
   assert.match(Render.profileSourceText(details), /BRouter · fastbike/);
   assert.match(Render.profileSourceText(details), /SRTM/);
   assert.match(Render.profileSourceText(details), /髮夾彎與局部高曲率道路會加密取樣/);
-  assert.match(Render.profileSourceText(details), /人工審核完成/);
+  assert.match(Render.profileSourceText(details), /資料與道路標籤稽核完成.*非實地通行認證/);
   assert.match(Render.profileSourceText({ source: null }), /本機 GPX/);
 });
 

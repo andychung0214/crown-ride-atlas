@@ -336,8 +336,15 @@
       root.document.title = app.Render.pageTitle(state.routeInfo, state.allRoutes);
       const result = app.Render.mount(rootElement, state, actions);
       mountInteractiveViews();
-      if (hasRendered && options && options.focusMain) result.main.focus();
+      if (hasRendered && options && options.focusMain) result.main.focus({ preventScroll: true });
       hasRendered = true;
+      if (options && options.scrollTop && typeof root.scrollTo === "function") {
+        const reducedMotion = typeof root.matchMedia === "function"
+          && root.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        root.requestAnimationFrame(() => {
+          root.scrollTo({ top: 0, left: 0, behavior: reducedMotion ? "instant" : "smooth" });
+        });
+      }
     }
 
     function createFileDownload(filename, text, type) {
@@ -369,7 +376,7 @@
       },
       setPage(page) {
         state.filters.page = Number.isInteger(Number(page)) ? Number(page) : 1;
-        render();
+        render({ focusMain: true, scrollTop: true });
         announce(`目前顯示第 ${state.pageView.page} 頁。`);
       },
       setRouteArtFilter(filterKey) {
@@ -383,7 +390,7 @@
         const totalPages = Math.max(1, Math.ceil(entries.length / 12));
         const requestedPage = Number.isInteger(Number(page)) ? Number(page) : 1;
         state.routeArtPage = Math.min(Math.max(requestedPage, 1), totalPages);
-        render();
+        render({ focusMain: true, scrollTop: true });
         announce(`目前顯示路線美學第 ${state.routeArtPage} 頁。`);
       },
       downloadArtGpx(art) {
@@ -443,11 +450,12 @@
       }
     };
 
-    root.addEventListener("hashchange", () => render({ focusMain: true }));
+    root.addEventListener("hashchange", () => render({ focusMain: true, scrollTop: true }));
+    if ("scrollRestoration" in root.history) root.history.scrollRestoration = "manual";
     if (!root.location.hash) {
       root.history.replaceState(null, "", "#/home");
     }
-    render();
+    render({ scrollTop: true });
   }
 
   if (root.document.readyState === "loading") {

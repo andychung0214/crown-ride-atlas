@@ -4,6 +4,28 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const Store = require("../js/core/store.js");
 
+test("舊雙塔識別碼保持東線，既有改名與完成紀錄不會轉移到新西線", () => {
+  const Data = require("../js/data/routes.js");
+  const Progress = require("../js/core/progress.js");
+  const oldId = "challenge-twin-towers";
+  const westId = "challenge-west-twin-towers";
+  const storage = memoryStorage({
+    [Store.STORAGE_KEY]: JSON.stringify({ version: 2, additions: [], overrides: [{ id: oldId, name: "我的東線紀念", maxGradePct: 20.4 }], deleted: [] }),
+    [Progress.STORAGE_KEY]: JSON.stringify([oldId])
+  });
+  const routes = Store.create(storage, Data.routes).list();
+  assert.equal(routes.find(route => route.id === oldId).name, "我的東線紀念");
+  assert.match(Data.routes.find(route => route.id === oldId).name, /東雙塔/);
+  assert.match(routes.find(route => route.id === westId).name, /西線/);
+  const progress = Progress.create(storage);
+  assert.equal(progress.has(oldId), true);
+  assert.equal(progress.has(westId), false);
+  storage.setItem(Store.STORAGE_KEY, JSON.stringify({ version: 2, additions: [], overrides: [], deleted: [oldId] }));
+  const undeleted = Store.create(storage, Data.routes).list();
+  assert.equal(undeleted.some(route => route.id === oldId), false);
+  assert.equal(undeleted.some(route => route.id === westId), true);
+});
+
 function memoryStorage(initial) {
   const values = new Map(Object.entries(initial || {}));
   return {

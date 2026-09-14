@@ -57,7 +57,7 @@ test("固定 manifest 涵蓋且只涵蓋 Data.routes 的 route ID", () => {
     if (error.code !== "MODULE_NOT_FOUND") throw error;
   }
 
-  assert.equal(Data.routes.length, 68);
+  assert.equal(Data.routes.length, 69);
   assert.deepEqual(
     Object.keys(manifest).sort(),
     Data.routes.map(route => route.id).sort()

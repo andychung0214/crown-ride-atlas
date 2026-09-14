@@ -19,6 +19,7 @@
     "keelung-waimushan-wanli": { bundleId: "keelung", src: "js/data/tracks/keelung.js" },
     "challenge-north-south": { bundleId: "challenges", src: "js/data/tracks/challenges.js" },
     "challenge-twin-towers": { bundleId: "challenges", src: "js/data/tracks/challenges.js" },
+    "challenge-west-twin-towers": { bundleId: "challenges", src: "js/data/tracks/challenges.js" },
     "taipei-fengguizui": { bundleId: "taipei", src: "js/data/tracks/taipei.js" },
     "taipei-zhongsha-road": { bundleId: "taipei", src: "js/data/tracks/taipei.js" },
     "taipei-lengshuikeng": { bundleId: "taipei", src: "js/data/tracks/taipei.js" },

@@ -10,9 +10,9 @@ test("首版涵蓋 22 個地區與至少 60 條路線", () => {
   assert.equal(new Set(Data.routes.map(route => route.regionId)).size, 22);
 });
 
-test("首版包含 8 條經典挑戰，GPS Art 圖鑑獨立於正式路線", () => {
-  assert.equal(Data.challenges.length, 8);
-  assert.equal(Data.routeArt.length, 25);
+test("收錄 16 條經典挑戰，GPS Art 圖鑑獨立於正式路線", () => {
+  assert.equal(Data.challenges.length, 16);
+  assert.equal(Data.routeArt.length, 29);
   assert.equal(Data.routes.some(route => route.id === "route-art-little-taiwan"), false);
   assert.equal(Data.routeArt.every(art => !Data.routes.some(route => route.id === art.id)), true);
 });
@@ -48,11 +48,16 @@ test("路線識別碼與 slug 不重複", () => {
   assert.equal(new Set(Data.routes.map(route => route.slug)).size, Data.routes.length);
 });
 
-test("每個經典挑戰都能對應有效路線", () => {
+test("每個經典挑戰都有有效完整路線或明確來源，不以短段冒充全程", () => {
   const routeIds = new Set(Data.routes.map(route => route.id));
 
   for (const challenge of Data.challenges) {
-    assert.ok(challenge.routeIds.length > 0);
+    if (challenge.routeMode === "source-only") {
+      assert.deepEqual(challenge.routeIds, []);
+      assert.ok(challenge.itinerary.length >= 2);
+      assert.match(challenge.sourceUrl, /^https:\/\//);
+      assert.ok(challenge.caution);
+    } else assert.ok(challenge.routeIds.length > 0);
     challenge.routeIds.forEach(routeId => assert.ok(routeIds.has(routeId)));
   }
 });
@@ -63,13 +68,13 @@ test("北高與雙塔使用完整 point-to-point 挑戰路線", () => {
   const routeById = new Map(Data.routes.map(route => [route.id, route]));
 
   assert.deepEqual(northSouth.routeIds, ["challenge-north-south"]);
-  assert.deepEqual(twinTowers.routeIds, ["challenge-twin-towers"]);
+  assert.deepEqual(twinTowers.routeIds, ["challenge-west-twin-towers"]);
   assert.match(northSouth.startLabel, /台北/);
   assert.match(northSouth.finishLabel, /高雄/);
-  assert.match(twinTowers.startLabel, /三貂角燈塔/);
+  assert.match(twinTowers.startLabel, /富貴角燈塔/);
   assert.match(twinTowers.finishLabel, /鵝鑾鼻燈塔/);
 
-  for (const routeId of ["challenge-north-south", "challenge-twin-towers"]) {
+  for (const routeId of ["challenge-north-south", "challenge-west-twin-towers"]) {
     const route = routeById.get(routeId);
     assert.ok(route);
     assert.equal(route.category, "經典挑戰");
@@ -80,7 +85,18 @@ test("北高與雙塔使用完整 point-to-point 挑戰路線", () => {
   }
 });
 
+test("新增指定挑戰，環大台北標明版本且四極點與一般環島分開", () => {
+  for (const name of ["東進武嶺", "中雙塔", "東三塔", "東雙塔", "環島（含四極點）", "環島（不含四極點）", "環小台北", "環大台北", "如來神掌"]) {
+    assert.ok(Data.challenges.some(item => item.name.startsWith(name)), name);
+  }
+  const fourPoles = Data.challenges.find(item => item.id === "challenge-round-island-four-poles");
+  assert.match(fourPoles.itinerary.join(" "), /富貴角.*國聖港.*鵝鑾鼻.*三貂角/);
+  const grand = Data.challenges.find(item => item.id === "challenge-grand-taipei");
+  assert.match(grand.description, /2026.*130/);
+  assert.match(grand.finishLabel, /聖約翰/);
+});
+
 test("公開 GPS Art 圖鑑不會讓不相符人工圖形重回正式路線", () => {
-  assert.equal(Data.routeArt.length, 25);
+  assert.equal(Data.routeArt.length, 29);
   assert.equal(Data.routes.filter(route => route.category === "路線美學").length, 0);
 });

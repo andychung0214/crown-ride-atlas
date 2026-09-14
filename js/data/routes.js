@@ -591,21 +591,37 @@
       supplies: ["水與電解質", "前後車燈", "備用內胎與基本工具", "行動電源與離線地圖"]
     },
     {
+      id: "challenge-west-twin-towers",
+      name: "一日雙塔（西線）",
+      regionId: "new-taipei", regionName: "跨區挑戰", area: "富貴角至鵝鑾鼻・西部海線",
+      distanceKm: 511.9, elevationGainM: 890, difficulty: 5, durationMinutes: 1420,
+      startLabel: "富貴角燈塔外台2公共道路接點",
+      finishLabel: "鵝鑾鼻燈塔外台26公共道路接點",
+      endpointNote: "西線雙塔為富貴角 → 鵝鑾鼻；站內GPX使用園區外公共道路，不包含燈塔步道。",
+      summary: "富貴角經關渡與西部城鎮至鵝鑾鼻的西線規劃參考；部分側道通行條件仍待確認。",
+      verificationWarning: "規劃參考，非全程可騎保證：約13.1公里 service 側道缺少自行車權限及鋪面證據，未經實地勘查。下載前請自行確認或改道，不可僅憑軌跡出發。",
+      story: "依西線雙塔公開路廊，以BRouter fastbike重建細緻道路幾何；經關渡、台15及台17周邊一般道路、高雄與屏鵝公路南下。不使用東部海岸線冒充西雙塔，也不把簡化來源GPX的公里級直線直接當導航。",
+      tags: ["一日雙塔", "西線", "富貴角", "鵝鑾鼻", "長距離"],
+      cautions: ["富貴角園區施工及塔區開放狀態須另查，請勿騎入步道", "西濱只走自行車可通行的一般道路與側道，不得上台61快速道路主線", "路由含公開路廊側道，未逐段實地勘查；施工、側風與夜騎大型車風險須出發前確認"],
+      supplies: ["前後車燈", "電解質與分段補給計畫", "備胎工具", "離線地圖與行動電源"]
+    },
+    {
       id: "challenge-twin-towers",
-      name: "一日雙塔",
+      name: "東雙塔（南迴版本）",
       regionId: "new-taipei",
       regionName: "跨區挑戰",
-      area: "三貂角至鵝鑾鼻",
+      area: "鹽寮台2走廊至鵝鑾鼻（缺燈塔接段）",
       distanceKm: 470.8,
       elevationGainM: 3443,
       difficulty: 5,
       durationMinutes: 1284,
-      startLabel: "三貂角燈塔外鹽寮縣道 2 號道路接點",
+      startLabel: "鹽寮台2走廊既有起點（25.020043, 121.958862）",
       finishLabel: "鵝鑾鼻燈塔外台 26 道路接點",
-      endpointNote: "北端以三貂角燈塔外鹽寮縣道 2 號道路接點代表，官方燈塔地標與可騎道路接點分開標示；挑戰方向為三貂角燈塔 → 鵝鑾鼻燈塔。",
-      summary: "由三貂角燈塔一路南下至鵝鑾鼻燈塔的東部與南迴超長距離挑戰。",
-      story: "一日雙塔以官方地標作為挑戰名稱，但 GPX 端點固定在塔區外最近公共道路，避開階梯、步道與景區服務路，沿東北角、花東、南迴與恆春半島完成南下。",
-      tags: ["一日雙塔", "三貂角燈塔", "鵝鑾鼻燈塔", "point-to-point", "完整挑戰"],
+      endpointNote: "保留既有東部南迴軌跡；起點距官方三貂角燈塔座標約4.6公里直線距離，尚缺燈塔接段，不是完整雙塔認證路線。",
+      summary: "由鹽寮台2走廊經花東、南迴至鵝鑾鼻外道路的既有參考軌跡，尚缺三貂角燈塔接段。",
+      verificationWarning: "此GPX未包含三貂角燈塔接段：既有起點距燈塔約4.6公里直線距離（不是騎乘距離）。保留舊軌跡供參考，不可作為完整東雙塔完騎證明。",
+      story: "為保留既有收藏及騎乘紀錄，本版不變更舊軌跡幾何；沿東北角、花東、壽卡南迴與屏鵝公路南下，缺少三貂角燈塔接段。此路線不經旭海或滿州，不當作MAD東岸版本的同一條軌跡。",
+      tags: ["東雙塔", "南迴版本", "缺燈塔接段", "鵝鑾鼻燈塔", "參考軌跡"],
       cautions: [
         "塔區外道路接點不等於可騎入燈塔園區，請依現場標誌停車步行",
         "東部海岸、南迴與恆春路段大型車、側風、落石與補給間距風險高",
@@ -625,12 +641,12 @@
       trackRef: spec.id,
       thumbnail: thumbnails[(routes.length + 1) % thumbnails.length],
       areaId: "cross",
-      maxGradePct: routeFacets[spec.id],
+      maxGradePct: spec.id === "challenge-west-twin-towers" ? 5.4 : routeFacets[spec.id],
       durationMinutes: spec.durationMinutes,
       durationBand: durationBandFor(spec.durationMinutes),
       featured: false,
       createdAt: "2026-08-09T00:00:00.000Z",
-      updatedAt: "2026-08-09T00:00:00.000Z"
+      updatedAt: "2026-09-14T00:00:00.000Z"
     });
   });
 
@@ -744,12 +760,16 @@
     {
       id: "challenge-twin-towers",
       name: "一日雙塔",
-      description: "從三貂角燈塔外道路接點一路南下至鵝鑾鼻燈塔外台26道路接點的完整耐力挑戰。",
-      routeIds: ["challenge-twin-towers"],
-      referenceRouteIds: ["keelung-harbor-coast", "taitung-south-link", "pingtung-south-border"],
-      startLabel: "三貂角燈塔",
+      description: "富貴角出發，經關渡與西部海線南下至鵝鑾鼻；此為西線雙塔，不是三貂角起騎的東雙塔。",
+      routeIds: ["challenge-west-twin-towers"],
+      referenceRouteIds: ["new-taipei-north-coast", "changhua-coast"],
+      startLabel: "富貴角燈塔外道路",
       finishLabel: "鵝鑾鼻燈塔",
-      routeMode: "single"
+      routeMode: "single",
+      itinerary: ["富貴角", "關渡", "西部海線", "高雄", "屏鵝公路", "鵝鑾鼻"],
+      sourceUrl: "https://www.cycling-lifestyle.org.tw/challenge/itinerary_view/91",
+      sourceLabel: "自行車新文化基金會雙塔定義",
+      caution: "西線GPX僅供規劃：約13.1公里側道的自行車權限與鋪面尚未確認，不保證全程可騎。燈塔園區施工與沿途管制須另外查核。"
     },
     {
       id: "challenge-north-south",
@@ -775,9 +795,13 @@
     },
     {
       id: "challenge-round-island",
-      name: "環島",
-      description: "串接海岸、縱谷與西部城鎮的多日島嶼旅行。",
-      routeIds: ["new-taipei-north-coast", "changhua-coast", "pingtung-south-border", "taitung-dulan-coast", "hualien-valley-north"]
+      name: "環島（不含四極點）",
+      description: "以環島一號線路廊作為多日旅行骨幹，不額外繞訪四座極點燈塔；起點、方向與接駁方式須按實際行程選擇。",
+      routeIds: [], routeMode: "source-only",
+      itinerary: ["台北", "西部城鎮", "屏東", "南迴", "台東", "花蓮", "宜蘭", "台北"],
+      sourceUrl: "https://www.cycling-lifestyle.org.tw/cycling_taiwan",
+      sourceLabel: "環台認證與蘇花接駁說明",
+      caution: "尚未取得可驗證完整 GPX；蘇花段可依認證規則採兩鐵接駁，不能把鐵路段畫成可騎道路。"
     },
     {
       id: "challenge-north-coast",
@@ -796,6 +820,70 @@
       name: "花東縱谷雙百",
       description: "沿中央山脈與海岸山脈之間完成東部長距離。",
       routeIds: ["hualien-valley-north", "taitung-route-197"]
+    },
+    {
+      id: "challenge-wuling-east", name: "東進武嶺",
+      description: "經典 KOM 東進版本由花蓮海岸進入太魯閣，沿台8與台14甲爬升至武嶺；與埔里起騎的西進分開收錄。",
+      routeIds: [], routeMode: "source-only", startLabel: "花蓮七星潭", finishLabel: "武嶺",
+      itinerary: ["七星潭", "太魯閣", "天祥", "大禹嶺", "合歡山", "武嶺"],
+      sourceUrl: "https://www.taiwankom.org/img/news/2017-KOM-activity.pdf", sourceLabel: "KOM 歷史賽事路線",
+      caution: "歷史路線不代表現在開放；太魯閣與台8持續災後復建，須查公路局168與太魯閣公告，未確認前不建議照舊軌跡出發。"
+    },
+    {
+      id: "challenge-central-twin-towers", name: "中雙塔",
+      description: "北端富貴角、南端鵝鑾鼻，以北橫、中橫高山路段、武嶺與塔塔加串接的縱貫版本；不同騎士的連接路段並不完全相同。",
+      routeIds: [], routeMode: "source-only", startLabel: "富貴角", finishLabel: "鵝鑾鼻",
+      itinerary: ["富貴角", "台北", "北橫", "台7甲思源埡口", "梨山", "大禹嶺", "武嶺", "埔里", "日月潭", "塔塔加", "阿里山", "台3", "屏東", "鵝鑾鼻"],
+      sourceUrl: "https://www.cycling-update.info/classroom/peopel/3589-2020-03-10-09-11-50", sourceLabel: "中雙塔騎乘版本紀錄",
+      caution: "尚未取得可驗證完整 GPX。台8臨37中橫便道禁止一般自行車，不可用谷關便道當梨山捷徑；高山路段需查管制與補給。"
+    },
+    {
+      id: "challenge-east-three-towers", name: "東三塔",
+      description: "從富貴角沿北海岸向東，經三貂角後接東部南下至鵝鑾鼻；比三貂角起騎的東雙塔多了北海岸段。",
+      routeIds: [], routeMode: "source-only", startLabel: "富貴角", finishLabel: "鵝鑾鼻",
+      itinerary: ["富貴角", "基隆", "三貂角", "宜蘭", "花蓮", "台東", "旭海／滿州版本", "鵝鑾鼻"],
+      sourceUrl: "https://www.xinmedia.com/article/173980", sourceLabel: "東部雙塔與三塔版本介紹",
+      caution: "尚未取得可驗證完整 GPX；台26有不連通路段，不能沿海岸畫直線跨接。蘇花與旭海路段須另查當期通行規定。"
+    },
+    {
+      id: "challenge-east-twin-towers", name: "東雙塔（南迴版本）",
+      description: "既有軌跡由鹽寮台2走廊起騎，經宜蘭、花東與壽卡南迴南下；未包含三貂角燈塔接段，也不是經旭海、滿州的東岸版本。",
+      routeIds: ["challenge-twin-towers"], routeMode: "single", trackLabel: "1 條參考軌跡（缺燈塔接段）", startLabel: "鹽寮台2走廊既有起點", finishLabel: "鵝鑾鼻燈塔外道路",
+      itinerary: ["鹽寮台2走廊（缺燈塔接段）", "宜蘭", "南澳", "花蓮", "台東", "壽卡", "車城", "鵝鑾鼻"],
+      sourceUrl: "https://sites.google.com/a/madbackclub.tw/madback/records/tower2", sourceLabel: "東雙塔經典旭海版本對照",
+      caution: "此參考軌跡缺三貂角燈塔接段，不可當作完整東雙塔完騎證明；亦非來源活動的旭海版。東部路況、落石、長隧道與夜間補給須另行確認。"
+    },
+    {
+      id: "challenge-round-island-four-poles", name: "環島（含四極點）",
+      description: "在環島行程中加入北、東、南、西四座極點燈塔；這是燈塔地標版本，不把園區步道或沙洲視為可騎道路。",
+      routeIds: [], routeMode: "source-only",
+      itinerary: ["富貴角", "西部海線", "國聖港燈塔", "鵝鑾鼻", "花東", "三貂角", "富貴角"],
+      sourceUrl: "https://www.cycling-lifestyle.org.tw/cycling_taiwan", sourceLabel: "四極點大環台認證定義",
+      caution: "尚未取得可驗證完整 GPX；燈塔開放、沙洲與風災道路變化須逐點確認，蘇花接駁段不得當作騎乘軌跡。"
+    },
+    {
+      id: "challenge-small-taipei", name: "環小台北",
+      description: "以雙北河濱自行車路網環繞台北盆地的休閒挑戰；此名稱有多種起點與繞行版本，不把不同長度混成同一條。",
+      routeIds: [], routeMode: "source-only",
+      itinerary: ["大佳河濱", "社子島", "雙北河濱路網", "返回大佳河濱"],
+      sourceUrl: "https://www.mobile01.com/topicdetail.php?f=320&t=7007570", sourceLabel: "67公里逆時針版本分段遊記",
+      caution: "目前收錄67公里版本來源；尚未取得對應完整 GPX。河濱施工、越堤道與行人共用區須依現場標誌通行。"
+    },
+    {
+      id: "challenge-grand-taipei", name: "環大台北（2026活動版）",
+      description: "2026環大臺北130公里挑戰組由深坑出發，經平溪、雙溪與東北角，再沿北海岸抵達淡水；活動名有「環」但本版本不是起終點相同的環線。",
+      routeIds: [], routeMode: "source-only", startLabel: "深坑中正橋", finishLabel: "聖約翰科技大學",
+      itinerary: ["深坑", "石碇", "平溪", "雙溪", "貢寮", "東北角", "八斗子", "外木山", "萬里", "金山", "石門", "三芝", "聖約翰科技大學"],
+      sourceUrl: "https://www.cyclist.org.tw/upfile/file/20260515/20260515163652195219.pdf", sourceLabel: "騎士協會2026官方簡章",
+      caution: "官方另有73公里及30公里組別；本站未將短組別冒充130公里全程。完整GPX仍待來源下載與幾何驗證。"
+    },
+    {
+      id: "challenge-buddha-palm", name: "如來神掌",
+      description: "利用陽明山與北海岸連續爬坡畫出手掌輪廓的挑戰，又稱佛手；此處採公開作者介紹的逆時針135公里版本。",
+      routeIds: [], routeMode: "source-only",
+      itinerary: ["陽明山", "北海岸", "山海之間連續爬坡", "返回起點"],
+      sourceUrl: "https://www.bikeexpress.com.tw/2021/cycling-route-buddhas-palm-climb-training/", sourceLabel: "Bike Express作者路線與地圖",
+      caution: "連續爬坡與陡下坡需保留體力及煞車餘裕；尚未取得可驗證完整 GPX，不以手掌示意圖冒充可騎道路。"
     }
   ];
 

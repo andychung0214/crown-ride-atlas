@@ -147,9 +147,9 @@ function filesystemBoundary(overrides = {}) {
   };
 }
 
-test("圖鑑固定收錄 25 件有公開來源的台灣 GPS Art", () => {
-  assert.equal(Catalog.length, 25);
-  assert.equal(new Set(Catalog.map(item => item.id)).size, 25);
+test("圖鑑固定收錄 29 件有公開來源的台灣 GPS Art", () => {
+  assert.equal(Catalog.length, 29);
+  assert.equal(new Set(Catalog.map(item => item.id)).size, 29);
   assert.ok(Catalog.every(item => /^https:\/\//.test(item.sourceUrl)));
   assert.deepEqual(new Set(Catalog.map(item => item.activityType)),
     new Set(["cycling", "running", "walking"]));
@@ -223,9 +223,9 @@ test("Mobile01 公開整理頁的 17 件作品皆保留原作者 CS72", () => {
 
 test("GPS Art 不污染正式路線與 track manifest", () => {
   assert.equal(Data.routeArt, Catalog);
-  assert.equal(Data.routes.length, 68);
+  assert.equal(Data.routes.length, 69);
   assert.equal(Data.routes.some(route => route.category === "路線美學"), false);
-  assert.equal(Object.keys(TrackManifest).length, 68);
+  assert.equal(Object.keys(TrackManifest).length, 69);
   assert.equal(new Set(Object.values(TrackManifest).map(entry => entry.bundleId)).size, 23);
   assert.equal(Object.hasOwn(TrackManifest, "gps-art-xinzhuang-tiger"), false);
   assert.equal(Object.hasOwn(TrackManifest, "gps-art-riverside-seahorse"), false);
@@ -277,7 +277,7 @@ test("catalog 對單件必要軌跡缺失或 segments 無效採逐件降級", ()
     const cherry = catalog.find(item => item.id === "gps-art-taipei-cherry-blossom");
     const circle = catalog.find(item => item.id === "gps-art-taipei-circle-walk");
 
-    assert.equal(catalog.length, 25, scenario.name);
+    assert.equal(catalog.length, 29, scenario.name);
     assert.equal(cherry.status, "source-only", scenario.name);
     assert.equal(Object.hasOwn(cherry, "segments"), false, scenario.name);
     assert.equal(Object.hasOwn(cherry, "coordinates"), false, scenario.name);
@@ -320,7 +320,7 @@ test("公開軌跡產物鎖定來源與 canonical geometry provenance", () => {
     }
   };
 
-  assert.equal(Object.keys(Tracks).length, 5);
+  assert.equal(Object.keys(Tracks).length, 9);
 
   for (const track of Object.values(Tracks)) {
     assert.match(track.sourceSha256, /^[a-f0-9]{64}$/);
@@ -343,19 +343,19 @@ test("公開軌跡產物鎖定來源與 canonical geometry provenance", () => {
 
 test("正式圖鑑的三種狀態反映目前驗證結果", () => {
   assert.deepEqual(RouteArt.stats(Catalog), {
-    total: 25, trackReady: 5, sourceDownload: 0, sourceOnly: 20
+    total: 29, trackReady: 9, sourceDownload: 0, sourceOnly: 20
   });
-  assert.equal(Data.routes.length, 68);
+  assert.equal(Data.routes.length, 69);
   assert.equal(new Set(Object.values(TrackManifest).map(entry => entry.bundleId)).size, 23);
 });
 
-test("下載摘要模組缺失時保留 25 件，存在時才合併並驗證每一筆", () => {
+test("下載摘要模組缺失時保留 29 件，存在時才合併並驗證每一筆", () => {
   const withoutDownloads = loadBrowserCatalog(Tracks);
   const validDownload = sourceDownloadFixture();
   const withDownload = loadBrowserCatalog(Tracks, { [validDownload.id]: validDownload });
 
-  assert.equal(withoutDownloads.length, 25);
-  assert.equal(withDownload.length, 26);
+  assert.equal(withoutDownloads.length, 29);
+  assert.equal(withDownload.length, 30);
   assert.equal(withDownload.find(item => item.id === validDownload.id).status, "source-download");
   assert.throws(() => loadBrowserCatalog(Tracks, {
     "gps-art-shapemiles-malformed": { ...validDownload, id: "gps-art-shapemiles-malformed", sourceSha256: "bad" }
@@ -364,8 +364,8 @@ test("下載摘要模組缺失時保留 25 件，存在時才合併並驗證每�
 
 test("Node 載入器只對不存在的下載摘要 fail-soft，malformed 摘要照常失敗", () => {
   const validDownload = sourceDownloadFixture();
-  assert.equal(loadNodeCatalog(undefined, { downloadsPresent: false }).length, 25);
-  assert.equal(loadNodeCatalog({ [validDownload.id]: validDownload }).length, 26);
+  assert.equal(loadNodeCatalog(undefined, { downloadsPresent: false }).length, 29);
+  assert.equal(loadNodeCatalog({ [validDownload.id]: validDownload }).length, 30);
   assert.throws(() => loadNodeCatalog(null), /RouteArtDownloads/);
 });
 
@@ -376,7 +376,7 @@ test("Node 只在精確下載摘要目標不存在時 fail-soft", t => {
     'module.exports = require("./fixture-nested/route-art-downloads.js");\n',
   );
   assert.equal(fs.existsSync(productionDownloadPath), false);
-  assert.equal(require(missingTargetCatalogPath).length, 25);
+  assert.equal(require(missingTargetCatalogPath).length, 29);
   assert.throws(() => require(nestedMissingCatalogPath), error => error
     && error.code === "MODULE_NOT_FOUND"
     && /fixture-nested[\\/]route-art-downloads\.js/.test(error.message));
@@ -532,7 +532,7 @@ test("公開來源錯誤不發布任意上游訊息或敏感標頭", async () =>
 
 test("站內下載器使用 manual redirect、單一 signal 並保留合法 Google KML query", async () => {
   const { downloadSource, SOURCES } = await import("../scripts/import-route-art-tracks.mjs");
-  const source = SOURCES[1];
+  const source = SOURCES.find(item => item.id === "gps-art-taipei-cherry-blossom");
   const kml = `<kml><Document><LineString><coordinates>
     121.5,25 121.501,25.001
   </coordinates></LineString></Document></kml>`;

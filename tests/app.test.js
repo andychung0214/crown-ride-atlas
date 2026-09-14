@@ -12,7 +12,7 @@ const BikeParts = require("../js/data/bike-parts.js");
 
 const appSource = fs.readFileSync(path.join(__dirname, "../js/app.js"), "utf8");
 
-function bootWithTrack(track, onRender, page = "route") {
+function bootWithTrack(track, onRender, page = "route", configureRoot) {
   const snapshots = [];
   const completed = new Set();
   const rootElement = {
@@ -106,9 +106,40 @@ function bootWithTrack(track, onRender, page = "route") {
     }
   };
 
+  if (configureRoot) configureRoot(root);
   vm.runInNewContext(appSource, { window: root, Blob: class Blob {} });
   return snapshots;
 }
+
+test("開頁與換頁平滑回頂端，資料水合及收藏重繪維持捲動位置", async () => {
+  const calls = [];
+  let browser;
+  let actions;
+  bootWithTrack({ coordinates: [{lat:25,lng:121},{lat:25.1,lng:121}] }, (_state, value) => { actions = value; }, "routes", root => {
+    browser = root;
+    root.scrollTo = options => calls.push({ ...options });
+    root.matchMedia = () => ({ matches: false });
+  });
+  const expected = { top: 0, left: 0, behavior: "smooth" };
+  assert.deepEqual(calls, [expected]);
+  browser.hashChange();
+  actions.setPage(2);
+  actions.setRouteArtPage(2);
+  assert.deepEqual(calls, [expected, expected, expected, expected]);
+  actions.toggleFavorite("r1");
+  actions.setTheme("green");
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(calls.length, 4);
+});
+
+test("減少動態效果設定讓開頁回頂端立即完成", () => {
+  const calls = [];
+  bootWithTrack(null, null, "routes", root => {
+    root.scrollTo = options => calls.push({ ...options });
+    root.matchMedia = query => ({ matches: query === "(prefers-reduced-motion: reduce)" });
+  });
+  assert.deepEqual(calls, [{ top: 0, left: 0, behavior: "instant" }]);
+});
 
 function bootWithInteractiveTrack(track, onMapMount) {
   const elevationElement = { dataset: { elevation: "r1" }, setAttribute() {} };

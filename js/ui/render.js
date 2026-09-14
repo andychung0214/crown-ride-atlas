@@ -39,6 +39,15 @@
     return difficultyNames[Number(value)] || "未分級";
   }
 
+  function safeSourceUrl(value) {
+    try {
+      const url = new URL(value);
+      return url.protocol === "https:" && !url.username && !url.password ? url.href : "#";
+    } catch {
+      return "#";
+    }
+  }
+
   function elevationSummary(coordinates) {
     const elevations = (Array.isArray(coordinates) ? coordinates : [])
       .map(point => Number(point && point.ele))
@@ -91,7 +100,7 @@
       );
     }
     if (typeof source.generatedAt === "string" && source.generatedAt) parts.push(`產生：${source.generatedAt.slice(0, 10)}`);
-    if (source.reviewStatus === "approved") parts.push(`人工審核完成${source.reviewedAt ? `：${source.reviewedAt.slice(0, 10)}` : ""}`);
+    if (source.reviewStatus === "approved") parts.push(`資料與道路標籤稽核完成${source.reviewedAt ? `：${source.reviewedAt.slice(0, 10)}` : ""}（非實地通行認證）`);
     else if (source.reviewStatus) parts.push(`審核狀態：${source.reviewStatus}`);
     return parts.length ? parts.join("；") : "路線來源未提供完整中繼資料。";
   }
@@ -819,6 +828,10 @@
               }))
             ),
             tagList(documentRef, route.tags),
+            route.verificationWarning ? node(documentRef, "p", {
+              className: "route-verification-warning", text: route.verificationWarning,
+              attributes: { role: "note" }
+            }) : null,
             node(documentRef, "button", {
               className: "button button--accent button--wide",
               type: "button",
@@ -885,6 +898,7 @@
         .map(id => state.allRoutes.find(route => route.id === id))
         .filter(Boolean);
       const isSingleRoute = challenge.routeMode === "single" && primaryRoute;
+      const isSourceOnly = challenge.routeMode === "source-only";
       const startLabel = challenge.startLabel || (primaryRoute && primaryRoute.startLabel);
       const finishLabel = challenge.finishLabel || (primaryRoute && primaryRoute.finishLabel);
       return node(documentRef, "article", { className: "challenge-card paper-panel" }, [
@@ -892,16 +906,27 @@
         node(documentRef, "p", { className: "eyebrow", text: "CLASSIC CHALLENGE" }),
         node(documentRef, "h2", { text: challenge.name }),
         node(documentRef, "p", { text: challenge.description }),
+        Array.isArray(challenge.itinerary) && challenge.itinerary.length
+          ? node(documentRef, "p", { className: "challenge-card__itinerary", text: challenge.itinerary.join(" → ") })
+          : null,
         startLabel && finishLabel
           ? node(documentRef, "p", {
             className: "challenge-card__endpoints",
             text: `起點 ${startLabel} → 終點 ${finishLabel}`
           })
           : null,
-        node(documentRef, "div", { className: "challenge-card__facts" }, [
-          node(documentRef, "span", { text: isSingleRoute ? "1 條完整挑戰路線" : `${linkedRoutes.length} 段參考路線` }),
-          node(documentRef, "span", { text: `約 ${Math.round(distance)} km` })
+        isSourceOnly ? node(documentRef, "p", {
+          className: "challenge-card__facts",
+          text: "路線來源已收錄 · 尚未取得可驗證完整 GPX"
+        }) : node(documentRef, "div", { className: "challenge-card__facts" }, [
+          node(documentRef, "span", { text: isSingleRoute ? (challenge.trackLabel || "1 條完整挑戰路線") : `${linkedRoutes.length} 段參考路線` }),
+          node(documentRef, "span", { text: `${isSingleRoute ? "約" : "參考段合計"} ${Math.round(distance)} km` })
         ]),
+        challenge.caution ? node(documentRef, "p", { className: "challenge-card__caution", text: challenge.caution }) : null,
+        challenge.sourceUrl ? node(documentRef, "a", {
+          className: "text-link", href: safeSourceUrl(challenge.sourceUrl), target: "_blank", rel: "noopener noreferrer",
+          text: `${challenge.sourceLabel || "路線來源與版本說明"} ↗`
+        }) : null,
         referenceRoutes.length
           ? node(documentRef, "p", {
             className: "challenge-card__references",
@@ -918,7 +943,7 @@
 
     return node(documentRef, "div", { className: "catalog-page" }, [
       node(documentRef, "section", { className: "page-intro" }, [
-        node(documentRef, "p", { className: "eyebrow", text: "ENDURANCE · 08 CHALLENGES" }),
+        node(documentRef, "p", { className: "eyebrow", text: `ENDURANCE · ${String(state.challenges.length).padStart(2, "0")} CHALLENGES` }),
         node(documentRef, "h1", { text: "經典賽事與島嶼挑戰" }),
         node(documentRef, "p", {
           className: "page-intro__description",

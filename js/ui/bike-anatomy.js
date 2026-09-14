@@ -136,8 +136,8 @@
       x1: 420, y1: 190, x2: 610, y2: 190,
       stroke: green, "stroke-width": 17, "stroke-linecap": "round"
     })));
-    frontTriangle.append(svgElement(documentRef, "line", partShapeAttributes("down-tube", 535, 267, {
-      x1: 610, y1: 190, x2: 455, y2: 350,
+    frontTriangle.append(svgElement(documentRef, "line", partShapeAttributes("down-tube", 544, 300, {
+      x1: 632, y1: 250, x2: 455, y2: 350,
       stroke: green, "stroke-width": 17, "stroke-linecap": "round"
     })));
     frontTriangle.append(svgElement(documentRef, "line", partShapeAttributes("seat-tube", 438, 272, {

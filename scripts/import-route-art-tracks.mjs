@@ -16,6 +16,15 @@ import {
 export { parseGpxSegments, parseKmlSegments, validateSegments };
 
 export const SOURCES = Object.freeze([
+  ...[
+    ["gps-art-zhishan-big-dinosaur", "ZhishanBigDinosaur"],
+    ["gps-art-zhishan-little-dinosaur", "ZhishanLittleDinosaur"],
+    ["gps-art-zhishan-2024", "Zhishan2024"],
+    ["gps-art-kaohsiung-little-dinosaur", "KaohsiungLittleDinosaur"]
+  ].map(([id, filename]) => Object.freeze({
+    id, format: "gpx", required: true,
+    url: `https://janice880624.github.io/janice_sport_blog/map/gpx/${filename}.gpx`
+  })),
   Object.freeze({
     id: "gps-art-xinzhuang-tiger",
     format: "gpx",
@@ -54,6 +63,7 @@ export const SOURCES = Object.freeze([
   })
 ]);
 export const ALLOWED_SOURCE_HOSTS = Object.freeze([
+  "janice880624.github.io",
   "brouter.de",
   "cdntwrunning.biji.co",
   "cdnrunningfiles.biji.co",

@@ -414,7 +414,7 @@ test("SVG 是固定檢視框且具完整側視公路車結構", () => {
 test("32 個零件的熱點逐一命中人工核對的獨立圖形", () => {
   const expectedAnchors = {
     "top-tube": [520, 190],
-    "down-tube": [535, 267],
+    "down-tube": [544, 300],
     "head-tube": [621, 220],
     "seat-tube": [438, 272],
     "seat-stay": [340, 263],
@@ -472,6 +472,25 @@ test("32 個零件的熱點逐一命中人工核對的獨立圖形", () => {
     );
     assert.ok(anchorHitsPaintedShape(shape, part.hotspot), `${part.name} 熱點未命中實際著色圖形`);
   });
+});
+
+test("下管由頭管下端連接至中軸區而非誤接頭管上端", () => {
+  const documentRef = new FakeDocument();
+  const svg = BikeAnatomy.createSvg(documentRef, BikeParts, () => {});
+  const downTube = byData(svg, "bike-part-shape", "down-tube");
+  const headTube = byData(svg, "bike-part-shape", "head-tube");
+  const bottomBracket = byData(svg, "bike-part-shape", "bottom-bracket");
+
+  assert.deepEqual(
+    [downTube.getAttribute("x1"), downTube.getAttribute("y1")].map(Number),
+    [headTube.getAttribute("x2"), headTube.getAttribute("y2")].map(Number)
+  );
+  assert.deepEqual(
+    [downTube.getAttribute("x2"), downTube.getAttribute("y2")].map(Number),
+    [bottomBracket.getAttribute("cx"), bottomBracket.getAttribute("cy")].map(Number)
+  );
+  assert.deepEqual(BikeParts.parts.find(part => part.id === "down-tube").hotspot, { x: 544, y: 300 });
+  assert.ok(anchorHitsPaintedShape(downTube, { x: 544, y: 300 }));
 });
 
 test("SVG 以具名 group 容納可達熱點並只隱藏純車體視覺層", () => {

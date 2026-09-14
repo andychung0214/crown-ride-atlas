@@ -117,13 +117,16 @@ test("Task 10 研究文件逐條同步正式 seed 的範圍、方向與道路吸
   }
 });
 
-test("東部高山挑戰只對應太平山正式單一路線", () => {
+test("太平山只對應同名正式路線，東進武嶺獨立標示來源與管制", () => {
   const Data = require("../js/data/routes.js");
-  assert.equal(Data.challenges.length, 8);
+  assert.equal(Data.challenges.length, 16);
   const challenge = Data.challenges.find(({ id }) => id === "challenge-taipingshan");
   assert.ok(challenge, "應建立誠實命名的太平山挑戰");
   assert.equal(challenge.name, "太平山登高");
   assert.match(challenge.description, /土場.*宜專 1 線.*太平山莊入口/);
   assert.deepEqual(challenge.routeIds, ["yilan-taipingshan"]);
-  assert.equal(Data.challenges.some(({ id }) => id === "challenge-wuling-east"), false);
+  const eastWuling = Data.challenges.find(({ id }) => id === "challenge-wuling-east");
+  assert.equal(eastWuling.routeMode, "source-only");
+  assert.deepEqual(eastWuling.routeIds, []);
+  assert.match(eastWuling.caution, /災後復建/);
 });

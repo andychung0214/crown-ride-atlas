@@ -19,7 +19,7 @@ const safetyCriticalCrackPartIds = [
 
 const expectedLayout = [
   ["top-tube", "上管", "frame-fork", 1, 520, 190, 360, 72],
-  ["down-tube", "下管", "frame-fork", 2, 535, 267, 795, 155],
+  ["down-tube", "下管", "frame-fork", 2, 544, 300, 795, 155],
   ["head-tube", "頭管", "frame-fork", 3, 621, 220, 805, 212],
   ["seat-tube", "車架座管", "frame-fork", 4, 438, 272, 305, 228],
   ["seat-stay", "上叉", "frame-fork", 5, 340, 263, 135, 225],
@@ -106,13 +106,23 @@ test("百科資料深度凍結且預設選取上管", () => {
   assert.throws(() => { BikeParts.parts[0].hotspot.x = 0; }, TypeError);
 });
 
-test("煞車卡鉗文案分別說明碟煞與輪圈煞車的構造及保養", () => {
+test("煞車卡鉗文案區分油壓碟煞、機械碟煞與輪圈煞車", () => {
   const caliper = BikeParts.parts.find(part => part.id === "brake-caliper");
-  const content = [caliper.materials, caliper.adjustment, caliper.maintenance, caliper.workshopAdvice].join("｜");
+  const content = [caliper.purpose, caliper.materials, caliper.adjustment, caliper.maintenance, caliper.workshopAdvice].join("｜");
 
-  ["碟煞", "活塞", "密封", "來令片", "輪圈煞車", "拉臂", "樞軸", "煞車皮"].forEach(term => {
+  ["油壓碟煞", "機械碟煞", "活塞", "拉線", "來令片", "輪圈煞車", "拉臂", "樞軸", "煞車皮"].forEach(term => {
     assert.match(content, new RegExp(term), `煞車卡鉗文案缺少「${term}」`);
   });
+  assert.match(caliper.adjustment, /油壓碟煞.*排氣/);
+  assert.match(caliper.adjustment, /機械碟煞.*拉線張力.*來令片間隙/);
+  assert.match(caliper.workshopAdvice, /輪圈煞車皮僅適用於輪圈煞車/);
+});
+
+test("輻條文案要求同側相對張力均勻但不強求左右相等", () => {
+  const spoke = BikeParts.parts.find(part => part.id === "spoke");
+
+  assert.match(spoke.adjustment, /同側.*相對張力.*均勻/);
+  assert.match(spoke.adjustment, /左右.*不一定相同/);
 });
 
 test("BikeParts UMD 註冊不覆寫既有 CrownRideAtlas namespace", () => {
