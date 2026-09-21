@@ -61,7 +61,8 @@ test("使用者提供的比翼雙飛單一來源紀錄可離線重建", async ()
 
 test("完整比翼雙飛點序仍符合既有 eager 軌跡資料的傳輸預算", async () => {
   const payload = await fs.readFile(path.join(__dirname, "../js/data/route-art-tracks.js"));
-  assert.ok(payload.length <= 4_300_000, `原始軌跡資料 ${payload.length} bytes 超過 4.3 MB`);
+  // Git 在 Windows checkout 會把 JS 換成 CRLF；預算必須涵蓋兩種換行。
+  assert.ok(payload.length <= 4_400_000, `原始軌跡資料 ${payload.length} bytes 超過 4.4 MB`);
   const compressed = gzipSync(payload, { level: 9 });
   assert.ok(compressed.length <= 525_000, `gzip 軌跡資料 ${compressed.length} bytes 超過 525 KB`);
 });
