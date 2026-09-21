@@ -12,7 +12,7 @@ test("首版涵蓋 22 個地區與至少 60 條路線", () => {
 
 test("收錄 16 條經典挑戰，GPS Art 圖鑑獨立於正式路線", () => {
   assert.equal(Data.challenges.length, 16);
-  assert.equal(Data.routeArt.length, 29);
+  assert.equal(Data.routeArt.length, 30);
   assert.equal(Data.routes.some(route => route.id === "route-art-little-taiwan"), false);
   assert.equal(Data.routeArt.every(art => !Data.routes.some(route => route.id === art.id)), true);
 });
@@ -97,6 +97,6 @@ test("新增指定挑戰，環大台北標明版本且四極點與一般環島�
 });
 
 test("公開 GPS Art 圖鑑不會讓不相符人工圖形重回正式路線", () => {
-  assert.equal(Data.routeArt.length, 29);
+  assert.equal(Data.routeArt.length, 30);
   assert.equal(Data.routes.filter(route => route.category === "路線美學").length, 0);
 });

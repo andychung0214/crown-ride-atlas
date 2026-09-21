@@ -1,0 +1,2 @@
+# 保留提供的 GPX 原始位元組，確保來源 SHA-256 在 Windows / CI 一致。
+assets/gpx/*.gpx -text

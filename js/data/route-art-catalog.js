@@ -59,6 +59,17 @@
   });
 
   const items = [
+    {
+      id: "gps-art-lovebirds", name: "比翼雙飛", shapeLabel: "雙鳥展翅",
+      regionId: "taipei", regionName: "台北市／新北市",
+      activityType: "cycling", activityLabel: "單車", status: "source-only",
+      distanceKm: 92.4, elevationGainM: 1423,
+      summary: "雙北雙鳥展翅造型的公路車路線。站內軌跡取自使用者提供的 Garmin 課程 354424569 原始 GPX，保留全部 16,661 點與海拔；里程及爬升採 Garmin 頁面標示。河濱、山路與市區路口請依現場標誌及最新路況通行，非即時安全認證。",
+      sourcePlatform: "Garmin Connect",
+      sourceUrl: "https://connect.garmin.com/app/course/354424569",
+      routeSourceUrl: "https://connect.garmin.com/app/course/354424569",
+      routeSourceAccess: "public-page", verifiedAt: "2026-09-18"
+    },
     ...[
       ["gps-art-zhishan-big-dinosaur", "芝山的大恐龍", "長頸恐龍", "taipei", "台北市士林區", 5.52, "ZhishanBigDinosaur"],
       ["gps-art-zhishan-little-dinosaur", "芝山的小恐龍", "小恐龍", "taipei", "台北市士林區", 4.73, "ZhishanLittleDinosaur"],

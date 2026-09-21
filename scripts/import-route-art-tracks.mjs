@@ -318,8 +318,24 @@ export async function writeTracksAtomically(tracks, options = {}) {
   }
 }
 
+// Garmin 匯出由使用者提供；不依賴登入資訊或外站 API 重建。
+export async function loadLocalTracks() {
+  const payload = await fsPromises.readFile(new URL("../assets/gpx/garmin-354424569.gpx", import.meta.url));
+  const sourceSha256 = createHash("sha256").update(payload).digest("hex");
+  if (sourceSha256 !== "2db68c7e15d1e4c600d754be19a8d2d84f350e05739fd0221bd7864aab9bdf63") {
+    throw new Error("比翼雙飛原始 GPX 雜湊不符，須重新查核來源後才能匯入。");
+  }
+  const segments = validateSegments(parseGpxSegments(payload.toString("utf8")), { sourceId: "gps-art-lovebirds" });
+  return [{
+    routeId: "gps-art-lovebirds", sourceFormat: "gpx",
+    sourceUrl: "https://connect.garmin.com/app/course/354424569", sourceSha256,
+    geometrySha256: createHash("sha256").update(JSON.stringify(segments)).digest("hex"),
+    segments
+  }];
+}
+
 export async function importTracks() {
-  const tracks = [];
+  const tracks = await loadLocalTracks();
   const requiredFailures = [];
 
   for (const source of SOURCES) {
