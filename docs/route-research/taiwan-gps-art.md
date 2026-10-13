@@ -1,8 +1,8 @@
 # 台灣 GPS Art 公開來源研究
 
-現行查核日：2026-08-31
+本矩陣查核日：2026-08-31（歷史基線）
 
-本文件是「路線美學」正式圖鑑與未上架候選的來源帳。正式 production catalog 精確為 25 件：5 件 `track-ready`、0 件 `source-download`、20 件 `source-only`。另有 19 件 ShapeMiles 候選因匿名 HTTPS 查核全部回傳 HTTP 401，且官方頁面顯示 GPX 下載需要訂閱，未加入 production catalog，也不列為公開下載。
+本文件保存 2026-08-31 的「路線美學」來源矩陣基線，當時正式 production catalog 為 25 件：5 件 `track-ready`、0 件 `source-download`、20 件 `source-only`。現行總數為 31 件：11 件 `track-ready`、0 件 `source-download`、20 件 `source-only`；後續新增作品分別記錄於日期命名的研究文件，其中七夕告白玫瑰見 `2026-10-13-qixi-rose-garmin.md`。另有 19 件 ShapeMiles 候選因匿名 HTTPS 查核全部回傳 HTTP 401，且官方頁面顯示 GPX 下載需要訂閱，未加入 production catalog，也不列為公開下載。
 
 本站未複製或 hotlink 外站作品圖片，不使用登入後資料、Cookie、權杖、私人活動或會員資料。`track-ready` 的站內地圖與 GPX 使用兩件已核准 KML、兩件匿名公開 GPX，以及一件依公開行程節點與參考圖經 BRouter `fastbike` 重建的道路軌跡；重建件不冒稱為原 Strava 座標。`source-only` 沒有匿名公開軌跡摘要，不補畫座標；未來若有 `source-download`，本站也只保存格式、雜湊、點數與 bounds 等摘要並連到來源平台，不鏡像第三方 GPX。第三方權利仍屬各來源及作者，本站 MIT 授權不改變其授權。
 

@@ -38,7 +38,7 @@
 4. 從頁首切換四種領騎衫主題。
 5. 在「我的路線」新增或編輯內容；可上傳 JPEG、PNG、WebP 與 GPX。
 6. 編輯完成後下載 JSON 備份，以便跨瀏覽器還原。
-7. 從「路線美學」檢視 GPS Art 圖鑑；使用五種活動／資料狀態篩選與分頁，並由作品卡查閱公開來源。目前「可下載 GPX」與「站內地圖」都精確顯示 10 件 `track-ready`；`source-only` 不提供下載按鈕。
+7. 從「路線美學」檢視 GPS Art 圖鑑；使用五種活動／資料狀態篩選與分頁，並由作品卡查閱公開來源。目前「可下載 GPX」與「站內地圖」都精確顯示 11 件 `track-ready`；`source-only` 不提供下載按鈕。
 8. 從「公路車百科」或 `#/bike-parts` 開啟部件圖解。桌機可沿導引線閱讀標籤，滑過熱點或分類清單會同步標示同一部件；窄版可點選 01–32 的編號觸控區或下方分類清單。可用前一筆／下一筆、放大／縮小與重設控制；圖解縮放範圍為 1 至 3 倍。
 
 百科的桌機 SVG 熱點、行動版 HTML marker、控制項與分類按鈕支援 Tab、Enter、Space 與 Pointer Events；diagram surface 會同時接收 marker 與背景 gesture，觸控先以 22 CSS px 半徑的座標最近熱點選取，再以 direct part 作後備，拖曳與雙指不會誤選。diagram 內的滑鼠與原生 marker click 統一由 surface 委派，拖曳後的合成 click 只會被抑制一次，不會誤選或永久吞掉下一次正常點擊。client CSS px 會依實際 SVG rect／viewBox 換算為圖面位移。互動模組缺少、建立失敗或被銷毀時，32 個原生 `<details>` 仍各自保留名稱與七類完整內容。
@@ -110,7 +110,7 @@ npm run verify
 - SRTM 海拔適合行程規劃，並非測量級資料；橋梁、深谷、山壁與海岸可能產生誤差，本站以可追溯的路線級視窗降低短波雜訊。
 - 未串接即時路況、會員系統、雲端資料庫或多人協作。
 - OpenStreetMap 圖磚不可當作大量離線下載服務。
-- GPS Art 公開來源可能失效或更改；目前 31 件 production catalog 中有 11 件具站內軌跡，只有外站下載而沒有站內地圖的 `source-download` 為 0 件。其餘 20 件只保留可稽核來源，不提供猜測座標、假地圖或 GPX。七夕告白玫瑰的 GPX 由 Garmin 公開課程的 5,384 個 `geoPoints` 逐點封裝；野雁西飛使用公開行程節點與參考圖經 BRouter `fastbike` 重建可騎道路，並非宣稱複製原 Strava 座標。
+- GPS Art 公開來源可能失效或更改；目前 31 件 production catalog 中有 11 件具站內軌跡，只有外站下載而沒有站內地圖的 `source-download` 為 0 件。其餘 20 件只保留可稽核來源，不提供猜測座標、假地圖或 GPX。七夕告白玫瑰使用已調整分享授權的 Garmin 課程 523728030，5,384 點大型軌跡在卡片出現時才載入；野雁西飛使用公開行程節點與參考圖經 BRouter `fastbike` 重建可騎道路，並非宣稱複製原 Strava 座標。
 - GPS Art 響應式支援界線為最小 320 CSS client px。Windows 非 overlay 捲軸下，320 outer px 只剩 305 client px，會受既有全站 `20rem` 根寬限制出現 15px 水平差；335 outer／320 client px 與 390 outer／375 client px 均無水平溢位。
 - GPS Art 的跑步與步行作品不代表適合公路車騎乘；使用者應依活動類型、道路現況與管制自行評估。
 - 公路車百科的圖解是操作與辨識輔助，不是組裝、維修或騎乘安全指示；遇到鬆動、裂痕、煞車或傳動異常時，應由合格技師檢查。
@@ -127,4 +127,4 @@ npm run verify
 
 「比翼雙飛」軌跡由使用者從 [Garmin Connect 公開課程 354424569](https://connect.garmin.com/app/course/354424569) 匯出並提供；來源 GPX 與作品權利不因本站 MIT 程式碼授權而改變。
 
-「七夕告白玫瑰」軌跡依 [Garmin Connect 公開課程 522340111](https://connect.garmin.com/app/course/522340111) 的公開 `geoPoints` 逐點封裝為 GPX；課程、軌跡與作品權利不因本站 MIT 程式碼授權而改變。
+「七夕告白玫瑰」軌跡改用 [Garmin Connect 課程 523728030](https://connect.garmin.com/app/course/523728030)。路線擁有者於專案對話中表示已調整分享授權，本站因此保存完整軌跡並提供 GPX；Garmin 直接下載仍可能要求登入。課程、軌跡與作品權利不因本站 MIT 程式碼授權而改變。

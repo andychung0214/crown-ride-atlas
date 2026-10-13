@@ -94,6 +94,14 @@ test("GPS Art schema 接受至少一段台灣座標的站內軌跡", () => {
   assert.equal(RouteArt.hasUsableSegments(item.segments), true);
 });
 
+test("GPS Art schema 接受以 trackRef 延遲載入的站內軌跡", () => {
+  assert.doesNotThrow(() => RouteArt.validateItem({
+    id: "taipei-lazy-heart", name: "台北延遲愛心", activityType: "running", status: "track-ready",
+    sourceUrl: "https://example.com/route", sourcePlatform: "測試", verifiedAt: "2026-10-13",
+    trackRef: "taipei-lazy-heart"
+  }));
+});
+
 test("GPS Art schema 拒絕不完整的站內軌跡與無效欄位", () => {
   const validItem = {
     id: "taipei-heart", name: "台北愛心", activityType: "cycling", status: "track-ready",

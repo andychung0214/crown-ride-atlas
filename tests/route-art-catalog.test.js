@@ -14,6 +14,24 @@ const Catalog = require("../js/data/route-art-catalog.js");
 const Tracks = require("../js/data/route-art-tracks.js");
 const Data = require("../js/data/routes.js");
 const TrackManifest = require("../js/data/track-manifest.js");
+const RouteArtTrackManifest = require("../js/data/route-art-track-manifest.js");
+
+function loadLazyRouteArtTrack(id) {
+  const entry = RouteArtTrackManifest[id];
+  assert.ok(entry, `${id} 必須存在延遲載入 manifest`);
+  const source = fs.readFileSync(path.join(__dirname, "..", entry.src), "utf8");
+  let registered;
+  const root = {
+    CrownRideAtlas: {
+      TrackRegistry: {
+        register(bundleId, tracks) { registered = { bundleId, tracks }; }
+      }
+    }
+  };
+  vm.runInNewContext(source, { window: root });
+  assert.equal(registered.bundleId, entry.bundleId);
+  return JSON.parse(JSON.stringify(registered.tracks[id]));
+}
 
 function loadBrowserCatalog(routeArtTracks, routeArtDownloads) {
   const source = fs.readFileSync(require.resolve("../js/data/route-art-catalog.js"), "utf8");
@@ -246,10 +264,18 @@ test("track-ready 作品都有公開軌跡且座標位於台灣", () => {
   const ready = Catalog.filter(item => item.status === "track-ready");
   assert.ok(ready.length >= 2);
   for (const item of ready) {
-    assert.ok(item.segments.length >= 1);
-    assert.ok(item.segments.every(segment => segment.length >= 2));
-    assert.ok(item.segments.flat().every(RouteArt.isTaiwanCoordinate));
-    assert.strictEqual(item.segments, Tracks[item.id].segments);
+    const segments = item.trackRef
+      ? [loadLazyRouteArtTrack(item.trackRef).coordinates]
+      : item.segments;
+    assert.ok(segments.length >= 1);
+    assert.ok(segments.every(segment => segment.length >= 2));
+    assert.ok(segments.flat().every(RouteArt.isTaiwanCoordinate));
+    if (item.trackRef) {
+      assert.equal(item.trackRef, item.id);
+      assert.equal(Object.hasOwn(item, "segments"), false);
+    } else {
+      assert.strictEqual(item.segments, Tracks[item.id].segments);
+    }
     assert.equal(Object.hasOwn(item, "coordinates"), false);
   }
   const tiger = Catalog.find(item => item.id === "gps-art-xinzhuang-tiger");
@@ -320,20 +346,29 @@ test("公開軌跡產物鎖定來源與 canonical geometry provenance", () => {
     }
   };
 
-  assert.equal(Object.keys(Tracks).length, 11);
+  const lazyTracks = Object.fromEntries(
+    Object.keys(RouteArtTrackManifest).map(id => [id, loadLazyRouteArtTrack(id)])
+  );
+  const publishedTracks = { ...Tracks, ...lazyTracks };
 
-  for (const track of Object.values(Tracks)) {
+  assert.equal(Object.keys(Tracks).length, 10);
+  assert.equal(Object.keys(lazyTracks).length, 1);
+  assert.equal(Object.keys(publishedTracks).length, 11);
+
+  for (const track of Object.values(publishedTracks)) {
     assert.match(track.sourceSha256, /^[a-f0-9]{64}$/);
     assert.match(track.geometrySha256, /^[a-f0-9]{64}$/);
+    const segments = track.segments || [track.coordinates];
     assert.equal(
       track.geometrySha256,
-      createHash("sha256").update(JSON.stringify(track.segments)).digest("hex")
+      createHash("sha256").update(JSON.stringify(segments)).digest("hex")
     );
   }
 
   for (const [id, expected] of Object.entries(approved)) {
-    const track = Tracks[id];
-    const segmentPointCounts = track.segments.map(segment => segment.length);
+    const track = publishedTracks[id];
+    const segments = track.segments || [track.coordinates];
+    const segmentPointCounts = segments.map(segment => segment.length);
     assert.equal(track.sourceSha256, expected.sourceSha256, id);
     assert.equal(track.geometrySha256, expected.geometrySha256, id);
     assert.deepEqual(segmentPointCounts, expected.segmentPointCounts, id);

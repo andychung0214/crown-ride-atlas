@@ -198,7 +198,7 @@ function bootWithInteractiveTrack(track, onMapMount) {
   vm.runInNewContext(appSource, { window: root, Blob: class Blob {} });
 }
 
-function bootRouteArtCatalog(items, onMapMount, onDownload) {
+function bootRouteArtCatalog(items, onMapMount, onDownload, lazyTrack = null) {
   const mapElements = items.map(art => ({
     dataset: { artMap: art.id },
     setAttribute() {}
@@ -255,7 +255,7 @@ function bootRouteArtCatalog(items, onMapMount, onDownload) {
       TrackLoader: {
         create() {
           return {
-            load: async () => null,
+            load: async () => lazyTrack,
             clear() {}
           };
         }
@@ -457,6 +457,34 @@ test("路線美學只掛載 track-ready 作品並支援篩選與 GPX 下載", ()
   assert.equal(app.state.routeArtPage, 1);
   app.actions.downloadArtGpx(trackReadyArt);
   assert.equal(downloadedName, "台北櫻花-16K.gpx");
+});
+
+test("路線美學會延遲載入大型軌跡後掛載地圖並下載完整 GPX", async () => {
+  const lazyArt = {
+    id: "gps-art-qixi-confession-rose",
+    name: "七夕告白玫瑰",
+    activityType: "running",
+    status: "track-ready",
+    trackRef: "gps-art-qixi-confession-rose"
+  };
+  const lazyTrack = {
+    routeId: lazyArt.id,
+    coordinates: [{ lat: 25, lng: 121, ele: 10 }, { lat: 25.01, lng: 121.01, ele: 11 }]
+  };
+  const mounted = [];
+  const downloaded = [];
+  const app = bootRouteArtCatalog(
+    [lazyArt],
+    (_element, art) => mounted.push(art),
+    filename => downloaded.push(filename),
+    lazyTrack
+  );
+
+  await new Promise(resolve => setTimeout(resolve, 0));
+  assert.equal(mounted.length, 1);
+  assert.equal(JSON.stringify(mounted[0].segments), JSON.stringify([lazyTrack.coordinates]));
+  await app.actions.downloadArtGpx(lazyArt);
+  assert.deepEqual(downloaded, ["七夕告白玫瑰.gpx"]);
 });
 
 test("路線美學換頁獨立於正式路線分頁且篩選會回到第一頁", () => {

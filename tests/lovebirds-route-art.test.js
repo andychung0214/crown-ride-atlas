@@ -59,10 +59,10 @@ test("使用者提供的比翼雙飛來源紀錄可離線重建", async () => {
   assert.deepEqual(track.segments, Tracks[id].segments);
 });
 
-test("完整 Garmin GPS Art 點序仍符合既有 eager 軌跡資料的傳輸預算", async () => {
+test("新增大型 GPS Art 使用延遲 bundle，既有 eager 軌跡維持原傳輸預算", async () => {
   const payload = await fs.readFile(path.join(__dirname, "../js/data/route-art-tracks.js"));
   // Git 在 Windows checkout 會把 JS 換成 CRLF；預算必須涵蓋兩種換行。
-  assert.ok(payload.length <= 5_100_000, `原始軌跡資料 ${payload.length} bytes 超過 5.1 MB`);
+  assert.ok(payload.length <= 4_500_000, `原始軌跡資料 ${payload.length} bytes 超過 4.5 MB`);
   const compressed = gzipSync(payload, { level: 9 });
-  assert.ok(compressed.length <= 590_000, `gzip 軌跡資料 ${compressed.length} bytes 超過 590 KB`);
+  assert.ok(compressed.length <= 500_000, `gzip 軌跡資料 ${compressed.length} bytes 超過 500 KB`);
 });

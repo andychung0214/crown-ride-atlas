@@ -332,6 +332,32 @@ async function loadLocalTrack({ asset, expectedSourceSha256, routeId, sourceUrl,
   };
 }
 
+async function loadGarminSnapshotTrack({
+  asset, expectedGpxSha256, expectedSourceSha256, routeId, snapshot, sourceUrl, mismatchMessage
+}) {
+  const snapshotPayload = await fsPromises.readFile(new URL(`../assets/sources/${snapshot}`, import.meta.url));
+  const sourceSha256 = createHash("sha256").update(snapshotPayload).digest("hex");
+  if (sourceSha256 !== expectedSourceSha256) throw new Error(mismatchMessage);
+  const source = JSON.parse(snapshotPayload.toString("utf8"));
+  if (source.courseId !== 523728030 || source.sourceUrl !== sourceUrl
+    || !Array.isArray(source.geoPoints) || source.geoPoints.length !== 5384) {
+    throw new Error("七夕告白玫瑰 Garmin 來源快照欄位不完整。");
+  }
+
+  const gpxPayload = await fsPromises.readFile(new URL(`../assets/gpx/${asset}`, import.meta.url));
+  const gpxSha256 = createHash("sha256").update(gpxPayload).digest("hex");
+  if (gpxSha256 !== expectedGpxSha256) throw new Error(mismatchMessage);
+  const segments = validateSegments(parseGpxSegments(gpxPayload.toString("utf8")), { sourceId: routeId });
+  if (JSON.stringify(segments[0]) !== JSON.stringify(source.geoPoints)) {
+    throw new Error("七夕告白玫瑰 GPX 與 Garmin 來源快照座標不一致。");
+  }
+  return {
+    routeId, sourceFormat: "garmin-course-json", sourceUrl, sourceSha256, gpxSha256,
+    geometrySha256: createHash("sha256").update(JSON.stringify(segments)).digest("hex"),
+    segments
+  };
+}
+
 // 受版控 Garmin GPX 可離線重建；不依賴登入資訊或外站 API。
 export async function loadLocalTracks() {
   return Promise.all([
@@ -342,12 +368,14 @@ export async function loadLocalTracks() {
       sourceUrl: "https://connect.garmin.com/app/course/354424569",
       mismatchMessage: "比翼雙飛原始 GPX 雜湊不符，須重新查核來源後才能匯入。"
     }),
-    loadLocalTrack({
-      asset: "garmin-522340111.gpx",
-      expectedSourceSha256: "3e517e775df2d2e25d3d2a851500db2aecbba24196b1075b0c84396386a163d1",
+    loadGarminSnapshotTrack({
+      asset: "garmin-523728030.gpx",
+      snapshot: "garmin-523728030.json",
+      expectedGpxSha256: "3e517e775df2d2e25d3d2a851500db2aecbba24196b1075b0c84396386a163d1",
+      expectedSourceSha256: "b8ea0008080c841845985aabbfb4afcf97df73fb05b2bce3c3a93d882af0eb74",
       routeId: "gps-art-qixi-confession-rose",
-      sourceUrl: "https://connect.garmin.com/app/course/522340111",
-      mismatchMessage: "七夕告白玫瑰 GPX 雜湊不符，須重新查核 Garmin 公開課程後才能匯入。"
+      sourceUrl: "https://connect.garmin.com/app/course/523728030",
+      mismatchMessage: "七夕告白玫瑰來源雜湊不符，須重新查核 Garmin 課程後才能匯入。"
     })
   ]);
 }
@@ -376,7 +404,7 @@ export async function importTracks() {
     throw new Error(`必要公開軌跡匯入失敗；未改寫產物。${requiredFailures.join("；")}`);
   }
 
-  await writeTracksAtomically(tracks);
+  await writeTracksAtomically(tracks.filter(track => track.routeId !== "gps-art-qixi-confession-rose"));
   return tracks;
 }
 

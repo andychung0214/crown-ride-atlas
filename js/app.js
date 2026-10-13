@@ -78,6 +78,12 @@
       manifest: app.TrackManifest,
       baseUrl: root.document.baseURI
     });
+    const routeArtTrackLoader = app.TrackLoader.create({
+      documentRef: root.document,
+      registry: app.TrackRegistry,
+      manifest: app.RouteArtTrackManifest || {},
+      baseUrl: root.document.baseURI
+    });
 
     app.Theme.applyTheme(state.theme, root.document.documentElement, root.localStorage);
 
@@ -173,8 +179,29 @@
       });
       rootElement.querySelectorAll("[data-art-map]").forEach(element => {
         const art = state.routeArt.find(item => item.id === element.dataset.artMap);
-        if (!art || art.status !== "track-ready" || !app.RouteArt.hasUsableSegments(art.segments)) return;
-        interactiveHandles.push(app.MapView.mount(element, art));
+        if (!art || art.status !== "track-ready") return;
+        if (app.RouteArt.hasUsableSegments(art.segments)) {
+          interactiveHandles.push(app.MapView.mount(element, art));
+          return;
+        }
+        if (!art.trackRef) return;
+        element.setAttribute("aria-busy", "true");
+        routeArtTrackLoader.load(art.trackRef).then(track => {
+          if (
+            generation !== interactiveGeneration ||
+            (typeof rootElement.contains === "function" && !rootElement.contains(element))
+          ) return;
+          if (!hasUsableCoordinates(track && track.coordinates)) {
+            throw new Error("路線美學軌跡至少需要兩個有效座標。");
+          }
+          const hydratedArt = Object.assign({}, art, { segments: [track.coordinates] });
+          interactiveHandles.push(app.MapView.mount(element, hydratedArt));
+          element.setAttribute("aria-busy", "false");
+        }).catch(() => {
+          if (generation !== interactiveGeneration) return;
+          element.setAttribute("aria-busy", "false");
+          element.textContent = "路線美學軌跡暫時無法載入。";
+        });
       });
       rootElement.querySelectorAll("[data-bike-anatomy]").forEach(element => {
         if (!app.BikeAnatomy || typeof app.BikeAnatomy.mount !== "function") return;
@@ -394,17 +421,35 @@
         announce(`目前顯示路線美學第 ${state.routeArtPage} 頁。`);
       },
       downloadArtGpx(art) {
-        if (!art || art.status !== "track-ready" || !app.RouteArt.hasUsableSegments(art.segments)) {
+        if (!art || art.status !== "track-ready") {
           announce("這件作品目前沒有可下載的公開軌跡。");
           return;
         }
-        try {
-          const download = app.Gpx.createDownload(art, { segments: art.segments });
+        const prepareDownload = segments => {
+          const download = app.Gpx.createDownload(art, { segments });
           createFileDownload(download.filename, download.text, download.mimeType);
           announce(`已準備下載 ${art.name} GPX。`);
-        } catch (error) {
-          announce(error.message || "目前無法建立 GPX。");
+        };
+        if (app.RouteArt.hasUsableSegments(art.segments)) {
+          try {
+            prepareDownload(art.segments);
+          } catch (error) {
+            announce(error.message || "目前無法建立 GPX。");
+          }
+          return;
         }
+        if (!art.trackRef) {
+          announce("這件作品目前沒有可下載的公開軌跡。");
+          return;
+        }
+        return routeArtTrackLoader.load(art.trackRef).then(track => {
+          if (!hasUsableCoordinates(track && track.coordinates)) {
+            throw new Error("路線美學軌跡至少需要兩個有效座標。");
+          }
+          prepareDownload([track.coordinates]);
+        }).catch(error => {
+          announce(error.message || "目前無法建立 GPX。");
+        });
       },
       downloadGpx(route, track) {
         try {

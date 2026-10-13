@@ -103,11 +103,14 @@
     }
 
     if (item.status === "track-ready") {
-      if (!Array.isArray(item.segments) || item.segments.length < 1
-        || !item.segments.every(segment => Array.isArray(segment) && segment.length >= 2)) {
-        throw new TypeError("track-ready 必須具有至少一段有效 segments");
+      const hasSegments = Array.isArray(item.segments) && item.segments.length >= 1
+        && item.segments.every(segment => Array.isArray(segment) && segment.length >= 2);
+      const hasTrackRef = typeof item.trackRef === "string"
+        && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(item.trackRef);
+      if (!hasSegments && !hasTrackRef) {
+        throw new TypeError("track-ready 必須具有有效 segments 或 trackRef");
       }
-      if (!item.segments.flat().every(isTaiwanCoordinate)) {
+      if (hasSegments && !item.segments.flat().every(isTaiwanCoordinate)) {
         throw new TypeError("segments 座標必須位於 Taiwan");
       }
       if (Object.hasOwn(item, "coordinates")) {
