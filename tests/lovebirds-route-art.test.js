@@ -48,21 +48,21 @@ test("比翼雙飛下載的 GPX 與原始檔逐點逐段相同，不改海拔或
   assert.deepEqual(parseGpxSegments(download.text), source);
 });
 
-test("使用者提供的比翼雙飛單一來源紀錄可離線重建", async () => {
+test("使用者提供的比翼雙飛來源紀錄可離線重建", async () => {
   const importer = await import("../scripts/import-route-art-tracks.mjs");
   assert.equal(typeof importer.loadLocalTracks, "function");
   const tracks = await importer.loadLocalTracks();
-  assert.equal(tracks.length, 1);
-  assert.equal(tracks[0].routeId, id);
-  assert.equal(tracks[0].sourceSha256, sourceSha);
-  assert.equal(tracks[0].geometrySha256, geometrySha);
-  assert.deepEqual(tracks[0].segments, Tracks[id].segments);
+  const track = tracks.find(track => track.routeId === id);
+  assert.ok(track);
+  assert.equal(track.sourceSha256, sourceSha);
+  assert.equal(track.geometrySha256, geometrySha);
+  assert.deepEqual(track.segments, Tracks[id].segments);
 });
 
-test("完整比翼雙飛點序仍符合既有 eager 軌跡資料的傳輸預算", async () => {
+test("完整 Garmin GPS Art 點序仍符合既有 eager 軌跡資料的傳輸預算", async () => {
   const payload = await fs.readFile(path.join(__dirname, "../js/data/route-art-tracks.js"));
   // Git 在 Windows checkout 會把 JS 換成 CRLF；預算必須涵蓋兩種換行。
-  assert.ok(payload.length <= 4_400_000, `原始軌跡資料 ${payload.length} bytes 超過 4.4 MB`);
+  assert.ok(payload.length <= 5_100_000, `原始軌跡資料 ${payload.length} bytes 超過 5.1 MB`);
   const compressed = gzipSync(payload, { level: 9 });
-  assert.ok(compressed.length <= 525_000, `gzip 軌跡資料 ${compressed.length} bytes 超過 525 KB`);
+  assert.ok(compressed.length <= 590_000, `gzip 軌跡資料 ${compressed.length} bytes 超過 590 KB`);
 });

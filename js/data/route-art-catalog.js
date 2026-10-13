@@ -70,6 +70,17 @@
       routeSourceUrl: "https://connect.garmin.com/app/course/354424569",
       routeSourceAccess: "public-page", verifiedAt: "2026-09-18"
     },
+    {
+      id: "gps-art-qixi-confession-rose", name: "七夕告白玫瑰", shapeLabel: "玫瑰",
+      regionId: "taipei", regionName: "台北市大安區／信義區",
+      activityType: "running", activityLabel: "跑步", status: "source-only",
+      distanceKm: 8.36, elevationGainM: 240,
+      summary: "信義慢跑團以台北街廓畫出的七夕告白玫瑰跑步路線。站內軌跡依 Garmin 公開課程 522340111 的 5,384 個 geoPoints 逐點封裝為 GPX，保留公開座標與海拔，不重新配路、不平滑或補畫；里程及爬升採 Garmin 頁面標示。步行或跑步時仍須依現場人行空間、開放時間與交通號誌通行。",
+      author: "周筠晰", sourcePlatform: "Garmin Connect",
+      sourceUrl: "https://connect.garmin.com/app/course/522340111",
+      routeSourceUrl: "https://connect.garmin.com/app/course/522340111",
+      routeSourceAccess: "public-page", verifiedAt: "2026-10-13"
+    },
     ...[
       ["gps-art-zhishan-big-dinosaur", "芝山的大恐龍", "長頸恐龍", "taipei", "台北市士林區", 5.52, "ZhishanBigDinosaur"],
       ["gps-art-zhishan-little-dinosaur", "芝山的小恐龍", "小恐龍", "taipei", "台北市士林區", 4.73, "ZhishanLittleDinosaur"],
